@@ -1,0 +1,16 @@
+# Overrides for CPU-only development (no GPU, use Piper fallback)
+app:
+  mode: dev-cpu
+
+rendering:
+  tts:
+    primary: piper
+    fallback: piper
+    gpu_workers: 0
+
+workers:
+  cpu: 6
+  gpu: 0
+
+docker:
+  use_gpu: false
