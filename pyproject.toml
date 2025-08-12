@@ -1,0 +1,104 @@
+[project]
+name = "agent"
+version = "0.0.1"
+description = "Starter template for making a new agent LangGraph."
+authors = [
+    { name = "William Fu-Hinthorn", email = "13333726+hinthornw@users.noreply.github.com" },
+]
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "langgraph>=0.2.6",
+    "python-dotenv>=1.0.1",
+    # Orchestration & API
+    "dagster>=1.6.0",
+    "dagster-webserver>=1.6.0",
+    "fastapi>=0.111.0",
+    "uvicorn[standard]>=0.30.0",
+    # DB & migrations
+    "sqlalchemy>=2.0.30",
+    "alembic>=1.13.2",
+    "psycopg[binary,pool]>=3.2.1",
+    # Tracking (optional at runtime)
+    "mlflow>=2.14.1",
+    # Audio utils (placeholders for later stages)
+    "pyloudnorm>=0.1.1",
+    "ffmpeg-python>=0.2.0",
+    # Validation
+    "pydantic>=2.7.4",
+    "pydantic-settings>=2.3.4",
+    "PyPDF2>=3.0.1",
+    # TTS engines (XTTS via Coqui TTS + Piper)
+    "TTS>=0.22.0",
+    "piper-tts>=1.2.0",
+]
+
+
+[project.optional-dependencies]
+dev = ["mypy>=1.11.1", "ruff>=0.6.1"]
+pdf = ["pdfminer.six>=20231228"]
+
+[build-system]
+requires = ["setuptools>=73.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+# Explicitly list packages until switched to find_packages
+packages = [
+    "agent",
+    "db",
+    "pipeline",
+    "pipeline.ingestion",
+    "pipeline.ingestion.pdf",
+    "pipeline.annotation",
+    "pipeline.casting",
+    "pipeline.ssml",
+    "ops",
+    "api",
+    "tts",
+]
+[tool.setuptools.package-dir]
+"agent" = "src/agent"
+"db" = "src/db"
+"pipeline" = "src/pipeline"
+"ops" = "src/ops"
+"api" = "src/api"
+"tts" = "src/tts"
+
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
+
+[tool.ruff]
+lint.select = [
+    "E",    # pycodestyle
+    "F",    # pyflakes
+    "I",    # isort
+    "D",    # pydocstyle
+    "D401", # First line should be in imperative mood
+    "T201",
+    "UP",
+]
+lint.ignore = [
+    "UP006",
+    "UP007",
+    # We actually do want to import from typing_extensions
+    "UP035",
+    # Relax the convention by _not_ requiring documentation for every function parameter.
+    "D417",
+    "E501",
+]
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D", "UP"]
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[dependency-groups]
+dev = [
+    "anyio>=4.7.0",
+    "langgraph-cli[inmem]>=0.2.8",
+    "mypy>=1.13.0",
+    "pytest>=8.3.5",
+    "ruff>=0.8.2",
+]
