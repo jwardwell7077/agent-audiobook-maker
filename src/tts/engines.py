@@ -7,6 +7,8 @@ functions to synthesize stems, stitch them, and persist DB rows.
 from __future__ import annotations
 
 import hashlib
+import logging
+import os
 import threading
 import time
 from pathlib import Path
@@ -22,6 +24,27 @@ except Exception:  # pragma: no cover  # pylint: disable=broad-exception-caught
     CoquiTTS = None  # type: ignore  # pylint: disable=invalid-name
 
 from src.db import get_session, models  # pylint: disable=import-error
+
+# -----------------------------------------------------------------------------
+# Logging setup (lightweight structured style)
+_logger = logging.getLogger("tts.engines")
+if not _logger.handlers:
+    _handler = logging.StreamHandler()
+    _formatter = logging.Formatter(
+        fmt="%(asctime)s %(levelname)s %(name)s %(message)s"
+    )
+    _handler.setFormatter(_formatter)
+    _logger.addHandler(_handler)
+    _logger.setLevel(logging.INFO)
+
+LOUDNESS_TARGET_LUFS = None
+try:
+    # Allow env override; default target -16 LUFS (common podcast/audiobook)
+    LOUDNESS_TARGET_LUFS = float(
+        os.getenv("LOUDNESS_TARGET_LUFS", "-16")
+    )
+except ValueError:  # pragma: no cover
+    LOUDNESS_TARGET_LUFS = None
 
 _xtts_model = None  # pylint: disable=invalid-name
 _model_lock = threading.Lock()
@@ -140,7 +163,10 @@ def stitch_stems_to_render(
     stem_paths: List[Path],
     render_path: Path,
 ) -> dict:
-    """Concatenate stem WAVs into a single WAV, computing loudness/peak."""
+    """Concatenate stem WAVs, loudness normalize (optional), compute metrics.
+
+    Returns dict with duration, loudness, peak, sample_rate, applied_gain_db.
+    """
     if not stem_paths:
         raise ValueError("no_stems_to_stitch")
     audios: List[np.ndarray] = []
@@ -156,12 +182,31 @@ def stitch_stems_to_render(
         chapter_audio = np.concatenate(audios)
     else:  # pragma: no cover
         chapter_audio = np.zeros(1, dtype=np.float32)
+    applied_gain_db: Optional[float] = None
     try:  # pragma: no cover - loudness calc heavy
         import pyloudnorm as pyln  # pylint: disable=import-outside-toplevel
         meter = pyln.Meter(sr)  # type: ignore[arg-type]
         loudness = float(meter.integrated_loudness(chapter_audio))
+        if (
+            loudness is not None
+            and LOUDNESS_TARGET_LUFS is not None
+        ):
+            gain_db = float(LOUDNESS_TARGET_LUFS - loudness)
+            # Constrain extreme adjustments
+            gain_db = max(-24.0, min(24.0, gain_db))
+            if abs(gain_db) > 0.1:  # avoid needless rewrite
+                factor = 10 ** (gain_db / 20)
+                chapter_audio = (chapter_audio * factor).astype(np.float32)
+                applied_gain_db = gain_db
+                # Recompute loudness after adjustment
+                loudness = float(
+                    meter.integrated_loudness(chapter_audio)
+                )
+        else:
+            applied_gain_db = None
     except Exception:  # pylint: disable=broad-exception-caught
         loudness = None
+        applied_gain_db = None
     peak = float(20 * np.log10(np.max(np.abs(chapter_audio)) + 1e-9))
     sf.write(render_path, chapter_audio, sr)  # type: ignore[arg-type]
     duration_s = len(chapter_audio) / sr if sr else None
@@ -170,6 +215,7 @@ def stitch_stems_to_render(
         "loudness_lufs": loudness,
         "peak_dbfs": peak,
         "sample_rate": sr,
+        "applied_gain_db": applied_gain_db,
     }
 
 
@@ -208,7 +254,11 @@ def synthesize_and_render_chapter(
                     loudness_lufs=render_meta.get("loudness_lufs"),
                     peak_dbfs=render_meta.get("peak_dbfs"),
                     duration_s=render_meta.get("duration_s"),
-                    hashes=None,
+                    hashes={
+                        "applied_gain_db": render_meta.get(
+                            "applied_gain_db"
+                        )
+                    },
                     status="rendered",
                 )
             )
@@ -217,6 +267,9 @@ def synthesize_and_render_chapter(
             existing.loudness_lufs = render_meta.get("loudness_lufs")
             existing.peak_dbfs = render_meta.get("peak_dbfs")
             existing.duration_s = render_meta.get("duration_s")
+            existing.hashes = {
+                "applied_gain_db": render_meta.get("applied_gain_db")
+            }
             existing.status = "rendered"
     render_meta.update(
         {
@@ -224,6 +277,17 @@ def synthesize_and_render_chapter(
             "elapsed_s": elapsed,
             "render_path": str(render_path),
         }
+    )
+    _logger.info(
+        "render_complete",
+        extra={
+            "book_id": book_id,
+            "chapter_id": chapter_id,
+            "stem_count": len(stem_paths),
+            "elapsed_s": round(elapsed, 3),
+            "loudness_lufs": render_meta.get("loudness_lufs"),
+            "applied_gain_db": render_meta.get("applied_gain_db"),
+        },
     )
     return render_meta
 
