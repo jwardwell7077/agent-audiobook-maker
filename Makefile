@@ -89,13 +89,15 @@ alembic_upgrade:
 # VIRTUAL ENVIRONMENT
 ######################
 
-PYTHON?=python
-VENV_DIR?=.venv
+PYTHON?=python3.11
+VENV_DIR?=.venv311
 ACTIVATE=. $(VENV_DIR)/bin/activate;
 
 venv:
+	@echo "Creating venv in $(VENV_DIR) with interpreter $(PYTHON)";
 	$(PYTHON) -m venv $(VENV_DIR)
 	$(ACTIVATE) pip install --upgrade pip
+	@echo "Run: source $(VENV_DIR)/bin/activate";
 
 install: venv
 	$(ACTIVATE) pip install -e .
@@ -105,6 +107,14 @@ install_dev: venv
 
 install_pdf: venv
 	$(ACTIVATE) pip install -e .[dev,pdf]
+
+# Convenience target that ensures venv exists then runs full test suite
+test_all: install_dev
+	$(ACTIVATE) pytest -q
+
+# Run API locally using uvicorn with reload
+run_api:
+	$(ACTIVATE) uvicorn api.app:app --reload --port 8000
 
 
 ######################
