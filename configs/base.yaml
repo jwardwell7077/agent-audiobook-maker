@@ -1,0 +1,50 @@
+app:
+  name: auto-audiobook-maker
+  mode: dev-gpu
+
+paths:
+  data_root: data
+  logs_root: logs
+  models_root: models
+
+llm:
+  judge:
+    provider: ollama
+    model: llama3.1:8b-q4_k_m
+    host: http://localhost:11434
+
+nlp:
+  segmentation:
+    quote_sensitive: true
+  coref:
+    model_name: <hf-local-coref-model>
+    device: cpu
+  emotion:
+    model_name: <hf-local-emotion-model>
+    device: cpu
+
+rendering:
+  tts:
+    primary: xtts_v2
+    fallback: piper
+    gpu_workers: 1
+  mastering:
+    target_lufs: -23.0
+    max_peak_dbfs: -1.0
+
+workers:
+  cpu: 4
+  gpu: 1
+
+db:
+  url: postgresql://postgres:postgres@db:5432/audiobook
+  pool_size: 10
+
+mlflow:
+  enabled: true
+  tracking_uri: http://mlflow:5000
+  artifact_root: data/mlruns
+
+docker:
+  use_gpu: true
+  avoid_win_mounts: true

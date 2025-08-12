@@ -22,8 +22,6 @@ var/
 wheels/
 share/python-wheels/
 *.egg-info/
-# Explicitly ignore project egg-info (sanitized out of repo history)
-agent.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
@@ -126,7 +124,6 @@ celerybeat.pid
 # Environments
 .env
 .venv
-.venv311
 env/
 venv/
 ENV/
@@ -165,76 +162,3 @@ cython_debug/
 #.idea/
 uv.lock
 .langgraph_api/
-
-# Project specific binary/artifact ignores
-*.pdf
-*.PDF
-*.mp3
-*.wav
-*.ogg
-*.flac
-*.bin
-*.dat
-*.zip
-*.tar
-*.tar.gz
-*.tgz
-*.7z
-*.pickle
-*.pkl
-*.DS_Store
-*.tmp
-*.log.*
-*.log
-data/clean/**/*.pdf
-data/books/**/*.pdf
-*.db
-*.db-journal
-
-# Data directory handling:
-#   Ignore everything by default, then selectively re-include the public synthetic sample.
-#   Keep any non-public book content ignored (historical single-book prototype artifacts remain excluded).
-data/**
-
-# Re-include necessary parent directories for SAMPLE_BOOK so Git can track its contents.
-!data/
-!data/books/
-!data/books/SAMPLE_BOOK/
-!data/books/SAMPLE_BOOK/**
-
-# The global *.pdf ignore above would still ignore the synthetic sample PDF, so explicitly un-ignore it.
-!data/books/SAMPLE_BOOK/source_pdfs/synthetic_sample.pdf
-!data/clean/SAMPLE_BOOK/**
-!data/annotations/SAMPLE_BOOK/**
-!data/renders/SAMPLE_BOOK/**
-!data/stems/SAMPLE_BOOK/**
-!data/clean/
-!data/clean/SAMPLE_BOOK/
-!data/annotations/
-!data/renders/
-!data/stems/
-
-# Keep prototype / legacy private book directories ignored explicitly (redundant due to data/**, but self-documenting)
-data/books/LEGACY_PRIVATE_*/**
-
-# Ignore test data fixtures directory
-/tests/test_data/
-
-# Ignore temp working directory (ephemeral artifacts)
-/temp/
-
-# Local scratch artifacts
-/tmp/
-
-# MVS artifacts (explicitly ignored even though data/** is ignored; guards against re-includes)
-data/clean/mvs/**
-
-# Added during sanitization
-logs/
-temp/LEGACY_PRIVATE_*
-
-# Generated pipeline artifacts (JSONL/meta/audio) — do not commit
-/output/
-
-# Runtime PIDs/state files
- # (Removed) LangFlow pid file

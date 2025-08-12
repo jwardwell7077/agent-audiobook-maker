@@ -1,92 +1,104 @@
-[build-system]
-requires = ["setuptools>=66", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
-name = "agent-audiobook-maker"
-version = "0.1.0"
-description = "Local-first audiobook maker tooling (PDF→TXT→JSON→Structured JSON)"
-requires-python = ">=3.11"
+name = "agent"
+version = "0.0.1"
+description = "Starter template for making a new agent LangGraph."
+authors = [
+    { name = "William Fu-Hinthorn", email = "13333726+hinthornw@users.noreply.github.com" },
+]
 readme = "README.md"
-authors = [{ name = "jon" }]
-license = { file = "LICENSE" }
-keywords = ["audiobook", "pdf", "tts", "langgraph", "crewai"]
-
-[tool.setuptools]
-package-dir = {"" = "src"}
-
-[tool.setuptools.packages.find]
-where = ["src"]
-include = ["abm*"]
-
-[tool.ruff]
-line-length = 120
-target-version = "py311"
-respect-gitignore = true
-
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-
-[tool.ruff.lint]
-select = ["E", "F", "I", "B", "UP", "PIE", "TID", "PERF"]
-ignore = []
-
-[tool.ruff.lint.flake8-tidy-imports]
-ban-relative-imports = "all"
-
-[tool.mypy]
-python_version = "3.11"
-warn_unused_configs = true
-warn_return_any = true
-warn_unused_ignores = true
-strict = true
-packages = ["abm"]
-# Third-party stubs may be missing; allow imports without stubs.
-ignore_missing_imports = false
-# Use explicit package bases for src layout to avoid duplicate module mapping
-explicit_package_bases = true
-# Point mypy to the src/ layout so local packages (abm) resolve
-mypy_path = ["src"]
-
-[[tool.mypy.overrides]]
-module = ["fitz", "psycopg", "psycopg.*"]
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = ["abm.classifier.classifier_cli"]
-ignore_errors = true
-
-[tool.pytest.ini_options]
-addopts = "-q"
-testpaths = ["tests"]
-pythonpath = ["src", "."]
-filterwarnings = ["default"]
-
-[tool.interrogate]
-ignore-init-method = false
-ignore-init-module = true
-ignore-private = false
-ignore-magic = false
-ignore-property-decorators = false
-fail-under = 100
-exclude = [".venv", "tests", "docs", "scripts"]
-verbose = 1
-quiet = false
-whitelist-regex = []
-color = true
-style = "google"
-
-[tool.coverage.run]
-branch = true
-source = ["src"]
-omit = [
-	"src/**/__init__.py",
+license = { text = "MIT" }
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "langgraph>=0.2.6",
+    "python-dotenv>=1.0.1",
+    # Orchestration & API
+    "dagster>=1.6.0",
+    "dagster-webserver>=1.6.0",
+    "fastapi>=0.111.0",
+    "uvicorn[standard]>=0.30.0",
+    # DB & migrations
+    "sqlalchemy>=2.0.30",
+    "alembic>=1.13.2",
+    "psycopg[binary,pool]>=3.2.1",
+    # Tracking (optional at runtime)
+    "mlflow>=2.14.1",
+    # Audio utils (placeholders for later stages)
+    "pyloudnorm>=0.1.1",
+    "ffmpeg-python>=0.2.0",
+    # Validation
+    "pydantic>=2.7.4",
+    "pydantic-settings>=2.3.4",
+    "PyPDF2>=3.0.1",
+    # TTS engines (XTTS via Coqui TTS + Piper)
+    "TTS>=0.22.0",
+    "piper-tts>=1.2.0",
 ]
 
-[tool.coverage.report]
-show_missing = true
-skip_covered = false
-omit = [
-	"src/**/__init__.py",
+
+[project.optional-dependencies]
+dev = ["mypy>=1.11.1", "ruff>=0.6.1"]
+pdf = ["pdfminer.six>=20231228"]
+
+[build-system]
+requires = ["setuptools>=73.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+# Explicitly list packages until switched to find_packages
+packages = [
+    "agent",
+    "db",
+    "pipeline",
+    "pipeline.ingestion",
+    "pipeline.ingestion.pdf",
+    "pipeline.annotation",
+    "pipeline.casting",
+    "pipeline.ssml",
+    "ops",
+    "api",
+    "tts",
+]
+[tool.setuptools.package-dir]
+"agent" = "src/agent"
+"db" = "src/db"
+"pipeline" = "src/pipeline"
+"ops" = "src/ops"
+"api" = "src/api"
+"tts" = "src/tts"
+
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
+
+[tool.ruff]
+lint.select = [
+    "E",    # pycodestyle
+    "F",    # pyflakes
+    "I",    # isort
+    "D",    # pydocstyle
+    "D401", # First line should be in imperative mood
+    "T201",
+    "UP",
+]
+lint.ignore = [
+    "UP006",
+    "UP007",
+    # We actually do want to import from typing_extensions
+    "UP035",
+    # Relax the convention by _not_ requiring documentation for every function parameter.
+    "D417",
+    "E501",
+]
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D", "UP"]
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[dependency-groups]
+dev = [
+    "anyio>=4.7.0",
+    "langgraph-cli[inmem]>=0.2.8",
+    "mypy>=1.13.0",
+    "pytest>=8.3.5",
+    "ruff>=0.8.2",
 ]
