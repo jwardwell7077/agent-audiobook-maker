@@ -14,7 +14,7 @@ services:
 
   api:
     build: .
-    command: uvicorn src.api.app:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn api.app:app --host 0.0.0.0 --port 8000 --reload
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/audiobook
     volumes:
@@ -26,7 +26,7 @@ services:
 
   dagster-webserver:
     build: .
-    command: dagster-webserver -h 0.0.0.0 -p 3000 -f src/ops/repository.py
+    command: python -m dagster_webserver -h 0.0.0.0 -p 3000 -m ops.repository
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/audiobook
     volumes:

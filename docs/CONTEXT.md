@@ -227,12 +227,11 @@ Shared volumes/directories
 
 ## File/Folder Layout (target)
 
-- `src/` – Python packages (agents, services, api, ops)
-- `src/agent/` – LangGraph graphs and nodes
-- `src/api/` – FastAPI app
-- `src/pipeline/` – ingestion, annotation, rendering modules
-- `src/tts/` – XTTS/Piper integration, SSML utils
-- `src/ops/` – Dagster jobs/assets, MLflow hooks
+- `agent/` – LangGraph graphs and nodes
+- `api/` – FastAPI app
+- `pipeline/` – ingestion, annotation, rendering modules
+- `tts/` – XTTS/Piper integration, SSML utils
+- `ops/` – Dagster jobs/assets, MLflow hooks
 - `configs/` – YAML/TOML config profiles
 - `data/` – clean, annotations, ssml, stems, renders, cache, mlruns
 - `tests/` – unit/integration/e2e
