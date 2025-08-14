@@ -7,7 +7,7 @@ character records (in-memory + DB persistence helper).
 
 from typing import Iterable, Any, List
 from dataclasses import dataclass
-from src.db import get_session, models
+from db import get_session, models
 
 
 @dataclass
