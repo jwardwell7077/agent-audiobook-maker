@@ -2,15 +2,15 @@ from __future__ import annotations
 
 from dagster import asset, AssetExecutionContext
 from pathlib import Path
-from src.pipeline.ingestion.chapterizer import (
+from pipeline.ingestion.chapterizer import (
     simple_chapterize,
     write_chapter_json,
 )
 import json
-from src.db import get_session, repository
-from src.pipeline.annotation.run import run_annotation_for_chapter
-from src.pipeline.casting.derive import derive_characters, persist_characters
-from src.pipeline.ssml.build import build_ssml
+from db import get_session, repository
+from pipeline.annotation.run import run_annotation_for_chapter
+from pipeline.casting.derive import derive_characters, persist_characters
+from pipeline.ssml.build import build_ssml
 from tts.engines import synthesize_and_render_chapter  # updated path
 
 DATA_ROOT = Path("data")

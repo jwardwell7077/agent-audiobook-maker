@@ -24,7 +24,7 @@ def get_url() -> str:
 
 
 # Import models for autogenerate
-from src.db.models import Base  # noqa: E402
+from db.models import Base  # noqa: E402
 
 target_metadata = Base.metadata
 

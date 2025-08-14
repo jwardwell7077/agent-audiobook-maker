@@ -14,7 +14,7 @@ import hashlib
 import time
 
 from agent import graph, State, Segment
-from src.db import get_session, models
+from db import get_session, models
 
 ANNOTATION_DIR = Path("data/annotations")
 GRAPH_VERSION = 1  # bump if node semantics change
@@ -32,7 +32,7 @@ def _hash_params(params: Dict[str, Any]) -> str:
     return m.hexdigest()
 
 
-def run_annotation_for_chapter(
+async def run_annotation_for_chapter(
     book_id: str,
     chapter_id: str,
     force: bool = False,
@@ -96,7 +96,8 @@ def run_annotation_for_chapter(
 
         start = time.time()
         try:
-            result = graph.invoke(state)
+            # Use async invocation (nodes may be async)
+            result = await graph.ainvoke(state)
             segments: Iterable[Segment] = result["segments"]
             elapsed = time.time() - start
             records: List[Dict[str, Any]] = []
