@@ -18,7 +18,7 @@ class UtteranceJSONLWriter(Component):
     name = "UtteranceJSONLWriter"
 
     inputs = [
-        DictInput(name="utterance_payload", display_name="Utterances Payload"),
+        DictInput(name="utterances_payload", display_name="Utterances Payload"),
         StrInput(
             name="data_root",
             display_name="Project Root",
@@ -39,7 +39,7 @@ class UtteranceJSONLWriter(Component):
         path.mkdir(parents=True, exist_ok=True)
 
     def build(self):  # returns plain dict
-        payload: Dict[str, Any] = self.utterance_payload
+    payload: Dict[str, Any] = self.utterances_payload
         if (
             not payload
             or "utterances" not in payload

@@ -19,7 +19,7 @@ class SegmentDialogueNarration(Component):
     name = "SegmentDialogueNarration"
 
     inputs = [
-        DictInput(name="chapter", display_name="Selected Chapter"),
+        DictInput(name="selected_chapter", display_name="Selected Chapter"),
         BoolInput(
             name="merge_short_sentences",
             display_name="Merge very short sentences",
@@ -48,7 +48,7 @@ class SegmentDialogueNarration(Component):
         )
 
     def build(self):  # returns plain dict
-        chapter: Dict[str, Any] = self.chapter
+    chapter: Dict[str, Any] = self.selected_chapter
         if not chapter or "text" not in chapter:
             raise ValueError("Expected ChapterArtifact with 'text'.")
 
