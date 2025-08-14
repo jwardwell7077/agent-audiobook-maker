@@ -23,7 +23,7 @@ try:  # pragma: no cover - heavy import
 except Exception:  # pragma: no cover  # pylint: disable=broad-exception-caught
     CoquiTTS = None  # type: ignore  # pylint: disable=invalid-name
 
-from src.db import get_session, models  # pylint: disable=import-error
+from db import get_session, models  # pylint: disable=import-error
 
 # -----------------------------------------------------------------------------
 # Logging setup (lightweight structured style)

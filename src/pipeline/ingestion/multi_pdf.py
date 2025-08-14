@@ -23,6 +23,7 @@ import sys
 
 from .pdf import extract_pdf_text
 from .chapterizer import write_chapter_json, sha256_text, Chapter
+import re
 
 
 @dataclass
@@ -61,6 +62,22 @@ def ingest_pdf_files(
         text = res.text
         if not text.strip():  # fallback minimal placeholder
             text = ""
+        # Basic metadata counts (lightweight)
+        word_count = len(re.findall(r"\b\w+\b", text)) if text else 0
+        para_count = (
+            len([p for p in text.split("\n\n") if p.strip()]) if text else 0
+        )
+        sent_count = (
+            len(
+                [
+                    s
+                    for s in re.split(r"(?<=[.!?])\s+", text.strip())
+                    if s
+                ]
+            )
+            if text
+            else 0
+        )
         chapter_id = f"{idx:05d}"  # stable numeric ID
         # Derive a human-ish title from filename
         title = pdf.stem
@@ -103,6 +120,13 @@ def ingest_pdf_files(
                 # Point back to per‑chapter JSON (contains text)
                 "json_path": str(ch.json_path),
                 "source_pdf": str(ch.path),
+                # Minimal metadata (word/sentence/paragraph counts best-effort)
+                "meta": {
+                    "source": "multi_pdf",
+                    "word_count": word_count,
+                    "paragraph_count": para_count,
+                    "sentence_count": sent_count,
+                },
             }
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 

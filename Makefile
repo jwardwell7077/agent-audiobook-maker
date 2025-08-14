@@ -21,6 +21,14 @@ test_profile:
 extended_tests:
 	python -m pytest --only-extended $(TEST_FILE)
 
+# Ensure no legacy 'src.' import prefixes remain
+check_no_src_imports:
+	./scripts/check_no_src_imports.sh
+
+# CI-friendly test target forcing sqlite DB
+test_ci:
+	$(ACTIVATE) DATABASE_URL=sqlite:///./ci.db pytest -q
+
 
 ######################
 # LINTING AND FORMATTING

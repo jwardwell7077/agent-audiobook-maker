@@ -3,7 +3,7 @@ from pathlib import Path
 
 from agent import State, graph
 from tts.engines import synthesize_and_render_chapter  # updated import
-from src.db import get_session, models  # type: ignore  # noqa: E501  # pylint: disable=import-error
+from db import get_session, models  # type: ignore  # noqa: E501  # pylint: disable=import-error
 
 pytestmark = pytest.mark.anyio
 

@@ -12,5 +12,6 @@
         "PATH": "${workspaceFolder}/.venv311/bin:${env:PATH}"
     },
     // Auto-activate environment when opening Python terminals
-    "python.terminal.activateEnvironment": true
+    "python.terminal.activateEnvironment": true,
+    "makefile.configureOnOpen": false
 }

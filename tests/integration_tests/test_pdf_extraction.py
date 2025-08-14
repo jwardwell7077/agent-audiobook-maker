@@ -12,10 +12,10 @@ def test_detect_backends_nonempty():
     backs = detect_available_backends()
     if not backs:
         pytest.skip("No PDF backends available in test environment")
-    # If PyPDF2 importable ensure it's detected
+    # If pypdf importable ensure it's detected
     try:
-        import PyPDF2  # noqa: F401
-        assert ExtractionBackend.PYPDF2 in backs
+        import pypdf  # noqa: F401
+        assert ExtractionBackend.PYPDF in backs
     except Exception:  # pragma: no cover
         pass
     # All returned values must be known enum members
@@ -30,8 +30,8 @@ def test_extract_missing_file_raises():
 
 @pytest.mark.slow
 @pytest.mark.skipif(
-    ExtractionBackend.PYPDF2 not in detect_available_backends(),
-    reason="PyPDF2 backend not available",
+    ExtractionBackend.PYPDF not in detect_available_backends(),
+    reason="pypdf backend not available",
 )
 def test_extract_real_pdf_smoke():
     # Use first PDF in book_pdf directory if present

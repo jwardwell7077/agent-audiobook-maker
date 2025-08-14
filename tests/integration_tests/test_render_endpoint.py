@@ -6,7 +6,7 @@ import hashlib
 from pathlib import Path
 
 import pytest
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 
 from db import (  # type: ignore  # pylint: disable=import-error
     get_session,
@@ -51,7 +51,11 @@ async def test_render_endpoint_force_and_cache(tmp_path: Path) -> None:
     text = "Sentence one. Sentence two."
     await _ensure_book_chapter(book_id, chapter_id, text)
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(
+        transport=transport,
+        base_url="http://test",
+    ) as client:
         # Trigger annotation (uncached)
         ann_resp = await client.get(
             f"/chapters/{book_id}/{chapter_id}/annotations",
@@ -84,6 +88,7 @@ async def test_render_endpoint_force_and_cache(tmp_path: Path) -> None:
         assert meta2["render_path"] == meta1["render_path"]
 
         # Force re-render
+        before_mtime = Path(meta1["render_path"]).stat().st_mtime
         r3 = await client.post(
             f"/chapters/{book_id}/{chapter_id}/render",
             params={"prefer_xtts": False, "force": True},
@@ -91,6 +96,9 @@ async def test_render_endpoint_force_and_cache(tmp_path: Path) -> None:
         assert r3.status_code == 200
         meta3 = r3.json()
         assert meta3["stem_count"] is not None
+        # Re-render should touch file (mtime increases) or create new file path
+        after_mtime = Path(meta3["render_path"]).stat().st_mtime
+        assert after_mtime >= before_mtime
 
     # DB assertions (render row exists, gain tracking stored)
     with get_session() as session:

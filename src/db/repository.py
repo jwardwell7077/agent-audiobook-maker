@@ -51,6 +51,23 @@ def list_chapters(session: Session, book_id: str) -> list[models.Chapter]:
     return list(session.scalars(stmt))
 
 
+def delete_chapters(session: Session, book_id: str) -> int:
+    """Delete all chapters for a book. Returns count deleted.
+
+    Useful for resetting ingestion numbering so indices restart from 0.
+    """
+    from sqlalchemy import delete
+
+    stmt = delete(models.Chapter).where(models.Chapter.book_id == book_id)
+    result = session.execute(stmt)
+    # SQLAlchemy 2.0 result.rowcount may be -1 for some dialects; guard.
+    try:
+        deleted = int(result.rowcount or 0)
+    except Exception:  # noqa: BLE001
+        deleted = 0
+    return deleted
+
+
 def list_books(session: Session) -> list[models.Book]:
     stmt = select(models.Book).order_by(models.Book.id)
     return list(session.scalars(stmt))
