@@ -1,6 +1,7 @@
 # Auto‑Audiobook Maker – Architecture & Dev Machine Context
 
 Last updated: 2025‑08‑11
+Revision addendum (2025-08-14): Added multi-agent roadmap (`MULTI_AGENT_ROADMAP.md`), prototype LangFlow components (segmentation pipeline), and annotation schema versioning doc (`ANNOTATION_SCHEMA.md`).
 
 ## Executive Summary
 
@@ -33,13 +34,14 @@ Pipeline stages (per chapter):
    - Output: Clean chapter texts with stable IDs and content hashes.
    - Storage: Postgres (chapters table, JSONB payload) + files under `data/clean/`.
 
-2) Annotation (LangGraph agents)
-   - Segmentation → utterances
-   - Coref resolution (HF local model)
-   - Speaker attribution (heuristics + LLM judge via Ollama)
-   - Emotion/prosody classification (classifier + rules)
-   - QA Agent flags low confidence or inconsistencies
-   - Output: per‑chapter JSONL with rich annotations under `data/annotations/` and in Postgres JSONB.
+2) Annotation (Prototype → Multi-Agent Roadmap)
+
+- Segmentation → utterances (LangFlow prototype: Loader → Segmenter → Writer)
+- Coref resolution (HF local model)
+- Speaker attribution (heuristics + LLM judge via Ollama)
+- Emotion/prosody classification (classifier + rules)
+- QA Agent flags low confidence or inconsistencies
+- Output: per‑chapter JSONL with rich annotations under `data/annotations/` and in Postgres JSONB (current prototype = dialogue/narration only; see `docs/ANNOTATION_SCHEMA.md`).
 
 3) Casting & Voices
    - Build Character Bible; map speakers to XTTS v2/Coqui profiles.
@@ -71,6 +73,8 @@ Idempotency & caching
 
 - Ingestion: `data/clean/{book_id}/{chapter_id}.json` (text, structure, text_sha256)
 - Annotation: `data/annotations/{book_id}/{chapter_id}.jsonl`
+  - (Prototype v1) Fields: book_id, chapter_id, utterance_idx, text, is_dialogue
+  - (Planned v2+) Add speaker, emotion, prosody, QA flags, SSML, TTS linkage
 - SSML: `data/ssml/{book_id}/{chapter_id}.ssml`
 - Stems: `data/stems/{book_id}/{chapter_id}/{utterance_idx}.wav`
 - Chapter render: `data/renders/{book_id}/{chapter_id}.wav`
@@ -132,12 +136,12 @@ Indexes: (book_id, chapter_id), GIN on JSONB paths used in filters, BTREE on has
 - Ingestion service
   - PDF parsing, chapterization, normalization, hashing.
   - Write chapters to Postgres and `data/clean/`.
-- Annotation service (LangGraph)
-  - IMPLEMENTED: skeleton graph (`segment`, `coref`, `speakers`, `emotion`, `qa`).
+- Annotation service (LangGraph / LangFlow hybrid during transition)
+  - IMPLEMENTED: LangFlow segmentation components + skeleton graph (`segment`, `coref`, `speakers`, `emotion`, `qa`).
   - Flags now stored directly in `State` (reliable across invocation); removed deprecated `config_schema` usage.
   - Added synchronous execution helper `run_annotation_for_chapter` with caching via (text_sha256, params_hash, graph_version).
   - Persists JSONL under `data/annotations/` and a DB row (records + stats).
-  - Planned: real coref model, LLM speaker disambiguation, richer emotion classifier, QA expansions.
+  - Planned: real coref model, LLM speaker disambiguation, richer emotion classifier, QA expansions (see `MULTI_AGENT_ROADMAP.md`).
 - Casting service
   - IMPLEMENTED (prototype): `derive_characters` extracts distinct speakers; `persist_characters` stores them.
   - Planned: merge aliases, frequency stats, voice selection metadata.
@@ -161,6 +165,7 @@ Indexes: (book_id, chapter_id), GIN on JSONB paths used in filters, BTREE on has
 - Ingestion endpoint (`/ingest`) persists chapters + JSON artifacts (simple splitter heuristic + PDF extraction with multi-backend detection).
 - PDF extraction module with layered backends (PyPDF2, optional pdfminer, pdftotext CLI) + tests (skip if no backend).
 - Annotation graph skeleton implemented with placeholder logic & idempotent segmentation.
+- LangFlow prototype components packaged under `lf_components/` (Loader, Segmenter, Writer, PayloadLogger).
 - Flags stored in `State` (`enable_coref`, `enable_emotion`, `enable_qa`, `max_segments`).
 - Annotation execution + persistence (`run_annotation_for_chapter`) writing JSONL + DB row with caching.
 - Casting prototype: derive & persist character records from annotation speakers.
@@ -179,6 +184,7 @@ Indexes: (book_id, chapter_id), GIN on JSONB paths used in filters, BTREE on has
   7. Annotation caching tests & failure retry semantics.
   8. Structured logging + metrics emission.
   9. Audio mastering (loudness normalization) pipeline step.
+  10. Multi-agent migration (CrewAI role agents) – see `MULTI_AGENT_ROADMAP.md`.
 
 ---
 

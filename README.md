@@ -1,15 +1,28 @@
-# Audio Book Maker (LangGraph + FastAPI + TTS)
+# Audio Book Maker – Deterministic Ingestion → Rich Annotation → Multi‑Voice Rendering
 
-[![CI](https://github.com/langchain-ai/new-langgraph-project/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/langchain-ai/new-langgraph-project/actions/workflows/unit-tests.yml)
-[![Integration Tests](https://github.com/langchain-ai/new-langgraph-project/actions/workflows/integration-tests.yml/badge.svg)](https://github.com/langchain-ai/new-langgraph-project/actions/workflows/integration-tests.yml)
-
-This template demonstrates a simple application implemented using [LangGraph](https://github.com/langchain-ai/langgraph), designed for showing how to get started with [LangGraph Server](https://langchain-ai.github.io/langgraph/concepts/langgraph_server/#langgraph-server) and using [LangGraph Studio](https://langchain-ai.github.io/langgraph/concepts/langgraph_studio/), a visual debugging IDE.
+> Multi‑agent, local‑first audiobook production pipeline. Current focus: rock‑solid deterministic ingestion + prototype annotation flow (LangFlow) as a stepping stone to CrewAI then LangChain/LangGraph orchestration.
 
 ![Graph view in LangGraph Studio UI](./static/studio_ui.png)
 
-The core logic defined in `src/agent/graph.py`, showcases an single-step application that responds with a fixed string and the configuration provided.
+## Status Snapshot (2025-08-14)
 
-You can extend this graph to orchestrate more complex agentic workflows that can be visualized and debugged in LangGraph Studio.
+| Layer | State | Notes |
+|-------|-------|-------|
+| Ingestion | Stable + deterministic | Structured TOC only; per‑chapter JSON + volume manifest; hash regression tests. |
+| Annotation (LangFlow prototype) | Loader → Segmenter → Writer | Produces dialogue/narration utterances JSONL. |
+| LangGraph Graph | Minimal sample | Will be replaced by chapter annotation / casting graph. |
+| Casting | Planned | Character bible + voice mapping next phase. |
+| TTS Rendering | Prototype stubs | Real XTTS/Piper integration upcoming. |
+| Dagster Orchestration | Partial | Ingestion + preliminary rendering assets. |
+| Roadmap Docs | Added | `docs/MULTI_AGENT_ROADMAP.md` & updated `docs/CONTEXT.md`. |
+
+## Multi‑Agent Migration Path
+
+1. LangFlow (rapid prototyping / visual wiring of segmentation + writer) – CURRENT
+2. CrewAI (role / task abstraction for speaker attribution & QA agents)
+3. LangChain + LangGraph (deterministic state machine orchestration, resumability, devtools)
+
+See `docs/MULTI_AGENT_ROADMAP.md` for detailed phase goals, exit criteria, and risk controls.
 
 ## Getting Started (Development)
 
@@ -97,11 +110,53 @@ LANGSMITH_API_KEY=lsv2...
 
   Note: Previous fallback parsers (advanced/heading/simple) have been removed— ingestion now fails gracefully (0 chapters) if a structured Table of Contents with at least 2 chapters cannot be detected.
 
-```shell
+```bash
 langgraph dev
 ```
 
-For more information on getting started with LangGraph Server, [see here](https://langchain-ai.github.io/langgraph/tutorials/langgraph-platform/local-server/).
+For LangFlow component prototyping (custom components under `lf_components/`):
+
+```bash
+scripts/run_langflow.sh
+```
+
+Import the sample flow (`examples/langflow/sample_volume_segmentation_flow.json`) and adjust the `book_id` + manifest path fields.
+
+## Prototype LangFlow Components
+
+| Component | Purpose | Key Inputs | Outputs |
+|-----------|---------|------------|---------|
+| ChapterVolumeLoader | Load volume manifest + selected chapter JSON | data_root, book_id, pdf_stem, chapter_index | chapters_index (list), selected_chapter (dict) |
+| SegmentDialogueNarration | Heuristic sentence split + dialogue detection | selected_chapter | utterances_payload (dict) |
+| UtteranceJSONLWriter | Persist utterances + header | utterances_payload | paths (dict) |
+| PayloadLogger (debug) | Inspect payload structure | any | passthrough |
+
+All outputs are plain Python (dict/list) for interop with future CrewAI / LangGraph nodes.
+
+### Planned Near-Term Components
+
+- SpeakerAttributionAgent (LLM + heuristics)
+- EmotionProsodyClassifier (HF local + rules)
+- CharacterBibleBuilder
+- SSMLAssembler
+- TTSRenderer (XTTS v2 + Piper fallback)
+
+## Environment Variables (Ingestion & Annotation)
+
+| Variable | Default | Effect |
+|----------|---------|--------|
+| INGEST_FORCE_PYMUPDF | unset | Force PyMuPDF backend for extraction when =1. |
+| INGEST_HYPHEN_FIX | 1 | Disable hyphen line‑wrap repair when =0. |
+| INGEST_SPLIT_CAMEL | unset | Enable optional camelCase splitting when =1. |
+| INGEST_TOKEN_WARN_AVG_LEN | 18 | Avg token length warning threshold. |
+| INGEST_TOKEN_WARN_LONG_RATIO | 0.02 | Ratio of very long tokens to trigger warning. |
+| INGEST_DEBUG_STRUCTURE | unset | Emit structured TOC debug info when set. |
+| (Annotation flags via API params) enable_coref | True | Skip coref step when false. |
+| enable_emotion | True | Skip emotion classification when false. |
+| enable_qa | True | Skip QA flagging when false. |
+| max_segments | 200 | Truncate segmentation for fast tests. |
+
+Future config consolidation will migrate these into a typed settings module.
 
 ## How to customize
 
@@ -168,9 +223,33 @@ The following items are intentionally deferred until we broaden beyond the singl
 
 These are documented here to set clear boundaries: the MVP will ship once the single target book is fully processed with reliable structured TOC extraction and stored metadata artifacts.
 
-For more advanced features and examples, refer to the [LangGraph documentation](https://langchain-ai.github.io/langgraph/). These resources can help you adapt this template for your specific use case and build more sophisticated conversational agents.
+## Migration Roadmap (Condensed)
 
-LangGraph Studio also integrates with [LangSmith](https://smith.langchain.com/) for more in-depth tracing and collaboration with teammates, allowing you to analyze and optimize your chatbot's performance.
+| Phase | Exit Criteria | Risks Controlled |
+|-------|---------------|------------------|
+| LangFlow Prototype | Deterministic segmentation → JSONL | Scope creep; enforce hash guardrails |
+| CrewAI Layer | Role agents (Speaker, QA) produce enriched utterances | Non‑deterministic LLM drift – snapshot key fields |
+| LangGraph Orchestration | Graph executes multi-stage annotation + TTS with resume | State divergence – typed state + version pinning |
+| Full Rendering | XTTS/Piper stems + loudness normalized chapters | GPU saturation – queued TTS jobs |
+| Mastering & QA | Automated loudness + QA flags gating release | False positives – triage workflow |
+
+Details: `docs/MULTI_AGENT_ROADMAP.md`.
+
+## Annotation Schema Evolution
+
+Canonical utterance schema (rich) is defined in `docs/ANNOTATION_SCHEMA.md`. Current prototype only emits: `book_id, chapter_id, utterance_idx, text, is_dialogue`. Migration will layer in speaker, emotion, prosody, SSML, TTS artifact linkage. Version each expansion to preserve reproducibility.
+
+## Contributing
+
+Internal project (learning / portfolio). PRs should keep deterministic ingestion guarantees (run regression tests) and update snapshot notes when changing text transforms.
+
+## References
+
+- LangGraph: <https://github.com/langchain-ai/langgraph>
+- CrewAI: <https://www.crewai.com/>
+- XTTS v2: <https://github.com/coqui-ai/TTS>
+- Piper TTS: <https://github.com/rhasspy/piper>
+- EBU R128: <https://tech.ebu.ch/loudness>
 
 <!--
 Configuration auto-generated by `langgraph template lock`. DO NOT EDIT MANUALLY.
