@@ -75,6 +75,8 @@ packages = [
 "*" = ["py.typed"]
 
 [tool.ruff]
+# Enforce 120-char lines (applies to linter & formatter if used)
+line-length = 120
 lint.select = [
     "E",    # pycodestyle
     "F",    # pyflakes
@@ -91,12 +93,17 @@ lint.ignore = [
     "UP035",
     # Relax the convention by _not_ requiring documentation for every function parameter.
     "D417",
-    "E501",
 ]
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["D", "UP"]
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+# Provide equivalent flake8-style configuration for tools that still read it.
+[tool.flake8]
+max-line-length = 120
+# Match Ruff's handling (E203 often conflicts with Black/Ruff slicing spacing)
+extend-ignore = ["E203"]
 
 [dependency-groups]
 dev = [
