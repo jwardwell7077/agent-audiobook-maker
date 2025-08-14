@@ -162,3 +162,36 @@ cython_debug/
 #.idea/
 uv.lock
 .langgraph_api/
+
+# Project specific binary/artifact ignores
+*.pdf
+*.PDF
+*.mp3
+*.wav
+*.ogg
+*.flac
+*.bin
+*.dat
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.pickle
+*.pkl
+*.DS_Store
+*.tmp
+*.log.*
+data/clean/**/*.pdf
+data/books/**/*.pdf
+*.db
+*.db-journal
+
+# Ignore entire data directory (user request). Remove or narrow if you need sample fixtures tracked.
+/data/
+
+# Ignore test data fixtures directory
+/tests/test_data/
+
+# Ignore temp working directory (ephemeral artifacts)
+/temp/

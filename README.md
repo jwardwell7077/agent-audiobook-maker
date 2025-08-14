@@ -5,9 +5,7 @@
 
 This template demonstrates a simple application implemented using [LangGraph](https://github.com/langchain-ai/langgraph), designed for showing how to get started with [LangGraph Server](https://langchain-ai.github.io/langgraph/concepts/langgraph_server/#langgraph-server) and using [LangGraph Studio](https://langchain-ai.github.io/langgraph/concepts/langgraph_studio/), a visual debugging IDE.
 
-<div align="center">
-  <img src="./static/studio_ui.png" alt="Graph view in LangGraph studio UI" width="75%" />
-</div>
+![Graph view in LangGraph Studio UI](./static/studio_ui.png)
 
 The core logic defined in `src/agent/graph.py`, showcases an single-step application that responds with a fixed string and the configuration provided.
 
@@ -30,7 +28,7 @@ cd path/to/your/app
 pip install -e . "langgraph-cli[inmem]"
 ```
 
-2. (Optional) Customize the code and project as needed. Create a `.env` file if you need to use secrets.
+1. (Optional) Customize the code and project as needed. Create a `.env` file if you need to use secrets.
 
 ```bash
 cp .env.example .env
@@ -69,13 +67,35 @@ LANGSMITH_API_KEY=lsv2...
   pytest -q
   ```
 
-1. Ingest PDFs to per‑chapter JSON + chapters.jsonl:
+1. Ingest PDFs (structured TOC only) via API:
+
+  Single stored PDF (already placed under `data/books/<book_id>` or `data/books/<book_id>/source_pdfs`):
 
   ```bash
-  python -m pipeline.ingestion.multi_pdf <book_id> path/to/pdfs data/clean
+  curl -X POST -F book_id=<book_id> -F pdf_name=<file.pdf> -F verbose=1 http://localhost:8000/ingest
   ```
 
-  Artifacts: `data/clean/<book_id>/<chapter_id>.json` and `chapters.jsonl`.
+  Batch (all PDFs for the book):
+
+  ```bash
+  curl -X POST -F book_id=<book_id> http://localhost:8000/ingest
+  ```
+
+  Background job:
+
+  ```bash
+  curl -X POST -F book_id=<book_id> http://localhost:8000/ingest_job
+  ```
+
+  Artifacts (structured-only):
+
+- `data/clean/<book_id>/<chapter_id>.json` (per chapter)
+- `data/clean/<book_id>/<pdf_stem>_volume.json` (volume metadata + chapter list, schema_version=1.0)
+- `data/processed/<book_id>/<pdf_stem>/extracted_full.txt` and `pages.jsonl` (raw extraction provenance)
+
+  Batch ingest response returns a comma‑separated list of volume JSON paths (consider parsing client‑side into an array).
+
+  Note: Previous fallback parsers (advanced/heading/simple) have been removed— ingestion now fails gracefully (0 chapters) if a structured Table of Contents with at least 2 chapters cannot be detected.
 
 ```shell
 langgraph dev
@@ -98,6 +118,55 @@ Database URL env var defaults to Postgres; set `DATABASE_URL=sqlite:///./dev.db`
 While iterating on your graph in LangGraph Studio, you can edit past state and rerun your app from previous states to debug specific nodes. Local changes will be automatically applied via hot reload.
 
 Follow-up requests extend the same thread. You can create an entirely new thread, clearing previous history, using the `+` button in the top right.
+
+### Snapshot Hash Freeze (2025-08-14)
+
+The canonical chapter hash snapshot for `SAMPLE_BOOK` was regenerated on 2025-08-14 after improving PDF extraction determinism:
+
+- Introduced stable word ordering with explicit index tie-breaks and y-quantization.
+- Added targeted post-processing fixes (e.g., inserting space in rare `Blood type: OQuinn` -> `Blood type: O Quinn`).
+- Result: multiple chapter `text_sha256` values changed; new snapshot stored in `tests/test_data/mvs_expected/chapters_sha256.json`.
+- Regression test `test_mvs_purge_regression` now validates hash stability across purge / re-ingest cycles (two consecutive ingests produce identical hashes).
+
+If future normalization changes intentionally alter text, increment this note with date + rationale and update the snapshot in a single commit to keep history auditable.
+
+## MVP Scope (Single Book Focus)
+
+Current MVP explicitly targets processing a single canonical book: `SAMPLE_BOOK`.
+
+Operational assumptions for the MVP:
+
+- Only one book (`SAMPLE_BOOK`) needs to be fully ingested end-to-end.
+- All ingestion endpoints should be considered optimized for this book's structure; generalized performance / scalability concerns are deferred.
+- Structured TOC parser is the only supported strategy; if it fails for this book, we surface warnings and return 0 chapters (no fallback heuristics in MVP).
+- Test fixtures and integration tests may rely on this single-book assumption (e.g., fixed book_id, deterministic PDF sample).
+
+### TODO (Post-MVP / Future Expansion)
+
+The following items are intentionally deferred until we broaden beyond the single-book focus:
+
+1. Multi-book management UI & listing endpoints hardening (pagination, metadata summaries).
+2. Robust validation of mixed PDF sources per book and conflict resolution (duplicate chapter titles across volumes).
+3. Advanced / hybrid parsing strategies (heading-based, semantic segmentation) to supplement structured TOC failures.
+4. Incremental re‑ingest & diffing (detect modified pages / partial chapter rewrites).
+5. Parallel ingest & concurrency controls for large multi-volume series.
+6. Pluggable normalization for inconsistent chapter numbering schemes (e.g., prologues, interludes, side stories).
+7. Internationalization / Unicode edge cases (full‑width numerals, non‑Latin scripts in TOC detection).
+8. Quality metrics & scoring: chapter length outlier detection, missing chapter gap detection.
+9. Storage abstraction (S3 / object store) and streaming ingest for very large PDFs.
+10. Persistent job history querying & retention policies.
+11. Authentication / authorization & multi-tenant isolation.
+12. Configurable warning thresholds that escalate to errors (e.g., if chapter_count < N).
+13. Automatic synthetic TOC generation when structured parse fails but headings are present.
+14. Coverage for edge PDFs: scanned images (OCR integration), encrypted PDFs, very large page counts (>5k pages).
+15. CLI tooling for batch maintenance tasks (rebuild volume JSONs, verify checksums).
+16. Rich chapter metadata enrichment (entity counts, reading time, audio duration estimates).
+17. End-to-end audio rendering pipeline QA (voice casting heuristics, retry policies).
+18. Caching layer for parsed TOC / extraction results to speed repeated operations.
+19. Telemetry & tracing dashboards (OpenTelemetry / Prometheus) for ingestion timing breakdown.
+20. Pluggable plugin architecture for custom chapter filters / transforms.
+
+These are documented here to set clear boundaries: the MVP will ship once the single target book is fully processed with reliable structured TOC extraction and stored metadata artifacts.
 
 For more advanced features and examples, refer to the [LangGraph documentation](https://langchain-ai.github.io/langgraph/). These resources can help you adapt this template for your specific use case and build more sophisticated conversational agents.
 
