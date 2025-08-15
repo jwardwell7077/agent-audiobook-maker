@@ -174,27 +174,17 @@ While iterating on your graph in LangGraph Studio, you can edit past state and r
 
 Follow-up requests extend the same thread. You can create an entirely new thread, clearing previous history, using the `+` button in the top right.
 
-### Snapshot Hash Freeze (2025-08-14)
+### Deterministic Snapshot Notes (2025-08-14)
 
-The canonical chapter hash snapshot for `SAMPLE_BOOK` was regenerated on 2025-08-14 after improving PDF extraction determinism:
+Previous internal MVP work used a private long-form novel to validate deterministic extraction (stable word ordering, spacing repairs, and hash reproducibility). That private content has been fully removed from history. The current open test assets (synthetic sample PDF + derived chapters) serve as the public regression baseline. If normalization changes intentionally alter synthetic chapter text, update the fixture and document rationale here (date + summary) in a single commit to preserve auditability.
 
-- Introduced stable word ordering with explicit index tie-breaks and y-quantization.
-- Added targeted post-processing fixes (e.g., inserting space in rare `Blood type: OQuinn` -> `Blood type: O Quinn`).
-- Result: multiple chapter `text_sha256` values changed; new snapshot stored in `tests/test_data/mvs_expected/chapters_sha256.json`.
-- Regression test `test_mvs_purge_regression` now validates hash stability across purge / re-ingest cycles (two consecutive ingests produce identical hashes).
+## MVP Scope (Initial Focus)
 
-If future normalization changes intentionally alter text, increment this note with date + rationale and update the snapshot in a single commit to keep history auditable.
+The initial prototype targeted a single long-form book to harden deterministic extraction and chapter hashing before generalizing. That private source has been replaced by an open synthetic sample (intro + 10 chapters). Assumptions retained for early MVP validation:
 
-## MVP Scope (Single Book Focus)
-
-Current MVP explicitly targets processing a single canonical book: `SAMPLE_BOOK`.
-
-Operational assumptions for the MVP:
-
-- Only one book (`SAMPLE_BOOK`) needs to be fully ingested end-to-end.
-- All ingestion endpoints should be considered optimized for this book's structure; generalized performance / scalability concerns are deferred.
-- Structured TOC parser is the only supported strategy; if it fails for this book, we surface warnings and return 0 chapters (no fallback heuristics in MVP).
-- Test fixtures and integration tests may rely on this single-book assumption (e.g., fixed book_id, deterministic PDF sample).
+- Single-book ingestion path optimized first (general multi-book scaling deferred).
+- Structured TOC parser as the authoritative strategy (failures surface warnings and yield 0 chapters instead of heuristic fallbacks introducing nondeterminism).
+- Tests rely on deterministic synthetic assets (`synthetic_sample.pdf`).
 
 ### TODO (Post-MVP / Future Expansion)
 
