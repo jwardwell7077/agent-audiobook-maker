@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "book_id": "SAMPLE_BOOK",
+  "pdf_name": "synthetic_sample.pdf",
+  "pdf_stem": "synthetic_sample",
+  "parse_mode": "structured_toc",
+  "extraction_ms": 65.95730000117328,
+  "chapterization_ms": 0.1383199996780604,
+  "page_count": 11,
+  "chapter_count": 11,
+  "toc_count": 0,
+  "heading_count": 10,
+  "intro_present": true,
+  "toc": [],
+  "chapters": [],
+  "warnings": []
+}
