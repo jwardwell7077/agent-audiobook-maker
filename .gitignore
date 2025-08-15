@@ -182,16 +182,46 @@ uv.lock
 *.DS_Store
 *.tmp
 *.log.*
+*.log
 data/clean/**/*.pdf
 data/books/**/*.pdf
 *.db
 *.db-journal
 
-# Ignore entire data directory (user request). Remove or narrow if you need sample fixtures tracked.
-/data/
+# Data directory handling:
+#   Ignore everything by default, then selectively re-include the public synthetic sample.
+#   Keep any proprietary (sanitized) SAMPLE_BOOK / SB content ignored.
+data/**
+
+# Re-include necessary parent directories for SAMPLE_BOOK so Git can track its contents.
+!data/
+!data/books/
+!data/books/SAMPLE_BOOK/
+!data/books/SAMPLE_BOOK/**
+
+# The global *.pdf ignore above would still ignore the synthetic sample PDF, so explicitly un-ignore it.
+!data/books/SAMPLE_BOOK/source_pdfs/synthetic_sample.pdf
+!data/clean/SAMPLE_BOOK/**
+!data/annotations/SAMPLE_BOOK/**
+!data/renders/SAMPLE_BOOK/**
+!data/stems/SAMPLE_BOOK/**
+!data/clean/
+!data/clean/SAMPLE_BOOK/
+!data/annotations/
+!data/renders/
+!data/stems/
+
+# Keep proprietary directories ignored explicitly (redundant due to data/**, but self-documenting)
+data/books/SB/**
+data/books/SAMPLE_BOOK/**
+data/books/*SAMPLE_BOOK*/**
 
 # Ignore test data fixtures directory
 /tests/test_data/
 
 # Ignore temp working directory (ephemeral artifacts)
 /temp/
+
+# Added during sanitization
+logs/
+temp/SAMPLE_BOOK*
