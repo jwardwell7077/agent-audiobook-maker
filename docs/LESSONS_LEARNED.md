@@ -1,6 +1,6 @@
 # Lessons Learned Diary
 
-This document captures evolving insights during development of the audiobook ingestion MVP (single-book focus: `SAMPLE_BOOK`).
+This document captures evolving insights during development of the audiobook ingestion MVP (initially single‑book focused; now generalized with a synthetic public sample).
 
 ## 2025-08-13
 

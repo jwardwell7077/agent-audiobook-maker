@@ -22,6 +22,8 @@ var/
 wheels/
 share/python-wheels/
 *.egg-info/
+# Explicitly ignore project egg-info (sanitized out of repo history)
+agent.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
@@ -190,7 +192,7 @@ data/books/**/*.pdf
 
 # Data directory handling:
 #   Ignore everything by default, then selectively re-include the public synthetic sample.
-#   Keep any proprietary (sanitized) SAMPLE_BOOK / SB content ignored.
+#   Keep any non-public book content ignored (historical single-book prototype artifacts remain excluded).
 data/**
 
 # Re-include necessary parent directories for SAMPLE_BOOK so Git can track its contents.
@@ -211,10 +213,8 @@ data/**
 !data/renders/
 !data/stems/
 
-# Keep proprietary directories ignored explicitly (redundant due to data/**, but self-documenting)
-data/books/SB/**
-data/books/SAMPLE_BOOK/**
-data/books/*SAMPLE_BOOK*/**
+# Keep prototype / legacy private book directories ignored explicitly (redundant due to data/**, but self-documenting)
+data/books/LEGACY_PRIVATE_*/**
 
 # Ignore test data fixtures directory
 /tests/test_data/
@@ -224,4 +224,4 @@ data/books/*SAMPLE_BOOK*/**
 
 # Added during sanitization
 logs/
-temp/SAMPLE_BOOK*
+temp/LEGACY_PRIVATE_*

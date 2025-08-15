@@ -8,7 +8,7 @@ Provide a reliable pipeline to ingest a long‑form novel PDF, parse a structure
 
 Constraints:
 
-- Focus on one canonical book (`SAMPLE_BOOK`).
+- Focus on one canonical (now synthetic) book fixture.
 - Optimize for correctness & determinism over feature breadth.
 - Avoid premature generalization (multi‑book UX, scaling, distributed storage).
 
@@ -29,10 +29,10 @@ Success Criteria (MVP):
 | 2025-08-13 | Structured TOC consolidation | Removed legacy fallback parsers (heading/simple/advanced); enforced single structured strategy with confidence thresholds & dedup. |
 | 2025-08-13 | Post-processing pass | Added hyphen join heuristic + optional camel splitting env flag; improved readability & hash stability. |
 | 2025-08-13 | Purge endpoint v1 | Implemented file + DB purge with dry-run; foundation for re‑ingest regression. |
-| 2025-08-13 | Canonical ingest snapshot | First chapter hash snapshot captured; initial deterministic baseline attempt. |
+| 2025-08-13 | Canonical ingest snapshot | First chapter hash snapshot captured (private source, later replaced by synthetic). |
 | 2025-08-14 | Determinism regression surfaced | Hash mismatch between consecutive cycles (chapter 00020 then 00021) revealed floating point jitter in line grouping. |
 | 2025-08-14 | Deterministic extraction fix | Introduced stable word ordering (rounded y + original index) & y‑quantization grouping; added targeted blood type spacing repair. |
-| 2025-08-14 | Snapshot refresh & validation | Recomputed all chapter hashes after determinism fix; multi-cycle equality confirmed; regression test enhanced with diff previews. |
+| 2025-08-14 | Snapshot refresh & validation | Recomputed chapter hashes after determinism fix; later migrated to synthetic open fixture. |
 | 2025-08-14 | Documentation pass | Added Snapshot Hash Freeze rationale, Lessons Learned expansion, repo hygiene updates (.gitignore). |
 | 2025-08-14 | MVP assessment | Formal evaluation of scope completion, gaps (docs, ignored fixtures), and prioritized action list. |
 

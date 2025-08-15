@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Clean ingestion artifacts for a given book (default: SB).
+"""Clean ingestion artifacts for a given book (default: SAMPLE_BOOK).
 
 Removes generated chapter and volume JSON files under data/clean/<book_id>
 so you can perform a fresh ingestion run without stale artifacts.
 
 Usage:
-        python scripts/clean_ingest_artifacts.py            # clean SB (files)
-    python scripts/clean_ingest_artifacts.py BOOK_ID    # clean specific book
-    python scripts/clean_ingest_artifacts.py --all      # clean all books
-    python scripts/clean_ingest_artifacts.py --db SB   # also purge DB rows
+    python scripts/clean_ingest_artifacts.py  # clean SAMPLE_BOOK (files)
+    python scripts/clean_ingest_artifacts.py BOOK_ID  # clean specific book
+    python scripts/clean_ingest_artifacts.py --all  # clean all books
+    python scripts/clean_ingest_artifacts.py --db SAMPLE_BOOK  # purge DB rows
 
 Safety: only touches data/clean; never deletes source_pdfs or DB files.
 Use --dry-run to preview deletions.
@@ -37,7 +37,7 @@ def iter_book_dirs(all_books: bool, book_id: str | None) -> Iterable[Path]:
     elif book_id:
         yield CLEAN_ROOT / book_id
     else:
-        yield CLEAN_ROOT / "SB"
+        yield CLEAN_ROOT / "SAMPLE_BOOK"
 
 
 def remove_book_dir(book_dir: Path, dry: bool = False) -> None:
@@ -76,7 +76,7 @@ def main(argv: list[str]) -> int:
         book_arg = a
         break
 
-    # If --db provided without a standalone book id we default to SB unless
+    # If --db used without a book id default to SAMPLE_BOOK unless
     # --all is also set (then apply to each).
     any_found = False
     for bdir in iter_book_dirs(all_books, book_arg):
