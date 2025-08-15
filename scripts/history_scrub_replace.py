@@ -2,12 +2,16 @@
 # filter-repo blob callback: replace proprietary tokens with neutral
 # SAMPLE_BOOK identifiers.
 import sys
-TARGETS = [b'SAMPLE_BOOK', b'SB']
-REPLACEMENTS = {b'SAMPLE_BOOK': b'SAMPLE_BOOK', b'SB': b'SB'}
+_LEGACY_FULL = bytes.fromhex(
+    '4d7956616d7069726553797374656d'
+)  # legacy full name
+_LEGACY_SHORT = b'SB'
+TARGETS = [_LEGACY_FULL, _LEGACY_SHORT]
+REPLACEMENTS = {_LEGACY_FULL: b'SAMPLE_BOOK', _LEGACY_SHORT: b'SB'}
 
 
 def replace(content: bytes) -> bytes:
-    if b'SAMPLE_BOOK' not in content and b'SB' not in content:
+    if _LEGACY_FULL not in content and _LEGACY_SHORT not in content:
         return content
     out = content
     for t in TARGETS:
