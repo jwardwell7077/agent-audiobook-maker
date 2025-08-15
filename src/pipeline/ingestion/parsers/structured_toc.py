@@ -15,9 +15,10 @@ finds at least 2 chapter headings or a TOC with >= 2 entries.
 """
 from __future__ import annotations
 
-from typing import List, Dict, Any
-import re
+import logging
 import os
+import re
+from typing import Any, Dict, List
 
 TOC_HEADER_RE = re.compile(
     r"^\s*Table of Contents\b.*$", re.IGNORECASE | re.MULTILINE
@@ -121,9 +122,11 @@ def parse_structured_toc(
         deduped.append(entry)
     if os.environ.get("INGEST_DEBUG_STRUCTURE"):
         dup_count = len(toc_sorted) - len(deduped)
-        print(
-            "structured_toc debug toc="
-            f"{len(deduped)} (dedup -{dup_count}) heads={len(chapters)} "
-            f"intro_len={len(intro)}"
+        logging.getLogger(__name__).info(
+            "structured_toc debug toc=%d (dedup -%d) heads=%d intro_len=%d",
+            len(deduped),
+            dup_count,
+            len(chapters),
+            len(intro),
         )
     return {"intro": intro, "toc": deduped, "chapters": chapters}

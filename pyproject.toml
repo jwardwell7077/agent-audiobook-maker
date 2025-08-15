@@ -77,6 +77,13 @@ packages = [
 [tool.ruff]
 # Enforce 120-char lines (applies to linter & formatter if used)
 line-length = 120
+exclude = [
+    ".venv*",
+    "logs",
+    "data",
+    "temp",
+    "alembic/versions",
+]
 lint.select = [
     "E",    # pycodestyle
     "F",    # pyflakes
@@ -96,6 +103,8 @@ lint.ignore = [
 ]
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["D", "UP"]
+"src/pipeline/ingestion/cli.py" = ["T201"]
+"src/pipeline/ingestion/multi_pdf.py" = ["T201"]
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
@@ -104,6 +113,7 @@ convention = "google"
 max-line-length = 120
 # Match Ruff's handling (E203 often conflicts with Black/Ruff slicing spacing)
 extend-ignore = ["E203"]
+exclude = ".venv311,logs,data,temp,alembic/versions"
 
 [dependency-groups]
 dev = [
@@ -112,4 +122,6 @@ dev = [
     "mypy>=1.13.0",
     "pytest>=8.3.5",
     "ruff>=0.8.2",
+    "flake8>=7.1.1",
+    "pylint>=3.2.7",
 ]

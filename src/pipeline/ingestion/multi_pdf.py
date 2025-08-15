@@ -14,20 +14,23 @@ Assumptions:
 """
 from __future__ import annotations
 
+import hashlib
+import json
+import logging
+import re
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, List
-import hashlib
-import json
-import sys
 
+from .chapterizer import Chapter, sha256_text, write_chapter_json
 from .pdf import extract_pdf_text
-from .chapterizer import write_chapter_json, sha256_text, Chapter
-import re
 
 
 @dataclass
 class IngestedChapter:
+    """Lightweight record for an ingested single-PDF chapter."""
+
     id: str
     path: Path
     json_path: Path
@@ -49,6 +52,22 @@ def ingest_pdf_files(
     out_root: Path = Path("data/clean"),
     include_text_files: bool = True,
 ) -> List[IngestedChapter]:
+    """Ingest multiple single-chapter PDF files for a book.
+
+    Each PDF is treated as a single chapter whose numeric id is the
+    enumeration order (sorted by path). Creates per-chapter JSON (and
+    optional plain text) plus an aggregated ``chapters.jsonl`` mapping.
+
+    Args:
+        book_id: Stable book identifier.
+        pdf_paths: Iterable of paths (glob results or directory list).
+        out_root: Root directory under which ``<book_id>`` is created.
+        include_text_files: Also write ``<chapter_id>.txt`` alongside JSON.
+
+    Returns:
+        List of ingested chapter metadata objects.
+    """
+    logger = logging.getLogger(__name__)
     pdf_list = sorted([p for p in map(Path, pdf_paths) if p.exists()])
     if not pdf_list:
         raise ValueError("No PDF files found for ingestion")
@@ -130,24 +149,35 @@ def ingest_pdf_files(
             }
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
+    logger.info(
+        "Ingested %d PDFs for book=%s into %s",
+        len(ingested),
+        book_id,
+        chapter_dir,
+    )
     return ingested
 
 
 def _expand_glob(arg: str) -> List[Path]:
+    """Return PDF paths from a directory or glob pattern."""
     p = Path(arg)
     if p.is_dir():
         return list(p.glob("*.pdf"))
-    # shell might not expand globs when invoked programmatically
+    # Shell might not expand globs when invoked programmatically.
     return list(p.parent.glob(p.name))
 
 
 def main(argv: list[str] | None = None) -> int:
+    """CLI entrypoint for multi-PDF ingestion.
+
+    Returns exit status code (0 on success). Emits progress via logging.
+    """
+    logger = logging.getLogger(__name__)
     argv = list(sys.argv[1:] if argv is None else argv)
     if len(argv) < 2:
-        print(
+        logger.error(
             "Usage: python -m pipeline.ingestion.multi_pdf "
-            "<book_id> <pdf_dir_or_glob> [out_root]",
-            file=sys.stderr,
+            "<book_id> <pdf_dir_or_glob> [out_root]"
         )
         return 1
     book_id = argv[0]
@@ -155,14 +185,11 @@ def main(argv: list[str] | None = None) -> int:
     out_root = Path(argv[2]) if len(argv) > 2 else Path("data/clean")
     pdfs = _expand_glob(glob_arg)
     if not pdfs:
-        print("No PDFs matched input path", file=sys.stderr)
+        logger.error("No PDFs matched input path pattern=%s", glob_arg)
         return 2
     ingest_pdf_files(book_id, pdfs, out_root=out_root)
-    print(
-        (
-            "Ingested {n} PDFs into {dest} "
-            "(per-chapter JSON + chapters.jsonl)"
-        ).format(n=len(pdfs), dest=out_root / book_id)
+    logger.info(
+        "Completed ingest of %d PDFs into %s", len(pdfs), out_root / book_id
     )
     return 0
 
