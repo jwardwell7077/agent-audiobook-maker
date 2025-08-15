@@ -40,13 +40,13 @@ class ChapterVolumeLoader(Component):
         StrInput(
             name="directory",
             display_name="Directory Containing Manifest",
-            value="",  # e.g., /home/jon/repos/.../data/clean/SB
+            value="",  # e.g., /home/jon/repos/.../data/clean/SAMPLE_BOOK
         ),
         # Optional data root to resolve relative chapter json_path values
         StrInput(
             name="data_root",
             display_name="Data Root (optional for relative chapter paths)",
-            value="",  # e.g., /home/jon/repos/.../data/clean/SB
+            value="",  # e.g., /home/jon/repos/.../data/clean/SAMPLE_BOOK
         ),
         IntInput(
             name="chapter_index",

@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Run the API app in-process and ingest the canonical SB sample PDF.
+"""Run the API app in-process and ingest a canonical SAMPLE_BOOK demo PDF.
 
 Steps:
-1. Verify the expected PDF exists at data/books/SB/source_pdfs/real_sample.pdf
+1. Verify PDF exists at data/books/SAMPLE_BOOK/source_pdfs/sample.pdf
 2. Start a FastAPI TestClient against the app (no separate server needed)
-3. POST /ingest with book_id=SB and pdf_name=real_sample.pdf
+3. POST /ingest with book_id=SAMPLE_BOOK and pdf_name=sample.pdf
 4. Print a concise summary (status, chapters, warnings, volume json path)
 
 Usage:
-  python scripts/run_ingest_mvs.py
+  python scripts/run_ingest_sample.py
 
 If you prefer hitting a live uvicorn server instead, adapt this to use
 httpx.AsyncClient pointing at http://localhost:8000 after starting
@@ -27,16 +27,15 @@ except Exception as e:  # noqa: BLE001
     print(f"ERROR: Failed to import app: {e}", file=sys.stderr)
     sys.exit(1)
 
-PDF_PATH = Path("data/books/SB/source_pdfs/real_sample.pdf")
-BOOK_ID = "SB"
-PDF_NAME = "real_sample.pdf"
+PDF_PATH = Path("data/books/SAMPLE_BOOK/source_pdfs/sample.pdf")
+BOOK_ID = "SAMPLE_BOOK"
+PDF_NAME = "sample.pdf"
 
 
 def main() -> int:
     if not PDF_PATH.exists():
         print(f"ERROR: PDF not found: {PDF_PATH}", file=sys.stderr)
         return 2
-    # Detect existing artifacts that would cause continued indexing.
     existing_json = list((Path("data/clean") / BOOK_ID).glob("*.json"))
     if existing_json:
         print(
