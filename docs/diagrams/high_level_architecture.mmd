@@ -1,10 +1,3 @@
-# High-Level Architecture
-
-KISS today: local CLI + deterministic ingestion and simple annotation to files. Later: multi-agent enrichment, orchestration, TTS, and optional DB.
-
-Source: `docs/diagrams/high_level_architecture.mmd`
-
-```mermaid
 flowchart LR
   subgraph Dev["Local-first (KISS today)"]
     CLI["CLI (ingest, annotate)"]
@@ -32,16 +25,10 @@ flowchart LR
   end
 
   Annos -.-> Casting -.-> SSML -.-> TTS --> Stems --> Renders --> Master
-  Orchestrator -.controls.-> Ingest
+  Orchestrator -.controls.-> JSONStruct
   Orchestrator -.controls.-> Annot
   Orchestrator -.controls.-> TTS
 
   Clean -.sync.-> DB
   Annos -.sync.-> DB
   Renders -.sync.-> DB
-```
-
-Legend
-
-- Solid nodes/edges: implemented in the KISS slice (today)
-- Dashed edges/nodes: future roadmap components
