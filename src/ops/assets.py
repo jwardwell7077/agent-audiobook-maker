@@ -1,15 +1,17 @@
+"""Dagster asset definitions (demo ingestion, annotation, render)."""
+
 from __future__ import annotations
 
-from dagster import asset, AssetExecutionContext
-from pathlib import Path
-from pipeline.ingestion.chapterizer import (
-    simple_chapterize,
-    write_chapter_json,
-)
 import json
-from db import get_session, repository
+from pathlib import Path
+from typing import Any
+
+from dagster import AssetExecutionContext, asset
+
+from db import get_session, models, repository
 from pipeline.annotation.run import run_annotation_for_chapter
 from pipeline.casting.derive import derive_characters, persist_characters
+from pipeline.ingestion.chapterizer import simple_chapterize, write_chapter_json
 from pipeline.ssml.build import build_ssml
 from tts.engines import synthesize_and_render_chapter  # updated path
 
@@ -20,13 +22,15 @@ DATA_ROOT = Path("data")
 def chapters_clean(
     context: AssetExecutionContext,
 ) -> list[str]:  # pragma: no cover
-    """Demo asset: produce chapters from README.md as placeholder book and
-    persist to DB."""
+    """Produce demo chapters from README.md and persist them.
+
+    Serves as a placeholder ingestion asset for Dagster examples.
+    """
     book_id = "demo"
     source = Path("README.md").read_text(encoding="utf-8")
     chapters = simple_chapterize(book_id, source)
     out_dir = DATA_ROOT / "clean" / book_id
-    records: list[dict] = []
+    records: list[dict[str, Any]] = []
     paths: list[str] = []
     for ch in chapters:
         p = write_chapter_json(ch, out_dir)
@@ -50,10 +54,10 @@ def chapters_clean(
 
 
 @asset(group_name="annotation", deps=[chapters_clean])
-def chapter_annotations(
+async def chapter_annotations(
     context: AssetExecutionContext,
 ) -> None:  # pragma: no cover
-    """Annotation asset: compute annotations for all clean chapters.
+    """Compute annotations for all clean chapters if missing.
 
     Future: convert to partitioned asset (book_id, chapter_id).
     """
@@ -65,7 +69,7 @@ def chapter_annotations(
             for ch in chapters:
                 chap_id = ch.id.split("-", 1)[1]
                 try:
-                    res = run_annotation_for_chapter(
+                    res = await run_annotation_for_chapter(
                         book_id=b.id,
                         chapter_id=chap_id,
                     )
@@ -82,10 +86,9 @@ def chapter_annotations(
 def chapter_renders(
     context: AssetExecutionContext,
 ) -> None:  # pragma: no cover
-    """Render asset: derive characters, build SSML, synthesize stems, stitch.
+    """Derive characters, build SSML, synthesize stems, mix chapter audio.
 
-    Uses XTTS v2 if available, otherwise Piper stub waveform fallback. Persists
-    stem and render rows in DB.
+    Uses XTTS v2 if available else Piper stub; persists stems and render rows.
     """
     with get_session() as session:
         books = repository.list_books(session)
@@ -94,7 +97,7 @@ def chapter_renders(
             for ch in chapters:
                 chap_id = ch.id.split("-", 1)[1]
                 ann_id = f"{ch.id}-v1"
-                ann = session.get(repository.models.Annotation, ann_id)
+                ann = session.get(models.Annotation, ann_id)
                 if not ann or ann.status != "succeeded":
                     continue
                 segments = ann.records

@@ -126,6 +126,7 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.venv311
 env/
 venv/
 ENV/
@@ -199,7 +200,6 @@ data/**
 !data/
 !data/books/
 !data/books/SAMPLE_BOOK/
-!data/books/SAMPLE_BOOK/**
 
 # The global *.pdf ignore above would still ignore the synthetic sample PDF, so explicitly un-ignore it.
 !data/books/SAMPLE_BOOK/source_pdfs/synthetic_sample.pdf

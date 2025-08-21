@@ -37,8 +37,11 @@ End setup instructions
 1. Install dependencies, along with the [LangGraph CLI](https://langchain-ai.github.io/langgraph/concepts/langgraph_cli/), which will be used to run the server.
 
 ```bash
-cd path/to/your/app
-pip install -e . "langgraph-cli[inmem]"
+git clone <repo>
+cd agent-audiobook-maker
+make install_dev  # creates .venv + installs editable dev deps
+source .venv/bin/activate
+pip install "langgraph-cli[inmem]"
 ```
 
 1. (Optional) Customize the code and project as needed. Create a `.env` file if you need to use secrets.
@@ -166,7 +169,41 @@ Future config consolidation will migrate these into a typed settings module.
 
 ## Development Notes
 
-Requires Python 3.11. Virtual env: `.venv311` (see Makefile targets).
+Requires Python 3.11. Virtual env: `.venv` (see Makefile targets).
+
+### Virtual Environment Enforcement
+
+All local dev commands enforce usage of the repository-local virtual environment (`.venv`).
+
+Mechanism:
+
+- `scripts/require_venv.sh` now hard-fails unless `VIRTUAL_ENV` exactly matches the project `./.venv` (no PATH heuristics).
+- `Makefile` test / lint / format / run targets call this guard.
+- Git hooks (e.g. `.githooks/pre-push`) create & activate `.venv` automatically if missing.
+
+Quick activation helper adds wrapper scripts (preferred):
+
+```bash
+source scripts/activate_dev.sh
+```
+
+This prepends `scripts/dev-bin` to PATH so calling `ruff`, `pytest`, `mypy`, etc. automatically enforces the venv. A strict PATH allowlist is now applied (project shims, venv bin, and core system bins only) via `.envrc` / VS Code settings to prevent accidental usage of globally installed Python tooling.
+
+Optional auto-activation (direnv) is already configured in `.envrc`. To disable strict PATH temporarily (e.g., debugging), comment out the `ALLOWED_PATHS` export lines and re-run `direnv allow`.
+
+Override (temporary / CI debug only):
+
+```bash
+ALLOW_SYSTEM_PY=1 make test
+```
+
+If you see a `[venv-guard]` error, activate with:
+
+```bash
+source .venv/bin/activate
+```
+
+If using pyenv, `.python-version` pins the Python patch version (3.11.9).
 
 Database URL env var defaults to Postgres; set `DATABASE_URL=sqlite:///./dev.db` for lightweight local usage without docker.
 

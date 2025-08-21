@@ -7,12 +7,13 @@ Provides layered extractors with fallbacks:
 
 Expose unified `extract_pdf_text` that returns pages list and full text.
 """
+
 from __future__ import annotations
 
 from .extract import (
-    detect_available_backends,
     ExtractionBackend,
     PDFExtractionResult,
+    detect_available_backends,
     extract_pdf_text,
 )
 

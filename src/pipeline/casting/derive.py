@@ -1,17 +1,22 @@
-from __future__ import annotations
-"""Casting derivation utilities.
+"""Character (voice) derivation utilities.
 
-Extract distinct speaker labels from annotation segments and create
-character records (in-memory + DB persistence helper).
+Extract distinct speaker labels from annotation segments and create simple
+character records; provides persistence helper to insert new characters.
 """
 
-from typing import Iterable, Any, List
+from __future__ import annotations
+
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
+from typing import Any
+
 from db import get_session, models
 
 
 @dataclass
 class CharacterRecord:
+    """Lightweight character representation derived from segments."""
+
     book_id: str
     name: str
     id: str
@@ -20,13 +25,16 @@ class CharacterRecord:
 
 def derive_characters(
     book_id: str,
-    segments: Iterable[dict | Any],
+    segments: Iterable[Mapping[str, Any] | Any],
 ) -> list[CharacterRecord]:
+    """Collect unique speaker names from segments and build records."""
     names: set[str] = set()
     for seg in segments:
         speaker = getattr(seg, "speaker", None)
-        if isinstance(seg, dict):
-            speaker = seg.get("speaker")
+        if isinstance(seg, Mapping):
+            from typing import cast as _cast
+
+            speaker = _cast(str | None, seg.get("speaker"))
         if not speaker:
             continue
         names.add(speaker)
@@ -44,7 +52,8 @@ def derive_characters(
     return records
 
 
-def persist_characters(chars: List[CharacterRecord]) -> None:
+def persist_characters(chars: list[CharacterRecord]) -> None:
+    """Insert new characters (no-op if already present)."""
     if not chars:
         return
     with get_session() as session:

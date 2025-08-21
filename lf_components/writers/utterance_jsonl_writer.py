@@ -1,24 +1,32 @@
+"""LangFlow component to persist utterance records and chapter.
+
+Header artifacts to JSONL/JSON.
+"""
+
 from __future__ import annotations
 
 import json
-from pathlib import Path
-from typing import List, Dict, Any
 from datetime import datetime
+from pathlib import Path
+from typing import Any
 
 from langflow.custom import Component
-from langflow.io import StrInput, Output, DictInput
+from langflow.io import DictInput, Output, StrInput
 
 
 class UtteranceJSONLWriter(Component):
+    """Persist utterances JSONL plus summary header JSON for a chapter."""
+
     display_name = "Write Utterances JSONL"
-    description = (
-        "Save utterances to structured/<book_id>/chapter-<id>.jsonl + header"
-    )
+    description = "Save utterances to structured/<book_id>/chapter-<id>.jsonl + header"
     icon = "save"
     name = "UtteranceJSONLWriter"
 
     inputs = [
-        DictInput(name="utterances_payload", display_name="Utterances Payload"),
+        DictInput(
+            name="utterances_payload",
+            display_name="Utterances Payload",
+        ),
         StrInput(
             name="data_root",
             display_name="Project Root",
@@ -35,36 +43,35 @@ class UtteranceJSONLWriter(Component):
         Output(name="paths", display_name="Output Paths", method="build"),
     ]
 
-    def _ensure_dir(self, path: Path):
+    # Runtime-injected by LangFlow
+    utterances_payload: dict[str, Any]
+    data_root: str
+    annotation_version: str
+
+    def _ensure_dir(self, path: Path) -> None:
+        """Create directory if absent."""
         path.mkdir(parents=True, exist_ok=True)
 
-    def build(self):  # returns plain dict
-    payload: Dict[str, Any] = self.utterances_payload
-        if (
-            not payload
-            or "utterances" not in payload
-            or "chapter_meta" not in payload
-        ):
+    def build(self) -> dict[str, str]:  # returns plain dict
+        """Write utterances + header; return mapping of output file paths."""
+        payload: dict[str, Any] = self.utterances_payload
+        if not payload or "utterances" not in payload or "chapter_meta" not in payload:
             raise ValueError("Expected keys: utterances, chapter_meta")
 
-        utterances: List[Dict[str, Any]] = payload["utterances"]
-        meta: Dict[str, Any] = payload["chapter_meta"]
+        utterances: list[dict[str, Any]] = payload["utterances"]
+        meta: dict[str, Any] = payload["chapter_meta"]
 
         book_id = meta["book_id"]
         chapter_id = meta["chapter_id"]  # e.g., "00001"
-        out_dir = (
-            Path(self.data_root).expanduser()
-            / "data"
-            / "structured"
-            / book_id
-        )
+        out_dir = Path(self.data_root).expanduser() / "data" / "structured" / book_id
         self._ensure_dir(out_dir)
-
         jsonl_path = out_dir / f"chapter-{chapter_id}.jsonl"
         header_path = out_dir / f"chapter-{chapter_id}.header.json"
 
-    # Minimal fields to match utterance schema (speaker/emotion stubbed)
-        created_at = datetime.utcnow().isoformat() + "Z"
+        # Use timezone-aware UTC then strip tz info while retaining 'Z'
+        created_at = datetime.now().astimezone().replace(microsecond=0).isoformat()
+        if not created_at.endswith("Z"):
+            created_at = created_at + "Z"
         models = {
             "segmentation": "rule_v0",
             "coref": "",
@@ -75,23 +82,18 @@ class UtteranceJSONLWriter(Component):
 
         with jsonl_path.open("w", encoding="utf-8") as f:
             for u in utterances:
-                rec = {
+                emphasis_spans: list[str] = []
+                style_tags: list[str] = []
+                characters_present: list[str] = ["char:narrator"]
+                rec: dict[str, Any] = {
                     "uid": u["uid"],
                     "chapter_id": int(meta["index"]) + 1,
                     "span": u["span"],
                     "text": u["text"],
                     "type": u["type"],
                     "speaker": {
-                        "id": (
-                            "char:narrator"
-                            if u["type"] == "narration"
-                            else "char:unknown"
-                        ),
-                        "name": (
-                            "Narrator"
-                            if u["type"] == "narration"
-                            else "Unknown"
-                        ),
+                        "id": ("char:narrator" if u["type"] == "narration" else "char:unknown"),
+                        "name": ("Narrator" if u["type"] == "narration" else "Unknown"),
                         "confidence": 0.5,
                         "evidence": ["rule_heuristic"],
                     },
@@ -107,14 +109,14 @@ class UtteranceJSONLWriter(Component):
                         "volume": "medium",
                         "pause_before_ms": 0,
                         "pause_after_ms": 150,
-                        "emphasis_spans": [],
-                        "style_tags": [],
+                        "emphasis_spans": emphasis_spans,
+                        "style_tags": style_tags,
                     },
                     "context": {
                         "scene": "",
                         "location": "",
                         "time": "",
-                        "characters_present": ["char:narrator"],
+                        "characters_present": characters_present,
                     },
                     "directives": [],
                     "qa": {"needs_review": False, "notes": None},
@@ -138,24 +140,15 @@ class UtteranceJSONLWriter(Component):
                 "utterances": len(utterances),
             },
             "stats": {
-                "dialogue_pct": (
-                    sum(1 for u in utterances if u["type"] == "dialogue")
-                    / max(1, len(utterances))
-                ),
-                "narration_pct": (
-                    sum(1 for u in utterances if u["type"] == "narration")
-                    / max(1, len(utterances))
-                ),
-                "avg_utterance_len": (
-                    sum(len(u["text"]) for u in utterances)
-                    / max(1, len(utterances))
-                ),
+                "dialogue_pct": (sum(1 for u in utterances if u["type"] == "dialogue") / max(1, len(utterances))),
+                "narration_pct": (sum(1 for u in utterances if u["type"] == "narration") / max(1, len(utterances))),
+                "avg_utterance_len": (sum(len(u["text"]) for u in utterances) / max(1, len(utterances))),
             },
             "created_at": created_at,
             "annotation_version": self.annotation_version,
             "models": models,
             "source": {
-                "chapter_json": f"data/clean/{book_id}/{meta['chapter_id']}.json",
+                "chapter_json": (f"data/clean/{book_id}/{meta['chapter_id']}.json"),
                 "extraction_tool": "N/A",
             },
             "processing": {
