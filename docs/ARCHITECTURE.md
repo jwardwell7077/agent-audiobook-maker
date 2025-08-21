@@ -32,7 +32,7 @@ flowchart LR
   end
 
   Annos -.-> Casting -.-> SSML -.-> TTS --> Stems --> Renders --> Master
-  Orchestrator -.controls.-> Ingest
+  Orchestrator -.controls.-> JSONStruct
   Orchestrator -.controls.-> Annot
   Orchestrator -.controls.-> TTS
 
