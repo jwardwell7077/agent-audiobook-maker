@@ -7,6 +7,26 @@ Revision addendum (2025-08-15): Refactored `/ingest` endpoint into granular help
 >
 > This document captures target architecture and machine context. For day‑one setup on this branch, you only need a local Python 3.11 `.venv` and the dev tools in `requirements-dev.txt`. Treat Docker, Postgres, and GPU items here as future reference, not prerequisites.
 
+## Project Tenets (short)
+
+- KISS: ship the smallest working slice
+- TDD + spec‑first: write a Full Design Spec and pytest tests before code
+- Local‑first artifacts: files on disk are the source of truth; offline by default
+- Reproducible outputs: content‑addressed hashes
+- Contract‑first: schemas define interfaces and invariants
+- Minimal complexity: simple control flow, small modules; decompose early
+
+See `docs/KISS.md` for details.
+
+## Workflow (spec‑first & TDD)
+
+- Before code: complete a Full Design Spec with diagrams (architecture, UML, data when applicable, FSM when applicable), contracts, numbered requirements, and a task plan
+- Tests‑first: write pytest tests mapped 1:1 to requirements (happy path + at least one edge case)
+- Implementation: iterate with a red→green loop; all quality gates must pass (Ruff, mypy, pytest)
+- Templates: `docs/templates/FULL_DESIGN_SPEC_TEMPLATE.md`, `docs/templates/TEST_PLAN_TEMPLATE.md`
+
+Reference: `CONTRIBUTING.md`.
+
 ## Executive Summary
 
 Local‑first, reproducible pipeline to transform long PDFs into a mastered, multi‑voice audiobook. The system ingests, annotates, casts, renders, and masters chapters in parallel, prioritizing CPU for NLP and reserving GPU for TTS. It is orchestrated and observable with Dagster, with MLflow for experiment/config/artifact tracking. Idempotency is enforced via content hashes and cached per‑chapter artifacts in Postgres (JSONB) and the filesystem.
