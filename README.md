@@ -36,6 +36,8 @@ See `docs/KISS.md` for the policy and guardrails.
 
 The KISS slice today is a local-first CLI that produces deterministic file artifacts. The diagram below shows today and the forward path.
 
+Source: `docs/diagrams/high_level_architecture.mmd`
+
 ```mermaid
 flowchart LR
   subgraph Dev["Local-first (KISS today)"]
@@ -74,6 +76,8 @@ flowchart LR
 ```
 
 See more in `docs/ARCHITECTURE.md`.
+
+Structured JSON schema: `docs/STRUCTURED_JSON_SCHEMA.md`.
 
 ## Status Snapshot (2025-08-14)
 
