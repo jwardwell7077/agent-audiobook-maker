@@ -10,6 +10,38 @@ KISS first
 
 This project enforces a consistent Python code style for clear diffs, fewer bugs, and fast reviews.
 
+## Spec-first workflow (required)
+
+Before writing code for a non-trivial component, complete a Full Design Spec and the corresponding tests.
+
+Full Design Spec must include:
+
+- Diagrams:
+    - Architecture (Mermaid; source under `docs/diagrams/`)
+    - UML (class/sequence as appropriate)
+    - Data diagram (ERD/class) if applicable
+    - Finite State Machine (FSM) if applicable
+- Narrative description: purpose, scope, assumptions, constraints
+- Interfaces and contracts: inputs, outputs, data shapes, file paths, invariants
+- Requirements: numbered, testable statements
+- Error modes and edge cases
+- Task plan: bullet list of implementation steps
+
+Tests-first:
+
+- Write pytest tests that map 1:1 to the Requirements in the spec (happy path + at least one edge case).
+- Tests must run locally (`make test`) and in pre-commit fast subset when applicable.
+
+Implementation loop:
+
+- Only after the spec and tests are merged (or committed on a feature branch), implement code iteratively with a red→green loop.
+- Use the quality gates below; do not merge until all gates pass and all spec tests are green.
+
+Templates:
+
+- Use `docs/templates/FULL_DESIGN_SPEC_TEMPLATE.md` to author specs.
+- Optional: `docs/templates/TEST_PLAN_TEMPLATE.md` to outline test mapping.
+
 ## Architecture Style Snapshot
 
 * Python 3.11 modular monolith under `src/` (no implicit namespace packages)
