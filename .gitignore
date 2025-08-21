@@ -1,3 +1,21 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment files
+.env
+
+# Python cache/metadata
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# OS/Editor
+.DS_Store
+.idea/
+.vscode/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
