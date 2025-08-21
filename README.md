@@ -1,10 +1,10 @@
 # Audio Book Maker – Deterministic Ingestion → Rich Annotation → Multi‑Voice Rendering
 
-> Disclaimer: This project is an exploration in working with GitHub Copilot to force‑multiply effort in design and development.
+> AI‑generated, Copilot‑assisted project
+>
+> This repo is an experiment in co‑creating software with GitHub Copilot to force‑multiply design and development. Most content is AI‑generated and evolves quickly—expect rapid iteration and rough edges.
 
 > Multi‑agent, local‑first audiobook production pipeline. Current focus: rock‑solid deterministic ingestion + prototype annotation flow (LangFlow) as a stepping stone to CrewAI then LangChain/LangGraph orchestration.
-
-> Note: All code and documentation in this branch are AI‑generated drafts and may change rapidly.
 
 > KISS branch scope
 >
