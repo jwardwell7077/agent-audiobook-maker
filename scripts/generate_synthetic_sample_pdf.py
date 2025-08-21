@@ -24,31 +24,46 @@ After generation you can ingest with:
         http://localhost:8000/ingest
 
 """
+
 from __future__ import annotations
 
 import argparse
-import random
-from pathlib import Path
-import textwrap
 import datetime as _dt
+import random
+import textwrap
+from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
 try:  # local import; will raise if dependency missing
     import fitz  # type: ignore
 except Exception as e:  # pragma: no cover
-    raise SystemExit(
-        "PyMuPDF (fitz) is required. Ensure 'pymupdf' is installed."
-    ) from e
+    raise SystemExit("PyMuPDF (fitz) is required. Ensure 'pymupdf' is installed.") from e
 
 
-LOREM_BASE = (
-    (
-        "lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod"
-        " tempor incididunt ut labore et dolore magna aliqua"
-    ).split()
-)
+LOREM_BASE = [
+    "lorem",
+    "ipsum",
+    "dolor",
+    "sit",
+    "amet",
+    "consectetur",
+    "adipiscing",
+    "elit",
+    "sed",
+    "do",
+    "eiusmod",
+    "tempor",
+    "incididunt",
+    "ut",
+    "labore",
+    "et",
+    "dolore",
+    "magna",
+    "aliqua",
+]
 
 
-def _make_paragraph(rng: random.Random, min_words=40, max_words=70) -> str:
+def _make_paragraph(rng: random.Random, min_words: int = 40, max_words: int = 70) -> str:  # noqa: D401
     n = rng.randint(min_words, max_words)
     words = [rng.choice(LOREM_BASE) for _ in range(n)]
     # Capitalize first word and end with period.
@@ -59,8 +74,12 @@ def _make_paragraph(rng: random.Random, min_words=40, max_words=70) -> str:
     return textwrap.fill(para, width=78)
 
 
-def build_book(chapters: int, seed: int) -> dict:
-    rng = random.Random(seed)
+def build_book(chapters: int, seed: int) -> dict[str, Any]:
+    """Build deterministic synthetic book structure.
+
+    Returns a mapping with intro text, toc entry list, and chapter bodies.
+    """
+    rng = random.Random(seed)  # noqa: S311 - deterministic non-crypto usage
     intro_paras = [_make_paragraph(rng) for _ in range(2)]
     intro = "\n\n".join(intro_paras)
     toc_entries = [f"Chapter {i}: Title {i}" for i in range(1, chapters + 1)]
@@ -72,7 +91,8 @@ def build_book(chapters: int, seed: int) -> dict:
     return {"intro": intro, "toc": toc_entries, "chapters": chapter_bodies}
 
 
-def write_pdf(book: dict, out_path: Path) -> None:
+def write_pdf(book: dict[str, Any], out_path: Path) -> None:
+    """Write synthetic book structure to a PDF file at ``out_path``."""
     out_path.parent.mkdir(parents=True, exist_ok=True)
     doc = fitz.open()
     # Intro + TOC page(s)
@@ -94,7 +114,20 @@ def write_pdf(book: dict, out_path: Path) -> None:
     doc.close()
 
 
-def _add_wrapped_page(doc, raw: str) -> None:
+if TYPE_CHECKING:  # pragma: no cover
+    pass
+
+
+def _add_wrapped_page(doc: Any, raw: str) -> None:  # noqa: ANN401
+    """Add a page with wrapped text blocks to the provided document.
+
+    ``doc`` is a PyMuPDF Document; typed as ``Any`` to avoid import-time
+    dependency for static analysis in minimal environments.
+
+    Args:
+        doc: Open PyMuPDF document instance.
+        raw: Raw multi-line text content for the page.
+    """
     page = doc.new_page()
     # Simple top-left text writer; fitz will wrap lines we provide.
     cursor_y = 36
@@ -107,6 +140,7 @@ def _add_wrapped_page(doc, raw: str) -> None:
 
 
 def main() -> None:
+    """CLI entrypoint for synthetic sample PDF generation."""
     ap = argparse.ArgumentParser(description="Generate synthetic sample PDF")
     ap.add_argument(
         "--book-id",
@@ -134,7 +168,9 @@ def main() -> None:
     book = build_book(args.chapters, args.seed)
     out_path = Path(args.out)
     write_pdf(book, out_path)
-    print(f"Wrote synthetic PDF -> {out_path} (chapters={args.chapters})")
+    import sys as _sys
+
+    _sys.stdout.write(f"Wrote synthetic PDF -> {out_path} (chapters={args.chapters})\n")
 
 
 if __name__ == "__main__":  # pragma: no cover

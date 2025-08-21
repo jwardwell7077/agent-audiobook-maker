@@ -1,0 +1,6 @@
+[flake8]
+max-line-length = 120
+extend-ignore = E203,E501
+exclude = .venv,build,dist,.mypy_cache,.ruff_cache,logs,data,temp,alembic/versions,.benchmarks
+# Match Ruff selection; flake8 runs are secondary (CI relies primarily on Ruff)
+select = E,F,W,C90

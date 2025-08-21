@@ -13,15 +13,19 @@ Usage:
 Safety: only touches data/clean; never deletes source_pdfs or DB files.
 Use --dry-run to preview deletions.
 """
+
 from __future__ import annotations
 
 import sys
+import sys as _sys
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 try:  # optional DB ops; skip if DB not initialised
-    from db import get_session  # type: ignore
-    from db import repository  # type: ignore
+    from db import (
+        get_session,  # type: ignore
+        repository,  # type: ignore
+    )
 except Exception:  # noqa: BLE001
     get_session = None  # type: ignore
     repository = None  # type: ignore
@@ -30,6 +34,10 @@ CLEAN_ROOT = Path("data/clean")
 
 
 def iter_book_dirs(all_books: bool, book_id: str | None) -> Iterable[Path]:
+    """Yield candidate book directories to clean.
+
+    Preference order: --all supplied, explicit book id, default SAMPLE_BOOK.
+    """
     if all_books and CLEAN_ROOT.exists():
         for p in sorted(CLEAN_ROOT.iterdir()):
             if p.is_dir():
@@ -41,30 +49,32 @@ def iter_book_dirs(all_books: bool, book_id: str | None) -> Iterable[Path]:
 
 
 def remove_book_dir(book_dir: Path, dry: bool = False) -> None:
+    """Remove generated chapter JSON files for a single book directory."""
     if not book_dir.exists():
         return
     for p in book_dir.glob("*.json"):
         try:
             if dry:
-                print(f"DRY: would remove {p}")
+                _sys.stdout.write(f"DRY: would remove {p}\n")
             else:
                 p.unlink()
         except Exception as e:  # noqa: BLE001
-            print(f"WARN: failed to remove {p}: {e}")
+            _sys.stdout.write(f"WARN: failed to remove {p}: {e}\n")
     # Optionally purge any nested chapter json (if future structure changes)
     chapters_dir = book_dir / "chapters"
     if chapters_dir.exists():
         for p in chapters_dir.glob("*.json"):
             try:
                 if dry:
-                    print(f"DRY: would remove {p}")
+                    _sys.stdout.write(f"DRY: would remove {p}\n")
                 else:
                     p.unlink()
             except Exception as e:  # noqa: BLE001
-                print(f"WARN: failed to remove {p}: {e}")
+                _sys.stdout.write(f"WARN: failed to remove {p}: {e}\n")
 
 
 def main(argv: list[str]) -> int:
+    """CLI entry point for cleaning ingest artifacts."""
     all_books = "--all" in argv
     dry = "--dry-run" in argv
     db_flag = "--db" in argv
@@ -84,24 +94,22 @@ def main(argv: list[str]) -> int:
             continue
         any_found = True
         book_id = bdir.name
-        print(f"Cleaning {bdir} (dry={dry})")
+        _sys.stdout.write(f"Cleaning {bdir} (dry={dry})\n")
         remove_book_dir(bdir, dry=dry)
         if db_flag and repository and get_session:
             if dry:
-                print(f"DRY: would delete DB chapters for {book_id}")
+                _sys.stdout.write(f"DRY: would delete DB chapters for {book_id}\n")
             else:
                 try:
                     with get_session() as session:  # type: ignore
                         deleted = repository.delete_chapters(  # type: ignore
                             session, book_id
                         )
-                    print(
-                        f"Deleted {deleted} DB chapter rows for {book_id}"
-                    )
+                    _sys.stdout.write(f"Deleted {deleted} DB chapter rows for {book_id}\n")
                 except Exception as e:  # noqa: BLE001
-                    print(f"WARN: DB purge failed for {book_id}: {e}")
+                    _sys.stdout.write(f"WARN: DB purge failed for {book_id}: {e}\n")
     if not any_found:
-        print("No matching book directories found to clean.")
+        _sys.stdout.write("No matching book directories found to clean.\n")
     return 0
 
 

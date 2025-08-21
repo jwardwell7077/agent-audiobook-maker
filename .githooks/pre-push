@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# Git pre-push hook: run quality gate (fast) before allowing push.
+# Enable with: git config core.hooksPath .githooks
+set -euo pipefail
+
+echo "[pre-push] Running quality gate (fast)" >&2
+
+if [[ "${SKIP_PRE_PUSH:-}" = "1" ]]; then
+  echo "[pre-push] Skipped via SKIP_PRE_PUSH" >&2
+  exit 0
+fi
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if [[ ! -d "${ROOT_DIR}/.venv" ]]; then
+  echo "[pre-push] Creating virtualenv" >&2
+  python3 -m venv "${ROOT_DIR}/.venv"
+fi
+if [[ "${VIRTUAL_ENV:-}" != "${ROOT_DIR}/.venv" ]]; then
+  echo "[pre-push] Activating project .venv" >&2
+  # shellcheck disable=SC1091
+  source "${ROOT_DIR}/.venv/bin/activate"
+fi
+if [[ "${VIRTUAL_ENV}" != "${ROOT_DIR}/.venv" ]]; then
+  echo "[pre-push] ERROR: VIRTUAL_ENV mismatch (${VIRTUAL_ENV})" >&2
+  exit 1
+fi
+python - <<'EOF'
+import sys, pathlib, os
+root = pathlib.Path(__file__).resolve().parent.parent
+expected = root/'.venv'
+if pathlib.Path(sys.prefix).resolve() != expected.resolve():
+    print(f'[pre-push] ERROR: sys.prefix {sys.prefix} != {expected}', file=sys.stderr)
+    sys.exit(1)
+if os.environ.get('VIRTUAL_ENV') != str(expected):
+    print(f'[pre-push] ERROR: VIRTUAL_ENV {os.environ.get('VIRTUAL_ENV')} != {expected}', file=sys.stderr)
+    sys.exit(1)
+EOF
+# Best-effort install; quiet on re-run
+pip install -q -e .[dev] >/dev/null 2>&1 || true
+
+# Style & lint (auto-fix)
+ruff format src || exit 1
+ruff check --fix src || exit 1
+
+# Ensure no unstaged changes remain (enforce committing auto-fixes)
+if ! git diff --quiet; then
+  echo "[pre-push] Formatting or lint fixes applied; commit them before pushing." >&2
+  exit 1
+fi
+
+# Types
+pyright || true
+mypy src || exit 1
+
+# Docstring style & coverage
+if command -v pydoclint >/dev/null 2>&1; then
+  pydoclint src || exit 1
+fi
+if command -v interrogate >/dev/null 2>&1; then
+  interrogate -c pyproject.toml src || exit 1
+fi
+
+# Tests
+pytest -q tests/unit_tests || exit 1
+
+echo "[pre-push] Passed" >&2
+exit 0

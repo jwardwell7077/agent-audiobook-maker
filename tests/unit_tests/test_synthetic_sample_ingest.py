@@ -1,22 +1,29 @@
+"""Tests ingestion of synthetic sample PDF ensuring idempotency & counts."""
+
 import json
 from pathlib import Path
+
 from fastapi.testclient import TestClient
+from pytest import MonkeyPatch
 
 from api.app import app
 
 client = TestClient(app)
 
 
-def test_synthetic_sample_ingest(tmp_path, monkeypatch):
+def test_synthetic_sample_ingest(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:
+    """Ingest synthetic sample, validate chapter counts and re-ingest noop."""
     # Generate synthetic PDF (intro + 10 chapters)
     out_pdf = Path("data/books/SAMPLE_BOOK/source_pdfs/synthetic_sample.pdf")
     if not out_pdf.exists():
         from scripts.generate_synthetic_sample_pdf import (  # type: ignore
             main as gen_main,
         )
+
         # Use deterministic seed
         monkeypatch.chdir(Path.cwd())
         import sys
+
         sys.argv = [
             "gen",
             "--book-id",

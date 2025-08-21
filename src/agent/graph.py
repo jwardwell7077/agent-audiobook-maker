@@ -13,7 +13,7 @@ Each node performs pure functional update on the shared state.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, TypedDict
+from typing import Any, TypedDict
 
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import StateGraph
@@ -21,6 +21,7 @@ from langgraph.graph import StateGraph
 
 class Configuration(TypedDict, total=False):
     """Runtime toggle configuration for the annotation graph."""
+
     enable_coref: bool
     enable_emotion: bool
     enable_qa: bool
@@ -30,6 +31,7 @@ class Configuration(TypedDict, total=False):
 @dataclass
 class Segment:
     """Single textual segment (utterance) with optional speaker/emotion."""
+
     id: str
     text: str
     speaker: str | None = None
@@ -40,23 +42,25 @@ class Segment:
 @dataclass
 class State:
     """Mutable graph state passed between nodes."""
+
     text: str = ""  # Raw input text to process
     enable_coref: bool = True
     enable_emotion: bool = True
     enable_qa: bool = True
     max_segments: int = 50
-    segments: List[Segment] = field(default_factory=list)
-    notes: List[str] = field(default_factory=list)
+    segments: list[Segment] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
 
 
 # --- Node implementations -------------------------------------------------
 
-async def segment(state: State, config: RunnableConfig) -> Dict[str, Any]:
+
+async def segment(state: State, config: RunnableConfig) -> dict[str, Any]:
     """Split raw text into initial segments (idempotent)."""
     max_segments = state.max_segments
     if state.segments:  # idempotent
         return {}
-    chunks: List[Segment] = []
+    chunks: list[Segment] = []
     # naive split by blank line fallback to sentence-ish split
     raw_parts = [p.strip() for p in state.text.split("\n\n") if p.strip()]
     if len(raw_parts) == 0:
@@ -67,26 +71,21 @@ async def segment(state: State, config: RunnableConfig) -> Dict[str, Any]:
     return {"segments": chunks}
 
 
-async def coref(state: State, config: RunnableConfig) -> Dict[str, Any]:
-    """Placeholder coreference heuristic adding a note if pronouns detected."""
+async def coref(state: State, config: RunnableConfig) -> dict[str, Any]:
+    """Add coreference note if simple pronoun heuristic detects usage."""
     if not state.enable_coref:
         return {}
-    pronouns = [
-        w for w in ["he", "she", "they"] if f" {w} " in state.text.lower()
-    ]
+    pronouns = [w for w in ["he", "she", "they"] if f" {w} " in state.text.lower()]
     if pronouns:
-        return {
-            "notes": state.notes
-            + [f"coref: pronouns {pronouns} detected"]
-        }
+        return {"notes": state.notes + [f"coref: pronouns {pronouns} detected"]}
     return {}
 
 
-async def speakers(state: State, config: RunnableConfig) -> Dict[str, Any]:
+async def speakers(state: State, config: RunnableConfig) -> dict[str, Any]:
     """Assign alternating speaker labels (A/B) as placeholder."""
     if not state.segments or state.segments[0].speaker is not None:
         return {}
-    updated: List[Segment] = []
+    updated: list[Segment] = []
     for i, seg in enumerate(state.segments):
         speaker = "A" if i % 2 == 0 else "B"
         updated.append(
@@ -101,7 +100,7 @@ async def speakers(state: State, config: RunnableConfig) -> Dict[str, Any]:
     return {"segments": updated}
 
 
-async def emotion(state: State, config: RunnableConfig) -> Dict[str, Any]:
+async def emotion(state: State, config: RunnableConfig) -> dict[str, Any]:
     """Annotate segments with simple alternating emotion labels."""
     if not state.enable_emotion:
         # ensure we clear any prior emotion if segments existed
@@ -121,7 +120,7 @@ async def emotion(state: State, config: RunnableConfig) -> Dict[str, Any]:
     if not state.segments:
         return {}
     # assign neutral / excited alternately
-    updated: List[Segment] = []
+    updated: list[Segment] = []
     for i, seg in enumerate(state.segments):
         emo = "excited" if i % 5 == 0 else "neutral"
         conf = 0.9 if emo == "excited" else 0.6
@@ -137,7 +136,7 @@ async def emotion(state: State, config: RunnableConfig) -> Dict[str, Any]:
     return {"segments": updated}
 
 
-async def qa(state: State, config: RunnableConfig) -> Dict[str, Any]:
+async def qa(state: State, config: RunnableConfig) -> dict[str, Any]:
     """Add simple QA summary note about segment and character counts."""
     if not state.enable_qa:
         return {}

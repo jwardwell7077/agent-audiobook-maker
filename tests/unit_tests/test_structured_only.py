@@ -1,11 +1,24 @@
+"""Unit tests for structured TOC parsing helper.
+
+Focus: ensure happy path parses two chapters and failure path returns None.
+"""
+
+from typing import Any, TypedDict
+
 from pipeline.ingestion.parsers.structured_toc import parse_structured_toc
 
 
-def run_parse(text: str):  # small helper
-    return parse_structured_toc(text)
+class _ParsedChapters(TypedDict):
+    chapters: list[dict[str, Any]]
 
 
-def test_structured_success():
+def run_parse(text: str) -> _ParsedChapters | None:
+    """Parse text via structured TOC parser returning payload or None."""
+    return parse_structured_toc(text)  # type: ignore[return-value]
+
+
+def test_structured_success() -> None:
+    """Structured parser returns chapter list for valid TOC + headings."""
     text = (
         "Intro stuff here.\n\nTable of Contents\n"
         "• Chapter 1: One\n"
@@ -19,11 +32,9 @@ def test_structured_success():
     assert parsed["chapters"][0]["number"] == 1
 
 
-def test_structured_failure_when_missing():
+def test_structured_failure_when_missing() -> None:
+    """Return None when insufficient chapters present (confidence fail)."""
     # only one chapter => should fail (return None)
-    text = (
-        "Chapter 1: Lone Chapter\n"
-        "Some text but no second chapter."
-    )
+    text = "Chapter 1: Lone Chapter\nSome text but no second chapter."
     parsed = run_parse(text)
     assert parsed is None

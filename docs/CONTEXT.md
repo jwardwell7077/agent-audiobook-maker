@@ -1,7 +1,7 @@
 # Auto‑Audiobook Maker – Architecture & Dev Machine Context
 
-Last updated: 2025‑08‑11
-Revision addendum (2025-08-14): Added multi-agent roadmap (`MULTI_AGENT_ROADMAP.md`), prototype LangFlow components (segmentation pipeline), and annotation schema versioning doc (`ANNOTATION_SCHEMA.md`).
+Last updated: 2025‑08‑15
+Revision addendum (2025-08-15): Refactored `/ingest` endpoint into granular helpers with accumulator pattern and introduced dependency‑built `AnnotationQueryParams` model; removed complexity suppressions.
 
 ## Executive Summary
 
@@ -17,6 +17,7 @@ Local‑first, reproducible pipeline to transform long PDFs into a mastered, mul
 - Storage: Samsung SSD 990 Pro 4TB. High IOPS; large working set OK.
 - Containerization: Docker Desktop (WSL2 backend) with GPU support enabled.
 - Tooling: Python 3.12, Ollama, LangChain/LangGraph, FFmpeg, AI dev tools.
+- Code Style: Ruff + mypy strict; maximum line length set to 120 characters (enforced via `pyproject.toml`).
 - Models (local‑first defaults):
   - LLM Judge: Llama 3.1 8B Q4_K_M via Ollama.
   - Coref: Local Hugging Face coreference model (distil‑/base‑size) CPU.
@@ -29,12 +30,14 @@ Local‑first, reproducible pipeline to transform long PDFs into a mastered, mul
 
 Pipeline stages (per chapter):
 
-1) Ingestion
-   - Input: PDF(s)
-   - Output: Clean chapter texts with stable IDs and content hashes.
-   - Storage: Postgres (chapters table, JSONB payload) + files under `data/clean/`.
+1. Ingestion
 
-2) Annotation (Prototype → Multi-Agent Roadmap)
+- Input: PDF(s) (batch), single stored PDF, or uploaded PDF.
+- Output: Clean chapter texts with stable IDs and content hashes.
+- Storage: Postgres (chapters table, JSONB payload) + files under `data/clean/`.
+- Implementation decomposition: `_batch_ingest`, `_ingest_single_stored`, `_ingest_uploaded`, shared `_gather_existing_chapter_info`, and `_BatchIngestAccumulator` for metrics aggregation (chapters, pages, timing, parsing modes, chunking stats).
+
+2. Annotation (Prototype → Multi-Agent Roadmap)
 
 - Segmentation → utterances (LangFlow prototype: Loader → Segmenter → Writer)
 - Coref resolution (HF local model)
@@ -43,16 +46,16 @@ Pipeline stages (per chapter):
 - QA Agent flags low confidence or inconsistencies
 - Output: per‑chapter JSONL with rich annotations under `data/annotations/` and in Postgres JSONB (current prototype = dialogue/narration only; see `docs/ANNOTATION_SCHEMA.md`).
 
-3) Casting & Voices
+3. Casting & Voices
    - Build Character Bible; map speakers to XTTS v2/Coqui profiles.
    - Output: character profiles and TTS settings under `data/casting/` and Postgres tables.
 
-4) Rendering
+4. Rendering
    - Transform annotated JSONL → SSML → TTS → stems → stitched chapter → mastered audiobook chapter.
    - EBU R128 loudness target; normalization and dynamics per chapter; final book assembly.
    - Output: stems under `data/stems/`, chapter WAV/FLAC/MP3 under `data/renders/`.
 
-5) Orchestration & Observability
+5. Orchestration & Observability
    - Dagster: jobs, sensors, schedules, retries, caching, lineage.
    - MLflow: params, metrics, artifacts, model/config versioning.
 
@@ -149,7 +152,8 @@ Indexes: (book_id, chapter_id), GIN on JSONB paths used in filters, BTREE on has
   - IMPLEMENTED (prototype): SSML stub builder (`build_ssml`) + Piper TTS stub to write fake stem files.
   - Planned: real Piper / XTTS integration, stitching, loudness normalization (pyloudnorm), render persistence rows.
 - API (FastAPI)
-  - Endpoints: /ingest, /books, /books/{id}/chapters, /chapters/{book}/{chapter}/annotations (compute or fetch cached annotation).
+  - Endpoints: /ingest (multi‑mode), /books, /books/{id}/chapters, /chapters/{book}/{chapter}/annotations (query flags grouped via `AnnotationQueryParams` dependency), /chapters/{book}/{chapter}/render.
+  - Patterns: dependency factory `_annotation_qp_dep` creates strongly typed query param model; accumulator pattern for ingest metrics.
   - Planned: character listing, SSML & audio artifact download.
 - Orchestrator (Dagster)
   - Assets: `chapters_clean`, `chapter_annotations`, `chapter_renders` (prototype casting→ssml→stems pipeline).
@@ -159,10 +163,10 @@ Indexes: (book_id, chapter_id), GIN on JSONB paths used in filters, BTREE on has
 
 ---
 
-## Current Implementation Snapshot (2025-08-11)
+## Current Implementation Snapshot (2025-08-15)
 
 - DB schema + initial migration applied; repository helpers for books & chapters.
-- Ingestion endpoint (`/ingest`) persists chapters + JSON artifacts (simple splitter heuristic + PDF extraction with multi-backend detection).
+- Ingestion endpoint (`/ingest`) persists chapters + JSON artifacts (simple splitter heuristic + PDF extraction with multi-backend detection) now refactored into helpers (`_batch_ingest`, `_ingest_single_stored`, `_ingest_uploaded`) with `_BatchIngestAccumulator` reducing complexity.
 - PDF extraction module with layered backends (PyPDF2, optional pdfminer, pdftotext CLI) + tests (skip if no backend).
 - Annotation graph skeleton implemented with placeholder logic & idempotent segmentation.
 - LangFlow prototype components packaged under `lf_components/` (Loader, Segmenter, Writer, PayloadLogger).
@@ -172,7 +176,7 @@ Indexes: (book_id, chapter_id), GIN on JSONB paths used in filters, BTREE on has
 - SSML prototype: basic `<voice>` wrapping via `build_ssml`.
 - TTS prototype: Piper stub writing JSON metadata instead of audio for stems.
 - Dagster assets chain: `chapters_clean` → `chapter_annotations` → `chapter_renders`.
-- API annotation endpoint computes or returns cached annotations; supports force + flag overrides.
+- API annotation endpoint computes or returns cached annotations; supports force + flag overrides via `AnnotationQueryParams` dependency model (dependency factory `_annotation_qp_dep`).
 - Tests cover graph behavior and PDF extraction; (TODO) add tests for casting/SSML/TTS stubs & caching idempotency.
 - Pending next steps:
   1. Partitioned Dagster assets (per chapter) + sensor & retries.
@@ -181,10 +185,23 @@ Indexes: (book_id, chapter_id), GIN on JSONB paths used in filters, BTREE on has
   4. Character enrichment (frequency stats, alias grouping) & selection UI/API.
   5. MLflow integration (params, latency metrics, artifacts).
   6. Enhanced PDF chapterization heuristics & normalization.
-  7. Annotation caching tests & failure retry semantics.
+  7. Annotation caching tests & failure retry semantics (extend tests for dependency model edge cases).
   8. Structured logging + metrics emission.
   9. Audio mastering (loudness normalization) pipeline step.
   10. Multi-agent migration (CrewAI role agents) – see `MULTI_AGENT_ROADMAP.md`.
+  11. Broader test coverage for accumulator edge cases (zero PDFs, duplicate titles) and render endpoint.
+
+## Refactor Rationale (2025-08-15)
+
+The ingest endpoint previously mixed: filesystem enumeration, skip logic, extraction timings, chunking stats, DB persistence, and response shaping. This pushed complexity beyond thresholds and hindered isolated testing. Decomposition produced:
+
+- Pure helpers each responsible for one ingest modality.
+- A single accumulator object consolidating metrics (favoring attribute mutation over parallel lists/dicts).
+- A pre-scan helper for existing chapters to centralize skip list building.
+- Separation of request parsing (FastAPI layer) from orchestration + persistence (helpers), yielding deterministic unit tests with mock injection.
+- Annotation query param grouping via dependency object improves validation, avoids long parameter lists, and simplifies future extension (e.g., adding `enable_summarization`).
+
+Outcome: Removed prior complexity suppressions; endpoint logic now under threshold with clearer extension seams.
 
 ---
 
@@ -195,6 +212,21 @@ Indexes: (book_id, chapter_id), GIN on JSONB paths used in filters, BTREE on has
 - Metrics: (Planned) per stage latency, GPU/CPU utilization; loudness stats; cache hit rates.
 - QA: automatic flags for low speaker confidence or emotion inconsistencies; surfaces review sets.
 - Evals: small gold set for speaker attribution/emotion; regression gates in CI.
+
+### Code Quality Workflow (Enforced Sequence)
+
+1. Design spec / issue stub enumerating: inputs, outputs, invariants, error modes.
+2. Characterization tests for existing behavior (when modifying legacy).
+3. Refactor into service class (encapsulate state & collaborators) where procedural code grows.
+4. Add/refresh Google-style docstrings (public symbols) – Ruff validates structure.
+5. Run `ruff check --fix` then `ruff check` (should be clean) and `ruff format`.
+6. Run `mypy .` (strict) – resolve new warnings immediately.
+7. (Optional) Run `interrogate` for docstring coverage; maintain ≥ target % (e.g., 95).
+8. Add/adjust tests (happy path + edge cases) before merging.
+9. Re-evaluate complexity (`C901`) & branch/statement counts; decompose functions > threshold.
+10. Final CI: lint, type, tests all green prior to merge.
+
+Rationale: front-loading design + tests reduces rework during complexity reduction; docstrings stay current with code.
 
 ---
 

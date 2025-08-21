@@ -1,6 +1,6 @@
 import pytest
 
-from agent import graph, State
+from agent import State, graph
 
 pytestmark = pytest.mark.anyio
 
@@ -21,13 +21,9 @@ async def test_annotation_graph_basic() -> None:
 async def test_disable_emotion() -> None:
     text = "A. B. C. D. E."
     res_enabled = await graph.ainvoke(State(text=text))
-    res_disabled = await graph.ainvoke(
-        State(text=text, enable_emotion=False)
-    )
+    res_disabled = await graph.ainvoke(State(text=text, enable_emotion=False))
     assert any(getattr(s, "emotion", None) for s in res_enabled["segments"])
-    assert all(
-        getattr(s, "emotion", None) is None for s in res_disabled["segments"]
-    )
+    assert all(getattr(s, "emotion", None) is None for s in res_disabled["segments"])
 
 
 async def test_max_segments_limit() -> None:

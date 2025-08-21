@@ -1,35 +1,39 @@
 import json
 from pathlib import Path
+
 import pytest
 
 from pipeline.ingestion import multi_pdf
 
 
 class DummyResult:
-    def __init__(self, text: str = "Example chapter text"):
+    """Lightweight dummy extraction result used for monkeypatched tests."""
+
+    def __init__(self, text: str = "Example chapter text") -> None:
+        """Create dummy extraction result with provided text."""
         self.text = text
         self.backend = "dummy"
         self.pages = [text]
-        self.warnings = []
+        self.warnings: list[str] = []
 
 
-def test_ingest_pdf_files_raises_on_empty():
-    with pytest.raises(ValueError):
+def test_ingest_pdf_files_raises_on_empty() -> None:
+    with pytest.raises(ValueError, match="No PDF files"):
         multi_pdf.ingest_pdf_files("bookX", [], out_root=Path("data/clean"))
 
 
-def test_ingest_single_pdf_creates_artifacts(tmp_path: Path, monkeypatch):
+def test_ingest_single_pdf_creates_artifacts(tmp_path: Path, monkeypatch) -> None:
     # Create dummy pdf file (content not actually parsed due to monkeypatch)
     pdf = tmp_path / "chapter01.pdf"
     pdf.write_bytes(b"%PDF-1.4\n%%EOF")
 
     monkeypatch.setattr(
-        multi_pdf, "extract_pdf_text", lambda p: DummyResult("Hello World")
+        multi_pdf,
+        "extract_pdf_text",
+        lambda p: DummyResult("Hello World"),
     )
     out_root = tmp_path / "out"
-    chapters = multi_pdf.ingest_pdf_files(
-        book_id="demo", pdf_paths=[pdf], out_root=out_root
-    )
+    chapters = multi_pdf.ingest_pdf_files(book_id="demo", pdf_paths=[pdf], out_root=out_root)
     assert len(chapters) == 1
     ch_dir = out_root / "demo"
     json_file = ch_dir / "00000.json"
@@ -47,7 +51,7 @@ def test_ingest_single_pdf_creates_artifacts(tmp_path: Path, monkeypatch):
     assert rec["json_path"].endswith("00000.json")
 
 
-def test_cli_usage_shows_help(monkeypatch, capsys):
+def test_cli_usage_shows_help(monkeypatch, capsys) -> None:
     # Call main with insufficient args
     rc = multi_pdf.main([])
     assert rc == 1
@@ -55,7 +59,7 @@ def test_cli_usage_shows_help(monkeypatch, capsys):
     assert "Usage:" in captured.err or "Usage:" in captured.out
 
 
-def test_cli_ingest_flow(tmp_path: Path, monkeypatch, capsys):
+def test_cli_ingest_flow(tmp_path: Path, monkeypatch, capsys) -> None:
     # Arrange PDF directory
     pdf_dir = tmp_path / "pdfs"
     pdf_dir.mkdir(parents=True)
@@ -71,7 +75,5 @@ def test_cli_ingest_flow(tmp_path: Path, monkeypatch, capsys):
     captured = capsys.readouterr()
     assert "Ingested 2 PDFs" in captured.out
     # Verify JSONL records count
-    jsonl = (
-        tmp_path / "out" / "bookY" / "chapters.jsonl"
-    ).read_text(encoding="utf-8").splitlines()
+    jsonl = (tmp_path / "out" / "bookY" / "chapters.jsonl").read_text(encoding="utf-8").splitlines()
     assert len(jsonl) == 2
