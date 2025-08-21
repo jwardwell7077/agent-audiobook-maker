@@ -1,29 +1,32 @@
-import pytest
+import logging
 from pathlib import Path
 
+import pytest
+
 from pipeline.ingestion.pdf import (
-    extract_pdf_text,
-    detect_available_backends,
     ExtractionBackend,
+    detect_available_backends,
+    extract_pdf_text,
 )
 
 
-def test_detect_backends_nonempty():
+def test_detect_backends_nonempty() -> None:
     backs = detect_available_backends()
     if not backs:
         pytest.skip("No PDF backends available in test environment")
     # If pypdf importable ensure it's detected
     try:
-        import pypdf  # noqa: F401
+        import pypdf  # noqa: F401  # type: ignore
+
         assert ExtractionBackend.PYPDF in backs
-    except Exception:  # pragma: no cover
-        pass
+    except Exception as exc:  # pragma: no cover
+        logging.debug("optional pypdf backend not available: %s", exc)
     # All returned values must be known enum members
     for b in backs:
         assert isinstance(b, ExtractionBackend)
 
 
-def test_extract_missing_file_raises():
+def test_extract_missing_file_raises() -> None:
     with pytest.raises(FileNotFoundError):
         extract_pdf_text("nonexistent_file_123456.pdf")
 
@@ -33,7 +36,7 @@ def test_extract_missing_file_raises():
     ExtractionBackend.PYPDF not in detect_available_backends(),
     reason="pypdf backend not available",
 )
-def test_extract_real_pdf_smoke():
+def test_extract_real_pdf_smoke() -> None:
     # Use first PDF in book_pdf directory if present
     pdf_dir = Path("book_pdf")
     pdfs = sorted(pdf_dir.glob("*.pdf"))
@@ -47,7 +50,7 @@ def test_extract_real_pdf_smoke():
     assert isinstance(res.pages, list)
 
 
-def test_extract_with_preference(monkeypatch, tmp_path: Path):
+def test_extract_with_preference(monkeypatch, tmp_path: Path) -> None:
     # Create a tiny placeholder PDF or text fallback
     sample_pdf = tmp_path / "sample.pdf"
     sample_pdf.write_bytes(b"%PDF-1.4\n%%EOF")

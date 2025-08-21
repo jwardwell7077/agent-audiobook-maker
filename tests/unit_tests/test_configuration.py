@@ -1,6 +1,11 @@
+"""Unit tests for graph and state configuration.
+
+Ensures Pregel graph instance and State defaults are as expected.
+"""
+
 from langgraph.pregel import Pregel
 
-from agent import graph, State
+from agent import State, graph
 
 
 def test_graph_instance() -> None:

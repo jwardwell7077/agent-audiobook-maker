@@ -1,9 +1,14 @@
+"""Basic heuristic chapterization utilities.
+
+Provides a simple paragraph-based splitter used as a fallback or
+baseline when no structured TOC / heading strategy is available.
+"""
+
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List
-import hashlib
 
 
 @dataclass(frozen=True)
@@ -17,10 +22,12 @@ class Chapter:
 
 
 def sha256_text(text: str) -> str:
+    """Return hex SHA-256 digest of ``text``."""
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
 def default_title(idx: int) -> str:
+    """Return default chapter title (1-based)."""
     return f"Chapter {idx + 1}"
 
 
@@ -28,12 +35,13 @@ def simple_chapterize(
     book_id: str,
     text: str,
     max_chars: int = 20000,
-) -> List[Chapter]:
+) -> list[Chapter]:
+    """Split ``text`` into approximate chapters.
+
+    Heuristic: group paragraphs (double newline separated) into chunks
+    not exceeding ``max_chars``; assign default titles.
     """
-    Very simple heuristic chapterizer for placeholder purposes.
-    Splits on double newlines and caps chapter size; titles are inferred.
-    """
-    chunks: List[str] = []
+    chunks: list[str] = []
     buf: list[str] = []
     current = 0
     for para in text.split("\n\n"):
@@ -46,7 +54,7 @@ def simple_chapterize(
     if buf:
         chunks.append("\n\n".join(buf))
 
-    chapters: List[Chapter] = []
+    chapters: list[Chapter] = []
     for i, chunk in enumerate(chunks):
         title = default_title(i)
         chapters.append(
@@ -63,6 +71,7 @@ def simple_chapterize(
 
 
 def write_chapter_json(chapter: Chapter, out_dir: Path) -> Path:
+    """Write chapter to ``out_dir`` returning the file path."""
     import json
 
     out_dir.mkdir(parents=True, exist_ok=True)

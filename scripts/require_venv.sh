@@ -1,15 +1,28 @@
 #!/usr/bin/env bash
+# Enforce usage of the project-local virtual environment (.venv).
+# Fails if commands are executed with a global python outside CI.
 set -euo pipefail
 
-# KISS venv guard: ensure the local .venv is active
-if [[ -z "${VIRTUAL_ENV:-}" ]]; then
-  echo "[venv-guard] Please activate the local .venv (source .venv/bin/activate)" >&2
+if [[ "${ALLOW_SYSTEM_PY:-}" = "1" ]]; then
+  exit 0
+fi
+
+if [[ -n "${GITHUB_ACTIONS:-}" ]]; then
+  exit 0
+fi
+
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+EXPECTED_VENV="${PROJECT_ROOT}/.venv"
+
+if [[ ! -d "${EXPECTED_VENV}" ]]; then
+  echo "[venv-guard] Missing .venv. Run: make install_dev" >&2
   exit 1
 fi
 
-project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-venv_path="$project_root/.venv"
-if [[ "$VIRTUAL_ENV" != "$venv_path" ]]; then
-  echo "[venv-guard] Wrong virtualenv. Expected $venv_path but VIRTUAL_ENV=$VIRTUAL_ENV" >&2
+if [[ "${VIRTUAL_ENV:-}" != "${EXPECTED_VENV}" ]]; then
+  echo "[venv-guard] VIRTUAL_ENV not set to project .venv (expected ${EXPECTED_VENV})." >&2
+  echo "Activate with: source .venv/bin/activate" >&2
   exit 1
 fi
+
+exit 0

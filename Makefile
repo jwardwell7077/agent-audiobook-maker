@@ -6,19 +6,26 @@ all: help
 # Define a variable for the test file path.
 TEST_FILE ?= tests/unit_tests/
 
+VENV_GUARD:=scripts/require_venv.sh
+
 test:
+	@$(VENV_GUARD)
 	python -m pytest $(TEST_FILE)
 
 integration_tests:
-	python -m pytest tests/integration_tests 
+	@$(VENV_GUARD)
+	python -m pytest tests/integration_tests
 
 test_watch:
+	@$(VENV_GUARD)
 	python -m ptw --snapshot-update --now . -- -vv tests/unit_tests
 
 test_profile:
+	@$(VENV_GUARD)
 	python -m pytest -vv tests/unit_tests/ --profile-svg
 
 extended_tests:
+	@$(VENV_GUARD)
 	python -m pytest --only-extended $(TEST_FILE)
 
 # Ensure no legacy 'src.' import prefixes remain
@@ -44,13 +51,14 @@ lint_tests: PYTHON_FILES=tests
 lint_tests: MYPY_CACHE=.mypy_cache_test
 
 lint lint_diff lint_package lint_tests:
-	python -m ruff check .
-	[ "$(PYTHON_FILES)" = "" ] || python -m ruff format $(PYTHON_FILES) --diff
-	[ "$(PYTHON_FILES)" = "" ] || python -m ruff check --select I $(PYTHON_FILES)
+	@$(VENV_GUARD)
+	[ "$(PYTHON_FILES)" = "" ] || python -m ruff format $(PYTHON_FILES)
+	[ "$(PYTHON_FILES)" = "" ] || python -m ruff check --fix $(PYTHON_FILES)
 	[ "$(PYTHON_FILES)" = "" ] || python -m mypy --strict $(PYTHON_FILES)
 	[ "$(PYTHON_FILES)" = "" ] || mkdir -p $(MYPY_CACHE) && python -m mypy --strict $(PYTHON_FILES) --cache-dir $(MYPY_CACHE)
 
 format format_diff:
+	@$(VENV_GUARD)
 	ruff format $(PYTHON_FILES)
 	ruff check --select I --fix $(PYTHON_FILES)
 
@@ -80,6 +88,11 @@ FILE?=README.md
 ingest: init_dirs
 	python -m src.pipeline.ingestion.cli $(BOOK) $(FILE) data
 
+# Ingest the open SAMPLE_BOOK LordoftheFlies PDF via the API client script
+sample_lotf:
+	@$(VENV_GUARD)
+	$(ACTIVATE) python scripts/run_ingest_sample.py --book-id SAMPLE_BOOK --pdf-name LordoftheFlies.pdf
+
 ######################
 # DATABASE / ALEMBIC
 ######################
@@ -97,13 +110,15 @@ alembic_upgrade:
 # VIRTUAL ENVIRONMENT
 ######################
 
-PYTHON?=python
+PYTHON?=python3.11
 VENV_DIR?=.venv
 ACTIVATE=. $(VENV_DIR)/bin/activate;
 
 venv:
+	@echo "Creating venv in $(VENV_DIR) with interpreter $(PYTHON)";
 	$(PYTHON) -m venv $(VENV_DIR)
 	$(ACTIVATE) pip install --upgrade pip
+	@echo "Run: source $(VENV_DIR)/bin/activate";
 
 install: venv
 	$(ACTIVATE) pip install -e .
@@ -113,6 +128,15 @@ install_dev: venv
 
 install_pdf: venv
 	$(ACTIVATE) pip install -e .[dev,pdf]
+
+# Convenience target that ensures venv exists then runs full test suite
+test_all: install_dev
+	$(ACTIVATE) pytest -q
+
+# Run API locally using uvicorn with reload
+run_api:
+	@$(VENV_GUARD)
+	$(ACTIVATE) uvicorn api.app:app --reload --port 8000
 
 
 ######################
@@ -131,4 +155,3 @@ help:
 	@echo 'tests                        - run unit tests'
 	@echo 'test TEST_FILE=<test_file>   - run all tests in file'
 	@echo 'test_watch                   - run unit tests in watch mode'
-

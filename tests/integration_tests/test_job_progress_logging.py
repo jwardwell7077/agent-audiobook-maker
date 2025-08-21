@@ -1,13 +1,14 @@
+import asyncio
+import shutil
+import time
+from pathlib import Path
+
 import httpx
 import pytest
-from pathlib import Path
-import time
-import asyncio
 
 from api.app import app
 from api.logging_setup import setup_logging
 from db import get_session, repository
-import shutil
 from tests.test_data import REAL_TEST_PDF as REAL_PDF_SRC  # type: ignore
 
 pytestmark = pytest.mark.anyio
@@ -33,9 +34,7 @@ async def test_ingest_job_progress_and_logging(tmp_path: Path, monkeypatch):
         _ensure_pdf(tmp_path, "bkjob", "one.pdf")
         _ensure_pdf(tmp_path, "bkjob", "two.pdf")
         transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(
-            transport=transport, base_url="http://test"
-        ) as client:
+        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
             r = await client.post("/ingest_job", data={"book_id": "bkjob"})
             assert r.status_code == 200, r.text
             job_id = r.json()["job_id"]
@@ -61,9 +60,7 @@ async def test_ingest_job_progress_and_logging(tmp_path: Path, monkeypatch):
             assert "total_pages" in params
             assert "processed_pages" in params
             if params.get("total_pages", 0):  # if any pages were detected
-                assert params.get("processed_pages") == params.get(
-                    "total_pages"
-                )
+                assert params.get("processed_pages") == params.get("total_pages")
                 assert abs(params.get("progress_pages") - 1.0) < 1e-6
         # Verify chapters stored (>= number of pdfs)
         with get_session() as s:
@@ -76,10 +73,6 @@ async def test_ingest_job_progress_and_logging(tmp_path: Path, monkeypatch):
         assert debug_log.exists(), "app-debug.log missing"
         # Basic content check for job start marker
         content = app_log.read_text(encoding="utf-8")
-        assert (
-            "Job start" in content
-            or "Job start"
-            in debug_log.read_text(encoding="utf-8")
-        )
+        assert "Job start" in content or "Job start" in debug_log.read_text(encoding="utf-8")
     finally:
         monkeypatch.chdir(old)

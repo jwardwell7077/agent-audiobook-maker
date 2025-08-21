@@ -1,19 +1,6 @@
 [flake8]
 max-line-length = 120
-extend-ignore =
-    # Allow line breaks before binary operators (W503 is deprecated)
-    W503,
-    # Allow line breaks after binary operators
-    W504
-exclude =
-    .venv,
-    __pycache__,
-    .git,
-    .pytest_cache,
-    docs,
-    build,
-    dist,
-    *.egg-info
-per-file-ignores =
-    # Ignore unused imports in __init__.py files
-    __init__.py:F401
+extend-ignore = E203,E501
+exclude = .venv,build,dist,.mypy_cache,.ruff_cache,logs,data,temp,alembic/versions,.benchmarks
+# Match Ruff selection; flake8 runs are secondary (CI relies primarily on Ruff)
+select = E,F,W,C90

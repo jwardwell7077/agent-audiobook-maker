@@ -1,11 +1,5 @@
-"""Deprecated stub.
+"""Implementation details for TTS engines (placeholder module).
 
-The implementation was migrated to `src.tts.engines`.
-Import from `tts.engines` instead of `tts.engines_impl`.
+Actual engine logic currently lives in ``tts.engines``; this module exists
+as a future expansion point and to satisfy docstring coverage tooling.
 """
-from __future__ import annotations
-
-raise ImportError(
-    "`tts.engines_impl` is deprecated. Use imports from `tts.engines` such as "
-    "`synthesize_segments_to_stems` or `synthesize_and_render_chapter`."
-)

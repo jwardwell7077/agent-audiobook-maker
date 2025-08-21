@@ -1,18 +1,28 @@
+"""Integration tests for listing PDFs across all books.
+
+These tests exercise upload endpoints and the aggregate `/pdfs` listing to ensure
+the response groups PDFs by book id and returns expected relative names.
+"""
+
+import os
 from pathlib import Path
-import pytest
+
 import httpx
+import pytest
+from _pytest.monkeypatch import MonkeyPatch
 
 from api.app import app
-import os
 
 pytestmark = pytest.mark.anyio
 
 
-def _pdf_bytes():
+def _pdf_bytes() -> bytes:
+    """Return minimal well-formed PDF header/footer bytes for uploads."""
     return b"%PDF-1.4\n%%EOF"
 
 
-async def test_list_all_pdfs(tmp_path: Path, monkeypatch):
+async def test_list_all_pdfs(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:
+    """Upload multiple PDFs across books then assert aggregate listing structure."""
     # Point data/books to isolated tmp directory to avoid pollution
     custom_root = tmp_path / "data" / "books"
     custom_root.mkdir(parents=True, exist_ok=True)
@@ -21,9 +31,7 @@ async def test_list_all_pdfs(tmp_path: Path, monkeypatch):
     os.chdir(tmp_path)
     try:
         transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(
-            transport=transport, base_url="http://test"
-        ) as client:
+        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
             # Initially empty
             resp_empty = await client.get("/pdfs")
             assert resp_empty.status_code == 200
@@ -53,8 +61,6 @@ async def test_list_all_pdfs(tmp_path: Path, monkeypatch):
                 "source_pdfs/a1.pdf",
                 "source_pdfs/a2.pdf",
             }
-            assert {p["name"] for p in mapping["bookB"]} == {
-                "source_pdfs/b1.pdf"
-            }
+            assert {p["name"] for p in mapping["bookB"]} == {"source_pdfs/b1.pdf"}
     finally:
         os.chdir(old_cwd)

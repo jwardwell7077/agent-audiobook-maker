@@ -7,7 +7,7 @@ authors = [
 ]
 readme = "README.md"
 license = { text = "MIT" }
-requires-python = ">=3.11,<3.12"
+requires-python = ">=3.11"  # NOTE: Ruff target-version set to py311 (can raise to 3.12 later)
 dependencies = [
     "langgraph>=0.2.6",
     "python-dotenv>=1.0.1",
@@ -40,7 +40,12 @@ dependencies = [
 
 
 [project.optional-dependencies]
-dev = ["mypy>=1.11.1", "ruff>=0.6.1"]
+dev = [
+    "mypy>=1.11.1",
+    "ruff>=0.6.1",
+    "pydoclint>=0.5.0",
+    "interrogate>=1.7.0",
+]
 pdf = ["pdfminer.six>=20231228"]
 
 [build-system]
@@ -75,28 +80,102 @@ packages = [
 "*" = ["py.typed"]
 
 [tool.ruff]
-lint.select = [
-    "E",    # pycodestyle
-    "F",    # pyflakes
-    "I",    # isort
-    "D",    # pydocstyle
-    "D401", # First line should be in imperative mood
-    "T201",
-    "UP",
-]
-lint.ignore = [
-    "UP006",
-    "UP007",
-    # We actually do want to import from typing_extensions
-    "UP035",
-    # Relax the convention by _not_ requiring documentation for every function parameter.
-    "D417",
-    "E501",
-]
+target-version = "py311"  # template suggests py312; keep py311 until runtime upgraded
+line-length = 120
+extend-exclude = [".venv", "build", "dist", ".mypy_cache", ".ruff_cache", "docs", "examples", "typings"]
+
+[tool.ruff.lint]
+select = ["E","F","I","UP","B","C4","SIM","PL","PT","D","S","T20","ANN","TID","C90"]
+ignore = []  # Consider adding ["S101","TID252"] if asserts or relative imports become necessary (prefer not)
+
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["D", "UP"]
+"tests/*" = [
+    "S101",  # keep assert usage allowed
+    "PLR2004",  # keep magic numbers tolerance for concise assertions
+    "PT018", "PT013",  # keep relaxed pytest style
+    "PLC0415",  # allow local imports if needed
+    "D100", "D103",  # ignore missing docstrings in tests
+    "ANN001", "ANN201",  # ignore missing type annotations in tests
+]
+"src/logging_setup.py" = ["ANN401","C901","SIM108"]
+"src/api/logging_setup.py" = ["ANN401","C901","SIM108"]
+"src/pipeline/annotation/run.py" = ["PLR0913","UP038"]
+"src/pipeline/ingestion/core.py" = ["C901","PLR0912","PLR0915","PLR2004","D103"]
+"src/pipeline/ingestion/advanced_chapterizer.py" = ["C901"]
+"src/pipeline/ingestion/parsers/structured_toc.py" = ["C901","PLR0912","PLR0915","PLR2004","B007"]
+"src/pipeline/ingestion/pdf/extract.py" = ["C901","PLR0912","PLR0915","PLC0415","S110","S112","SIM105","PLR2004","S603","S607","D101","D102","D103"]
+"src/pipeline/ingestion/chapterizer.py" = ["D101","PLC0415"]
+"src/pipeline/ssml/build.py" = ["PLC0415"]
+"src/pipeline/casting/derive.py" = ["PLC0415"]
+"src/tts/engines.py" = ["ANN401","PLC0415","PLR2004","S101","PT018","D103"]
+"scripts/pdf_to_book_json.py" = ["C901","PLR0912","PLR0915"]
+"src/pipeline/ingestion/multi_pdf.py" = ["T201"]
+"scripts/*" = ["D100","T201","PLR2004","PLC0415"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+## Optional relaxations: add-ignore = ["D104","D105"]  # ignore missing package/module docstrings if noise
+
+[tool.interrogate]
+fail-under = 100
+exclude = ["tests", "alembic", "scripts", "data", "logs", "temp"]
+verbose = 1
+style = "google"
+whitelist-regex = ["__init__"]
+
+[tool.pydoclint]
+style = "google"
+allow-init-docstring = true
+require-return-section-when-returning-value = true
+exclude = ["tests", "alembic", "scripts", "data", "logs", "temp"]
+require-raises-section-when-raising = true
+check-arg-order = true
+require-return-type = true
+require-yields-section-when-yielding = true
+
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+
+# Provide equivalent flake8-style configuration for tools that still read it.
+[tool.flake8]
+# Keep flake8 aligned with Ruff.
+max-line-length = 120
+# Match Ruff's handling (E203 often conflicts with Black/Ruff slicing spacing); also ignore line length (E501)
+extend-ignore = ["E203","E501"]
+exclude = ".venv,logs,data,temp,alembic/versions,.benchmarks"
+
+[tool.mypy]
+python_version = "3.11"  # upgrade to 3.12 after base runtime bump
+strict = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+no_implicit_optional = true
+check_untyped_defs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+show_error_codes = true
+pretty = true
+exclude = '^(venv|.venv|build|dist|temp|tests/test_data|scripts)/|^scripts/.*\.py$'
+plugins = ["pydantic.mypy", "sqlalchemy.ext.mypy.plugin"]
+mypy_path = "src"
+
+[[tool.mypy.overrides]]
+module = ["regex", "fitz", "soundfile", "pyloudnorm", "pdfminer", "pypdf"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["langflow.*", "pytest"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["api.routes.*", "ops.assets"]
+disable_error_code = ["misc"]
 
 [dependency-groups]
 dev = [
@@ -105,4 +184,7 @@ dev = [
     "mypy>=1.13.0",
     "pytest>=8.3.5",
     "ruff>=0.8.2",
+    "flake8>=7.1.1",
+    "pylint>=3.2.7",
+    "pyright>=1.1.386",
 ]

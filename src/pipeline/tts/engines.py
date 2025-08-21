@@ -1,16 +1,10 @@
-"""Deprecated: use src.tts.engines instead.
+"""Backward-compatibility shim for moved TTS engines module.
 
-This module is kept temporarily for backward compatibility and will be
-removed after migration completes.
+Provides import path ``pipeline.tts.engines`` while logic now lives in
+``tts.engines``. Re-exports all public names.
 """
-from __future__ import annotations
 
-import warnings as _warnings
+from tts.engines import *  # noqa: F401,F403
 
-_warnings.warn(
-    "src.pipeline.tts.engines is deprecated; import src.tts.engines instead",
-    DeprecationWarning,
-    stacklevel=2,
-)
-
-from src.tts.engines import *  # noqa: F401,F403
+__all__: list[str] = []  # explicit export list intentionally empty
+# star import sets names in importing modules; we re-export nothing new
