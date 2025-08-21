@@ -108,3 +108,45 @@ Identify front matter, TOC, body chapters, and back matter in a novel PDF conver
 - Language-specific keyword lists.
 - Learning thresholds per book (but keep deterministic).
 - Per-chapter offset mapping (char offsets into concatenated text).
+
+## Finite State Machine
+
+Diagram: [docs/diagrams/section_classifier_fsm.mmd](diagrams/section_classifier_fsm.mmd)
+
+States
+
+- Front (Front Matter)
+- TOC
+- Body
+- Back (Back Matter)
+- End
+
+Events (evaluated per page)
+
+- E_front: front signals present (copyright, isbn, dedication, foreword, preface, prologue)
+- E_toc: TOC signals ("Contents", dotted leaders, lines ending with numbers, entry density)
+- E_heading: heading signals (Chapter/Part/Prologue/Epilogue regex, UPPERCASE short line, numeric-only, Roman numerals)
+- E_back: back signals (acknowledgments, about the author, reading group guide, afterword, notes, glossary, appendix, preview)
+- E_eof: end of pages
+
+Guards
+
+- G_toc_detected: we are on a TOC page or contiguous TOC continues
+- G_anchor_match: page matches TOC anchor within ± tolerance
+- G_after_last_chapter: expected chapters (from TOC) reached
+- G_sustained_back: >= 2 consecutive back-signal pages
+
+Transitions
+
+- Front → TOC: E_toc
+- Front → Body: E_heading OR (!E_toc AND !E_front)
+- Front → Front: E_front AND !E_heading AND !E_toc
+- TOC → TOC: G_toc_detected
+- TOC → Body: E_heading OR !G_toc_detected
+- Body → Body: NOT (E_back AND (G_after_last_chapter OR G_sustained_back))
+- Body → Back: E_back AND (G_after_last_chapter OR G_sustained_back)
+- Back → Back: NOT E_eof
+- Back → End: E_eof
+- Body → End: E_eof
+- TOC → End: E_eof
+- Front → End: E_eof
