@@ -13,21 +13,22 @@ Output format (intermediate):
 The parser is intentionally conservative; it only returns a result if it
 finds at least 2 chapter headings or a TOC with >= 2 entries.
 """
+
 from __future__ import annotations
 
 import logging
 import os
 import re
-from typing import Any, Dict, List
+from typing import Any
 
 TOC_HEADER_RE = re.compile(
-    r"^\s*Table of Contents\b.*$", re.IGNORECASE | re.MULTILINE
+    r"^\s*Table of Contents\b.*$",
+    re.IGNORECASE | re.MULTILINE,
 )
 # Allow zero or more spaces between 'Chapter' and number to handle extraction
 # cases like 'Chapter1:Title' where spacing is lost.
 TOC_LINE_RE = re.compile(
-    r"^\s*(?:[•\-*]\s*)?Chapter\s*(\d{1,5})\s*[:\-]?\s*(.+?)"
-    r"\s*(?:\.{2,}\s*\d+)?\s*$",
+    (r"^\s*(?:[•\-*]\s*)?Chapter\s*(\d{1,5})\s*[:\-]?\s*(.+?)" r"\s*(?:\.{2,}\s*\d+)?\s*$"),
     re.IGNORECASE,
 )
 CH_HDR_RE = re.compile(
@@ -36,12 +37,10 @@ CH_HDR_RE = re.compile(
 )
 
 
-def parse_structured_toc(
-    full_text: str, max_chapter: int = 3000
-) -> Dict[str, Any] | None:
+def parse_structured_toc(full_text: str, max_chapter: int = 3000) -> dict[str, Any] | None:
     """Return structured book dict or None if confidence too low."""
     text = full_text.replace("\r\n", "\n").replace("\r", "\n")
-    toc: List[Dict[str, Any]] = []
+    toc: list[dict[str, Any]] = []
     intro = ""
     toc_region: tuple[int, int] | None = None
 
@@ -68,13 +67,13 @@ def parse_structured_toc(
                 last_match_end = offset + len(line)
             else:
                 nonmatch_streak += 1
-                if saw_any and nonmatch_streak >= 3:
+                if saw_any:  # first non-match after entries ends region
                     break
             offset += len(line)
         toc_region = (start_hdr, last_match_end if saw_any else end_hdr)
         intro = text[:start_hdr].strip()
 
-    ch_matches: List[tuple[int, int, int, str]] = []
+    ch_matches: list[tuple[int, int, int, str]] = []
     for mo in CH_HDR_RE.finditer(text):
         s, e = mo.span()
         if toc_region and toc_region[0] <= s < toc_region[1]:  # skip TOC
@@ -93,13 +92,11 @@ def parse_structured_toc(
     ch_matches.sort(key=lambda t: t[0])
 
     if not m_toc and ch_matches and ch_matches[0][0] > 0:
-        intro = text[:ch_matches[0][0]].strip()
+        intro = text[: ch_matches[0][0]].strip()
 
-    chapters: List[Dict[str, Any]] = []
+    chapters: list[dict[str, Any]] = []
     for i, (s, e, num, title) in enumerate(ch_matches):
-        next_start = (
-            ch_matches[i + 1][0] if i + 1 < len(ch_matches) else len(text)
-        )
+        next_start = ch_matches[i + 1][0] if i + 1 < len(ch_matches) else len(text)
         body = text[e:next_start].strip()
         chapters.append({"number": num, "title": title, "text": body})
 
@@ -112,7 +109,7 @@ def parse_structured_toc(
     # Duplicate numbers occasionally arise from malformed extraction where the
     # same line is emitted twice. Keeping only the first occurrence makes
     # downstream consistency checks simpler.
-    deduped: List[Dict[str, Any]] = []
+    deduped: list[dict[str, Any]] = []
     seen_nums: set[int] = set()
     for entry in toc_sorted:
         num = entry["number"]

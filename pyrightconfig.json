@@ -1,0 +1,19 @@
+{
+    "pythonVersion": "3.11",
+    "typeCheckingMode": "strict",
+    "include": [
+        "lf_components"
+    ],
+    "stubPath": "typings",
+    "exclude": [
+        "**/venv",
+        "**/.venv",
+        "build",
+        "dist",
+        ".mypy_cache",
+        ".ruff_cache"
+    ],
+    "reportMissingTypeStubs": "none",
+    "reportUnusedImport": "warning",
+    "reportUnusedVariable": "warning"
+}

@@ -1,58 +1,88 @@
+"""Database models.
+
+Lightweight SQLAlchemy ORM models for books, chapters, annotations, audio
+stems/renders, jobs and metrics. Field names are intentionally concise; any
+additional per-record metadata lives inside JSON columns (e.g. ``meta`` or
+``hashes``).
+"""
+
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
+
 from sqlalchemy import (
-    Column,
+    JSON,
+    DateTime,
+    Float,
+    ForeignKey,
+    Index,
     Integer,
     String,
-    DateTime,
-    ForeignKey,
-    JSON,
-    Float,
     Text,
     UniqueConstraint,
-    Index,
 )
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-Base = declarative_base()
+
+class Base(DeclarativeBase):
+    """Project Declarative base class.
+
+    Declaring an explicit subclass (rather than using ``declarative_base()``)
+    gives mypy a concrete symbol it can understand as a valid base for ORM
+    models, avoiding ``Variable ... is not valid as a type`` errors.
+    """
+
+    # Provide a common created_at/updated_at mixin later if desired.
+    pass
 
 
 class Book(Base):
+    """Book level metadata and relationship to its chapters."""
+
     __tablename__ = "books"
-    id = Column(String, primary_key=True)
-    title = Column(String, nullable=False)
-    author = Column(String, nullable=True)
-    meta = Column(JSON, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    title: Mapped[str] = mapped_column(String, nullable=False)
+    author: Mapped[str | None] = mapped_column(String, nullable=True)
+    meta: Mapped[dict[str, object] | None] = mapped_column(JSON, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        default=lambda: datetime.now(UTC),
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
         nullable=False,
     )
     chapters = relationship("Chapter", back_populates="book")
 
 
 class Chapter(Base):
+    """Single chapter unit with source payload and status flags."""
+
     __tablename__ = "chapters"
-    id = Column(String, primary_key=True)
-    book_id = Column(
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    book_id: Mapped[str] = mapped_column(
         String,
         ForeignKey("books.id"),
         nullable=False,
         index=True,
     )
-    index = Column(Integer, nullable=False)
-    title = Column(String, nullable=False)
-    text_sha256 = Column(String, nullable=False, index=True)
-    payload = Column(JSON, nullable=False)
-    status = Column(String, nullable=False, default="new")
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(
+    index: Mapped[int] = mapped_column(Integer, nullable=False)
+    title: Mapped[str] = mapped_column(String, nullable=False)
+    text_sha256: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    payload: Mapped[dict[str, object]] = mapped_column(JSON, nullable=False)
+    status: Mapped[str] = mapped_column(String, nullable=False, default="new")
+    created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        default=lambda: datetime.now(UTC),
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
         nullable=False,
     )
 
@@ -65,21 +95,27 @@ class Chapter(Base):
 
 
 class Annotation(Base):
+    """Stored annotation records (utterances, segmentation, stats)."""
+
     __tablename__ = "annotations"
-    id = Column(String, primary_key=True)
-    book_id = Column(String, nullable=False, index=True)
-    chapter_id = Column(String, nullable=False, index=True)
-    version = Column(Integer, nullable=False, default=1)
-    records = Column(JSON, nullable=False)
-    stats = Column(JSON, nullable=True)
-    text_sha256 = Column(String, nullable=False)
-    params_sha256 = Column(String, nullable=False)
-    status = Column(String, nullable=False, default="new")
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    book_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    chapter_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    version: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    records: Mapped[list[dict[str, object]]] = mapped_column(JSON, nullable=False)
+    stats: Mapped[dict[str, object] | None] = mapped_column(JSON, nullable=True)
+    text_sha256: Mapped[str] = mapped_column(String, nullable=False)
+    params_sha256: Mapped[str] = mapped_column(String, nullable=False)
+    status: Mapped[str] = mapped_column(String, nullable=False, default="new")
+    created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        default=lambda: datetime.now(UTC),
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
         nullable=False,
     )
 
@@ -93,33 +129,43 @@ class Annotation(Base):
 
 
 class Character(Base):
+    """Character entity with optional aliases & profile blob."""
+
     __tablename__ = "characters"
-    id = Column(String, primary_key=True)
-    book_id = Column(String, nullable=False, index=True)
-    name = Column(String, nullable=False)
-    aliases = Column(JSON, nullable=True)
-    profile = Column(JSON, nullable=True)
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    book_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    aliases: Mapped[list[str] | None] = mapped_column(JSON, nullable=True)
+    profile: Mapped[dict[str, object] | None] = mapped_column(JSON, nullable=True)
 
 
 class TTSProfile(Base):
+    """Voice synthesis profile configuration for a character."""
+
     __tablename__ = "tts_profiles"
-    id = Column(String, primary_key=True)
-    character_id = Column(String, ForeignKey("characters.id"), nullable=False)
-    engine = Column(String, nullable=False)
-    settings = Column(JSON, nullable=True)
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    character_id: Mapped[str] = mapped_column(
+        String,
+        ForeignKey("characters.id"),
+        nullable=False,
+    )
+    engine: Mapped[str] = mapped_column(String, nullable=False)
+    settings: Mapped[dict[str, object] | None] = mapped_column(JSON, nullable=True)
 
 
 class Stem(Base):
+    """Atomic synthesized audio stem for an utterance within a chapter."""
+
     __tablename__ = "stems"
-    id = Column(String, primary_key=True)
-    book_id = Column(String, nullable=False, index=True)
-    chapter_id = Column(String, nullable=False, index=True)
-    utterance_idx = Column(Integer, nullable=False)
-    path = Column(Text, nullable=False)
-    duration_s = Column(Float, nullable=True)
-    tts_profile_id = Column(String, nullable=True)
-    hashes = Column(JSON, nullable=True)
-    status = Column(String, nullable=False, default="new")
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    book_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    chapter_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    utterance_idx: Mapped[int] = mapped_column(Integer, nullable=False)
+    path: Mapped[str] = mapped_column(Text, nullable=False)
+    duration_s: Mapped[float | None] = mapped_column(Float, nullable=True)
+    tts_profile_id: Mapped[str | None] = mapped_column(String, nullable=True)
+    hashes: Mapped[dict[str, object] | None] = mapped_column(JSON, nullable=True)
+    status: Mapped[str] = mapped_column(String, nullable=False, default="new")
 
     __table_args__ = (
         Index(
@@ -132,36 +178,46 @@ class Stem(Base):
 
 
 class Render(Base):
+    """Chapter-level rendered / mixed audio artifact."""
+
     __tablename__ = "renders"
-    id = Column(String, primary_key=True)
-    book_id = Column(String, nullable=False, index=True)
-    chapter_id = Column(String, nullable=False, index=True)
-    path = Column(Text, nullable=False)
-    loudness_lufs = Column(Float, nullable=True)
-    peak_dbfs = Column(Float, nullable=True)
-    duration_s = Column(Float, nullable=True)
-    hashes = Column(JSON, nullable=True)
-    status = Column(String, nullable=False, default="new")
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    book_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    chapter_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    path: Mapped[str] = mapped_column(Text, nullable=False)
+    loudness_lufs: Mapped[float | None] = mapped_column(Float, nullable=True)
+    peak_dbfs: Mapped[float | None] = mapped_column(Float, nullable=True)
+    duration_s: Mapped[float | None] = mapped_column(Float, nullable=True)
+    hashes: Mapped[dict[str, object] | None] = mapped_column(JSON, nullable=True)
+    status: Mapped[str] = mapped_column(String, nullable=False, default="new")
 
 
 class Job(Base):
+    """Background job tracking (ingestion, synthesis, rendering, etc)."""
+
     __tablename__ = "jobs"
-    id = Column(String, primary_key=True)
-    type = Column(String, nullable=False)
-    book_id = Column(String, nullable=True, index=True)
-    chapter_id = Column(String, nullable=True, index=True)
-    stage = Column(String, nullable=True)
-    params = Column(JSON, nullable=True)
-    status = Column(String, nullable=False, default="pending")
-    started_at = Column(DateTime, nullable=True)
-    finished_at = Column(DateTime, nullable=True)
-    logs_ptr = Column(Text, nullable=True)
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    type: Mapped[str] = mapped_column(String, nullable=False)
+    book_id: Mapped[str | None] = mapped_column(String, nullable=True, index=True)
+    chapter_id: Mapped[str | None] = mapped_column(String, nullable=True, index=True)
+    stage: Mapped[str | None] = mapped_column(String, nullable=True)
+    params: Mapped[dict[str, object] | None] = mapped_column(JSON, nullable=True)
+    status: Mapped[str] = mapped_column(String, nullable=False, default="pending")
+    started_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    logs_ptr: Mapped[str | None] = mapped_column(Text, nullable=True)
 
 
 class Metric(Base):
+    """Simple time-series numeric metric (scoped by domain + key)."""
+
     __tablename__ = "metrics"
-    id = Column(String, primary_key=True)
-    scope = Column(String, nullable=False)
-    key = Column(String, nullable=False)
-    value = Column(Float, nullable=True)
-    timestamp = Column(DateTime, default=datetime.utcnow, nullable=False)
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    scope: Mapped[str] = mapped_column(String, nullable=False)
+    key: Mapped[str] = mapped_column(String, nullable=False)
+    value: Mapped[float | None] = mapped_column(Float, nullable=True)
+    timestamp: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=lambda: datetime.now(UTC),
+        nullable=False,
+    )

@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "book_id": "SAMPLE_BOOK",
+  "pdf_name": "LordoftheFlies.pdf",
+  "pdf_stem": "LordoftheFlies",
+  "parse_mode": "structured_toc",
+  "extraction_ms": 285.7505459978711,
+  "chapterization_ms": 4.061005005496554,
+  "page_count": 251,
+  "chapter_count": 1,
+  "toc_count": 0,
+  "heading_count": 0,
+  "intro_present": false,
+  "toc": [],
+  "chapters": [
+    {
+      "chapter_id": "00000",
+      "index": 11,
+      "title": "LordoftheFlies",
+      "number": null,
+      "start_page": null,
+      "end_page": null,
+      "page_count": null,
+      "word_count": 62122,
+      "char_count": 333635,
+      "sentence_count": null,
+      "paragraph_count": null,
+      "source": "fallback_single",
+      "json_path": "data/clean/SAMPLE_BOOK/00000.json",
+      "text_sha256": "58669f8b4ab4697e681f7c3807b7510760287521f281758d6db0b75e1e290303"
+    }
+  ],
+  "warnings": [
+    "structured_toc_parse_failed"
+  ],
+  "intro_text_sha256": null
+}

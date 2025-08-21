@@ -4,14 +4,56 @@
   "pdf_name": "synthetic_sample.pdf",
   "pdf_stem": "synthetic_sample",
   "parse_mode": "structured_toc",
-  "extraction_ms": 65.95730000117328,
-  "chapterization_ms": 0.1383199996780604,
+  "extraction_ms": 12.134268996305764,
+  "chapterization_ms": 0.1377159933326766,
   "page_count": 11,
   "chapter_count": 11,
-  "toc_count": 0,
-  "heading_count": 10,
+  "toc_count": 10,
+  "heading_count": 9,
   "intro_present": true,
-  "toc": [],
+  "toc": [
+    {
+      "number": 1,
+      "title": "Title 1"
+    },
+    {
+      "number": 2,
+      "title": "Title 2"
+    },
+    {
+      "number": 3,
+      "title": "Title 3"
+    },
+    {
+      "number": 4,
+      "title": "Title 4"
+    },
+    {
+      "number": 5,
+      "title": "Title 5"
+    },
+    {
+      "number": 6,
+      "title": "Title 6"
+    },
+    {
+      "number": 7,
+      "title": "Title 7"
+    },
+    {
+      "number": 8,
+      "title": "Title 8"
+    },
+    {
+      "number": 9,
+      "title": "Title 9"
+    },
+    {
+      "number": 10,
+      "title": "Title 10"
+    }
+  ],
   "chapters": [],
-  "warnings": []
+  "warnings": [],
+  "intro_text_sha256": "84c5e05c9ed7579aff84bb13d6f1da4c5ee2b251a94d3f31bbe70008bbe8ab24"
 }

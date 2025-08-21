@@ -1,4 +1,4 @@
-"""Advanced chapter parsing using Table of Contents + heading markers.
+r"""Advanced chapter parsing using Table of Contents + heading markers.
 
 Keeps existing simple_chapterize untouched; this module adds a higher
 fidelity splitter for large multi-chapter PDFs (hundreds/thousands of
@@ -30,27 +30,38 @@ Page mapping:
 Public entry point: attempt_advanced_chapterize(book_id, full_text, pages)
 returns list[ChapterWithMeta] or raises ValueError on low confidence.
 """
+
 from __future__ import annotations
 
+import json
+import re
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Sequence, Tuple, Dict, Any
-import re
-import json
+from typing import Any
 
 from .chapterizer import Chapter, sha256_text
 
 
 @dataclass(frozen=True)
 class ChapterWithMeta(Chapter):
-    meta: Dict[str, Any]
+    """Chapter model enriched with computed metadata.
+
+    Metadata keys:
+    word_count / char_count / sentence_count / paragraph_count
+    page_count / start_page / end_page (if page info provided)
+    source: origin of strategy (advanced_toc | heading_only)
+    chapter_number: 1-based ordinal parsed from heading / TOC
+    """
+
+    meta: dict[str, Any]
 
 
 HEADING_RE = re.compile(r"^Chapter\s+(\d{1,5})\s*:?\s*(.+)$", re.IGNORECASE)
 TOC_LINE_RE = re.compile(r"Chapter\s+(\d{1,5})\s*:?\s*(.+)")
 
 
-def _split_lines(text: str) -> List[str]:
+def _split_lines(text: str) -> list[str]:
     return text.replace("\r", "").splitlines()
 
 
@@ -65,9 +76,9 @@ def _find_toc_indices(lines: Sequence[str]) -> int | None:
     return None
 
 
-def _parse_toc(lines: Sequence[str], start: int) -> List[Tuple[int, str]]:
-    entries: List[Tuple[int, str]] = []
-    for line in lines[start + 1:start + 1 + 2000]:  # scan ahead
+def _parse_toc(lines: Sequence[str], start: int) -> list[tuple[int, str]]:
+    entries: list[tuple[int, str]] = []
+    for line in lines[start + 1 : start + 1 + 2000]:  # scan ahead
         if not line.strip():
             # allow blank lines inside TOC
             continue
@@ -88,7 +99,7 @@ def _parse_toc(lines: Sequence[str], start: int) -> List[Tuple[int, str]]:
         entries.append((num, title))
     # Deduplicate in case of repeats
     seen = set()
-    deduped: List[Tuple[int, str]] = []
+    deduped: list[tuple[int, str]] = []
     for n, t in entries:
         if n in seen:
             continue
@@ -97,8 +108,8 @@ def _parse_toc(lines: Sequence[str], start: int) -> List[Tuple[int, str]]:
     return deduped
 
 
-def _find_headings(lines: Sequence[str]) -> List[Tuple[int, int, str]]:
-    matches: List[Tuple[int, int, str]] = []
+def _find_headings(lines: Sequence[str]) -> list[tuple[int, int, str]]:
+    matches: list[tuple[int, int, str]] = []
     for idx, line in enumerate(lines):
         m = HEADING_RE.match(line.strip())
         if m:
@@ -121,8 +132,8 @@ def _word_count(text: str) -> int:
     return len(re.findall(r"\b\w+\b", text))
 
 
-def _compute_page_offsets(pages: Sequence[str]) -> List[Tuple[int, int, int]]:
-    offsets: List[Tuple[int, int, int]] = []
+def _compute_page_offsets(pages: Sequence[str]) -> list[tuple[int, int, int]]:
+    offsets: list[tuple[int, int, int]] = []
     cursor = 0
     for i, page in enumerate(pages):
         start = cursor
@@ -132,11 +143,11 @@ def _compute_page_offsets(pages: Sequence[str]) -> List[Tuple[int, int, int]]:
 
 
 def _pages_for_span(
-    start: int, end: int, page_offsets: Sequence[Tuple[int, int, int]]
-) -> Tuple[int, int, int]:
-    page_indices = [
-        pi for (pi, s, e) in page_offsets if not (e <= start or s >= end)
-    ]
+    start: int,
+    end: int,
+    page_offsets: Sequence[tuple[int, int, int]],
+) -> tuple[int, int, int]:
+    page_indices = [pi for (pi, s, e) in page_offsets if not (e <= start or s >= end)]
     if not page_indices:
         return (0, 0, 0)
     return (len(page_indices), min(page_indices), max(page_indices))
@@ -147,7 +158,7 @@ def attempt_advanced_chapterize(
     full_text: str,
     pages: Sequence[str] | None = None,
     min_chapters: int = 20,
-) -> List[ChapterWithMeta]:
+) -> list[ChapterWithMeta]:
     """Try high-fidelity chapter parsing; raise ValueError if low confidence.
 
     min_chapters: if fewer headings than this, treat as low benefit and
@@ -163,27 +174,28 @@ def attempt_advanced_chapterize(
     headings = _find_headings(lines)
     if len(headings) < min_chapters:
         raise ValueError("Heading count below threshold")
-    heading_by_num = {}
+    heading_by_num: dict[int, tuple[int, str]] = {}
     for line_idx, num, title in headings:
         heading_by_num.setdefault(num, (line_idx, title))
     missing = [n for (n, _t) in toc_entries if n not in heading_by_num]
     if missing:
-        raise ValueError(
-            f"Missing chapter headings for numbers: {missing[:5]}"
-        )
+        raise ValueError(f"Missing chapter headings for numbers: {missing[:5]}")
     ordered_numbers = [n for (n, _t) in toc_entries]
-    seen = set()
-    ordered_numbers = [
-        n for n in ordered_numbers if not (n in seen or seen.add(n))
-    ]
+    seen: set[int] = set()
+    deduped: list[int] = []
+    for n in ordered_numbers:
+        if n not in seen:
+            seen.add(n)
+            deduped.append(n)
+    ordered_numbers = deduped
     page_offsets = _compute_page_offsets(pages) if pages else []
     joined = "\n".join(lines)
-    line_starts: List[int] = []
+    line_starts: list[int] = []
     offset = 0
     for line in lines:
         line_starts.append(offset)
         offset += len(line) + 1
-    chapters: List[ChapterWithMeta] = []
+    chapters: list[ChapterWithMeta] = []
     for i, num in enumerate(ordered_numbers):
         line_idx, title = heading_by_num[num]
         start_char = line_starts[line_idx]
@@ -199,11 +211,9 @@ def attempt_advanced_chapterize(
         sc = _sentence_count(raw_text)
         pc = _paragraph_count(raw_text)
         (page_count, start_page, end_page) = (
-            _pages_for_span(start_char, end_char, page_offsets)
-            if page_offsets
-            else (0, 0, 0)
+            _pages_for_span(start_char, end_char, page_offsets) if page_offsets else (0, 0, 0)
         )
-        chapter_id = f"{(num-1):05d}"
+        chapter_id = f"{(num - 1):05d}"
         meta = {
             "word_count": wc,
             "char_count": cc,
@@ -234,7 +244,7 @@ def heading_only_chapterize(
     full_text: str,
     pages: Sequence[str] | None = None,
     min_headings: int = 2,
-) -> List[ChapterWithMeta]:
+) -> list[ChapterWithMeta]:
     """Fallback splitter using only heading lines ("Chapter N: Title").
 
     Produces chapters in heading order without TOC validation. Useful when
@@ -248,13 +258,13 @@ def heading_only_chapterize(
         raise ValueError("Insufficient headings for heading-only mode")
     # Build offsets like advanced
     joined = "\n".join(lines)
-    line_starts: List[int] = []
+    line_starts: list[int] = []
     offset = 0
     for line in lines:
         line_starts.append(offset)
         offset += len(line) + 1
     page_offsets = _compute_page_offsets(pages) if pages else []
-    chapters: List[ChapterWithMeta] = []
+    chapters: list[ChapterWithMeta] = []
     for i, (line_idx, num, title) in enumerate(headings):
         start_char = line_starts[line_idx]
         if i + 1 < len(headings):
@@ -269,11 +279,9 @@ def heading_only_chapterize(
         sc = _sentence_count(raw_text)
         pc = _paragraph_count(raw_text)
         (page_count, start_page, end_page) = (
-            _pages_for_span(start_char, end_char, page_offsets)
-            if page_offsets
-            else (0, 0, 0)
+            _pages_for_span(start_char, end_char, page_offsets) if page_offsets else (0, 0, 0)
         )
-        chapter_id = f"{(num-1):05d}"
+        chapter_id = f"{(num - 1):05d}"
         meta = {
             "word_count": wc,
             "char_count": cc,
@@ -300,6 +308,10 @@ def heading_only_chapterize(
 
 
 def write_chapter_json_with_meta(ch: ChapterWithMeta, out_dir: Path) -> Path:
+    """Write a chapter (with meta) to ``out_dir`` as ``<chapter_id>.json``.
+
+    Returns the path of the written file.
+    """
     out_dir.mkdir(parents=True, exist_ok=True)
     p = out_dir / f"{ch.chapter_id}.json"
     payload = {
@@ -311,7 +323,5 @@ def write_chapter_json_with_meta(ch: ChapterWithMeta, out_dir: Path) -> Path:
         "text_sha256": ch.text_sha256,
         "meta": ch.meta,
     }
-    p.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
+    p.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     return p

@@ -14,70 +14,80 @@ If you prefer hitting a live uvicorn server instead, adapt this to use
 httpx.AsyncClient pointing at http://localhost:8000 after starting
 `uvicorn api.app:app --reload`.
 """
+
 from __future__ import annotations
 
+import argparse
+import json
 import sys
 from pathlib import Path
-import json
+
 from fastapi.testclient import TestClient
 
 try:
     from api.app import app  # type: ignore
 except Exception as e:  # noqa: BLE001
-    print(f"ERROR: Failed to import app: {e}", file=sys.stderr)
+    sys.stderr.write(f"ERROR: Failed to import app: {e}\n")
     sys.exit(1)
 
-PDF_PATH = Path("data/books/SAMPLE_BOOK/source_pdfs/sample.pdf")
-BOOK_ID = "SAMPLE_BOOK"
-PDF_NAME = "sample.pdf"
+HTTP_OK = 200
 
 
-def main() -> int:
-    if not PDF_PATH.exists():
-        print(f"ERROR: PDF not found: {PDF_PATH}", file=sys.stderr)
+def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Ingest a demo/sample PDF via in-process FastAPI client")
+    parser.add_argument("--book-id", default="SAMPLE_BOOK", help="Book identifier (default: SAMPLE_BOOK)")
+    parser.add_argument(
+        "--pdf-name",
+        default="sample.pdf",
+        help="PDF filename under data/books/<book-id>/source_pdfs (default: sample.pdf)",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Ingest the sample PDF via in-process FastAPI client and summarize."""
+    ns = _parse_args(argv)
+    book_id: str = ns.book_id
+    pdf_name: str = ns.pdf_name
+    pdf_path = Path("data/books") / book_id / "source_pdfs" / pdf_name
+    if not pdf_path.exists():
+        sys.stderr.write(f"ERROR: PDF not found: {pdf_path}\n")
         return 2
-    existing_json = list((Path("data/clean") / BOOK_ID).glob("*.json"))
+    existing_json = list((Path("data/clean") / book_id).glob("*.json"))
     if existing_json:
-        print(
-            f"NOTE: Found {len(existing_json)} existing clean artifacts for "
-            f"{BOOK_ID}. Index numbering will continue from current DB "
-            "count. For a fresh restart (Intro=0) run: \n  python "
-            "scripts/clean_ingest_artifacts.py --db "
-            f"{BOOK_ID}"
-        )
+        sys.stdout.write("NOTE: Found ")
+        sys.stdout.write(f"{len(existing_json)} existing artifacts for {book_id}. ")
+        sys.stdout.write("Index numbering will continue from current DB count. ")
+        sys.stdout.write("For a fresh restart (Intro=0) run: \n  python ")
+        sys.stdout.write("scripts/clean_ingest_artifacts.py --db ")
+        sys.stdout.write(f"{book_id}\n")
     client = TestClient(app)
     resp = client.post(
         "/ingest",
         data={
-            "book_id": BOOK_ID,
-            "pdf_name": PDF_NAME,
-            "verbose": 1,
+            "book_id": book_id,
+            "pdf_name": pdf_name,
         },
     )
-    if resp.status_code != 200:
-        print(
-            f"Ingest failed ({resp.status_code}): {resp.text}",
-            file=sys.stderr,
-        )
+    if resp.status_code != HTTP_OK:
+        sys.stderr.write(f"Ingest failed ({resp.status_code}): {resp.text}\n")
         return 3
     data = resp.json()
-    print("=== Ingest Summary ===")
-    print(f"book_id: {data.get('book_id')}")
-    print(f"chapters: {data.get('chapters')}")
-    print(f"warnings: {data.get('warnings')}")
+    sys.stdout.write("=== Ingest Summary ===\n")
+    sys.stdout.write(f"book_id: {data.get('book_id')}\n")
+    sys.stdout.write(f"chapters: {data.get('chapters')}\n")
+    sys.stdout.write(f"warnings: {data.get('warnings')}\n")
     vpath = data.get("volume_json_path")
-    print(f"volume_json_path: {vpath}")
+    sys.stdout.write(f"volume_json_path: {vpath}\n")
     if vpath and Path(vpath).exists():
-        vol = json.loads(Path(vpath).read_text(encoding='utf-8'))
-        print(
-            "volume chapter_count: {cc} toc_count: {tc}".format(
-                cc=vol.get("chapter_count"), tc=vol.get("toc_count")
-            )
+        vol = json.loads(Path(vpath).read_text(encoding="utf-8"))
+        sys.stdout.write(
+            "volume chapter_count: {cc} toc_count: {tc}\n".format(cc=vol.get("chapter_count"), tc=vol.get("toc_count"))
         )
     else:
-        print("No volume JSON generated (likely structured_toc_parse_failed)")
+        sys.stdout.write("No volume JSON generated (likely structured_toc_parse_failed)\n")
     return 0
 
- 
+
 if __name__ == "__main__":  # pragma: no cover
     raise SystemExit(main())

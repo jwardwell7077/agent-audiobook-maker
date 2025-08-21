@@ -1,0 +1,55 @@
+[project]
+name = "your_package_name"
+version = "0.1.0"
+description = "PROJECT_DESCRIPTION"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+authors = [ { name = "Your Name", email = "your.email@example.com" } ]
+keywords = []
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License"
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["ruff>=0.8.2","mypy>=1.13.0","pytest>=8.3.0"]
+
+[build-system]
+requires = ["setuptools>=73.0.0","wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+extend-exclude = ["venv", ".venv", "build", "dist", ".mypy_cache", ".ruff_cache"]
+
+[tool.ruff.lint]
+select = ["E","F","I","UP","B","C4","SIM","PL","PT","D","S","T20","ANN","TID","C90"]
+ignore = []
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+no_implicit_optional = true
+check_untyped_defs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+show_error_codes = true
+pretty = true
+exclude = '^(venv|.venv|build|dist)/'
+plugins = ["pydantic.mypy"]

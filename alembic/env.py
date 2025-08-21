@@ -1,9 +1,17 @@
+"""Alembic migration environment configuration.
+
+Provides offline and online migration entry points. URL resolution prefers
+env vars (``DATABASE_URL`` / ``DB_URL``) falling back to alembic.ini.
+"""
+
 from __future__ import annotations
 
-from logging.config import fileConfig
-from sqlalchemy import engine_from_config, pool
-from alembic import context
 import os
+from logging.config import fileConfig
+
+from sqlalchemy import engine_from_config, pool
+
+from alembic import context
 
 # Interpret the config file for Python logging.
 config = context.config
@@ -12,6 +20,7 @@ if config.config_file_name is not None:  # pragma: no cover
 
 
 def get_url() -> str:
+    """Resolve database URL (env overrides config)."""
     return os.getenv(
         "DATABASE_URL",
         os.getenv(
@@ -30,6 +39,7 @@ target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:
+    """Run migrations in 'offline' mode (no DB connection)."""
     url = get_url()
     context.configure(
         url=url,
@@ -43,6 +53,7 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
+    """Run migrations in 'online' mode with an Engine connection."""
     connectable = engine_from_config(
         config.get_section(
             config.config_ini_section,

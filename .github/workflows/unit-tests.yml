@@ -33,10 +33,27 @@ jobs:
           curl -LsSf https://astral.sh/uv/install.sh | sh
           uv venv
           uv pip install -r pyproject.toml
-      - name: Lint with ruff
+      - name: Assert venv active
+        run: |
+          . .venv/bin/activate
+          python - <<'PY'
+import sys, os, pathlib
+root=pathlib.Path.cwd()
+expected=root/'.venv'
+assert os.environ.get('VIRTUAL_ENV')==str(expected), f"VIRTUAL_ENV mismatch: {os.environ.get('VIRTUAL_ENV')}"
+assert pathlib.Path(sys.prefix).resolve()==expected.resolve(), f"sys.prefix mismatch {sys.prefix}"
+print('[assert] venv OK (unit):', sys.prefix)
+PY
+      - name: Lint & auto-fix with ruff
         run: |
           uv pip install ruff
-          uv run ruff check .
+          uv run ruff check --fix .
+          uv run ruff format .
+      - name: Verify ruff cleanliness
+        run: |
+          uv run ruff check --diff .
+          uv run ruff format --check .
+          git diff --exit-code
       - name: Lint with mypy
         run: |
           uv pip install mypy

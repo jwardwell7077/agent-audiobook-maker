@@ -23,24 +23,22 @@ Optional flags:
 
 Dependencies: pymupdf (installed as 'pymupdf').
 """
+
 from __future__ import annotations
 
 import argparse
-from pathlib import Path
-import sys
 import datetime as _dt
+import sys
+from pathlib import Path
+from typing import Any
 
-try:  # Lazy import so help text still works without dependency
-    import fitz  # type: ignore
-except Exception as e:  # noqa: BLE001
-    print("ERROR: pymupdf (fitz) not installed:", e, file=sys.stderr)
-    sys.exit(2)
-
+import fitz  # type: ignore
 
 DEFAULT_BOOK_ID = "SAMPLE_BOOK"
 
 
 def build_intro(book_id: str, chapter_count: int) -> str:
+    """Return deterministic intro text for synthetic sample book."""
     return (
         f"This is a synthetic sample book (book_id={book_id}).\n\n"
         "It is generated purely for demonstrating the structured TOC "
@@ -54,6 +52,7 @@ def build_intro(book_id: str, chapter_count: int) -> str:
 
 
 def build_toc(chapter_count: int) -> str:
+    """Return TOC lines for N chapters."""
     lines = ["Table of Contents"]
     for i in range(1, chapter_count + 1):
         lines.append(f"Chapter {i}: Title {i}")
@@ -61,6 +60,7 @@ def build_toc(chapter_count: int) -> str:
 
 
 def build_chapter_body(i: int) -> str:
+    """Return deterministic body text for chapter i."""
     base_para = (
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non "
         "risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing "
@@ -70,24 +70,30 @@ def build_chapter_body(i: int) -> str:
     )
     # Make each chapter body unique yet deterministic by repeating i times.
     repeated = " ".join([base_para.strip()] * (1 + (i % 3)))
-    return (
-        f"Chapter {i}: Title {i}\n"
-        f"{repeated}\n\n(This concludes chapter {i}.)"
-    )
+    return f"Chapter {i}: Title {i}\n{repeated}\n\n(This concludes chapter {i}.)"
 
 
 def generate_pdf(path: Path, book_id: str, chapter_count: int) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    doc = fitz.open()
+    """Generate sample PDF with intro, TOC, and chapter pages.
 
+    Creates an introduction page, a table of contents page, then one page
+    per chapter with deterministic body text.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    # Treat the returned object as a PyMuPDF Document; use Any to satisfy static type checkers lacking stubs.
+    doc: Any = fitz.open()
+
+    # Create introduction page
     intro_page = doc.new_page()
     intro_text = build_intro(book_id, chapter_count)
     intro_page.insert_text((72, 72), intro_text, fontsize=12)
 
+    # Create table of contents page
     toc_page = doc.new_page()
     toc_text = build_toc(chapter_count)
     toc_page.insert_text((72, 72), toc_text, fontsize=12)
 
+    # Create chapter pages
     for i in range(1, chapter_count + 1):
         pg = doc.new_page()
         body = build_chapter_body(i)
@@ -98,9 +104,8 @@ def generate_pdf(path: Path, book_id: str, chapter_count: int) -> None:
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
-    p = argparse.ArgumentParser(
-        description="Generate synthetic sample book PDF"
-    )
+    """Parse command line arguments for synthetic PDF generation."""
+    p = argparse.ArgumentParser(description="Generate synthetic sample book PDF")
     p.add_argument("--book-id", default=DEFAULT_BOOK_ID)
     p.add_argument("--chapters", type=int, default=10)
     p.add_argument(
@@ -117,22 +122,16 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Entry point returning process exit status code."""
     ns = parse_args(argv or sys.argv[1:])
     out_path = ns.output
     if not out_path:
-        out_path = (
-            Path("data/books") / ns.book_id / "source_pdfs" / "sample.pdf"
-        )
+        out_path = Path("data/books") / ns.book_id / "source_pdfs" / "sample.pdf"
     if out_path.exists() and not ns.overwrite:
-        print(
-            f"Refusing to overwrite existing file: {out_path} (use --overwrite)",
-            file=sys.stderr,
-        )
+        sys.stderr.write(f"Refusing to overwrite existing file: {out_path} (use --overwrite)\n")
         return 1
     generate_pdf(out_path, ns.book_id, ns.chapters)
-    print(
-        f"Generated synthetic PDF: {out_path} (chapters={ns.chapters}, book_id={ns.book_id})"
-    )
+    sys.stdout.write(f"Generated synthetic PDF: {out_path} (chapters={ns.chapters}, book_id={ns.book_id})\n")
     return 0
 
 

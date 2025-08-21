@@ -1,26 +1,35 @@
-from __future__ import annotations
-
 """Annotation execution & persistence utilities.
 
 Provides a synchronous helper to run the LangGraph annotation pipeline for a
 single chapter and persist outputs to filesystem (JSONL) and database.
 """
 
+from __future__ import annotations
+
+import hashlib
+import json
+import time
+from collections.abc import Iterable
 from dataclasses import asdict
 from pathlib import Path
-from typing import Iterable, List, Dict, Any
-import json
-import hashlib
-import time
+from typing import Any
 
-from agent import graph, State, Segment
+from agent import Segment, State, graph
 from db import get_session, models
 
 ANNOTATION_DIR = Path("data/annotations")
 GRAPH_VERSION = 1  # bump if node semantics change
 
 
-def _hash_params(params: Dict[str, Any]) -> str:
+def _hash_params(params: dict[str, Any]) -> str:
+    """Compute a deterministic hash of parameters and graph version.
+
+    Args:
+        params (dict[str, Any]): Parameters to hash.
+
+    Returns:
+        str: SHA256 hash string of sorted parameters and graph version.
+    """
     # Deterministic hash of sorted items + graph version
     items = sorted(params.items()) + [("graph_version", GRAPH_VERSION)]
     m = hashlib.sha256()
@@ -40,10 +49,24 @@ async def run_annotation_for_chapter(
     enable_emotion: bool = True,
     enable_qa: bool = True,
     max_segments: int = 200,
-) -> Dict[str, Any]:
-    """Run annotation graph for a stored chapter, with caching.
+) -> dict[str, Any]:
+    """Run the annotation graph for a stored chapter, with caching and persistence.
 
-    Returns dict: status, chapter_id, book_id, segments, cached.
+    Args:
+        book_id (str): The book identifier.
+        chapter_id (str): The chapter identifier.
+        force (bool, optional): If True, force re-annotation even if cached. Defaults to False.
+        enable_coref (bool, optional): Enable coreference resolution. Defaults to True.
+        enable_emotion (bool, optional): Enable emotion detection. Defaults to True.
+        enable_qa (bool, optional): Enable question answering. Defaults to True.
+        max_segments (int, optional): Maximum number of segments. Defaults to 200.
+
+    Returns:
+        dict[str, Any]: Dictionary with status, chapter_id, book_id, segments, and cached flag.
+
+    Raises:
+        ValueError: If the chapter is not found or payload is missing text.
+        Exception: If annotation fails for any other reason.
     """
     chap_pk = f"{book_id}-{chapter_id}"
     with get_session() as session:
@@ -64,10 +87,10 @@ async def run_annotation_for_chapter(
         existing = session.get(models.Annotation, ann_id)
         if (
             existing
-            and existing.text_sha256 == text_sha256
-            and existing.params_sha256 == params_hash
-            and existing.status == "succeeded"
-            and not force
+            and (existing.text_sha256 == text_sha256)
+            and (existing.params_sha256 == params_hash)
+            and (existing.status == "succeeded")
+            and (not force)
         ):
             return {
                 "status": "ok",
@@ -78,11 +101,8 @@ async def run_annotation_for_chapter(
             }
         # Load chapter JSON text from file
         ch_payload = chapter.payload
-        raw_text = (
-            ch_payload.get("text")
-            if isinstance(ch_payload, dict)
-            else None
-        )
+        raw_text_obj = ch_payload.get("text") if hasattr(ch_payload, "get") else None
+        raw_text = str(raw_text_obj) if isinstance(raw_text_obj, (str, bytes)) else None
         if not raw_text:
             raise ValueError("Chapter payload missing text")
 
@@ -100,7 +120,7 @@ async def run_annotation_for_chapter(
             result = await graph.ainvoke(state)
             segments: Iterable[Segment] = result["segments"]
             elapsed = time.time() - start
-            records: List[Dict[str, Any]] = []
+            records: list[dict[str, Any]] = []
             for i, seg in enumerate(segments):
                 d = asdict(seg)
                 d.update(
@@ -111,7 +131,7 @@ async def run_annotation_for_chapter(
                     }
                 )
                 records.append(d)
-            stats = {
+            stats: dict[str, float | int] = {
                 "segment_count": len(records),
                 "elapsed_s": elapsed,
             }
@@ -137,8 +157,9 @@ async def run_annotation_for_chapter(
                 )
                 session.add(existing)
             else:
-                existing.records = records
-                existing.stats = stats
+                # Map SQLAlchemy Instrumented attributes back to concrete types for mypy
+                existing.records = list(records)
+                existing.stats = dict(stats)
                 existing.text_sha256 = text_sha256
                 existing.params_sha256 = params_hash
                 existing.status = "succeeded"

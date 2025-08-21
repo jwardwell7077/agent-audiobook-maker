@@ -1,9 +1,10 @@
-import pytest
 from pathlib import Path
 
+import pytest
+
 from agent import State, graph
-from tts.engines import synthesize_and_render_chapter  # updated import
 from db import get_session, models  # type: ignore  # noqa: E501  # pylint: disable=import-error
+from tts.engines import synthesize_and_render_chapter  # updated import
 
 pytestmark = pytest.mark.anyio
 

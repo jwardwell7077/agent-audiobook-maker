@@ -1,10 +1,22 @@
+"""Session factory utilities for database access.
+
+The project currently uses a single engine + scoped session pattern; this
+module centralises creation so tests can swap configuration if needed.
+"""
+
 from __future__ import annotations
 
-from contextlib import contextmanager
-from sqlalchemy import create_engine
-from sqlalchemy.exc import OperationalError  # type: ignore
-from sqlalchemy.orm import sessionmaker
+import logging
 import os
+from collections.abc import Iterator
+from contextlib import contextmanager
+
+from sqlalchemy import create_engine
+from sqlalchemy.engine import Engine
+from sqlalchemy.exc import OperationalError
+from sqlalchemy.orm import Session, sessionmaker
+
+logger = logging.getLogger(__name__)
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
@@ -15,7 +27,8 @@ DATABASE_URL = os.getenv(
     ),
 )
 
-def _init_engine():  # pragma: no cover - small bootstrap helper
+
+def _init_engine() -> Engine:  # pragma: no cover - small bootstrap helper
     """Initialize primary engine with graceful sqlite fallback.
 
     In dev/test environments Postgres may not be running. Previously the
@@ -26,23 +39,29 @@ def _init_engine():  # pragma: no cover - small bootstrap helper
     production deployments Postgres should be up, so the fallback path will
     not trigger.
     """
-    primary = create_engine(
-        DATABASE_URL,
-        future=True,
-        pool_pre_ping=True,
-    )
     try:
-        with primary.connect():  # test connectivity
-            pass
-        return primary
-    except OperationalError:  # Postgres unreachable -> fallback
-        fallback_url = "sqlite:///./test_fallback.db"
-        fallback = create_engine(
-            fallback_url,
+        primary = create_engine(
+            DATABASE_URL,
             future=True,
             pool_pre_ping=True,
         )
-        return fallback
+        try:
+            with primary.connect():  # test connectivity
+                pass
+            return primary
+        except OperationalError:
+            # Postgres unreachable -> fallback
+            logger.warning("Primary DB unreachable, falling back to sqlite", exc_info=True)
+    except Exception:
+        # Driver import error or other engine creation failure -> fallback
+        logger.exception("Engine initialization error, falling back to sqlite")
+    fallback_url = "sqlite:///./test_fallback.db"
+    fallback = create_engine(
+        fallback_url,
+        future=True,
+        pool_pre_ping=True,
+    )
+    return fallback
 
 
 engine = _init_engine()
@@ -55,8 +74,9 @@ SessionLocal = sessionmaker(
 
 
 @contextmanager
-def get_session():
-    session = SessionLocal()
+def get_session() -> Iterator[Session]:
+    """Context manager yielding a SQLAlchemy session and ensuring close."""
+    session: Session = SessionLocal()
     try:
         yield session
         session.commit()
