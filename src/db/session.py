@@ -16,8 +16,6 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session, sessionmaker
 
-logger = logging.getLogger(__name__)
-
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
     os.getenv(
@@ -26,6 +24,9 @@ DATABASE_URL = os.getenv(
         "postgresql+psycopg://postgres:postgres@localhost:5432/audiobook",
     ),
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 def _init_engine() -> Engine:  # pragma: no cover - small bootstrap helper
@@ -49,12 +50,12 @@ def _init_engine() -> Engine:  # pragma: no cover - small bootstrap helper
             with primary.connect():  # test connectivity
                 pass
             return primary
-        except OperationalError:
+        except OperationalError as exc:
             # Postgres unreachable -> fallback
-            logger.warning("Primary DB unreachable, falling back to sqlite", exc_info=True)
-    except Exception:
+            logger.warning("Primary DB unavailable; falling back to sqlite. err=%s", exc)
+    except Exception as exc:  # noqa: BLE001
         # Driver import error or other engine creation failure -> fallback
-        logger.exception("Engine initialization error, falling back to sqlite")
+        logger.warning("DB engine init failed; using sqlite fallback. err=%s", exc)
     fallback_url = "sqlite:///./test_fallback.db"
     fallback = create_engine(
         fallback_url,

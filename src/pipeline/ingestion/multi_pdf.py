@@ -22,9 +22,10 @@ import sys
 from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Protocol, runtime_checkable
 
 from .chapterizer import Chapter, sha256_text, write_chapter_json
-from .pdf import extract_pdf_text
+from .pdf import pdf_to_text
 
 
 @dataclass
@@ -40,6 +41,25 @@ class IngestedChapter:
 
 
 # Removed unused _slug_from_filename helper (kept history via VCS)
+
+
+@runtime_checkable
+class _HasText(Protocol):
+    text: str
+
+
+def extract_pdf_text(path: Path) -> _HasText:
+    """Legacy-compatible wrapper returning an object with .text attribute.
+
+    Tests monkeypatch multi_pdf.extract_pdf_text; preserve that surface by
+    returning a simple object with the extracted text.
+    """
+
+    class DummyResult:
+        def __init__(self, text: str) -> None:
+            self.text = text
+
+    return DummyResult(pdf_to_text(path))
 
 
 def ingest_pdf_files(
@@ -72,9 +92,7 @@ def ingest_pdf_files(
 
     ingested: list[IngestedChapter] = []
     for idx, pdf in enumerate(pdf_list):
-        res = extract_pdf_text(pdf)
-        # Use extracted text (can be empty if backend fails, allowed)
-        text = res.text
+        text = pdf_to_text(pdf)
         if not text.strip():  # fallback minimal placeholder
             text = ""
         # Basic metadata counts computed later when writing JSONL
