@@ -2,6 +2,8 @@
 
 Last updated: 2025-08-14
 
+> KISS scope note: This roadmap is forward-looking. On the current KISS branch, do not provision services or install heavy ML/runtime deps until a minimal executable slice requires them. Start with the `.venv` and `requirements-dev.txt` only.
+
 ## Purpose
 
 Structured path to evolve from a deterministic ingestion core into a production-grade multi-agent audiobook generation system while preserving reproducibility and local-first constraints.
