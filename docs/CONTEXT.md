@@ -3,6 +3,10 @@
 Last updated: 2025‑08‑15
 Revision addendum (2025-08-15): Refactored `/ingest` endpoint into granular helpers with accumulator pattern and introduced dependency‑built `AnnotationQueryParams` model; removed complexity suppressions.
 
+> KISS note
+>
+> This document captures target architecture and machine context. For day‑one setup on this branch, you only need a local Python 3.11 `.venv` and the dev tools in `requirements-dev.txt`. Treat Docker, Postgres, and GPU items here as future reference, not prerequisites.
+
 ## Executive Summary
 
 Local‑first, reproducible pipeline to transform long PDFs into a mastered, multi‑voice audiobook. The system ingests, annotates, casts, renders, and masters chapters in parallel, prioritizing CPU for NLP and reserving GPU for TTS. It is orchestrated and observable with Dagster, with MLflow for experiment/config/artifact tracking. Idempotency is enforced via content hashes and cached per‑chapter artifacts in Postgres (JSONB) and the filesystem.
@@ -37,7 +41,7 @@ Pipeline stages (per chapter):
 - Storage: Postgres (chapters table, JSONB payload) + files under `data/clean/`.
 - Implementation decomposition: `_batch_ingest`, `_ingest_single_stored`, `_ingest_uploaded`, shared `_gather_existing_chapter_info`, and `_BatchIngestAccumulator` for metrics aggregation (chapters, pages, timing, parsing modes, chunking stats).
 
-2. Annotation (Prototype → Multi-Agent Roadmap)
+1. Annotation (Prototype → Multi-Agent Roadmap)
 
 - Segmentation → utterances (LangFlow prototype: Loader → Segmenter → Writer)
 - Coref resolution (HF local model)
@@ -46,16 +50,16 @@ Pipeline stages (per chapter):
 - QA Agent flags low confidence or inconsistencies
 - Output: per‑chapter JSONL with rich annotations under `data/annotations/` and in Postgres JSONB (current prototype = dialogue/narration only; see `docs/ANNOTATION_SCHEMA.md`).
 
-3. Casting & Voices
+1. Casting & Voices
    - Build Character Bible; map speakers to XTTS v2/Coqui profiles.
    - Output: character profiles and TTS settings under `data/casting/` and Postgres tables.
 
-4. Rendering
+1. Rendering
    - Transform annotated JSONL → SSML → TTS → stems → stitched chapter → mastered audiobook chapter.
    - EBU R128 loudness target; normalization and dynamics per chapter; final book assembly.
    - Output: stems under `data/stems/`, chapter WAV/FLAC/MP3 under `data/renders/`.
 
-5. Orchestration & Observability
+1. Orchestration & Observability
    - Dagster: jobs, sensors, schedules, retries, caching, lineage.
    - MLflow: params, metrics, artifacts, model/config versioning.
 

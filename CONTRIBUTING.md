@@ -1,5 +1,13 @@
 # Contributing Guide
 
+<!-- markdownlint-disable MD004 -->
+
+KISS first
+
+- Keep diffs small and focused. Aim for a single vertical slice per PR.
+- Prefer the minimal tool that does the job. Avoid adding services/dependencies unless essential.
+- Ensure every step in README runs on a clean machine with only `requirements-dev.txt` installed.
+
 This project enforces a consistent Python code style for clear diffs, fewer bugs, and fast reviews.
 
 ## Architecture Style Snapshot
@@ -48,6 +56,13 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -U pip ruff mypy pre-commit pydantic
 pre-commit install
+```
+
+KISS reminder: Minimal is better. You can also use the Make target which installs only the documented dev tools:
+
+```bash
+make dev_setup
+source .venv/bin/activate
 ```
 
 Single virtual environment policy:
