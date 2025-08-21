@@ -15,9 +15,14 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
+try:
+    import fitz  # type: ignore
+except Exception:  # pragma: no cover
+    fitz = None  # type: ignore
+
 from .chapterizer import Chapter, sha256_text, write_chapter_json
 from .parsers.structured_toc import parse_structured_toc
-from .pdf import PDFExtractionResult, extract_pdf_text
+from .pdf.text_only import pdf_to_text
 
 logger = logging.getLogger(__name__)
 
@@ -40,20 +45,17 @@ def extract_and_chapterize(  # noqa: PLR0913 (complex pipeline function; refacto
     pdf_path: Path,
     next_index_start: int,
     skip_if: Sequence[str] | None = None,
-    chunk_page_size: int | None = None,  # retained for signature stability
     # deprecated: retained for signature compatibility only (ignored)
     fallback_on_failure: bool = False,
+    # Return tuple preserved for API compatibility
 ) -> tuple[
     list[dict[str, Any]],
     int,
-    PDFExtractionResult,
+    Any,
     list[str],
     int,
     float | None,
     float | None,
-    bool,
-    int | None,
-    int | None,
     str | None,
     str | None,
 ]:
@@ -68,17 +70,35 @@ def extract_and_chapterize(  # noqa: PLR0913 (complex pipeline function; refacto
     # when reprocessing the same PDF without purging.
     skip_set = set(skip_if or [])
     warnings: list[str] = []
-    # 1. Extract
+    # 1. Extract (text-only) and page count
     t0 = time.perf_counter()
-    result = extract_pdf_text(pdf_path)
+    full_text: str = pdf_to_text(pdf_path)
     extraction_ms = (time.perf_counter() - t0) * 1000
-    pages = result.pages if result and hasattr(result, "pages") else []
+    # Derive page count cheaply using PyMuPDF when available
+    page_count = 0
+    try:
+        if fitz is not None:
+            with fitz.open(str(pdf_path)) as _doc:  # type: ignore[attr-defined]
+                page_count = int(getattr(_doc, "page_count", 0) or 0)
+    except Exception:  # pragma: no cover - fitz missing or open error
+        page_count = 0
+    # Minimal result object for backward-compat API surface
+
+    class _Backend:
+        value = "pymupdf"
+
+    class _Result:
+        backend = _Backend()
+        text = full_text
+
+    result: Any = _Result()
+    pages: list[str] = []
     parse_mode = "structured_toc"
     chapterization_ms = None
     structured = None
     try:
         t1 = time.perf_counter()
-        structured = parse_structured_toc(result.text if result and hasattr(result, "text") else "")
+        structured = parse_structured_toc(full_text)
         chapterization_ms = (time.perf_counter() - t1) * 1000
     except Exception:
         logger.exception("structured_toc_parse_error pdf=%s", pdf_path.name)
@@ -98,24 +118,21 @@ def extract_and_chapterize(  # noqa: PLR0913 (complex pipeline function; refacto
                 next_index_start,
                 result,
                 warnings,
-                len(pages),
+                page_count,
                 extraction_ms,
                 chapterization_ms,
-                False,
-                None,
-                None,
                 parse_mode,
                 None,
             )
         # Fallback: single chapter using entire extracted text
-        fallback_chapters: list[Chapter] = [
+        chapters_local = [
             Chapter(
                 book_id=book_id,
                 chapter_id="00000",
                 index=next_index_start,
                 title=Path(pdf_path).stem,
-                text=(result.text if result else ""),
-                text_sha256=sha256_text(result.text if result else ""),
+                text=full_text,
+                text_sha256=sha256_text(full_text),
             )
         ]
         out_dir = Path("data/clean") / book_id
@@ -130,8 +147,8 @@ def extract_and_chapterize(  # noqa: PLR0913 (complex pipeline function; refacto
             "parse_mode": parse_mode,
             "extraction_ms": extraction_ms,
             "chapterization_ms": chapterization_ms,
-            "page_count": len(pages),
-            "chapter_count": len(fallback_chapters),
+            "page_count": page_count,
+            "chapter_count": len(chapters_local),
             "toc_count": 0,
             "heading_count": 0,
             "intro_present": False,
@@ -140,7 +157,7 @@ def extract_and_chapterize(  # noqa: PLR0913 (complex pipeline function; refacto
             "warnings": warnings,
             "intro_text_sha256": None,
         }
-        for ch in fallback_chapters:
+        for ch in chapters_local:
             p = write_chapter_json(ch, out_dir)
             records_fallback.append(
                 {
@@ -174,11 +191,11 @@ def extract_and_chapterize(  # noqa: PLR0913 (complex pipeline function; refacto
                     "text_sha256": ch.text_sha256,
                 }
             )
-        volume_json_path_local = None
+        volume_json_path = None
         try:
             vol_path = out_dir / f"{Path(pdf_path).stem}_volume.json"
             vol_path.write_text(json.dumps(volume, ensure_ascii=False, indent=2), encoding="utf-8")
-            volume_json_path_local = str(vol_path)
+            volume_json_path = str(vol_path)
         except Exception:  # pragma: no cover
             logger.exception("volume_json_write_error pdf=%s", Path(pdf_path).name)
         return (
@@ -186,14 +203,11 @@ def extract_and_chapterize(  # noqa: PLR0913 (complex pipeline function; refacto
             next_index + len(records_fallback),
             result,
             warnings,
-            len(pages),
+            page_count,
             extraction_ms,
             chapterization_ms,
-            False,
-            None,
-            None,
             parse_mode,
-            volume_json_path_local,
+            volume_json_path,
         )
 
     chapters_local: list[Chapter] = []
@@ -215,14 +229,14 @@ def extract_and_chapterize(  # noqa: PLR0913 (complex pipeline function; refacto
                 text_sha256=sha256_text(norm_intro),
             )
         )
-    for ch_entry in structured.get("chapters", []):
-        body = ch_entry["text"]
-        title = f"Chapter {ch_entry['number']}: {ch_entry['title']}"
+    for ch in structured.get("chapters", []):
+        body = ch["text"]
+        title = f"Chapter {ch['number']}: {ch['title']}"
         chapters_local.append(
             Chapter(
                 book_id=book_id,
-                chapter_id=f"{ch_entry['number']:05d}",
-                index=ch_entry["number"],
+                chapter_id=f"{ch['number']:05d}",
+                index=ch["number"],
                 title=title,
                 text=body,
                 text_sha256=sha256_text(body),
@@ -240,15 +254,12 @@ def extract_and_chapterize(  # noqa: PLR0913 (complex pipeline function; refacto
     records: list[dict[str, object]] = []
     next_index = next_index_start
 
-    # Pre-compute counts
-    toc_list = structured.get("toc", [])
-    chapters_struct = structured.get("chapters", [])
-    toc_count = len(toc_list)
-    intro_present_bool = bool(intro_text.strip())
-    deduct = 1 if (intro_present_bool and (len(chapters_struct) == toc_count)) else 0
-    heading_count_val = len(chapters_struct) - deduct
-
-    volume_obj: dict[str, Any] = {
+    # Compute heading_count with optional intro offset
+    heading_count_raw = len(structured.get("chapters", []))
+    heading_offset = (
+        1 if (intro_text.strip() and (len(structured.get("chapters", [])) == len(structured.get("toc", [])))) else 0
+    )
+    volume: dict[str, Any] = {
         "schema_version": "1.0",
         "book_id": book_id,
         "pdf_name": pdf_path.name,
@@ -256,15 +267,16 @@ def extract_and_chapterize(  # noqa: PLR0913 (complex pipeline function; refacto
         "parse_mode": parse_mode,
         "extraction_ms": extraction_ms,
         "chapterization_ms": chapterization_ms,
-        "page_count": len(pages),
+        "page_count": page_count,
         # chapter_count includes intro (matches tests)
         "chapter_count": len(chapters_local),
-        "toc_count": toc_count,
+        "toc_count": len(structured.get("toc", [])),
         # Canonical snapshot heading_count excludes intro; structured chapters
         # list does not include intro so subtract 1 only if counts match toc
-        "heading_count": heading_count_val,
-        "intro_present": intro_present_bool,
-        "toc": toc_list,
+        # (heuristic for sample).
+        "heading_count": heading_count_raw - heading_offset,
+        "intro_present": bool(intro_text.strip()),
+        "toc": structured.get("toc", []),
         # Always emit intro as a chapter if present
         "chapters": [],
         "warnings": warnings,
@@ -283,8 +295,8 @@ def extract_and_chapterize(  # noqa: PLR0913 (complex pipeline function; refacto
             warnings.append("toc_numbers_without_headings:" + ",".join(map(str, missing_from_headings)))
         if missing_from_toc:
             warnings.append("headings_without_toc_numbers:" + ",".join(map(str, missing_from_toc)))
-        if len(toc_numbers) != volume_obj["toc_count"]:
-            removed = int(volume_obj["toc_count"]) - len(toc_numbers)
+        if len(toc_numbers) != volume["toc_count"]:
+            removed = int(volume["toc_count"]) - len(toc_numbers)
             warnings.append(f"toc_dedup_removed={removed}")
 
     for ch in chapters_local:
@@ -328,7 +340,7 @@ def extract_and_chapterize(  # noqa: PLR0913 (complex pipeline function; refacto
             "json_path": str(p),
             "text_sha256": new_ch.text_sha256,
         }
-        volume_obj["chapters"].append(vol_entry)
+        volume["chapters"].append(vol_entry)
         extra_meta = {
             "source": "structured_toc",
             "chapter_number": chapter_number,
@@ -351,7 +363,7 @@ def extract_and_chapterize(  # noqa: PLR0913 (complex pipeline function; refacto
     try:
         vol_path = out_dir / f"{pdf_path.stem}_volume.json"
         vol_path.write_text(
-            json.dumps(volume_obj, ensure_ascii=False, indent=2),
+            json.dumps(volume, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
         volume_json_path = str(vol_path)
@@ -366,9 +378,6 @@ def extract_and_chapterize(  # noqa: PLR0913 (complex pipeline function; refacto
         len(pages),
         extraction_ms,
         chapterization_ms,
-        False,  # chunked
-        None,  # chunk_size_used
-        None,  # chunk_count
         parse_mode,
         volume_json_path,
     )

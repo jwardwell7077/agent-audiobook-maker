@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 version: "3.9"
 
 services:
@@ -51,3 +52,5 @@ services:
 volumes:
   postgres_data:
   data:
+=======
+>>>>>>> 1774ed3 (chore: fresh-start: keep docs only)

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #!/usr/bin/env python3
 """Clean ingestion artifacts for a given book (default: SB).
 
@@ -115,3 +116,5 @@ def main(argv: list[str]) -> int:
 
 if __name__ == "__main__":  # pragma: no cover
     raise SystemExit(main(sys.argv))
+=======
+>>>>>>> 1774ed3 (chore: fresh-start: keep docs only)
