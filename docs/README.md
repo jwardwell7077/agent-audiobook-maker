@@ -30,6 +30,11 @@ AI‑generated, Copilot‑assisted. This index organizes the docs for fast navig
 
 - Multi‑agent roadmap: [MULTI_AGENT_ROADMAP.md](MULTI_AGENT_ROADMAP.md)
 
+## Templates
+
+- Full Design Spec: [templates/FULL_DESIGN_SPEC_TEMPLATE.md](templates/FULL_DESIGN_SPEC_TEMPLATE.md)
+- Test Plan: [templates/TEST_PLAN_TEMPLATE.md](templates/TEST_PLAN_TEMPLATE.md)
+
 ## How to read this repo
 
 - Start with [KISS.md](KISS.md) and the root README’s Quickstart.
