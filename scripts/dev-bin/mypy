@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-"$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/scripts/require_venv.sh"
-exec "$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/.venv/bin/mypy" "$@"
