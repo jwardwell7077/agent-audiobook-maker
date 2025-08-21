@@ -1,0 +1,26 @@
+flowchart LR
+  TXT[("Simple TXT pages[]")]
+  Pre["Preprocess (normalize, header/footer strip, page split)"]
+  TOCDetect["TOC Detection\n- 'Contents' keyword\n- dotted leaders\n- lines ending with numbers\n- ascending pages\n- entry density"]
+  TOCEntries[("TOC entries [ {title,page} ]")]
+  HeadingDetect["Heading Detection\n- Chapter/Part/Prologue/Epilogue regex\n- UPPERCASE short line\n- Numeric-only line (1,2,3)\n- Roman numerals (I, II, III)"]
+  PageLabel["Per-page scoring + labels\n(front|toc|body|back)"]
+  Smooth["State machine smoothing\nFront→TOC?→Body→Back"]
+  Anchors["Anchor chapter starts\n- Use TOC pages (± tolerance)\n- Else heading pages"]
+  Chapters[("Chapters [ {index,title?,start_page,end_page} ]")]
+  Sections[("Sections {front_matter_pages, toc_pages, back_matter_pages}")]
+  Warnings[("Warnings & Confidences")]
+
+  TXT --> Pre --> TOCDetect --> TOCEntries
+  Pre --> HeadingDetect --> PageLabel --> Smooth --> Anchors --> Chapters
+  TOCEntries --> Anchors
+  Smooth --> Sections
+  Anchors --> Warnings
+  TOCEntries --> Warnings
+  PageLabel --> Warnings
+
+  Outputs{{"Outputs"}}
+  Chapters --> Outputs
+  Sections --> Outputs
+  TOCEntries --> Outputs
+  Warnings --> Outputs
