@@ -9,6 +9,13 @@ AI‑generated, Copilot‑assisted. This index organizes the docs for fast navig
 - Development journey: [DEVELOPMENT_JOURNEY.md](DEVELOPMENT_JOURNEY.md)
 - Lessons learned: [LESSONS_LEARNED.md](LESSONS_LEARNED.md)
 
+### Tenets (short)
+
+- KISS
+- TDD + spec-first
+- Local-first artifacts
+- Deterministic + contract-first
+
 ## Architecture
 
 - High‑level architecture: [ARCHITECTURE.md](ARCHITECTURE.md)

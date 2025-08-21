@@ -27,7 +27,7 @@ Full Design Spec must include:
 - Error modes and edge cases
 - Task plan: bullet list of implementation steps
 
-Tests-first:
+Tests-first (TDD):
 
 - Write pytest tests that map 1:1 to the Requirements in the spec (happy path + at least one edge case).
 - Tests must run locally (`make test`) and in pre-commit fast subset when applicable.
