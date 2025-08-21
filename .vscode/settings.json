@@ -5,13 +5,24 @@
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     // Force VS Code to use the project virtualenv
-    "python.defaultInterpreterPath": "${workspaceFolder}/.venv311/bin/python",
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
     // Ensure new integrated terminals have venv on PATH (doesn't retroactively fix existing terminals)
     "terminal.integrated.env.linux": {
-        "VIRTUAL_ENV": "${workspaceFolder}/.venv311",
-        "PATH": "${workspaceFolder}/.venv311/bin:${env:PATH}"
+        "VIRTUAL_ENV": "${workspaceFolder}/.venv",
+        "PATH": "${workspaceFolder}/scripts/dev-bin:${workspaceFolder}/.venv/bin:/usr/bin:/bin:/usr/local/bin"
     },
     // Auto-activate environment when opening Python terminals
     "python.terminal.activateEnvironment": true,
-    "makefile.configureOnOpen": false
+    "makefile.configureOnOpen": false,
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "never"
+    },
+    "ruff.format.enable": true,
+    "ruff.lint.enable": true,
+    "ruff.lint.args": [
+        "--fix"
+    ],
+    "python.languageServer": "Pylance",
+    "python.analysis.typeCheckingMode": "off"
 }

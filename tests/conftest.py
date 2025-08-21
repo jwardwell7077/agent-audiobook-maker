@@ -1,7 +1,13 @@
-import sys
-from pathlib import Path
-import pytest
+"""Pytest configuration and fixtures for test suite.
 
+Provides session and per-test fixtures for async backend and database cleanup.
+"""
+
+import sys
+from collections.abc import Iterator
+from pathlib import Path
+
+import pytest
 from sqlalchemy.exc import OperationalError  # type: ignore
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -11,19 +17,27 @@ if str(SRC) not in sys.path:  # pragma: no cover
 
 
 @pytest.fixture(scope="session")
-def anyio_backend():
+def anyio_backend() -> str:
+    """Fixture to specify the async backend for anyio tests.
+
+    Returns:
+        str: The async backend to use ("asyncio").
+    """
     return "asyncio"
 
 
 # Ensure a clean database (sqlite by default) before each test for isolation.
 @pytest.fixture(autouse=True)
-def _clean_db():  # pragma: no cover - test infra
-    """Ensure clean DB per test.
+def _clean_db() -> Iterator[None]:  # pragma: no cover - test infra
+    """Ensure a clean database before each test for isolation.
 
-    Attempts to use configured (likely Postgres) engine; if unavailable
-    (e.g. local dev without docker running), transparently falls back to
-    a local sqlite file so tests can still run. This avoids hard test
-    dependency on external service while keeping production path intact.
+    Attempts to use the configured (likely Postgres) engine; if unavailable
+    (e.g., local dev without docker running), transparently falls back to
+    a local sqlite file so tests can still run. This avoids a hard test
+    dependency on an external service while keeping the production path intact.
+
+    Yields:
+        None: Used for pytest fixture mechanism.
     """
     try:
         from db import session as session_mod  # type: ignore
@@ -39,9 +53,7 @@ def _clean_db():  # pragma: no cover - test infra
         from sqlalchemy import create_engine  # type: ignore
 
         fallback_url = "sqlite:///./test_fallback.db"
-        engine = create_engine(
-            fallback_url, future=True, pool_pre_ping=True
-        )
+        engine = create_engine(fallback_url, future=True, pool_pre_ping=True)
         # Rebind existing sessionmaker
         session_mod.engine = engine  # type: ignore
         session_mod.SessionLocal.configure(bind=engine)  # type: ignore

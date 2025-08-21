@@ -1,12 +1,22 @@
+"""Unified logging configuration used by both API and scripts.
+
+Provides helpers:
+* ``setup_logging`` – idempotent configuration with stderr INFO and optional
+    debug stream.
+* ``get_logger`` – convenience that ensures configuration first.
+* ``log_call`` – lightweight decorator for entry/exit tracing.
+"""
+
 from __future__ import annotations
 
+import inspect
 import logging
 import os
+from collections.abc import Callable
+from functools import wraps
 from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
-from functools import wraps
-import inspect
-from typing import Callable, Any
+from typing import Any, ParamSpec, TypeVar
 
 # ----- Custom TRACE level -------------------------------------------------
 TRACE_LEVEL = 5
@@ -15,27 +25,31 @@ if not hasattr(logging, "TRACE"):
 
 
 def _trace(
-    self: logging.Logger, msg: str, *args, **kwargs
+    self: logging.Logger,
+    msg: str,
+    *args: object,
+    **kwargs: object,
 ) -> None:  # pragma: no cover - simple passthrough
     if self.isEnabledFor(TRACE_LEVEL):  # pragma: no branch
-        self._log(TRACE_LEVEL, msg, args, **kwargs)
+        self._log(TRACE_LEVEL, msg, args, **kwargs)  # type: ignore[arg-type]
 
 
 logging.Logger.trace = _trace  # type: ignore[attr-defined]
 
 # ----- Formatter -----------------------------------------------------------
-DEFAULT_FORMAT = (
-    "%(asctime)s | %(levelname)s | %(name)s | %(module)s | "
-    "%(funcName)s | %(message)s"
-)
+DEFAULT_FORMAT = "%(asctime)s | %(levelname)s | %(name)s | %(module)s | %(funcName)s | %(message)s"
 
 
 class MinLevelFilter(logging.Filter):
+    """Filter allowing only records >= a minimum level."""
+
     def __init__(self, min_level: int) -> None:
+        """Store the minimum level; invoked by logging when handler added."""
         super().__init__()
         self._min_level = min_level
 
     def filter(self, record: logging.LogRecord) -> bool:  # pragma: no cover
+        """Decide if the record should be emitted (meets threshold)."""
         return record.levelno >= self._min_level
 
 
@@ -70,7 +84,10 @@ def setup_logging(force: bool = False) -> None:
 
     # Info+ handler
     info_handler = TimedRotatingFileHandler(
-        log_dir / "app.log", when="midnight", backupCount=7, encoding="utf-8"
+        log_dir / "app.log",
+        when="midnight",
+        backupCount=7,
+        encoding="utf-8",
     )
     info_handler.setFormatter(fmt)
     info_handler.setLevel(logging.INFO)
@@ -98,29 +115,32 @@ def setup_logging(force: bool = False) -> None:
 
 
 def get_logger(name: str) -> logging.Logger:
+    """Return a logger ensuring configuration is applied first."""
     setup_logging()
     return logging.getLogger(name)
 
 
+P = ParamSpec("P")
+R = TypeVar("R")
+
+
 def log_call(
     level: int = logging.DEBUG,
-) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
-    """Decorator to log entry/exit of functions at the chosen level.
+) -> Callable[[Callable[P, Any]], Callable[P, Any]]:
+    """Return decorator logging entry/exit of target function.
 
-    Example:
+    Example::
+
         @log_call()
         def my_func(a, b): ...
     """
 
-    def _decorator(fn: Callable[..., Any]) -> Callable[..., Any]:
+    def _decorator(fn: Callable[P, Any]) -> Callable[P, Any]:
         logger = get_logger(fn.__module__)
-
         if inspect.iscoroutinefunction(fn):
 
             @wraps(fn)
-            async def _wrapped(
-                *args, **kwargs
-            ):  # pragma: no cover - instrumentation
+            async def async_wrapper(*args: P.args, **kwargs: P.kwargs) -> Any:  # pragma: no cover
                 if logger.isEnabledFor(level):
                     logger.log(
                         level,
@@ -131,24 +151,23 @@ def log_call(
                     )
                 try:
                     result = await fn(*args, **kwargs)
-                    if logger.isEnabledFor(level):
-                        logger.log(
-                            level,
-                            "EXIT %s -> %s",
-                            fn.__qualname__,
-                            _shorten(result),
-                        )
-                    return result
                 except Exception as e:  # noqa: BLE001
                     logger.exception("ERROR in %s: %s", fn.__qualname__, e)
                     raise
+                if logger.isEnabledFor(level):
+                    logger.log(
+                        level,
+                        "EXIT %s -> %s",
+                        fn.__qualname__,
+                        _shorten(result),
+                    )
+                return result
 
+            return async_wrapper
         else:
 
             @wraps(fn)
-            def _wrapped(
-                *args, **kwargs
-            ):  # pragma: no cover - instrumentation
+            def sync_wrapper(*args: P.args, **kwargs: P.kwargs) -> Any:  # pragma: no cover
                 if logger.isEnabledFor(level):
                     logger.log(
                         level,
@@ -159,24 +178,25 @@ def log_call(
                     )
                 try:
                     result = fn(*args, **kwargs)
-                    if logger.isEnabledFor(level):
-                        logger.log(
-                            level,
-                            "EXIT %s -> %s",
-                            fn.__qualname__,
-                            _shorten(result),
-                        )
-                    return result
                 except Exception as e:  # noqa: BLE001
                     logger.exception("ERROR in %s: %s", fn.__qualname__, e)
                     raise
+                if logger.isEnabledFor(level):
+                    logger.log(
+                        level,
+                        "EXIT %s -> %s",
+                        fn.__qualname__,
+                        _shorten(result),
+                    )
+                return result
 
-        return _wrapped
+            return sync_wrapper
 
     return _decorator
 
 
-def _shorten(obj: Any, limit: int = 120) -> Any:
+def _shorten(obj: object, limit: int = 120) -> str:
+    """Return a truncated repr for logging (never raises)."""
     try:  # pragma: no cover - defensive
         s = repr(obj)
         if len(s) > limit:

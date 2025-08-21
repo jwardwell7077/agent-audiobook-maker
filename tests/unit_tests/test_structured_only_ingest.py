@@ -1,6 +1,13 @@
+"""Integration-ish tests for structured TOC ingestion endpoint.
+
+Covers success (chapters produced) and failure (zero chapters) paths.
+"""
+
 import json
 from pathlib import Path
+
 from fastapi.testclient import TestClient
+from pytest import MonkeyPatch
 
 from api.app import app
 
@@ -8,10 +15,8 @@ client = TestClient(app)
 
 
 def write_temp_pdf(book_id: str, name: str, text: str) -> Path:
-    # Create a pseudo PDF by writing text; pipeline expects a .pdf path.
-    # For test simplicity we just write .pdf with plain text; extractor may
-    # treat as empty but still provides a pages list.
-    # If extractor fails, we'll skip this simplistic test.
+    """Create a pseudo PDF file containing plain text for ingestion tests."""
+    # Minimal PDF header so extraction path attempts then falls back.
     root = Path("data/books") / book_id
     root.mkdir(parents=True, exist_ok=True)
     path = root / name
@@ -19,7 +24,8 @@ def write_temp_pdf(book_id: str, name: str, text: str) -> Path:
     return path
 
 
-def test_structured_parse_success(tmp_path, monkeypatch):
+def test_structured_parse_success(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:
+    """Ingest a pseudo PDF with valid structured TOC expecting chapters."""
     book = "testbook1"
     pdf_name = "sample.pdf"
     sample_text = (
@@ -30,28 +36,35 @@ def test_structured_parse_success(tmp_path, monkeypatch):
     write_temp_pdf(book, pdf_name, sample_text)
     resp = client.post(
         "/ingest",
-        data={"book_id": book, "pdf_name": pdf_name, "verbose": 1},
+        data={
+            "book_id": book,
+            "pdf_name": pdf_name,
+            "verbose": 1,
+        },  # type: ignore[arg-type]
     )
     assert resp.status_code == 200, resp.text
     data = resp.json()
     assert data["chapters"] >= 2
     assert data["parse_mode"] == "structured_toc"
     assert data["volume_json_path"]
-    vol = json.loads(
-        Path(data["volume_json_path"]).read_text(encoding="utf-8")
-    )
+    vol = json.loads(Path(data["volume_json_path"]).read_text(encoding="utf-8"))
     assert vol["chapter_count"] >= 2
     assert vol["schema_version"] == "1.0"
 
 
-def test_structured_parse_failure(tmp_path):
+def test_structured_parse_failure(tmp_path: Path) -> None:
+    """Ingest pseudo PDF lacking structure expecting zero chapters."""
     book = "testbook2"
     pdf_name = "sample2.pdf"
     sample_text = "Just some text without chapters or toc."
     write_temp_pdf(book, pdf_name, sample_text)
     resp = client.post(
         "/ingest",
-        data={"book_id": book, "pdf_name": pdf_name, "verbose": 1},
+        data={
+            "book_id": book,
+            "pdf_name": pdf_name,
+            "verbose": 1,
+        },  # type: ignore[arg-type]
     )
     assert resp.status_code == 200
     data = resp.json()

@@ -1,25 +1,26 @@
-import os
-# Set DB URL before other imports
-os.environ.setdefault("DATABASE_URL", "sqlite:///./test_render_endpoint.db")
+"""Integration tests for annotation + render endpoints.
+
+Validates caching semantics (``force`` param) and DB persistence of Render rows.
+"""
 
 import hashlib
+import os
 from pathlib import Path
 
 import pytest
-from httpx import AsyncClient, ASGITransport
+from httpx import ASGITransport, AsyncClient
 
-from db import (  # type: ignore  # pylint: disable=import-error
-    get_session,
-    models,
-)
 from api.app import app  # type: ignore  # pylint: disable=import-error
+from db import get_session, models  # type: ignore  # pylint: disable=import-error
+
+# Ensure DB URL present (sqlite for test isolation)
+os.environ.setdefault("DATABASE_URL", "sqlite:///./test_render_endpoint.db")
 
 pytestmark = pytest.mark.anyio
 
 
-async def _ensure_book_chapter(
-    book_id: str, chapter_id: str, text: str
-) -> None:
+async def _ensure_book_chapter(book_id: str, chapter_id: str, text: str) -> None:
+    """Insert a Book + Chapter row if absent for test isolation."""
     text_sha256 = hashlib.sha256(text.encode("utf-8")).hexdigest()
     chap_pk = f"{book_id}-{chapter_id}"
     with get_session() as session:
@@ -46,6 +47,7 @@ async def _ensure_book_chapter(
 
 
 async def test_render_endpoint_force_and_cache(tmp_path: Path) -> None:
+    """Exercise annotation caching, render caching, and forced re-render semantics."""
     book_id = "bookep"
     chapter_id = "ch1"
     text = "Sentence one. Sentence two."

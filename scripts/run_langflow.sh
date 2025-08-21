@@ -21,7 +21,7 @@ ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 LANGFLOW_COMPONENTS_PATH="${LANGFLOW_COMPONENTS_PATH:-${ROOT_DIR}/lf_components}"
 LANGFLOW_HOST="${LANGFLOW_HOST:-0.0.0.0}"
 LANGFLOW_PORT="${LANGFLOW_PORT:-7860}"
-LANGFLOW_LOG_DIR="${LANGFLOW_LOG_DIR:-${ROOT_DIR}/logs/langflow}" 
+LANGFLOW_LOG_DIR="${LANGFLOW_LOG_DIR:-${ROOT_DIR}/logs/langflow}"
 mkdir -p "${LANGFLOW_LOG_DIR}"
 
 timestamp() { date +%Y-%m-%dT%H:%M:%S; }

@@ -1,6 +1,7 @@
 from pathlib import Path
-import pytest
+
 import httpx
+import pytest
 
 from api.app import app
 from db import get_session, repository
@@ -8,8 +9,8 @@ from db import get_session, repository
 pytestmark = pytest.mark.anyio
 
 
-def _pdf_bytes():
-    # Minimal PDF header/footer; content not parsed for text in these paths
+def _pdf_bytes() -> bytes:
+    """Return minimal PDF bytes; body not parsed in these tests."""
     return b"%PDF-1.4\n%%EOF"
 
 
@@ -18,9 +19,7 @@ aSYNC_TIMEOUT = 30
 
 async def test_upload_and_list_pdfs(tmp_path: Path):
     transport = httpx.ASGITransport(app=app)
-    async with httpx.AsyncClient(
-        transport=transport, base_url="http://test"
-    ) as client:
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
         files = [
             ("files", ("part1.pdf", _pdf_bytes(), "application/pdf")),
             ("files", ("part2.pdf", _pdf_bytes(), "application/pdf")),
