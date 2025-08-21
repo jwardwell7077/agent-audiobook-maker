@@ -6,13 +6,17 @@ KISS today: local CLI + deterministic ingestion and simple annotation to files. 
 flowchart LR
   subgraph Dev["Local-first (KISS today)"]
     CLI["CLI (ingest, annotate)"]
-    Ingest["Ingestion (deterministic PDF → chapters)"]
+    PDF[("PDF")]
+    TXT[("Simple TXT")]
+    JSONRaw[("JSON (per-chapter raw)")]
+    JSONStruct[("Structured JSON (manifest + chapters)")]
     Annot["Annotation v1 (segmentation: dialogue/narration)"]
     Clean[("data/clean/<book>/<chapter>.json\n<pdf_stem>_volume.json")]
     Annos[("data/annotations/<book>/<chapter>.jsonl")]
   end
 
-  CLI --> Ingest --> Clean --> Annot --> Annos
+  CLI --> PDF --> TXT --> JSONRaw --> JSONStruct --> Clean
+  Clean --> Annot --> Annos
 
   subgraph Later["Later (roadmap)"]
     Casting["Casting (character bible)"]
