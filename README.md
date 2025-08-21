@@ -3,6 +3,9 @@
 > Multi‑agent, local‑first audiobook production pipeline. Current focus: rock‑solid deterministic ingestion + prototype annotation flow (LangFlow) as a stepping stone to CrewAI then LangChain/LangGraph orchestration.
 
 
+> Note: All code and documentation in this branch are AI‑generated drafts and may change rapidly.
+
+
 > KISS branch scope
 >
 > This branch is documentation‑first. Keep it simple: only set up a local Python `.venv` and minimal dev tools. Sections below that mention Docker, Postgres, LangGraph runtime, or API endpoints are roadmap/design notes, not required to get started on this branch. See `docs/KISS.md`.
@@ -346,6 +349,10 @@ Canonical utterance schema (rich) is defined in `docs/ANNOTATION_SCHEMA.md`. Cur
 ## Contributing
 
 Internal project (learning / portfolio). PRs should keep deterministic ingestion guarantees (run regression tests) and update snapshot notes when changing text transforms.
+
+## Authors / Co‑authors
+
+- GitHub Copilot (AI pair programmer)
 
 ## References
 
