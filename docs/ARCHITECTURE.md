@@ -2,7 +2,7 @@
 
 KISS today: local CLI + deterministic ingestion and simple annotation to files. Later: multi-agent enrichment, orchestration, TTS, and optional DB.
 
-Source: `docs/diagrams/high_level_architecture.mmd`
+Source: [docs/diagrams/high_level_architecture.mmd](diagrams/high_level_architecture.mmd)
 
 ```mermaid
 flowchart LR
