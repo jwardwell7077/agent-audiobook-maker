@@ -6,12 +6,12 @@ flowchart LR
     JSONRaw[("JSON (per-chapter raw)")]
     JSONStruct[("Structured JSON (manifest + chapters)")]
     Annot["Annotation v1 (segmentation: dialogue/narration)"]
-    Clean[("data/clean/<book>/<chapter>.json\n<pdf_stem>_volume.json")]
+  Artifacts[("data/clean/<book>/<chapter>.json\n<pdf_stem>_volume.json")]
     Annos[("data/annotations/<book>/<chapter>.jsonl")]
   end
 
-  CLI --> PDF --> TXT --> JSONRaw --> JSONStruct --> Clean
-  Clean --> Annot --> Annos
+  CLI --> PDF --> TXT --> JSONRaw --> JSONStruct --> Artifacts
+  Artifacts --> Annot --> Annos
 
   subgraph Later["Later (roadmap)"]
     Casting["Casting (character bible)"]
@@ -29,6 +29,6 @@ flowchart LR
   Orchestrator -.controls.-> Annot
   Orchestrator -.controls.-> TTS
 
-  Clean -.sync.-> DB
+  Artifacts -.sync.-> DB
   Annos -.sync.-> DB
   Renders -.sync.-> DB
