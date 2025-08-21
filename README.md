@@ -2,7 +2,6 @@
 
 > Multi‑agent, local‑first audiobook production pipeline. Current focus: rock‑solid deterministic ingestion + prototype annotation flow (LangFlow) as a stepping stone to CrewAI then LangChain/LangGraph orchestration.
 
-![Graph view in LangGraph Studio UI](./static/studio_ui.png)
 
 > KISS branch scope
 >
