@@ -21,3 +21,12 @@ repos:
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
+
+  - repo: local
+    hooks:
+      - id: quality-gate
+        name: Quality Gate (ruff, docstrings=100%, coverage=100%)
+        entry: bash -lc 'make quality_gate'
+        language: system
+        pass_filenames: false
+        stages: [push]
