@@ -41,6 +41,8 @@ The KISS slice today is a local-first CLI that produces deterministic file artif
 
 Source: [docs/diagrams/high_level_architecture.mmd](docs/diagrams/high_level_architecture.mmd)
 
+Full documentation index: [docs/README.md](docs/README.md)
+
 ```mermaid
 flowchart LR
   subgraph Dev["Local-first (KISS today)"]
