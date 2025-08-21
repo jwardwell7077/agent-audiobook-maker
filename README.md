@@ -39,7 +39,7 @@ See `docs/KISS.md` for the policy and guardrails.
 
 The KISS slice today is a local-first CLI that produces deterministic file artifacts. The diagram below shows today and the forward path.
 
-Source: `docs/diagrams/high_level_architecture.mmd`
+Source: [docs/diagrams/high_level_architecture.mmd](docs/diagrams/high_level_architecture.mmd)
 
 ```mermaid
 flowchart LR
@@ -50,12 +50,12 @@ flowchart LR
     JSONRaw[("JSON (per-chapter raw)")]
     JSONStruct[("Structured JSON (manifest + chapters)")]
     Annot["Annotation v1 (segmentation: dialogue/narration)"]
-    Clean[("data/clean/<book>/<chapter>.json\n<pdf_stem>_volume.json")]
+  Artifacts[("data/clean/<book>/<chapter>.json\n<pdf_stem>_volume.json")]
     Annos[("data/annotations/<book>/<chapter>.jsonl")]
   end
 
-  CLI --> PDF --> TXT --> JSONRaw --> JSONStruct --> Clean
-  Clean --> Annot --> Annos
+  CLI --> PDF --> TXT --> JSONRaw --> JSONStruct --> Artifacts
+  Artifacts --> Annot --> Annos
 
   subgraph Later["Later (roadmap)"]
     Casting["Casting (character bible)"]
@@ -73,14 +73,14 @@ flowchart LR
   Orchestrator -.controls.-> Annot
   Orchestrator -.controls.-> TTS
 
-  Clean -.sync.-> DB
+  Artifacts -.sync.-> DB
   Annos -.sync.-> DB
   Renders -.sync.-> DB
 ```
 
-See more in `docs/ARCHITECTURE.md`.
+See more in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-Structured JSON schema: `docs/STRUCTURED_JSON_SCHEMA.md`.
+Structured JSON schema: [docs/STRUCTURED_JSON_SCHEMA.md](docs/STRUCTURED_JSON_SCHEMA.md).
 
 ## Status Snapshot (2025-08-14)
 
