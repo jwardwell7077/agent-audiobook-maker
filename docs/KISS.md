@@ -4,14 +4,14 @@ Last updated: 2025-08-21
 
 This repository explicitly adopts KISS — Keep It Simple, Simple.
 
-Guiding rules
+## Project tenets (short list)
 
-- Favor the smallest working slice. Ship a thin vertical slice over a broad incomplete surface.
-- Defer infrastructure. Add Docker, DB, orchestrators, and GPUs only when a running slice demands it.
-- One obvious way. Prefer one code path and one tool per job; remove fallbacks that add nondeterminism.
-- Local-first by default. Design to work offline with files on disk; services are optional add-ons.
-- Deterministic over clever. If a “smart” heuristic adds drift, prefer a deterministic simpler approach.
-- Write docs for the next person. Every command in README must run on a clean machine.
+- KISS: ship the smallest working slice.
+- TDD + spec-first: write a Full Design Spec and pytest tests (mapped to requirements) before code.
+- Local-first artifacts: files on disk are the source of truth; offline by default.
+- Deterministic + reproducible: same inputs → same outputs; content-addressed hashes.
+- Contract-first: schemas define interfaces and invariants.
+- Minimal deps: defer Docker/DB/GPUs/orchestrators until the slice truly needs them.
 
 Lean workflow (today)
 
