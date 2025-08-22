@@ -278,10 +278,35 @@ def classify_sections(inputs: ClassifierInputs) -> ClassifierOutputs:
         "warnings": toc_warnings,
     }
 
-    per_page: list[PerPageLabel] = [
-        {"page_index": p.page_index, "label": "body", "confidence": 0.0}
-        for p in pages
-    ]
+    # Per-page labels using TOC as anchors
+    toc_page_set = set(toc_pages)
+    toc_entry_pages = {e["page"] for e in toc_entries}
+    per_page: list[PerPageLabel] = []
+    for p in pages:
+        if p.page_index in toc_page_set:
+            per_page.append(
+                {
+                    "page_index": p.page_index,
+                    "label": "toc",
+                    "confidence": 0.95,
+                }
+            )
+        elif p.page_index in toc_entry_pages:
+            per_page.append(
+                {
+                    "page_index": p.page_index,
+                    "label": "body",
+                    "confidence": 0.8,
+                }
+            )
+        else:
+            per_page.append(
+                {
+                    "page_index": p.page_index,
+                    "label": "body",
+                    "confidence": 0.4,
+                }
+            )
     chapters_section: ChaptersSection = {
         "span": span_body,
         "per_page_labels": per_page,
