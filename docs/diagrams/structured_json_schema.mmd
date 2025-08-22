@@ -1,0 +1,58 @@
+classDiagram
+  class VolumeManifest {
+    +string schema_version
+    +string book_id
+    +string pdf_stem
+    +string source_pdf
+    +string created_at
+    +Generator generator
+    +Stats stats
+    +ChapterSummary[] chapters
+  }
+
+  class Generator {
+    +string name
+    +string version
+  }
+
+  class Stats {
+    +int page_count
+    +int chapter_count
+    +string[] warnings
+  }
+
+  class ChapterSummary {
+    +string chapter_id
+    +int index
+    +string title
+    +int start_page
+    +int end_page
+    +string text_sha256
+  }
+
+  class ChapterJson {
+    +string schema_version
+    +string book_id
+    +string chapter_id
+    +int index
+    +string title
+    +Pages pages
+    +string text
+    +string text_sha256
+    +Meta meta
+  }
+
+  class Pages {
+    +int start
+    +int end
+  }
+
+  class Meta {
+    +string[] warnings
+  }
+
+  VolumeManifest "1" o-- "*" ChapterSummary : chapters
+  VolumeManifest "1" o-- "1" Generator : generator
+  VolumeManifest "1" o-- "1" Stats : stats
+  ChapterJson "1" o-- "1" Pages : pages
+  ChapterJson "1" o-- "0..1" Meta : meta

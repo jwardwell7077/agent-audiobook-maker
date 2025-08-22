@@ -1,0 +1,20 @@
+classDiagram
+  class QualityGateRunner {
+    - paths: list[str]
+    - config: GateConfig
+    + run() QualityGateReport
+  }
+  class GateConfig {
+    + component_paths: list[str]
+    + min_docstring_coverage: int
+    + require_lint_clean: bool
+    + coverage_target: int
+  }
+  class QualityGateReport {
+    + lint_ok: bool
+    + docstrings_ok: bool
+    + coverage_ok: bool
+    + details: dict
+  }
+  QualityGateRunner --> GateConfig
+  QualityGateRunner --> QualityGateReport
