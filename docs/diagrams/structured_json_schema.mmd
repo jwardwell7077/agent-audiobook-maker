@@ -7,7 +7,7 @@ classDiagram
     +string created_at
     +Generator generator
     +Stats stats
-    +ChapterSummary[] chapters
+    +Chapter[] chapters
   }
 
   class Generator {
@@ -21,12 +21,16 @@ classDiagram
     +string[] warnings
   }
 
-  class ChapterSummary {
+  class Chapter {
     +string chapter_id
     +int index
     +string title
     +int start_page
     +int end_page
+    +int start_char
+    +int end_char
+    +string matched_by
+    +string body
     +string text_sha256
   }
 
@@ -51,7 +55,7 @@ classDiagram
     +string[] warnings
   }
 
-  VolumeManifest "1" o-- "*" ChapterSummary : chapters
+  VolumeManifest "1" o-- "*" Chapter : chapters
   VolumeManifest "1" o-- "1" Generator : generator
   VolumeManifest "1" o-- "1" Stats : stats
   ChapterJson "1" o-- "1" Pages : pages

@@ -1,0 +1,51 @@
+classDiagram
+  classDiagram
+    class SectionClassifier {
+      +classify(pages: Page[]) SectionOutputs
+      -_build_body_and_markers(pages: Page[]) BodyResult
+      -_detect_toc(body: string) TocResult
+      -_label_pages(pages: Page[]) PageLabels
+      -_smooth_labels(labels: PageLabels) PageLabels
+      -_compute_spans(labels: PageLabels, body: string) Sections
+    }
+
+    class Page {
+      +int index
+      +string[] lines
+    }
+
+    class SectionOutputs {
+      +Span front_matter
+      +Toc toc
+      +Span chapters_section
+      +Span back_matter
+      +PageMarker[] page_markers
+      +string body_text
+    }
+
+    class Span {
+      +int start_char
+      +int end_char
+    }
+
+    class PageMarker {
+      +int page_index
+      +int line_index_global
+      +int start_char
+      +int end_char
+      +string raw
+      +bool removed
+      +string warning
+    }
+
+    class Toc {
+      +Span span
+      +TocEntry[] entries
+    }
+
+    class TocEntry {
+      +string title
+      +int page
+      +string raw
+      +int line_in_toc
+    }
