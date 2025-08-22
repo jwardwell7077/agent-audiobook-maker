@@ -187,6 +187,16 @@ test_all_optional:
 
 
 ######################
+# LANGFLOW
+######################
+
+.PHONY: langflow
+langflow:
+	@$(VENV_GUARD)
+	./scripts/run_langflow.sh
+
+
+######################
 # HELP
 ######################
 
