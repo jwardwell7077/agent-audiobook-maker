@@ -47,45 +47,45 @@ See `docs/CONTEXT.md` for comprehensive final target record including prosody, s
 
 ## Field Definitions
 
-| Field | Type | Layer | Description |
-|-------|------|-------|-------------|
-| book_id | string | all | Book identifier (stable) |
-| chapter_id | string | all | Chapter identifier (stable) |
-| utterance_idx | int | all | 0-based index within chapter |
-| text | string | segmentation | Raw utterance text |
-| is_dialogue | bool | segmentation | Heuristic dialogue detection |
-| start_char / end_char | int | segmentation | Character span offsets in chapter text |
-| speaker | string | speaker | Resolved speaker label or NARRATOR/UNKNOWN |
-| speaker_confidence | float | speaker | Confidence 0..1 |
-| emotion | string | emotion | Discrete emotion label |
-| emotion_confidence | float | emotion | Confidence 0..1 |
-| prosody | object | prosody | Pitch/rate/intensity suggestions |
-| qa_flags | list[string] | qa | Automated quality issue flags |
-| ssml | string | ssml | Renderable SSML snippet |
-| tts_profile_id | string | tts | Voice profile mapping id |
-| audio_stem_path | string | tts | Path to rendered stem wav |
-| duration_s | float | tts | Stem duration seconds |
-| hashes | object | all | Hashes (text + params) for caching |
-| layer_versions | object | all | Version map per enrichment layer |
-| created_at / updated_at | string (ISO8601) | all | Timestamps |
+| Field                   | Type             | Layer        | Description                                |
+| ----------------------- | ---------------- | ------------ | ------------------------------------------ |
+| book_id                 | string           | all          | Book identifier (stable)                   |
+| chapter_id              | string           | all          | Chapter identifier (stable)                |
+| utterance_idx           | int              | all          | 0-based index within chapter               |
+| text                    | string           | segmentation | Raw utterance text                         |
+| is_dialogue             | bool             | segmentation | Heuristic dialogue detection               |
+| start_char / end_char   | int              | segmentation | Character span offsets in chapter text     |
+| speaker                 | string           | speaker      | Resolved speaker label or NARRATOR/UNKNOWN |
+| speaker_confidence      | float            | speaker      | Confidence 0..1                            |
+| emotion                 | string           | emotion      | Discrete emotion label                     |
+| emotion_confidence      | float            | emotion      | Confidence 0..1                            |
+| prosody                 | object           | prosody      | Pitch/rate/intensity suggestions           |
+| qa_flags                | list[string]     | qa           | Automated quality issue flags              |
+| ssml                    | string           | ssml         | Renderable SSML snippet                    |
+| tts_profile_id          | string           | tts          | Voice profile mapping id                   |
+| audio_stem_path         | string           | tts          | Path to rendered stem wav                  |
+| duration_s              | float            | tts          | Stem duration seconds                      |
+| hashes                  | object           | all          | Hashes (text + params) for caching         |
+| layer_versions          | object           | all          | Version map per enrichment layer           |
+| created_at / updated_at | string (ISO8601) | all          | Timestamps                                 |
 
 ## Hashing Guidance
 
-| Hash Name | Inputs |
-|-----------|--------|
-| text_sha256 | Raw utterance text |
-| segmentation_hash | chapter.text_sha256 + segmentation params |
-| speaker_hash | segmentation_hash + speaker params + model version |
-| emotion_hash | speaker_hash + emotion model version |
-| prosody_hash | emotion_hash + prosody rules version |
-| ssml_hash | prosody_hash + ssml template version |
+| Hash Name         | Inputs                                             |
+| ----------------- | -------------------------------------------------- |
+| text_sha256       | Raw utterance text                                 |
+| segmentation_hash | chapter.text_sha256 + segmentation params          |
+| speaker_hash      | segmentation_hash + speaker params + model version |
+| emotion_hash      | speaker_hash + emotion model version               |
+| prosody_hash      | emotion_hash + prosody rules version               |
+| ssml_hash         | prosody_hash + ssml template version               |
 
 ## Change Control
 
 1. Propose field addition in PR description.
-2. Update this doc and bump layer version (e.g., speaker:1→2).
-3. Add migration or backfill logic if downstream expects presence.
-4. Extend tests: serialization + hashing invariants.
+1. Update this doc and bump layer version (e.g., speaker:1→2).
+1. Add migration or backfill logic if downstream expects presence.
+1. Extend tests: serialization + hashing invariants.
 
 ## Excluding Fields From Deterministic Hash
 

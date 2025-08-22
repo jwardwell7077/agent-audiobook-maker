@@ -1,8 +1,6 @@
 # COMPONENT_NAME — Full Design Spec
 
-Status: Draft
-Owner: OWNER
-Last updated: YYYY-MM-DD
+Status: Draft Owner: OWNER Last updated: YYYY-MM-DD
 
 ## Overview
 
@@ -25,17 +23,7 @@ Last updated: YYYY-MM-DD
 
 ## Requirements
 
-1. <Requirement 1>
-2. <Requirement 2>
-
-Quality requirements (keep these by default):
-
-1. R-STYLE: Code is 100% lint compliant (formatter + linter) with zero errors/warnings.
-	- Passes: ruff format, ruff check (no disables beyond justified file-local comments).
-2. R-DOCS: 100% Google-style docstrings for all public modules/classes/functions.
-	- Measured by a docstring coverage tool (e.g., interrogate) at 100% for the component.
-3. R-COVERAGE: 100% unit test coverage (statements/branches) for this component’s code path.
-	- Measured via pytest-cov; define the package/path under test in this spec.
+1. R-QUALITY-GATE: Component passes the quality gate (ruff clean, 100% Google-style docstrings, 100% test coverage for the component path).
 
 ## Task Plan
 

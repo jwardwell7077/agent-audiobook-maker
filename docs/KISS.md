@@ -9,15 +9,15 @@ This repository explicitly adopts KISS — Keep It Simple, Simple.
 - KISS: ship the smallest working slice.
 - TDD + spec-first: write a Full Design Spec and pytest tests (mapped to requirements) before code.
 - Local-first artifacts: files on disk are the source of truth; offline by default.
-- Deterministic + reproducible: same inputs → same outputs; content-addressed hashes.
+- Reproducible outputs: content-addressed hashes.
 - Contract-first: schemas define interfaces and invariants.
-- Minimal deps: defer Docker/DB/GPUs/orchestrators until the slice truly needs them.
+- Minimal complexity: simple control flow, small modules, low cognitive load; decompose early.
 
 Lean workflow (today)
 
-1) Python 3.11, local `.venv` only
-2) Minimal dev tools: ruff, mypy, pytest, pre-commit
-3) No app installs until code lands (no -e ., no heavy ML deps)
+1. Python 3.11, local `.venv` only
+1. Minimal dev tools: ruff, mypy, pytest, pre-commit
+1. No app installs until code lands (no -e ., no heavy ML deps)
 
 Upgrade path (when needed)
 

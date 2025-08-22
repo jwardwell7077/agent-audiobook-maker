@@ -14,12 +14,15 @@ AI‑generated, Copilot‑assisted. This index organizes the docs for fast navig
 - KISS
 - TDD + spec-first
 - Local-first artifacts
-- Deterministic + contract-first
+- Contract-first
+- Minimal complexity
 
 ## Architecture
 
 - High‑level architecture: [ARCHITECTURE.md](ARCHITECTURE.md)
   - Diagram source: [diagrams/high_level_architecture.mmd](diagrams/high_level_architecture.mmd)
+  - Component spec: PDF→Text [PDF_TO_TEXT_SPEC.md](PDF_TO_TEXT_SPEC.md)
+  - CLI spec: [PDF_TO_TEXT_CLI_SPEC.md](PDF_TO_TEXT_CLI_SPEC.md)
 
 ## Data Contracts / Schemas
 
@@ -36,11 +39,16 @@ AI‑generated, Copilot‑assisted. This index organizes the docs for fast navig
 ## Roadmap
 
 - Multi‑agent roadmap: [MULTI_AGENT_ROADMAP.md](MULTI_AGENT_ROADMAP.md)
+- Learning path (LangFlow/LangChain/LangSmith/LangGraph/CrewAI): [LEARNING_PATH_MULTI_AGENT.md](LEARNING_PATH_MULTI_AGENT.md)
 
 ## Templates
 
 - Full Design Spec: [templates/FULL_DESIGN_SPEC_TEMPLATE.md](templates/FULL_DESIGN_SPEC_TEMPLATE.md)
 - Test Plan: [templates/TEST_PLAN_TEMPLATE.md](templates/TEST_PLAN_TEMPLATE.md)
+
+## Quality
+
+- Quality Gate Spec: [design/QUALITY_GATE_SPEC.md](design/QUALITY_GATE_SPEC.md)
 
 ## How to read this repo
 
