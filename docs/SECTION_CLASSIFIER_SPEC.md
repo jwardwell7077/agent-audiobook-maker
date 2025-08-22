@@ -15,7 +15,7 @@ Identify front matter, TOC, body chapters, and back matter in a novel PDF conver
   - toc: List[{ title: str, page: int }]
   - chapters: List[{ index: int, title?: str, start_page: int, end_page: int, start_offset?: int, end_offset?: int }]
   - sections: { front_matter_pages: int[], toc_pages: int[], back_matter_pages: int[] }
-  - per_page_labels: List[{ page_idx: int, label: 'front'|'toc'|'body'|'back', confidence: float, signals: Record<string, any> }]
+  - per_page_labels: List[{ page_idx: int, label: 'front'|'toc'|'body'|'back', confidence: float, signals: Record\<string, any> }]
   - warnings: string[]
 
 ## Determinism
@@ -34,9 +34,9 @@ Identify front matter, TOC, body chapters, and back matter in a novel PDF conver
 1. TOC Detection
 
 - Signals:
-  - Page contains keywords: /\b(contents|table of contents)\b/i
-  - Dotted leaders ratio: lines matching /\.{3,}\s*\d+$/
-  - Lines ending with page numbers: /\d+$/
+  - Page contains keywords: /\\b(contents|table of contents)\\b/i
+  - Dotted leaders ratio: lines matching /.{3,}\\s\*\\d+$/
+  - Lines ending with page numbers: /\\d+$/
   - Ascending page numbers across entries
   - Entry density: many short lines
 - Output: toc entries [{title,page}] and toc_pages.
@@ -44,13 +44,13 @@ Identify front matter, TOC, body chapters, and back matter in a novel PDF conver
 1. Heading Detection (Body)
 
 - Regexes:
-  - Chapter: /^(chapter)\s+(\d+|[IVXLCDM]+)\b/i
-  - Numeric-only title: /^(\d{1,3})$/
+  - Chapter: /^(chapter)\\s+(\\d+|[IVXLCDM]+)\\b/i
+  - Numeric-only title: /^(\\d{1,3})$/
   - Roman numeral line: /^(?:[IVXLCDM]+)$/
-  - Prologue/Epilogue: /\b(prologue|epilogue)\b/i
-  - Part: /^(part)\s+(\d+|[IVXLCDM]+)\b/i
+  - Prologue/Epilogue: /\\b(prologue|epilogue)\\b/i
+  - Part: /^(part)\\s+(\\d+|[IVXLCDM]+)\\b/i
 - Heuristics:
-  - UPPERCASE short line (<= 32 chars) with high alpha ratio
+  - UPPERCASE short line (\<= 32 chars) with high alpha ratio
   - Proximity to page top (first 10 lines)
 
 1. Page Scoring + Labels
@@ -82,15 +82,15 @@ Identify front matter, TOC, body chapters, and back matter in a novel PDF conver
 
 - Add an optional `classifier` block to the Volume Manifest:
 
- ```jsonc
+```jsonc
 {
-  "classifier": {
-    "front_matter_pages": [0,1,2],
-    "toc_pages": [3],
-    "back_matter_pages": [210,211],
-    "toc": [ { "title": "Chapter 1", "page": 7 }, ... ],
-    "warnings": ["toc_count_mismatch: expected 12, found 11"]
-  }
+ "classifier": {
+   "front_matter_pages": [0,1,2],
+   "toc_pages": [3],
+   "back_matter_pages": [210,211],
+   "toc": [ { "title": "Chapter 1", "page": 7 }, ... ],
+   "warnings": ["toc_count_mismatch: expected 12, found 11"]
+ }
 }
 ```
 

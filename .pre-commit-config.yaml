@@ -3,24 +3,48 @@ default_language_version:
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.7
+    rev: v0.12.10
     hooks:
       - id: ruff-format
       - id: ruff
         args: ["--fix"]
 
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.22
+    hooks:
+      - id: mdformat
+        args: ["--wrap", "no"]
+        files: "\\.md$"
+        additional_dependencies:
+          - mdformat-gfm
+          - mdformat-frontmatter
+
+  - repo: https://github.com/jackdewinter/pymarkdown
+    rev: v0.9.32
+    hooks:
+      - id: pymarkdown
+        args:
+          - --config=pymarkdown.json
+          - --return-code-scheme
+          - minimal
+          - scan
+
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.10.0
+    rev: v1.17.1
     hooks:
       - id: mypy
         args: ["--strict"]
-        additional_dependencies: []
+        files: ^src/
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
+        # Preserve two-space Markdown hard line breaks instead of stripping them,
+        # which otherwise fights with mdformat and causes edit loops.
+  args: ["--markdown-linebreak-ext=md,mdx,mmd"]
+  exclude: "\\.md$"
 
   - repo: local
     hooks:

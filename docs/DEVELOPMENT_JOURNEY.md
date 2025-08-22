@@ -15,36 +15,36 @@ Constraints:
 Success Criteria (MVP):
 
 1. Structured TOC parser extracts ≥ expected chapter count with intro detection.
-2. Per‑chapter JSON artifacts + volume manifest written deterministically.
-3. Repeated purge + re‑ingest cycles produce identical SHA‑256 chapter hashes.
-4. Failures (missing structured TOC) degrade safely (0 chapters + warnings) without fallback heuristics adding nondeterminism.
-5. Regression test suite encodes and guards the canonical snapshot.
+1. Per‑chapter JSON artifacts + volume manifest written deterministically.
+1. Repeated purge + re‑ingest cycles produce identical SHA‑256 chapter hashes.
+1. Failures (missing structured TOC) degrade safely (0 chapters + warnings) without fallback heuristics adding nondeterminism.
+1. Regression test suite encodes and guards the canonical snapshot.
 
 ## Timeline of Key Milestones
 
-| Date | Milestone | Summary / Impact |
-|------|-----------|------------------|
-| 2025-08-12 | Template bootstrap | Base LangGraph/FastAPI template cloned; initial API skeleton retained template wording. |
-| 2025-08-13 | High‑fidelity extraction | Switched from PyPDF to PyMuPDF word-level extraction to recover lost spacing; improved TOC match reliability, enabling structured parsing. |
-| 2025-08-13 | Structured TOC consolidation | Removed legacy fallback parsers (heading/simple/advanced); enforced single structured strategy with confidence thresholds & dedup. |
-| 2025-08-13 | Post-processing pass | Added hyphen join heuristic + optional camel splitting env flag; improved readability & hash stability. |
-| 2025-08-13 | Purge endpoint v1 | Implemented file + DB purge with dry-run; foundation for re‑ingest regression. |
-| 2025-08-13 | Canonical ingest snapshot | First chapter hash snapshot captured (private source, later replaced by synthetic). |
-| 2025-08-14 | Determinism regression surfaced | Hash mismatch between consecutive cycles (chapter 00020 then 00021) revealed floating point jitter in line grouping. |
-| 2025-08-14 | Deterministic extraction fix | Introduced stable word ordering (rounded y + original index) & y‑quantization grouping; added targeted blood type spacing repair. |
-| 2025-08-14 | Snapshot refresh & validation | Recomputed chapter hashes after determinism fix; later migrated to synthetic open fixture. |
-| 2025-08-14 | Documentation pass | Added Snapshot Hash Freeze rationale, Lessons Learned expansion, repo hygiene updates (.gitignore). |
-| 2025-08-14 | MVP assessment | Formal evaluation of scope completion, gaps (docs, ignored fixtures), and prioritized action list. |
+| Date       | Milestone                       | Summary / Impact                                                                                                                           |
+| ---------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2025-08-12 | Template bootstrap              | Base LangGraph/FastAPI template cloned; initial API skeleton retained template wording.                                                    |
+| 2025-08-13 | High‑fidelity extraction        | Switched from PyPDF to PyMuPDF word-level extraction to recover lost spacing; improved TOC match reliability, enabling structured parsing. |
+| 2025-08-13 | Structured TOC consolidation    | Removed legacy fallback parsers (heading/simple/advanced); enforced single structured strategy with confidence thresholds & dedup.         |
+| 2025-08-13 | Post-processing pass            | Added hyphen join heuristic + optional camel splitting env flag; improved readability & hash stability.                                    |
+| 2025-08-13 | Purge endpoint v1               | Implemented file + DB purge with dry-run; foundation for re‑ingest regression.                                                             |
+| 2025-08-13 | Canonical ingest snapshot       | First chapter hash snapshot captured (private source, later replaced by synthetic).                                                        |
+| 2025-08-14 | Determinism regression surfaced | Hash mismatch between consecutive cycles (chapter 00020 then 00021) revealed floating point jitter in line grouping.                       |
+| 2025-08-14 | Deterministic extraction fix    | Introduced stable word ordering (rounded y + original index) & y‑quantization grouping; added targeted blood type spacing repair.          |
+| 2025-08-14 | Snapshot refresh & validation   | Recomputed chapter hashes after determinism fix; later migrated to synthetic open fixture.                                                 |
+| 2025-08-14 | Documentation pass              | Added Snapshot Hash Freeze rationale, Lessons Learned expansion, repo hygiene updates (.gitignore).                                        |
+| 2025-08-14 | MVP assessment                  | Formal evaluation of scope completion, gaps (docs, ignored fixtures), and prioritized action list.                                         |
 
 ## Evolving Goals & Trade‑Offs
 
-| Goal Evolution | Decision | Rationale |
-|-----------------|----------|-----------|
-| Multi‑strategy parsing → Single structured parser | Removed fallbacks | Reduced nondeterministic drift & complexity; easier to reason about failures. |
-| Arbitrary multi‑book support | Deferred (basic discovery only) | Avoids premature indexing & pagination concerns; keeps snapshot narrative focused. |
-| Full text diff storage for regression | Chose hash + preview | Hashes are compact & stable; preview only emitted on mismatch to reduce repo weight. |
-| Generic spacing fixes | Targeted pattern (blood type) | Avoid over‑general splits that might alter semantics; minimal surgical change increases confidence. |
-| Immediate CI artifact storage | Deferred | Avoid complexity; local deterministic hashing suffices pre‑scaling. |
+| Goal Evolution                                    | Decision                        | Rationale                                                                                           |
+| ------------------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Multi‑strategy parsing → Single structured parser | Removed fallbacks               | Reduced nondeterministic drift & complexity; easier to reason about failures.                       |
+| Arbitrary multi‑book support                      | Deferred (basic discovery only) | Avoids premature indexing & pagination concerns; keeps snapshot narrative focused.                  |
+| Full text diff storage for regression             | Chose hash + preview            | Hashes are compact & stable; preview only emitted on mismatch to reduce repo weight.                |
+| Generic spacing fixes                             | Targeted pattern (blood type)   | Avoid over‑general splits that might alter semantics; minimal surgical change increases confidence. |
+| Immediate CI artifact storage                     | Deferred                        | Avoid complexity; local deterministic hashing suffices pre‑scaling.                                 |
 
 ## Architecture Snapshot (MVP)
 
@@ -58,10 +58,10 @@ Success Criteria (MVP):
 ## Determinism Strategy
 
 1. Stabilize token ordering (sort by rounded y, then x, then original index).
-2. Group lines by quantized y buckets (y quantum = 1.0 point) to negate micro jitter.
-3. Normalize lines (rstrip) and join with consistent page separators (form feed boundary maintained).
-4. Apply idempotent post-processing transforms.
-5. Snapshot chapter hashes after confirming stability across two independent ingest cycles.
+1. Group lines by quantized y buckets (y quantum = 1.0 point) to negate micro jitter.
+1. Normalize lines (rstrip) and join with consistent page separators (form feed boundary maintained).
+1. Apply idempotent post-processing transforms.
+1. Snapshot chapter hashes after confirming stability across two independent ingest cycles.
 
 ## Assessments
 
@@ -75,13 +75,13 @@ Success Criteria (MVP):
 
 ### Risk Register (Active)
 
-| Risk | Impact | Mitigation Status |
-|------|--------|-------------------|
-| Ignored snapshot fixture | Undetected regressions | Add .gitignore negation & recommit (P0). |
-| Undocumented env vars | Misconfiguration / hidden behavior | Add README table (P1). |
-| Overgrown `api/app.py` | Future maintainability | Plan modularization post-MVP (P3). |
-| Duplicate blood type logic | Subtle double-normalization | Consolidate transform (P2). |
-| Multi-PDF metadata counting bug (suspected) | Inaccurate analytics | Verify/fix & add test (P2). |
+| Risk                                        | Impact                             | Mitigation Status                        |
+| ------------------------------------------- | ---------------------------------- | ---------------------------------------- |
+| Ignored snapshot fixture                    | Undetected regressions             | Add .gitignore negation & recommit (P0). |
+| Undocumented env vars                       | Misconfiguration / hidden behavior | Add README table (P1).                   |
+| Overgrown `api/app.py`                      | Future maintainability             | Plan modularization post-MVP (P3).       |
+| Duplicate blood type logic                  | Subtle double-normalization        | Consolidate transform (P2).              |
+| Multi-PDF metadata counting bug (suspected) | Inaccurate analytics               | Verify/fix & add test (P2).              |
 
 ## Prioritized Action Backlog (from MVP Assessment)
 
@@ -96,10 +96,10 @@ P3: API modularization; config dataclass; hash regeneration helper script; optio
 ## Snapshot Regeneration Protocol (Canonical Book)
 
 1. Purge artifacts + DB (POST /purge delete_files=true delete_db=true).
-2. Ingest canonical PDF twice; assert all chapter hashes identical.
-3. Derive new `chapters_sha256.json` (exclude volume JSON) & validate via tests.
-4. Update README Snapshot section with date + rationale.
-5. Single commit: snapshot + docs + diary note.
+1. Ingest canonical PDF twice; assert all chapter hashes identical.
+1. Derive new `chapters_sha256.json` (exclude volume JSON) & validate via tests.
+1. Update README Snapshot section with date + rationale.
+1. Single commit: snapshot + docs + diary note.
 
 ## Experimental Features (Present but Not Core MVP)
 
@@ -123,5 +123,6 @@ Mid term: Expand to multi-book ingestion with selective hash snapshotting and di
 
 Long term: Introduce scalable storage (object store), advanced parsing fallback, and quality metrics for ingestion confidence scoring.
 
----
+______________________________________________________________________
+
 Last updated: 2025-08-14

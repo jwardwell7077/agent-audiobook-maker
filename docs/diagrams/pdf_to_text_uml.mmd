@@ -1,0 +1,17 @@
+classDiagram
+    direction TB
+
+    class PdfToTextOptions {
+      +bool dedupe_whitespace = true
+      +bool preserve_form_feeds = false
+      +str newline = "\n"
+    }
+
+    class PdfToTextExtractor {
+      +extract(pdf_path: str, out_path: str, options: PdfToTextOptions) -> None
+      -_read(pdf_path: str) -> list[str]
+      -_clean(pages: list[str], options: PdfToTextOptions) -> str
+      -_write(out_path: str, text: str) -> None
+    }
+
+    PdfToTextExtractor --> PdfToTextOptions

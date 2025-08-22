@@ -86,21 +86,21 @@ Structured JSON schema: [docs/STRUCTURED_JSON_SCHEMA.md](docs/STRUCTURED_JSON_SC
 
 ## Status Snapshot (2025-08-14)
 
-| Layer | State | Notes |
-|-------|-------|-------|
-| Ingestion | Stable + deterministic | Structured TOC only; per‑chapter JSON + volume manifest; hash regression tests. |
-| Annotation (LangFlow prototype) | Loader → Segmenter → Writer | Produces dialogue/narration utterances JSONL. |
-| LangGraph Graph | Minimal sample | Will be replaced by chapter annotation / casting graph. |
-| Casting | Planned | Character bible + voice mapping next phase. |
-| TTS Rendering | Prototype stubs | Real XTTS/Piper integration upcoming. |
-| Dagster Orchestration | Partial | Ingestion + preliminary rendering assets. |
-| Roadmap Docs | Added | `docs/MULTI_AGENT_ROADMAP.md` & updated `docs/CONTEXT.md`. |
+| Layer                           | State                       | Notes                                                                           |
+| ------------------------------- | --------------------------- | ------------------------------------------------------------------------------- |
+| Ingestion                       | Stable + deterministic      | Structured TOC only; per‑chapter JSON + volume manifest; hash regression tests. |
+| Annotation (LangFlow prototype) | Loader → Segmenter → Writer | Produces dialogue/narration utterances JSONL.                                   |
+| LangGraph Graph                 | Minimal sample              | Will be replaced by chapter annotation / casting graph.                         |
+| Casting                         | Planned                     | Character bible + voice mapping next phase.                                     |
+| TTS Rendering                   | Prototype stubs             | Real XTTS/Piper integration upcoming.                                           |
+| Dagster Orchestration           | Partial                     | Ingestion + preliminary rendering assets.                                       |
+| Roadmap Docs                    | Added                       | `docs/MULTI_AGENT_ROADMAP.md` & updated `docs/CONTEXT.md`.                      |
 
 ## Multi‑Agent Migration Path
 
 1. LangFlow (rapid prototyping / visual wiring of segmentation + writer) – CURRENT
-2. CrewAI (role / task abstraction for speaker attribution & QA agents)
-3. LangChain + LangGraph (deterministic state machine orchestration, resumability, devtools)
+1. CrewAI (role / task abstraction for speaker attribution & QA agents)
+1. LangChain + LangGraph (deterministic state machine orchestration, resumability, devtools)
 
 See `docs/MULTI_AGENT_ROADMAP.md` for detailed phase goals, exit criteria, and risk controls.
 
@@ -116,7 +116,7 @@ End setup instructions
 
 1. Install dependencies, along with the [LangGraph CLI](https://langchain-ai.github.io/langgraph/concepts/langgraph_cli/), which will be used to run the server.
 
-  Note: On this KISS branch, you only need the minimal dev tools above. The steps below are future‑leaning; follow them later when the executable graph/API land.
+Note: On this KISS branch, you only need the minimal dev tools above. The steps below are future‑leaning; follow them later when the executable graph/API land.
 
 ```bash
 git clone <repo>
@@ -141,54 +141,56 @@ LANGSMITH_API_KEY=lsv2...
 
 1. Start Postgres (dev) and API + Dagster (optional).
 
-  Option A: docker-compose (recommended)
+Option A: docker-compose (recommended)
 
-  ```bash
-  docker compose up -d db
-  ```
+```bash
+docker compose up -d db
+```
 
-  Verify DB:
+Verify DB:
 
-  ```bash
-  docker compose logs db | head
-  ```
+```bash
+docker compose logs db | head
+```
 
-  Optionally start API:
+Optionally start API:
 
-  ```bash
-  docker compose up -d api
-  ```
+```bash
+docker compose up -d api
+```
 
 1. Run tests (uses Postgres if running, falls back to sqlite if configured otherwise):
 
-  ```bash
-  pytest -q
-  ```
+```bash
+pytest -q
+```
 
 1. Ingest PDFs (structured TOC only) via API:
 
-  Single stored PDF (already placed under `data/books/<book_id>` or `data/books/<book_id>/source_pdfs`):
+Single stored PDF (already placed under `data/books/<book_id>` or `data/books/<book_id>/source_pdfs`):
 
-  ```bash
-  curl -X POST -F book_id=<book_id> -F pdf_name=<file.pdf> -F verbose=1 http://localhost:8000/ingest
-  ```
+```bash
+curl -X POST -F book_id=<book_id> -F pdf_name=<file.pdf> -F verbose=1 http://localhost:8000/ingest
+```
 
-  Batch (all PDFs for the book):
+Batch (all PDFs for the book):
 
-  ```bash
-  curl -X POST -F book_id=<book_id> http://localhost:8000/ingest
-  ```
+```bash
+curl -X POST -F book_id=<book_id> http://localhost:8000/ingest
+```
 
-  Background job:
+Background job:
 
-  ```bash
-  curl -X POST -F book_id=<book_id> http://localhost:8000/ingest_job
-  ```
+```bash
+curl -X POST -F book_id=<book_id> http://localhost:8000/ingest_job
+```
 
-  Artifacts (structured-only):
+Artifacts (structured-only):
 
 - `data/clean/<book_id>/<chapter_id>.json` (per chapter)
+
 - `data/clean/<book_id>/<pdf_stem>_volume.json` (volume metadata + chapter list, schema_version=1.0)
+
 - `data/processed/<book_id>/<pdf_stem>/extracted_full.txt` and `pages.jsonl` (raw extraction provenance)
 
   Batch ingest response returns a comma‑separated list of volume JSON paths (consider parsing client‑side into an array).
@@ -209,12 +211,12 @@ Import the sample flow (`examples/langflow/sample_volume_segmentation_flow.json`
 
 ## Prototype LangFlow Components
 
-| Component | Purpose | Key Inputs | Outputs |
-|-----------|---------|------------|---------|
-| ChapterVolumeLoader | Load volume manifest + selected chapter JSON | data_root, book_id, pdf_stem, chapter_index | chapters_index (list), selected_chapter (dict) |
-| SegmentDialogueNarration | Heuristic sentence split + dialogue detection | selected_chapter | utterances_payload (dict) |
-| UtteranceJSONLWriter | Persist utterances + header | utterances_payload | paths (dict) |
-| PayloadLogger (debug) | Inspect payload structure | any | passthrough |
+| Component                | Purpose                                       | Key Inputs                                  | Outputs                                        |
+| ------------------------ | --------------------------------------------- | ------------------------------------------- | ---------------------------------------------- |
+| ChapterVolumeLoader      | Load volume manifest + selected chapter JSON  | data_root, book_id, pdf_stem, chapter_index | chapters_index (list), selected_chapter (dict) |
+| SegmentDialogueNarration | Heuristic sentence split + dialogue detection | selected_chapter                            | utterances_payload (dict)                      |
+| UtteranceJSONLWriter     | Persist utterances + header                   | utterances_payload                          | paths (dict)                                   |
+| PayloadLogger (debug)    | Inspect payload structure                     | any                                         | passthrough                                    |
 
 All outputs are plain Python (dict/list) for interop with future CrewAI / LangGraph nodes.
 
@@ -228,18 +230,18 @@ All outputs are plain Python (dict/list) for interop with future CrewAI / LangGr
 
 ## Environment Variables (Ingestion & Annotation)
 
-| Variable | Default | Effect |
-|----------|---------|--------|
-| INGEST_FORCE_PYMUPDF | unset | Force PyMuPDF backend for extraction when =1. |
-| INGEST_HYPHEN_FIX | 1 | Disable hyphen line‑wrap repair when =0. |
-| INGEST_SPLIT_CAMEL | unset | Enable optional camelCase splitting when =1. |
-| INGEST_TOKEN_WARN_AVG_LEN | 18 | Avg token length warning threshold. |
-| INGEST_TOKEN_WARN_LONG_RATIO | 0.02 | Ratio of very long tokens to trigger warning. |
-| INGEST_DEBUG_STRUCTURE | unset | Emit structured TOC debug info when set. |
-| (Annotation flags via API params) enable_coref | True | Skip coref step when false. |
-| enable_emotion | True | Skip emotion classification when false. |
-| enable_qa | True | Skip QA flagging when false. |
-| max_segments | 200 | Truncate segmentation for fast tests. |
+| Variable                                       | Default | Effect                                        |
+| ---------------------------------------------- | ------- | --------------------------------------------- |
+| INGEST_FORCE_PYMUPDF                           | unset   | Force PyMuPDF backend for extraction when =1. |
+| INGEST_HYPHEN_FIX                              | 1       | Disable hyphen line‑wrap repair when =0.      |
+| INGEST_SPLIT_CAMEL                             | unset   | Enable optional camelCase splitting when =1.  |
+| INGEST_TOKEN_WARN_AVG_LEN                      | 18      | Avg token length warning threshold.           |
+| INGEST_TOKEN_WARN_LONG_RATIO                   | 0.02    | Ratio of very long tokens to trigger warning. |
+| INGEST_DEBUG_STRUCTURE                         | unset   | Emit structured TOC debug info when set.      |
+| (Annotation flags via API params) enable_coref | True    | Skip coref step when false.                   |
+| enable_emotion                                 | True    | Skip emotion classification when false.       |
+| enable_qa                                      | True    | Skip QA flagging when false.                  |
+| max_segments                                   | 200     | Truncate segmentation for fast tests.         |
 
 Future config consolidation will migrate these into a typed settings module.
 
@@ -247,7 +249,7 @@ Future config consolidation will migrate these into a typed settings module.
 
 1. **Define configurable parameters**: Modify the `Configuration` class in the `graph.py` file to expose the arguments you want to configure. For example, in a chatbot application you may want to define a dynamic system prompt or LLM to use. For more information on configurations in LangGraph, [see here](https://langchain-ai.github.io/langgraph/concepts/low_level/?h=configuration#configuration).
 
-2. **Extend the graph**: The core logic of the application is defined in [graph.py](./src/agent/graph.py). You can modify this file to add new nodes, edges, or change the flow of information.
+1. **Extend the graph**: The core logic of the application is defined in [graph.py](./src/agent/graph.py). You can modify this file to add new nodes, edges, or change the flow of information.
 
 ## Development Notes
 
@@ -310,37 +312,37 @@ The initial prototype targeted a single long-form book to harden deterministic e
 The following items are intentionally deferred until we broaden beyond the single-book focus:
 
 1. Multi-book management UI & listing endpoints hardening (pagination, metadata summaries).
-2. Robust validation of mixed PDF sources per book and conflict resolution (duplicate chapter titles across volumes).
-3. Advanced / hybrid parsing strategies (heading-based, semantic segmentation) to supplement structured TOC failures.
-4. Incremental re‑ingest & diffing (detect modified pages / partial chapter rewrites).
-5. Parallel ingest & concurrency controls for large multi-volume series.
-6. Pluggable normalization for inconsistent chapter numbering schemes (e.g., prologues, interludes, side stories).
-7. Internationalization / Unicode edge cases (full‑width numerals, non‑Latin scripts in TOC detection).
-8. Quality metrics & scoring: chapter length outlier detection, missing chapter gap detection.
-9. Storage abstraction (S3 / object store) and streaming ingest for very large PDFs.
-10. Persistent job history querying & retention policies.
-11. Authentication / authorization & multi-tenant isolation.
-12. Configurable warning thresholds that escalate to errors (e.g., if chapter_count < N).
-13. Automatic synthetic TOC generation when structured parse fails but headings are present.
-14. Coverage for edge PDFs: scanned images (OCR integration), encrypted PDFs, very large page counts (>5k pages).
-15. CLI tooling for batch maintenance tasks (rebuild volume JSONs, verify checksums).
-16. Rich chapter metadata enrichment (entity counts, reading time, audio duration estimates).
-17. End-to-end audio rendering pipeline QA (voice casting heuristics, retry policies).
-18. Caching layer for parsed TOC / extraction results to speed repeated operations.
-19. Telemetry & tracing dashboards (OpenTelemetry / Prometheus) for ingestion timing breakdown.
-20. Pluggable plugin architecture for custom chapter filters / transforms.
+1. Robust validation of mixed PDF sources per book and conflict resolution (duplicate chapter titles across volumes).
+1. Advanced / hybrid parsing strategies (heading-based, semantic segmentation) to supplement structured TOC failures.
+1. Incremental re‑ingest & diffing (detect modified pages / partial chapter rewrites).
+1. Parallel ingest & concurrency controls for large multi-volume series.
+1. Pluggable normalization for inconsistent chapter numbering schemes (e.g., prologues, interludes, side stories).
+1. Internationalization / Unicode edge cases (full‑width numerals, non‑Latin scripts in TOC detection).
+1. Quality metrics & scoring: chapter length outlier detection, missing chapter gap detection.
+1. Storage abstraction (S3 / object store) and streaming ingest for very large PDFs.
+1. Persistent job history querying & retention policies.
+1. Authentication / authorization & multi-tenant isolation.
+1. Configurable warning thresholds that escalate to errors (e.g., if chapter_count < N).
+1. Automatic synthetic TOC generation when structured parse fails but headings are present.
+1. Coverage for edge PDFs: scanned images (OCR integration), encrypted PDFs, very large page counts (>5k pages).
+1. CLI tooling for batch maintenance tasks (rebuild volume JSONs, verify checksums).
+1. Rich chapter metadata enrichment (entity counts, reading time, audio duration estimates).
+1. End-to-end audio rendering pipeline QA (voice casting heuristics, retry policies).
+1. Caching layer for parsed TOC / extraction results to speed repeated operations.
+1. Telemetry & tracing dashboards (OpenTelemetry / Prometheus) for ingestion timing breakdown.
+1. Pluggable plugin architecture for custom chapter filters / transforms.
 
 These are documented here to set clear boundaries: the MVP will ship once the single target book is fully processed with reliable structured TOC extraction and stored metadata artifacts.
 
 ## Migration Roadmap (Condensed)
 
-| Phase | Exit Criteria | Risks Controlled |
-|-------|---------------|------------------|
-| LangFlow Prototype | Deterministic segmentation → JSONL | Scope creep; enforce hash guardrails |
-| CrewAI Layer | Role agents (Speaker, QA) produce enriched utterances | Non‑deterministic LLM drift – snapshot key fields |
-| LangGraph Orchestration | Graph executes multi-stage annotation + TTS with resume | State divergence – typed state + version pinning |
-| Full Rendering | XTTS/Piper stems + loudness normalized chapters | GPU saturation – queued TTS jobs |
-| Mastering & QA | Automated loudness + QA flags gating release | False positives – triage workflow |
+| Phase                   | Exit Criteria                                           | Risks Controlled                                  |
+| ----------------------- | ------------------------------------------------------- | ------------------------------------------------- |
+| LangFlow Prototype      | Deterministic segmentation → JSONL                      | Scope creep; enforce hash guardrails              |
+| CrewAI Layer            | Role agents (Speaker, QA) produce enriched utterances   | Non‑deterministic LLM drift – snapshot key fields |
+| LangGraph Orchestration | Graph executes multi-stage annotation + TTS with resume | State divergence – typed state + version pinning  |
+| Full Rendering          | XTTS/Piper stems + loudness normalized chapters         | GPU saturation – queued TTS jobs                  |
+| Mastering & QA          | Automated loudness + QA flags gating release            | False positives – triage workflow                 |
 
 Details: `docs/MULTI_AGENT_ROADMAP.md`.
 
