@@ -23,6 +23,7 @@ from abm.classifier.types import (
     Page,
     PageMarker,
     PerPageLabel,
+    TOCEntry,
 )
 
 _NUM_ONLY_RE = re.compile(r"^(?:page\s+)?(\d{1,4})$", re.IGNORECASE)
@@ -31,6 +32,13 @@ _INLINE_TRAIL_NUM_RE = re.compile(
     r"^(?P<prefix>.*?)\s*(?:[-–—•\s]+)?(?:(?:page\s+)?(?P<num>\d{1,4}))\s*$",
     re.IGNORECASE,
 )
+
+_TOC_HEADING_RE = re.compile(
+    r"^\s*(table of contents|contents)\s*$",
+    re.IGNORECASE,
+)
+_TOC_LINE_ENDS_NUM_RE = re.compile(r"\d{1,4}\s*$")
+_TOC_DOTS_RE = re.compile(r"\.{2,}\s*\d{1,4}$")
 
 
 def _is_page_number_only(text: str) -> str | None:
@@ -114,6 +122,78 @@ def _build_body_and_markers(
     return flat_lines, markers
 
 
+def _detect_toc_pages(pages: list[Page]) -> list[int]:
+    """Heuristic detection of TOC pages.
+
+    Signals:
+    - Presence of a heading line "Contents" or "Table of Contents".
+    - Many short lines ending with numbers and/or dotted leaders.
+    """
+
+    toc_pages: list[int] = []
+    for page in pages:
+        lines = page.lines
+        if any(_TOC_HEADING_RE.match(ln or "") for ln in lines):
+            toc_pages.append(page.page_index)
+            continue
+
+        candidates = 0
+        dots = 0
+        for ln in lines:
+            if len(ln) > 120:
+                continue
+            if _TOC_LINE_ENDS_NUM_RE.search(ln or ""):
+                candidates += 1
+            if _TOC_DOTS_RE.search(ln or ""):
+                dots += 1
+        total = len(lines) or 1
+        ratio = candidates / total
+        if candidates >= 3 and (ratio >= 0.3 or dots >= 2):
+            toc_pages.append(page.page_index)
+    return sorted(set(toc_pages))
+
+
+_TOC_ENTRY_RE = re.compile(
+    r"^(?P<title>.+?)\s*(?:\.{2,}|\s{2,}|[-–—•\s]{2,})?\s*(?P<page>\d{1,4})$"
+)
+
+
+def _parse_toc_entries(
+    pages: list[Page], toc_pages: list[int]
+) -> list[TOCEntry]:
+    """Parse basic TOC entries from the detected TOC pages."""
+
+    entries: list[TOCEntry] = []
+    toc_set = set(toc_pages)
+    for page in pages:
+        if page.page_index not in toc_set:
+            continue
+        for i, raw in enumerate(page.lines):
+            s = raw.strip()
+            if not s:
+                continue
+            m = _TOC_ENTRY_RE.match(s)
+            if not m:
+                continue
+            title = m.group("title").strip()
+            # Reject titles that are too short after stripping
+            if not title or title.isdigit():
+                continue
+            try:
+                page_no = int(m.group("page"))
+            except ValueError:
+                continue
+            entries.append(
+                {
+                    "title": title,
+                    "page": page_no,
+                    "raw": raw,
+                    "line_in_toc": i,
+                }
+            )
+    return entries
+
+
 def classify_sections(inputs: ClassifierInputs) -> ClassifierOutputs:
     """Classify book sections and return four artifacts.
 
@@ -178,10 +258,30 @@ def classify_sections(inputs: ClassifierInputs) -> ClassifierOutputs:
         "document_meta": document_meta,
     }
 
+    # TOC detection and span
+    toc_pages = _detect_toc_pages(pages)
+    toc_entries = _parse_toc_entries(pages, toc_pages)
+    if toc_pages and page_spans:
+        starts = []
+        ends = []
+        for pidx in toc_pages:
+            if pidx in page_spans:
+                s, e = page_spans[pidx]
+                starts.append(s)
+                ends.append(e)
+        if starts and ends:
+            span_toc = [min(starts), max(ends)]
+    toc_warnings: list[str] = []
+    if not toc_entries:
+        toc_warnings.append("no toc entries parsed")
+    else:
+        toc_warnings.append(
+            f"parsed {len(toc_entries)} entries from {len(set(toc_pages))} toc page(s)"
+        )
     toc: TOC = {
         "span": span_toc,
-        "entries": [],
-        "warnings": ["stub: no toc entries"],
+        "entries": toc_entries,
+        "warnings": toc_warnings,
     }
 
     per_page: list[PerPageLabel] = [
