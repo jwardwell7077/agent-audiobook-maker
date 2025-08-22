@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=66", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-audiobook-maker"
+version = "0.1.0"
+description = "Local-first audiobook maker tooling (PDF→TXT→JSON→Structured JSON)"
+requires-python = ">=3.11"
+readme = "README.md"
+authors = [{ name = "jon" }]
+license = { file = "LICENSE" }
+keywords = ["audiobook", "pdf", "tts", "langgraph", "crewai"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["abm*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+respect-gitignore = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "PIE", "TID", "PERF"]
+ignore = []
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.mypy]
+python_version = "3.11"
+warn_unused_configs = true
+warn_return_any = true
+warn_unused_ignores = true
+strict = true
+packages = ["abm"]
+# Third-party stubs may be missing; allow imports without stubs.
+ignore_missing_imports = false
+
+[[tool.mypy.overrides]]
+module = ["fitz"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+pythonpath = ["src"]
+filterwarnings = ["default"]
+
+[tool.interrogate]
+ignore-init-method = false
+ignore-init-module = true
+ignore-private = false
+ignore-magic = false
+ignore-property-decorators = false
+fail-under = 100
+exclude = [".venv", "tests", "docs", "scripts"]
+verbose = 1
+quiet = false
+whitelist-regex = []
+color = true
+style = "google"
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+omit = [
+	"src/**/__init__.py",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+omit = [
+	"src/**/__init__.py",
+]
+
