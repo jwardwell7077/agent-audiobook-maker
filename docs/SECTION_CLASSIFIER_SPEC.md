@@ -12,15 +12,23 @@ Identify front matter, TOC, body chapters region, and back matter in a novel PDF
 
 - Input: pages: List[{ page_idx: int, lines: str[] }]
 - Continuous body text: join all page lines into a single text buffer, removing page-number-only lines. If a page number appears inline with other content, attempt to remove just the number token and emit a warning. Preserve line order and other content.
-- Output artifacts (four separate JSON files in `data/clean/<book>/<pdf_stem>/classified/`):
+Output artifacts (four separate JSON files in `data/clean/<book>/<pdf_stem>/classified/`):
   - front_matter.json
-    - { span: [start_char, end_char], text_sha256, warnings: string[], document_meta: { page_markers: Array<{ page_index: int, line_index_global: int, value: string }> } }
+  - { span: [start_char, end_char], text_sha256, warnings: string[], document_meta: { page_markers: Array<{ page_index: int, line_index_global: int, value: string }> } }
+  - Schema: [docs/schemas/classifier/front_matter.schema.json](schemas/classifier/front_matter.schema.json)
+  - Example: [docs/examples/classifier/front_matter.example.json](examples/classifier/front_matter.example.json)
   - toc.json
-    - { span: [start_char, end_char], entries: Array<{ title: string, page: int, raw: string, line_in_toc: int }>, warnings: string[] }
+  - { span: [start_char, end_char], entries: Array<{ title: string, page: int, raw: string, line_in_toc: int }>, warnings: string[] }
+  - Schema: [docs/schemas/classifier/toc.schema.json](schemas/classifier/toc.schema.json)
+  - Example: [docs/examples/classifier/toc.example.json](examples/classifier/toc.example.json)
   - chapters_section.json
-    - { span: [start_char, end_char], per_page_labels: Array<{ page_index: int, label: 'front'|'toc'|'body'|'back', confidence: number }>, warnings: string[] }
+  - { span: [start_char, end_char], per_page_labels: Array<{ page_index: int, label: 'front'|'toc'|'body'|'back', confidence: number }>, warnings: string[] }
+  - Schema: [docs/schemas/classifier/chapters_section.schema.json](schemas/classifier/chapters_section.schema.json)
+  - Example: [docs/examples/classifier/chapters_section.example.json](examples/classifier/chapters_section.example.json)
   - back_matter.json
-    - { span: [start_char, end_char], text_sha256, warnings: string[] }
+  - { span: [start_char, end_char], text_sha256, warnings: string[] }
+  - Schema: [docs/schemas/classifier/back_matter.schema.json](schemas/classifier/back_matter.schema.json)
+  - Example: [docs/examples/classifier/back_matter.example.json](examples/classifier/back_matter.example.json)
 
 Notes
 
