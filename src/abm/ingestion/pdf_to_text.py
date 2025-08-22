@@ -61,7 +61,7 @@ class PdfToTextExtractor:
     def _read(self, pdf_path: Path) -> list[str]:
         """Read pages from PDF as text using fitz."""
         try:
-            doc = fitz.open(pdf_path)  # type: ignore[arg-type]
+            doc = fitz.open(str(pdf_path))
         except Exception as exc:
             # Map open failures to ValueError to keep a simple contract.
             raise ValueError(f"Cannot open PDF: {pdf_path}") from exc
