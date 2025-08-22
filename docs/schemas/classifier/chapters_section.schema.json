@@ -1,0 +1,59 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "chapters_section.schema.json",
+    "title": "Chapters Section",
+    "type": "object",
+    "required": [
+        "span",
+        "per_page_labels",
+        "warnings"
+    ],
+    "properties": {
+        "span": {
+            "type": "array",
+            "items": {
+                "type": "integer",
+                "minimum": 0
+            },
+            "minItems": 2,
+            "maxItems": 2
+        },
+        "per_page_labels": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "page_index",
+                    "label",
+                    "confidence"
+                ],
+                "properties": {
+                    "page_index": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "label": {
+                        "type": "string",
+                        "enum": [
+                            "front",
+                            "toc",
+                            "body",
+                            "back"
+                        ]
+                    },
+                    "confidence": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                    }
+                }
+            }
+        },
+        "warnings": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    }
+}
