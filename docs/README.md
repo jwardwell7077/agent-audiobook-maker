@@ -35,6 +35,14 @@ AI‑generated, Copilot‑assisted. This index organizes the docs for fast navig
 - Design spec: [SECTION_CLASSIFIER_SPEC.md](SECTION_CLASSIFIER_SPEC.md)
   - Flow diagram: [diagrams/section_classifier.mmd](diagrams/section_classifier.mmd)
   - FSM diagram: [diagrams/section_classifier_fsm.mmd](diagrams/section_classifier_fsm.mmd)
+  - UML: [diagrams/section_classifier_uml.mmd](diagrams/section_classifier_uml.mmd)
+  - Outputs: four JSON files (front_matter.json, toc.json, chapters_section.json, back_matter.json); page-number-only lines removed, mixed lines cleaned with warnings
+
+## Chapterizer
+
+- Design spec: [CHAPTERIZER_SPEC.md](CHAPTERIZER_SPEC.md)
+  - FSM diagram: [diagrams/chapterizer_fsm.mmd](diagrams/chapterizer_fsm.mmd)
+  - UML: [diagrams/chapterizer_uml.mmd](diagrams/chapterizer_uml.mmd)
 
 ## Roadmap
 

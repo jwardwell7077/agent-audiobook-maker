@@ -6,17 +6,25 @@ Source diagram: [docs/diagrams/section_classifier.mmd](diagrams/section_classifi
 
 ## Purpose
 
-Identify front matter, TOC, body chapters, and back matter in a novel PDF converted to simple TXT pages. Provide deterministic chapter boundaries and a TOC when present.
+Identify front matter, TOC, body chapters region, and back matter in a novel PDF converted to simple TXT pages. Produce four separate JSON artifacts (one per section) and capture page-number markers while building a single continuous body of text (pages concatenated back-to-back, with page-number-only lines removed). If a line contains content plus a page number token, attempt to remove only the number and emit a warning.
 
-## Contract
+## Contract (Step 1 – Classifier)
 
-- Input: pages: List[{ page_idx: int, text: str }]
-- Output:
-  - toc: List[{ title: str, page: int }]
-  - chapters: List[{ index: int, title?: str, start_page: int, end_page: int, start_offset?: int, end_offset?: int }]
-  - sections: { front_matter_pages: int[], toc_pages: int[], back_matter_pages: int[] }
-  - per_page_labels: List[{ page_idx: int, label: 'front'|'toc'|'body'|'back', confidence: float, signals: Record\<string, any> }]
-  - warnings: string[]
+- Input: pages: List[{ page_idx: int, lines: str[] }]
+- Continuous body text: join all page lines into a single text buffer, removing page-number-only lines. If a page number appears inline with other content, attempt to remove just the number token and emit a warning. Preserve line order and other content.
+- Output artifacts (four separate JSON files in `data/clean/<book>/<pdf_stem>/classified/`):
+  - front_matter.json
+    - { span: [start_char, end_char], text_sha256, warnings: string[], document_meta: { page_markers: Array<{ page_index: int, line_index_global: int, value: string }> } }
+  - toc.json
+    - { span: [start_char, end_char], entries: Array<{ title: string, page: int, raw: string, line_in_toc: int }>, warnings: string[] }
+  - chapters_section.json
+    - { span: [start_char, end_char], per_page_labels: Array<{ page_index: int, label: 'front'|'toc'|'body'|'back', confidence: number }>, warnings: string[] }
+  - back_matter.json
+    - { span: [start_char, end_char], text_sha256, warnings: string[] }
+
+Notes
+
+- page_markers capture page numbers detected and their location in the continuous text (global line index). Body text excludes page-number-only lines; mixed-content lines are cleaned if the page number token can be safely removed (warning recorded).
 
 ## Determinism
 
@@ -28,8 +36,11 @@ Identify front matter, TOC, body chapters, and back matter in a novel PDF conver
 
 1. Preprocess
 
-- Normalize whitespace; keep page_idx; preserve line boundaries.
-- Optional header/footer strip if consistent (first/last N lines repeated across pages).
+- Normalize whitespace; keep page_index; preserve line boundaries.
+- Page numbers:
+  - If an entire line is a page number (e.g., `12`, `Page 12`, roman numerals), remove the line from body and record a page_marker.
+  - If a line contains content plus an apparent page number token, attempt to remove just the number token; record a page_marker and emit a warning.
+  - If ambiguous, keep the line as-is; record a warning.
 
 1. TOC Detection
 
@@ -65,7 +76,10 @@ Identify front matter, TOC, body chapters, and back matter in a novel PDF conver
 
 - Enforce logical order: Front → TOC? → Body → Back using a tiny state machine.
 
-1. Chapter Boundaries
+1. Section Spans
+
+- Compute spans for front_matter, toc, chapters_section, back_matter within the continuous text buffer.
+- Persist four JSON files with spans and metadata as described above.
 
 - If TOC present: anchor chapter starts to toc.page with ±1–2 page tolerance.
 - Else: use heading pages as starts.
@@ -74,27 +88,13 @@ Identify front matter, TOC, body chapters, and back matter in a novel PDF conver
 
 ## Output Schema Details
 
-- toc entries titles are raw text (no normalization beyond trim).
-- chapter.index is 0‑based.
-- start_offset/end_offset may remain unset in KISS v1.
+- TOC entries `title` must be treated as-is; normalization only for whitespace trim when comparing.
+- When later used for title matching, titles must appear as the only entity on a line (anchor to line start/end), case- and space-insensitive.
 
 ## Integration
 
-- Add an optional `classifier` block to the Volume Manifest:
-
-```jsonc
-{
- "classifier": {
-   "front_matter_pages": [0,1,2],
-   "toc_pages": [3],
-   "back_matter_pages": [210,211],
-   "toc": [ { "title": "Chapter 1", "page": 7 }, ... ],
-   "warnings": ["toc_count_mismatch: expected 12, found 11"]
- }
-}
-```
-
-- Chapter JSON remains unchanged.
+- Classifier outputs are stored as four separate JSON files under the classified folder for downstream chapterization.
+- Volume Manifest and Chapter JSON remain unchanged in v1.0; they may reference classifier outputs via paths in future versions.
 
 ## Tests (minimal)
 
@@ -113,6 +113,8 @@ Identify front matter, TOC, body chapters, and back matter in a novel PDF conver
 
 Diagram: [docs/diagrams/section_classifier_fsm.mmd](diagrams/section_classifier_fsm.mmd)
 
+UML (component/service): [docs/diagrams/section_classifier_uml.mmd](diagrams/section_classifier_uml.mmd)
+
 States
 
 - Front (Front Matter)
@@ -127,6 +129,7 @@ Events (evaluated per page)
 - E_toc: TOC signals ("Contents", dotted leaders, lines ending with numbers, entry density)
 - E_heading: heading signals (Chapter/Part/Prologue/Epilogue regex, UPPERCASE short line, numeric-only, Roman numerals)
 - E_back: back signals (acknowledgments, about the author, reading group guide, afterword, notes, glossary, appendix, preview)
+- E_page_num_line: line is page-number-only; remove and record marker
 - E_eof: end of pages
 
 Guards
@@ -150,3 +153,4 @@ Transitions
 - Body → End: E_eof
 - TOC → End: E_eof
 - Front → End: E_eof
+- Any → same: E_page_num_line (remove line, record marker; does not affect state)

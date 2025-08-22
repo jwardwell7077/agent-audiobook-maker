@@ -2,10 +2,11 @@
 
 Last updated: 2025-08-21
 
-This defines the "Structured JSON" produced by the ingestion pipeline. It consists of:
+This defines the "Structured JSON" produced by the ingestion pipeline.
+Starting with v1.1, chapters are embedded directly in the Volume Manifest for simplicity (local‑first, single artifact). Per‑chapter files remain optional as a materialized view.
 
-- Volume Manifest: `data/clean/<book_id>/<pdf_stem>_volume.json`
-- Per‑Chapter JSON: `data/clean/<book_id>/<chapter_id>.json`
+- Volume Manifest: `data/clean/<book_id>/<pdf_stem>_volume.json` (embeds `chapters[]` with full bodies in v1.1)
+- Per‑Chapter JSON (optional): `data/clean/<book_id>/<chapter_id>.json`
 
 Versioning: `schema_version` is a string. Backward-compatible additions bump the patch/minor (e.g., 1.0 → 1.1). Breaking changes bump the major.
 
@@ -74,39 +75,43 @@ classDiagram
   ChapterJson "1" o-- "0..1" Meta : meta
 ```
 
-## Volume Manifest (v1.0)
+## Volume Manifest (v1.1)
 
 Contract
 
 - Inputs: one PDF (identified by `<book_id>` and `<pdf_stem>`)
 - Output: manifest JSON describing chapters and basic stats
-- Determinism: `text_sha256` hashes for each chapter reference the corresponding per‑chapter text; no embedded full text in the manifest
+- Determinism: `text_sha256` hashes for each embedded chapter reflect the exact `body` stored.
 
 Fields
 
-- schema_version: "1.0"
+- schema_version: "1.1"
 - book_id: string
 - pdf_stem: string (filename stem of the source PDF)
 - source_pdf: string (relative path) – optional, informational
 - created_at: ISO8601 string
 - generator: { name: string, version: string } – optional
 - stats: { page_count: int, chapter_count: int, warnings: string[] }
-- chapters: ChapterSummary[]
+- chapters: Chapter[]
 
-ChapterSummary
+Chapter
 
 - chapter_id: string (stable id, e.g., `<BOOK>_CH0001`)
 - index: int (0‑based order)
 - title: string
 - start_page: int
 - end_page: int
-- text_sha256: string (hex)
+- start_char: int
+- end_char: int
+- matched_by: "title" | "fallback"
+- body: string (full chapter text)
+- text_sha256: string (hex of `body`)
 
-Example
+Example (v1.1)
 
 ```jsonc
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "book_id": "SAMPLE_BOOK",
   "pdf_stem": "sample_book_v1",
   "source_pdf": "data/books/SAMPLE_BOOK/source_pdfs/sample_book_v1.pdf",
@@ -120,6 +125,10 @@ Example
       "title": "Introduction",
       "start_page": 1,
       "end_page": 6,
+      "start_char": 0,
+      "end_char": 1423,
+      "matched_by": "title",
+      "body": "...full chapter text...",
       "text_sha256": "f2c7..."
     },
     {
@@ -128,13 +137,17 @@ Example
       "title": "Chapter 1",
       "start_page": 7,
       "end_page": 23,
+      "start_char": 1423,
+      "end_char": 9817,
+      "matched_by": "fallback",
+      "body": "...full chapter text...",
       "text_sha256": "ab91..."
     }
   ]
 }
 ```
 
-## Per‑Chapter JSON (v1.0)
+## Per‑Chapter JSON (v1.0) – optional (materialized view)
 
 Contract
 
