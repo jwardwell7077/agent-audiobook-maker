@@ -1,7 +1,6 @@
 # Auto‑Audiobook Maker – Architecture & Dev Machine Context
 
-Last updated: 2025‑08‑15
-Revision addendum (2025-08-15): Refactored `/ingest` endpoint into granular helpers with accumulator pattern and introduced dependency‑built `AnnotationQueryParams` model; removed complexity suppressions.
+Last updated: 2025‑08‑15 Revision addendum (2025-08-15): Refactored `/ingest` endpoint into granular helpers with accumulator pattern and introduced dependency‑built `AnnotationQueryParams` model; removed complexity suppressions.
 
 > KISS note
 >
@@ -31,7 +30,7 @@ Reference: `CONTRIBUTING.md`.
 
 Local‑first, reproducible pipeline to transform long PDFs into a mastered, multi‑voice audiobook. The system ingests, annotates, casts, renders, and masters chapters in parallel, prioritizing CPU for NLP and reserving GPU for TTS. It is orchestrated and observable with Dagster, with MLflow for experiment/config/artifact tracking. Idempotency is enforced via content hashes and cached per‑chapter artifacts in Postgres (JSONB) and the filesystem.
 
----
+______________________________________________________________________
 
 ## Developer Machine & Runtime Constraints
 
@@ -48,7 +47,7 @@ Local‑first, reproducible pipeline to transform long PDFs into a mastered, mul
   - Emotion/Prosody: Distil‑size classifier + rules (CPU).
   - TTS: XTTS v2 (CUDA) primary; Piper (CPU) fallback.
 
----
+______________________________________________________________________
 
 ## High‑Level Architecture
 
@@ -71,15 +70,18 @@ Pipeline stages (per chapter):
 - Output: per‑chapter JSONL with rich annotations under `data/annotations/` and in Postgres JSONB (current prototype = dialogue/narration only; see `docs/ANNOTATION_SCHEMA.md`).
 
 1. Casting & Voices
+
    - Build Character Bible; map speakers to XTTS v2/Coqui profiles.
    - Output: character profiles and TTS settings under `data/casting/` and Postgres tables.
 
 1. Rendering
+
    - Transform annotated JSONL → SSML → TTS → stems → stitched chapter → mastered audiobook chapter.
    - EBU R128 loudness target; normalization and dynamics per chapter; final book assembly.
    - Output: stems under `data/stems/`, chapter WAV/FLAC/MP3 under `data/renders/`.
 
 1. Orchestration & Observability
+
    - Dagster: jobs, sensors, schedules, retries, caching, lineage.
    - MLflow: params, metrics, artifacts, model/config versioning.
 
@@ -94,7 +96,7 @@ Idempotency & caching
 - Hash inputs (text SHA‑256 + params hash) to skip recompute.
 - Store stage status per chapter with artifact URIs; resume on failure.
 
----
+______________________________________________________________________
 
 ## Data Flow & Artifacts (per chapter)
 
@@ -107,7 +109,7 @@ Idempotency & caching
 - Chapter render: `data/renders/{book_id}/{chapter_id}.wav`
 - Book master: `data/renders/{book_id}/book_master.wav`
 
----
+______________________________________________________________________
 
 ## JSONL Annotation Record (canonical)
 
@@ -139,7 +141,7 @@ One JSON object per utterance (lines delimited):
 }
 ```
 
----
+______________________________________________________________________
 
 ## Database Model (Postgres, JSONB‑centric)
 
@@ -156,7 +158,7 @@ One JSON object per utterance (lines delimited):
 
 Indexes: (book_id, chapter_id), GIN on JSONB paths used in filters, BTREE on hashes.
 
----
+______________________________________________________________________
 
 ## Component Responsibilities
 
@@ -185,7 +187,7 @@ Indexes: (book_id, chapter_id), GIN on JSONB paths used in filters, BTREE on has
 - Tracking (MLflow)
   - (Planned) Log configs, metrics (segment counts, latency), artifacts.
 
----
+______________________________________________________________________
 
 ## Current Implementation Snapshot (2025-08-15)
 
@@ -204,16 +206,16 @@ Indexes: (book_id, chapter_id), GIN on JSONB paths used in filters, BTREE on has
 - Tests cover graph behavior and PDF extraction; (TODO) add tests for casting/SSML/TTS stubs & caching idempotency.
 - Pending next steps:
   1. Partitioned Dagster assets (per chapter) + sensor & retries.
-  2. Real TTS (Piper or XTTS) producing audio; stem stitching + simple WAV render table entries.
-  3. SSML enhancements (prosody tags, breaks) + per character voice mapping strategy.
-  4. Character enrichment (frequency stats, alias grouping) & selection UI/API.
-  5. MLflow integration (params, latency metrics, artifacts).
-  6. Enhanced PDF chapterization heuristics & normalization.
-  7. Annotation caching tests & failure retry semantics (extend tests for dependency model edge cases).
-  8. Structured logging + metrics emission.
-  9. Audio mastering (loudness normalization) pipeline step.
-  10. Multi-agent migration (CrewAI role agents) – see `MULTI_AGENT_ROADMAP.md`.
-  11. Broader test coverage for accumulator edge cases (zero PDFs, duplicate titles) and render endpoint.
+  1. Real TTS (Piper or XTTS) producing audio; stem stitching + simple WAV render table entries.
+  1. SSML enhancements (prosody tags, breaks) + per character voice mapping strategy.
+  1. Character enrichment (frequency stats, alias grouping) & selection UI/API.
+  1. MLflow integration (params, latency metrics, artifacts).
+  1. Enhanced PDF chapterization heuristics & normalization.
+  1. Annotation caching tests & failure retry semantics (extend tests for dependency model edge cases).
+  1. Structured logging + metrics emission.
+  1. Audio mastering (loudness normalization) pipeline step.
+  1. Multi-agent migration (CrewAI role agents) – see `MULTI_AGENT_ROADMAP.md`.
+  1. Broader test coverage for accumulator edge cases (zero PDFs, duplicate titles) and render endpoint.
 
 ## Refactor Rationale (2025-08-15)
 
@@ -227,7 +229,7 @@ The ingest endpoint previously mixed: filesystem enumeration, skip logic, extrac
 
 Outcome: Removed prior complexity suppressions; endpoint logic now under threshold with clearer extension seams.
 
----
+______________________________________________________________________
 
 ## Observability & Quality
 
@@ -240,19 +242,19 @@ Outcome: Removed prior complexity suppressions; endpoint logic now under thresho
 ### Code Quality Workflow (Enforced Sequence)
 
 1. Design spec / issue stub enumerating: inputs, outputs, invariants, error modes.
-2. Characterization tests for existing behavior (when modifying legacy).
-3. Refactor into service class (encapsulate state & collaborators) where procedural code grows.
-4. Add/refresh Google-style docstrings (public symbols) – Ruff validates structure.
-5. Run `ruff check --fix` then `ruff check` (should be clean) and `ruff format`.
-6. Run `mypy .` (strict) – resolve new warnings immediately.
-7. (Optional) Run `interrogate` for docstring coverage; maintain ≥ target % (e.g., 95).
-8. Add/adjust tests (happy path + edge cases) before merging.
-9. Re-evaluate complexity (`C901`) & branch/statement counts; decompose functions > threshold.
-10. Final CI: lint, type, tests all green prior to merge.
+1. Characterization tests for existing behavior (when modifying legacy).
+1. Refactor into service class (encapsulate state & collaborators) where procedural code grows.
+1. Add/refresh Google-style docstrings (public symbols) – Ruff validates structure.
+1. Run `ruff check --fix` then `ruff check` (should be clean) and `ruff format`.
+1. Run `mypy .` (strict) – resolve new warnings immediately.
+1. (Optional) Run `interrogate` for docstring coverage; maintain ≥ target % (e.g., 95).
+1. Add/adjust tests (happy path + edge cases) before merging.
+1. Re-evaluate complexity (`C901`) & branch/statement counts; decompose functions > threshold.
+1. Final CI: lint, type, tests all green prior to merge.
 
 Rationale: front-loading design + tests reduces rework during complexity reduction; docstrings stay current with code.
 
----
+______________________________________________________________________
 
 ## Concurrency & Resource Policy
 
@@ -260,7 +262,7 @@ Rationale: front-loading design + tests reduces rework during complexity reducti
 - TTS workers: 1–2 GPU workers; batch SSML by character where safe; back‑pressure via DB job queue.
 - I/O: asynchronous FS/DB where possible; avoid cross‑boundary mounts to `C:\` during hot loops.
 
----
+______________________________________________________________________
 
 ## Docker Compose Topology (conceptual)
 
@@ -285,7 +287,7 @@ Shared volumes/directories
 - `logs/`
 - `models/` (optional local cache for HF/TTS)
 
----
+______________________________________________________________________
 
 ## File/Folder Layout (target)
 
@@ -299,7 +301,7 @@ Shared volumes/directories
 - `tests/` – unit/integration/e2e
 - `docs/` – this context, design notes, evals
 
----
+______________________________________________________________________
 
 ## Reproducibility & Idempotency
 
@@ -308,7 +310,7 @@ Shared volumes/directories
 - Deterministic seeds for models where applicable.
 - All artifacts named with stable IDs and hashes; status transitions recorded in DB.
 
----
+______________________________________________________________________
 
 ## Risks & Mitigations
 
@@ -318,7 +320,7 @@ Shared volumes/directories
 - Audio mastering consistency → EBU R128 compliance checks; loudness gates.
 - Storage growth → prune intermediates; configurable retention of stems.
 
----
+______________________________________________________________________
 
 ## Glossary
 

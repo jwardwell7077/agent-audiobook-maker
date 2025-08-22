@@ -41,7 +41,8 @@ This document captures evolving insights during development of the audiobook ing
 - Configurable heuristics for merging overly fragmented lines.
 - Detect and report unusually high average token length as a spacing loss signal.
 
----
+______________________________________________________________________
+
 (Add new dated sections as further insights emerge.)
 
 ## 2025-08-14
@@ -51,10 +52,10 @@ This document captures evolving insights during development of the audiobook ing
 - Problem: Purge regression test revealed non-deterministic chapter hashes (initially chapter 00020, later 00021) across successive ingests of the same PDF.
 - Root Cause: Minor floating-point jitter in PyMuPDF word y-coordinates influenced heuristic line grouping; plus a missing-space artifact after specific patterns (`Blood type: OQuinn`).
 - Actions:
-	- Added deterministic sorting (round y, include original word index as tie-breaker).
-	- Replaced incremental line grouping with y-quantization binning for stable grouping regardless of iteration order.
-	- Added targeted post-processing rule to re-insert space in `Blood type` pattern collisions.
-	- Captured new canonical hashes after two consistent ingest cycles (verified zero mismatches across cycles) and updated snapshot fixture.
+  - Added deterministic sorting (round y, include original word index as tie-breaker).
+  - Replaced incremental line grouping with y-quantization binning for stable grouping regardless of iteration order.
+  - Added targeted post-processing rule to re-insert space in `Blood type` pattern collisions.
+  - Captured new canonical hashes after two consistent ingest cycles (verified zero mismatches across cycles) and updated snapshot fixture.
 
 ### Testing Enhancements
 

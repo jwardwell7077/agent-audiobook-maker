@@ -1,14 +1,4 @@
-def add(a: int, b: int) -> int:
-    """Add two integers.
-
-    Args:
-        a: First operand.
-        b: Second operand.
-
-    Returns:
-        Sum of a and b.
-    """
-    return a + b
+from core import add
 
 
 def test_add_happy_path() -> None:

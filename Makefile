@@ -5,6 +5,7 @@ all: help
 
 # Define a variable for the test file path.
 TEST_FILE ?= tests/unit_tests/
+COMP_PATH ?= src
 
 VENV_GUARD:=scripts/require_venv.sh
 
@@ -27,6 +28,15 @@ test_profile:
 extended_tests:
 	@$(VENV_GUARD)
 	python -m pytest --only-extended $(TEST_FILE)
+
+# Quality gate: lint, docstrings, coverage
+.PHONY: quality_gate
+quality_gate:
+	@$(VENV_GUARD)
+	ruff format --check .
+	ruff check .
+	interrogate -v -f 100 -M src || (echo "Docstring coverage <100%" && exit 1)
+	pytest -q --cov=$(COMP_PATH) --cov-branch --cov-fail-under=100
 
 # Ensure no legacy 'src.' import prefixes remain
 check_no_src_imports:
@@ -87,6 +97,10 @@ FILE?=README.md
 
 ingest: init_dirs
 	python -m src.pipeline.ingestion.cli $(BOOK) $(FILE) data
+
+pdf_to_text:
+	@$(VENV_GUARD)
+	python -m abm.ingestion.pdf_to_text_cli $(FILE) $(OUT)
 
 ######################
 # DATABASE / ALEMBIC
