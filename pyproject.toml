@@ -44,6 +44,7 @@ strict = true
 packages = ["abm"]
 # Third-party stubs may be missing; allow imports without stubs.
 ignore_missing_imports = false
+mypy_path = ["src"]
 
 [[tool.mypy.overrides]]
 module = ["fitz"]
