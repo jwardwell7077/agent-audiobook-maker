@@ -71,14 +71,17 @@ def _strip_inline_trailing_page_number(text: str) -> tuple[str, str | None]:
 
 def _build_body_and_markers(
     pages: list[Page],
-) -> tuple[list[str], list[PageMarker]]:
-    """Return filtered lines and page markers after page number processing.
+) -> tuple[list[tuple[int, str]], list[PageMarker]]:
+    """Return flattened cleaned lines with page indices and page markers.
 
     - Remove page-number-only lines and record a marker.
-    - For inline trailing numbers, strip the token, record a marker, and warn.
+    - For inline trailing numbers, strip the token and record a marker.
+    Returns:
+        flat_lines: [(page_index, cleaned_line), ...]
+        markers: list of PageMarker
     """
 
-    body_lines: list[str] = []
+    flat_lines: list[tuple[int, str]] = []
     markers: list[PageMarker] = []
     global_line_index = 0
 
@@ -105,10 +108,10 @@ def _build_body_and_markers(
                         "value": num,
                     }
                 )
-            body_lines.append(cleaned)
+            flat_lines.append((page.page_index, cleaned))
             global_line_index += 1
 
-    return body_lines, markers
+    return flat_lines, markers
 
 
 def classify_sections(inputs: ClassifierInputs) -> ClassifierOutputs:
@@ -124,16 +127,50 @@ def classify_sections(inputs: ClassifierInputs) -> ClassifierOutputs:
     """
 
     pages = inputs.get("pages", [])
-    body_lines, page_markers = _build_body_and_markers(pages)
+    flat_lines, page_markers = _build_body_and_markers(pages)
+    body_lines = [ln for _, ln in flat_lines]
     joined = "\n".join(body_lines)
     text_hash = sha256(joined.encode("utf-8")).hexdigest()
 
-    span = [0, len(joined)]
+    # overall length of cleaned joined text
+    total_len = len(joined)
+
+    # Compute per-page char spans using flattened lines and joined text.
+    page_spans: dict[int, tuple[int, int]] = {}
+    char_pos = 0
+    for idx, (pg_idx, line) in enumerate(flat_lines):
+        start = char_pos
+        end = start + len(line)
+        if pg_idx not in page_spans:
+            page_spans[pg_idx] = (start, end)
+        else:
+            # expand existing span
+            cur_s, cur_e = page_spans[pg_idx]
+            page_spans[pg_idx] = (min(cur_s, start), max(cur_e, end))
+        # advance for newline except after last line
+        if idx < len(flat_lines) - 1:
+            char_pos = end + 1
+        else:
+            char_pos = end
+
+    # Derive coarse section spans:
+    # chapters_section covers all body; others are before/after.
+    if page_spans:
+        first_body_start = min(s for s, _ in page_spans.values())
+        last_body_end = max(e for _, e in page_spans.values())
+        span_front = [0, first_body_start]
+        span_body = [first_body_start, last_body_end]
+        span_back = [last_body_end, total_len]
+    else:
+        span_front = [0, 0]
+        span_body = [0, 0]
+        span_back = [0, 0]
+    span_toc = [0, 0]
 
     document_meta: DocumentMeta = {"page_markers": page_markers}
 
     front: FrontMatter = {
-        "span": span,
+        "span": span_front,
         "text_sha256": text_hash,
         "warnings": [
             "page-number-only lines removed; inline trailing numbers stripped",
@@ -142,7 +179,7 @@ def classify_sections(inputs: ClassifierInputs) -> ClassifierOutputs:
     }
 
     toc: TOC = {
-        "span": span,
+        "span": span_toc,
         "entries": [],
         "warnings": ["stub: no toc entries"],
     }
@@ -152,13 +189,13 @@ def classify_sections(inputs: ClassifierInputs) -> ClassifierOutputs:
         for p in pages
     ]
     chapters_section: ChaptersSection = {
-        "span": span,
+        "span": span_body,
         "per_page_labels": per_page,
         "warnings": ["stub: all pages labeled body with 0.0 confidence"],
     }
 
     back: BackMatter = {
-        "span": span,
+        "span": span_back,
         "text_sha256": text_hash,
         "warnings": ["stub: identical to front for placeholder"],
     }
