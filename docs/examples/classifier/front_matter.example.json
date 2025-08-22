@@ -1,0 +1,11 @@
+{
+  "span": [0, 512],
+  "text_sha256": "f2c7...",
+  "warnings": [],
+  "document_meta": {
+    "page_markers": [
+      { "page_index": 1, "line_index_global": 0, "value": "1" },
+      { "page_index": 2, "line_index_global": 42, "value": "2" }
+    ]
+  }
+}
