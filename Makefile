@@ -147,6 +147,44 @@ run_api:
 	@$(VENV_GUARD)
 	$(ACTIVATE) uvicorn api.app:app --reload --port 8000
 
+######################
+# DEV PIPELINE SHORTCUTS
+######################
+
+.PHONY: dev_mvs_txt dev_mvs_classify dev_mvs_chapterize dev_mvs_all test_quick test_all_optional
+
+# Produce cleaned text from the local mvs PDF (dev only). Creates mvs.txt and mvs_nopp.txt.
+dev_mvs_txt:
+	@$(VENV_GUARD)
+	$(ACTIVATE) python -m abm.ingestion.pdf_to_text_cli \
+		data/books/mvs/source_pdfs/MyVampireSystem_CH0001_0700.pdf \
+		data/clean/mvs/mvs.txt --preserve-form-feeds --dev
+
+# Run the classifier CLI on local mvs text and write artifacts under data/clean/mvs/classified
+dev_mvs_classify:
+	@$(VENV_GUARD)
+	$(ACTIVATE) python -m abm.classifier.classifier_cli \
+		data/clean/mvs/mvs.txt data/clean/mvs/classified
+
+# Run the chapterizer CLI on local mvs text and emit chapters.json and readable variants
+dev_mvs_chapterize:
+	@$(VENV_GUARD)
+	$(ACTIVATE) python -m abm.structuring.chapterizer_cli \
+		data/clean/mvs/mvs.txt data/clean/mvs/chapters.json --dev
+
+# One-shot: pdf->text --dev, classifier, chapterizer --dev
+dev_mvs_all: dev_mvs_txt dev_mvs_classify dev_mvs_chapterize
+
+# Fast unit tests only
+test_quick:
+	@$(VENV_GUARD)
+	$(ACTIVATE) pytest -q tests/unit_tests
+
+# All tests including optional ones when env is set
+test_all_optional:
+	@$(VENV_GUARD)
+	ABM_E2E_MVS=$${ABM_E2E_MVS:-0} $(ACTIVATE) pytest -q
+
 
 ######################
 # HELP
