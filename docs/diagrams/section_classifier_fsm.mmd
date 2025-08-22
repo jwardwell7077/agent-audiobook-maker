@@ -1,0 +1,40 @@
+stateDiagram-v2
+  [*] --> Init
+  Init --> Front: start
+
+  state "Front Matter" as Front
+  state TOC
+  state Body
+  state "Back Matter" as Back
+  state End
+
+  %% Events (evaluated per page)
+  %% E_front: front signals present (copyright, isbn, dedication, foreword, preface, prologue)
+  %% E_toc: toc signals ("Contents", dotted leaders, lines ending with numbers, entry density)
+  %% E_heading: heading signals (Chapter/Part/Prologue/Epilogue regex, UPPERCASE short line, numeric-only, roman numerals)
+  %% E_back: back signals (acknowledgments, about the author, reading group guide, afterword, notes, glossary, appendix, preview)
+  %% E_eof: end of pages
+
+  %% Guards
+  %% G_toc_detected: we are on a TOC page or contiguous TOC continues
+  %% G_anchor_match: page matches TOC anchor within ± tolerance
+  %% G_after_last_chapter: expected chapters (from TOC) reached
+  %% G_sustained_back: >= 2 consecutive back-signal pages
+
+  Front --> TOC: E_toc
+  Front --> Body: E_heading || !E_toc && !E_front
+  Front --> Front: E_front && !E_heading && !E_toc
+
+  TOC --> TOC: G_toc_detected
+  TOC --> Body: E_heading || !G_toc_detected
+
+  Body --> Body: !(E_back && (G_after_last_chapter || G_sustained_back))
+  Body --> Back: E_back && (G_after_last_chapter || G_sustained_back)
+
+  Back --> Back: !E_eof
+  Back --> End: E_eof
+
+  Body --> End: E_eof
+  TOC --> End: E_eof
+  Front --> End: E_eof
+  End --> [*]
