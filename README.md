@@ -166,6 +166,23 @@ docker compose up -d api
 pytest -q
 ```
 
+### Optional: Local mvs dev flow (kept out of git)
+
+If you have the MyVampireSystem PDF at `data/books/mvs/source_pdfs/MyVampireSystem_CH0001_0700.pdf`, you can run the whole pipeline locally and generate readable artifacts:
+
+```bash
+# Create mvs.txt (+ mvs_nopp.txt), classify, and chapterize with dev-readable outputs
+make dev_mvs_all
+
+# Run unit tests only
+make test_quick
+
+# Run all tests including optional e2e on mvs (set env to opt-in)
+ABM_E2E_MVS=1 make test_all_optional
+```
+
+Artifacts are written under `data/clean/mvs/` and the `data/books/mvs/` and `data/clean/mvs/` directories are `.gitignore`d.
+
 1. Ingest PDFs (structured TOC only) via API:
 
 Single stored PDF (already placed under `data/books/<book_id>` or `data/books/<book_id>/source_pdfs`):
