@@ -278,6 +278,16 @@ def classify_sections(inputs: ClassifierInputs) -> ClassifierOutputs:
         "warnings": toc_warnings,
     }
 
+    # Tighten section spans using TOC as an anchor: front ends at TOC start,
+    # body starts at TOC end. Apply only when span_toc is non-empty.
+    if span_toc[1] > span_toc[0]:
+        # keep within total bounds and maintain monotonicity
+        span_front = [max(0, span_front[0]), min(span_front[1], span_toc[0])]
+        span_body = [
+            max(span_toc[1], span_body[0]),
+            max(span_toc[1], span_body[1]),
+        ]
+
     # Per-page labels using TOC as anchors
     toc_page_set = set(toc_pages)
     toc_entry_pages = {e["page"] for e in toc_entries}
