@@ -9,6 +9,7 @@ See docs/SECTION_CLASSIFIER_SPEC.md for details.
 
 from __future__ import annotations
 
+import re
 from hashlib import sha256
 
 from abm.classifier.types import (
@@ -20,20 +21,94 @@ from abm.classifier.types import (
     DocumentMeta,
     FrontMatter,
     Page,
+    PageMarker,
     PerPageLabel,
 )
 
+_NUM_ONLY_RE = re.compile(r"^(?:page\s+)?(\d{1,4})$", re.IGNORECASE)
+_ROMAN_ONLY_RE = re.compile(r"^(?=.{2,}$)[IVXLCDM]+$", re.IGNORECASE)
+_INLINE_TRAIL_NUM_RE = re.compile(
+    r"^(?P<prefix>.*?)\s*(?:[-–—•\s]+)?(?:(?:page\s+)?(?P<num>\d{1,4}))\s*$",
+    re.IGNORECASE,
+)
 
-def _concat_pages(pages: list[Page]) -> list[str]:
-    """Concatenate page lines into a continuous list of lines.
 
-    Page-number-only removal is not handled here in the stub; that logic will
-    be implemented in a future slice. For now, we return all lines.
+def _is_page_number_only(text: str) -> str | None:
+    """Return normalized page number string if line is a page-number-only line.
+
+    Supports simple numeric forms (e.g., "12", "Page 12") and Roman numerals
+    (at least two chars) on a line by themselves.
     """
-    all_lines: list[str] = []
-    for p in pages:
-        all_lines.extend(p.lines)
-    return all_lines
+
+    s = text.strip()
+    m = _NUM_ONLY_RE.match(s)
+    if m:
+        return m.group(1)
+    if _ROMAN_ONLY_RE.match(s):
+        return s.upper()
+    return None
+
+
+def _strip_inline_trailing_page_number(text: str) -> tuple[str, str | None]:
+    """Strip a trailing page-number token from a content line if present.
+
+    Returns (cleaned_line, number_value or None). Only numeric trailing tokens
+    like "... 12" or "... Page 12" are stripped. Roman numerals are not
+    handled here to avoid removing valid headings like "Chapter IV".
+    """
+
+    s = text.rstrip()
+    m = _INLINE_TRAIL_NUM_RE.match(s)
+    if not m:
+        return text, None
+    prefix = m.group("prefix") or ""
+    num = m.group("num")
+    if not prefix.strip():
+        # This is likely a page-number-only line; do not strip here.
+        return text, None
+    return prefix.rstrip(), num
+
+
+def _build_body_and_markers(
+    pages: list[Page],
+) -> tuple[list[str], list[PageMarker]]:
+    """Return filtered lines and page markers after page number processing.
+
+    - Remove page-number-only lines and record a marker.
+    - For inline trailing numbers, strip the token, record a marker, and warn.
+    """
+
+    body_lines: list[str] = []
+    markers: list[PageMarker] = []
+    global_line_index = 0
+
+    for page in pages:
+        for line in page.lines:
+            only = _is_page_number_only(line)
+            if only is not None:
+                markers.append(
+                    {
+                        "page_index": page.page_index,
+                        "line_index_global": global_line_index,
+                        "value": only,
+                    }
+                )
+                # Do not add the line; do not advance global_line_index
+                continue
+
+            cleaned, num = _strip_inline_trailing_page_number(line)
+            if num is not None:
+                markers.append(
+                    {
+                        "page_index": page.page_index,
+                        "line_index_global": global_line_index,
+                        "value": num,
+                    }
+                )
+            body_lines.append(cleaned)
+            global_line_index += 1
+
+    return body_lines, markers
 
 
 def classify_sections(inputs: ClassifierInputs) -> ClassifierOutputs:
@@ -49,19 +124,19 @@ def classify_sections(inputs: ClassifierInputs) -> ClassifierOutputs:
     """
 
     pages = inputs.get("pages", [])
-    all_lines = _concat_pages(pages)
-    joined = "\n".join(all_lines)
+    body_lines, page_markers = _build_body_and_markers(pages)
+    joined = "\n".join(body_lines)
     text_hash = sha256(joined.encode("utf-8")).hexdigest()
 
     span = [0, len(joined)]
 
-    document_meta: DocumentMeta = {"page_markers": []}
+    document_meta: DocumentMeta = {"page_markers": page_markers}
 
     front: FrontMatter = {
         "span": span,
         "text_sha256": text_hash,
         "warnings": [
-            "stub: page-number-only removal not applied; using raw text",
+            "page-number-only lines removed; inline trailing numbers stripped",
         ],
         "document_meta": document_meta,
     }
