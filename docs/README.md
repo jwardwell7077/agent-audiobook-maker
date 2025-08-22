@@ -1,6 +1,6 @@
 # Documentation Index
 
-AI‑generated, Copilot‑assisted. This index organizes the docs for fast navigation.
+AI‑generated, Copilot‑assisted. Categorized reference for fast navigation.
 
 ## Overview & Policy
 
@@ -17,12 +17,13 @@ AI‑generated, Copilot‑assisted. This index organizes the docs for fast navig
 - Contract-first
 - Minimal complexity
 
-## Architecture
+## Architecture & Specs
 
 - High‑level architecture: [ARCHITECTURE.md](ARCHITECTURE.md)
   - Diagram source: [diagrams/high_level_architecture.mmd](diagrams/high_level_architecture.mmd)
   - Component spec: PDF→Text [PDF_TO_TEXT_SPEC.md](PDF_TO_TEXT_SPEC.md)
   - CLI spec: [PDF_TO_TEXT_CLI_SPEC.md](PDF_TO_TEXT_CLI_SPEC.md)
+  - TXT→JSON spec: [TXT_TO_JSON_SPEC.md](TXT_TO_JSON_SPEC.md)
 
 ## Data Contracts / Schemas
 
@@ -46,6 +47,12 @@ AI‑generated, Copilot‑assisted. This index organizes the docs for fast navig
   - FSM diagram: [diagrams/chapterizer_fsm.mmd](diagrams/chapterizer_fsm.mmd)
   - UML: [diagrams/chapterizer_uml.mmd](diagrams/chapterizer_uml.mmd)
 
+## CLI quick links (source)
+
+- PDF→Text CLI: `src/abm/ingestion/pdf_to_text_cli.py`
+- Classifier CLI: `src/abm/classifier/classifier_cli.py`
+- Chapterizer CLI: `src/abm/structuring/chapterizer_cli.py`
+
 ## Roadmap
 
 - Multi‑agent roadmap: [MULTI_AGENT_ROADMAP.md](MULTI_AGENT_ROADMAP.md)
@@ -59,6 +66,19 @@ AI‑generated, Copilot‑assisted. This index organizes the docs for fast navig
 ## Quality
 
 - Quality Gate Spec: [design/QUALITY_GATE_SPEC.md](design/QUALITY_GATE_SPEC.md)
+
+## Diagrams catalog
+
+- High level: [diagrams/high_level_architecture.mmd](diagrams/high_level_architecture.mmd)
+- PDF→Text: [diagrams/pdf_to_text_flow.mmd](diagrams/pdf_to_text_flow.mmd), [diagrams/pdf_to_text_uml.mmd](diagrams/pdf_to_text_uml.mmd)
+- Section Classifier: [diagrams/section_classifier.mmd](diagrams/section_classifier.mmd), [diagrams/section_classifier_fsm.mmd](diagrams/section_classifier_fsm.mmd), [diagrams/section_classifier_uml.mmd](diagrams/section_classifier_uml.mmd)
+- Chapterizer: [diagrams/chapterizer_fsm.mmd](diagrams/chapterizer_fsm.mmd), [diagrams/chapterizer_uml.mmd](diagrams/chapterizer_uml.mmd)
+- Quality Gate: [diagrams/quality_gate_architecture.mmd](diagrams/quality_gate_architecture.mmd), [diagrams/quality_gate_fsm.mmd](diagrams/quality_gate_fsm.mmd), [diagrams/quality_gate_uml.mmd](diagrams/quality_gate_uml.mmd)
+- Structured JSON: [diagrams/structured_json_schema.mmd](diagrams/structured_json_schema.mmd)
+
+## Examples
+
+- Classifier artifacts: [examples/classifier/](examples/classifier/)
 
 ## How to read this repo
 
