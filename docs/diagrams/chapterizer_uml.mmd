@@ -1,0 +1,38 @@
+classDiagram
+  class Chapterizer {
+    +slice(body: string, chaptersSpan: Span, tocEntries: TocEntry[]) ChapterList
+    -_match_titles(lines: string[], titles: string[]) MatchMap
+    -_apply_fallbacks(indexedTitles: string[]) MatchMap
+    -_validate_thresholds(matches: MatchMap) Thresholds
+    -_to_spans(matches: MatchMap) Span[]
+  }
+
+  class Span {
+    +int start_char
+    +int end_char
+  }
+
+  class TocEntry {
+    +string title
+    +int page
+  }
+
+  class ChapterItem {
+    +int index
+    +string title
+    +int start_char
+    +int end_char
+    +string body
+  }
+
+  class ChapterList {
+    +ChapterItem[] chapters
+    +string[] unmatched_titles
+    +Duplicate[] duplicate_title_matches
+    +string[] warnings
+  }
+
+  class Duplicate {
+    +string title
+    +int count
+  }

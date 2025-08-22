@@ -1,0 +1,9 @@
+stateDiagram-v2
+  [*] --> Init
+  Init --> ScanTitles
+  ScanTitles --> ValidateMatches
+  ValidateMatches --> Abort: duplicate_title>5 || many_unmatched>0.4
+  ValidateMatches --> SliceChapters
+  SliceChapters --> Done
+  Abort --> [*]
+  Done --> [*]
