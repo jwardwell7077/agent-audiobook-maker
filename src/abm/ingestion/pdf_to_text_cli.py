@@ -40,6 +40,14 @@ def main(argv: list[str] | None = None) -> int:
         choices=["\n", "\r\n"],
         help="Newline to use in output",
     )
+    parser.add_argument(
+        "--dev",
+        action="store_true",
+        help=(
+            "Dev mode: also write a human-readable copy with double newlines "
+            "(suffix _nopp.txt) while preserving the main artifact"
+        ),
+    )
 
     args = parser.parse_args(argv)
 
@@ -49,8 +57,21 @@ def main(argv: list[str] | None = None) -> int:
         newline=args.newline,
     )
 
+    out_path = Path(args.output)
     try:
-        PdfToTextExtractor().extract(Path(args.input), Path(args.output), opts)
+        PdfToTextExtractor().extract(Path(args.input), out_path, opts)
+        if args.dev:
+            # Also create a human-readable copy with double newlines,
+            # replacing form-feeds
+            try:
+                content = out_path.read_text(encoding="utf-8")
+            except Exception:
+                content = ""
+            human = out_path.with_name(
+                out_path.stem + "_nopp" + out_path.suffix
+            )
+            human_text = content.replace("\f", opts.newline * 2)
+            human.write_text(human_text, encoding="utf-8", newline="")
         return 0
     except FileNotFoundError as exc:
         print(f"Error: {exc}", file=sys.stderr)
