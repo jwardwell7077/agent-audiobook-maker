@@ -179,10 +179,7 @@ def _parse_toc_entries(
             # Reject titles that are too short after stripping
             if not title or title.isdigit():
                 continue
-            try:
-                page_no = int(m.group("page"))
-            except ValueError:
-                continue
+            page_no = int(m.group("page"))
             entries.append(
                 {
                     "title": title,
@@ -262,21 +259,18 @@ def classify_sections(inputs: ClassifierInputs) -> ClassifierOutputs:
     toc_pages = _detect_toc_pages(pages)
     toc_entries = _parse_toc_entries(pages, toc_pages)
     if toc_pages and page_spans:
-        starts = []
-        ends = []
-        for pidx in toc_pages:
-            if pidx in page_spans:
-                s, e = page_spans[pidx]
-                starts.append(s)
-                ends.append(e)
-        if starts and ends:
+        common = set(toc_pages).intersection(page_spans.keys())
+        if common:
+            starts = [page_spans[i][0] for i in common]
+            ends = [page_spans[i][1] for i in common]
             span_toc = [min(starts), max(ends)]
     toc_warnings: list[str] = []
     if not toc_entries:
         toc_warnings.append("no toc entries parsed")
     else:
         toc_warnings.append(
-            f"parsed {len(toc_entries)} entries from {len(set(toc_pages))} toc page(s)"
+            f"parsed {len(toc_entries)} entries from "
+            f"{len(set(toc_pages))} toc page(s)"
         )
     toc: TOC = {
         "span": span_toc,
