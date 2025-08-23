@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Iterable
 
 
 def _default_stem() -> str:
-    ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    ts = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
     return f"segments_{ts}"
 
 
@@ -17,9 +17,9 @@ def _ensure_dir(path: Path) -> None:
 
 def write_jsonl(
     book: str,
-    utterances: Iterable[Dict[str, Any]],
-    base_dir: Optional[Path] = None,
-    stem: Optional[str] = None,
+    utterances: Iterable[dict[str, Any]],
+    base_dir: Path | None = None,
+    stem: str | None = None,
 ) -> Path:
     root = base_dir or Path.cwd()
     out_dir = root / "data" / "annotations" / book
@@ -28,7 +28,7 @@ def write_jsonl(
     out_path = out_dir / name
     header = {
         "version": "1.0",
-        "created_at": datetime.now(timezone.utc).isoformat(),
+        "created_at": datetime.now(UTC).isoformat(),
         "book": book,
         "type": "utterances",
     }
@@ -40,10 +40,10 @@ def write_jsonl(
 
 
 def run(
-    payload: Dict[str, Any],
-    base_dir: Optional[str] = None,
-    stem: Optional[str] = None,
-) -> Dict[str, Any]:
+    payload: dict[str, Any],
+    base_dir: str | None = None,
+    stem: str | None = None,
+) -> dict[str, Any]:
     book = payload.get("book", "")
     utterances = payload.get("utterances", [])
     out_path = write_jsonl(
