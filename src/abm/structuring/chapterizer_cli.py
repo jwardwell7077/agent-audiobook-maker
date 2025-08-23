@@ -55,17 +55,13 @@ def main(argv: list[str] | None = None) -> int:
             new_ch["body_lines"] = bt.splitlines()
             readable["chapters"].append(new_ch)
 
-        readable_path = out_p.with_name(
-            out_p.stem + "_readable" + out_p.suffix
-        )
+        readable_path = out_p.with_name(out_p.stem + "_readable" + out_p.suffix)
         write_chapters_json(readable_path, readable)  # reuse pretty writer
         print(f"Wrote readable chapters to {readable_path}")
 
         # Also emit a plain-text variant with original line endings, grouping
         # by chapter.
-        readable_txt_path = out_p.with_name(
-            out_p.stem + "_readable.txt"
-        )
+        readable_txt_path = out_p.with_name(out_p.stem + "_readable.txt")
         lines: list[str] = []
         for ch in readable["chapters"]:
             title = ch.get("title", "")
