@@ -2,15 +2,15 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
-try:  # Optional import so repo stays green without LangFlow installed
-    from langflow.base.custom import Component  # type: ignore
+try:  # Prefer official imports; fall back to stubs if LangFlow missing
+    from langflow.custom import Component  # type: ignore
     from langflow.io import (  # type: ignore
         DataInput,
         IntInput,
         StrInput,
         Output,
     )
-    from langflow.schema.data import Data  # type: ignore
+    from langflow.schema import Data  # type: ignore
 except Exception:  # pragma: no cover
     class Component:
         def __init__(self) -> None:
