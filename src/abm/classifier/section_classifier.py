@@ -153,14 +153,10 @@ def _detect_toc_pages(pages: list[Page]) -> list[int]:
     return sorted(set(toc_pages))
 
 
-_TOC_ENTRY_RE = re.compile(
-    r"^(?P<title>.+?)\s*(?:\.{2,}|\s{2,}|[-–—•\s]{2,})?\s*(?P<page>\d{1,4})$"
-)
+_TOC_ENTRY_RE = re.compile(r"^(?P<title>.+?)\s*(?:\.{2,}|\s{2,}|[-–—•\s]{2,})?\s*(?P<page>\d{1,4})$")
 
 
-def _parse_toc_entries(
-    pages: list[Page], toc_pages: list[int]
-) -> list[TOCEntry]:
+def _parse_toc_entries(pages: list[Page], toc_pages: list[int]) -> list[TOCEntry]:
     """Parse basic TOC entries from the detected TOC pages."""
 
     entries: list[TOCEntry] = []
@@ -268,10 +264,7 @@ def classify_sections(inputs: ClassifierInputs) -> ClassifierOutputs:
     if not toc_entries:
         toc_warnings.append("no toc entries parsed")
     else:
-        toc_warnings.append(
-            f"parsed {len(toc_entries)} entries from "
-            f"{len(set(toc_pages))} toc page(s)"
-        )
+        toc_warnings.append(f"parsed {len(toc_entries)} entries from {len(set(toc_pages))} toc page(s)")
     toc: TOC = {
         "span": span_toc,
         "entries": toc_entries,

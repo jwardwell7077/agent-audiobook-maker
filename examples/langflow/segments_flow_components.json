@@ -1,0 +1,202 @@
+{
+    "name": "ABM Segmentation Flow (Components)",
+    "description": "Load chapters → select one → segment dialogue/narration → optional filter → log → write JSONL.",
+    "version": "0.1.0",
+    "metadata": {
+        "created": "2025-08-22",
+        "tags": [
+            "abm",
+            "segmentation",
+            "components"
+        ]
+    },
+    "nodes": [
+        {
+            "id": "loader",
+            "type": "PythonFunction",
+            "label": "LoadChapters (abm.lf_components)",
+            "config": {
+                "code": "from abm.lf_components import load_chapters\n\n""def run(book: str = 'mvs', base_dir: str | None = None, limit: int | None = None):\n""    return load_chapters(book, base_dir, limit)\n",
+                "inputs": [
+                    {
+                        "name": "book",
+                        "type": "str",
+                        "value": "mvs"
+                    },
+                    {
+                        "name": "base_dir",
+                        "type": "str",
+                        "value": ""
+                    },
+                    {
+                        "name": "limit",
+                        "type": "int",
+                        "value": null
+                    }
+                ]
+            }
+        },
+        {
+            "id": "selector",
+            "type": "PythonFunction",
+            "label": "SelectChapter (abm.lf_components)",
+            "config": {
+                "code": "from abm.lf_components import select_chapter\n\n""def run(payload: dict, index: int | None = 0, title_contains: str | None = None):\n""    return select_chapter(payload, index, title_contains)\n",
+                "inputs": [
+                    {
+                        "name": "payload",
+                        "type": "dict",
+                        "from": "loader"
+                    },
+                    {
+                        "name": "index",
+                        "type": "int",
+                        "value": 0
+                    },
+                    {
+                        "name": "title_contains",
+                        "type": "str",
+                        "value": ""
+                    }
+                ]
+            }
+        },
+        {
+            "id": "segmenter",
+            "type": "PythonFunction",
+            "label": "Segment (abm.lf_components)",
+            "config": {
+                "code": "from abm.lf_components import segment\n\n""def run(payload: dict):\n""    return segment(payload)\n",
+                "inputs": [
+                    {
+                        "name": "payload",
+                        "type": "dict",
+                        "from": "selector"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "filter",
+            "type": "PythonFunction",
+            "label": "FilterUtterances (abm.lf_components)",
+            "config": {
+                "code": "from abm.lf_components import filter_utterances\n\n""def run(payload: dict, role: str | None = 'dialogue', min_len: int | None = None, max_len: int | None = None, contains: str | None = None):\n""    return filter_utterances(payload, role, min_len, max_len, contains)\n",
+                "inputs": [
+                    {
+                        "name": "payload",
+                        "type": "dict",
+                        "from": "segmenter"
+                    },
+                    {
+                        "name": "role",
+                        "type": "str",
+                        "value": "dialogue"
+                    },
+                    {
+                        "name": "min_len",
+                        "type": "int",
+                        "value": null
+                    },
+                    {
+                        "name": "max_len",
+                        "type": "int",
+                        "value": null
+                    },
+                    {
+                        "name": "contains",
+                        "type": "str",
+                        "value": ""
+                    }
+                ]
+            }
+        },
+        {
+            "id": "logger",
+            "type": "PythonFunction",
+            "label": "PayloadLogger (abm.lf_components)",
+            "config": {
+                "code": "from abm.lf_components import log_payload\n\n""def run(payload: dict, preview_key: str = 'utterances', echo: bool = False):\n""    return log_payload(payload, preview_key=preview_key, echo=echo)\n",
+                "inputs": [
+                    {
+                        "name": "payload",
+                        "type": "dict",
+                        "from": "filter"
+                    },
+                    {
+                        "name": "preview_key",
+                        "type": "str",
+                        "value": "utterances"
+                    },
+                    {
+                        "name": "echo",
+                        "type": "bool",
+                        "value": false
+                    }
+                ]
+            }
+        },
+        {
+            "id": "writer",
+            "type": "PythonFunction",
+            "label": "WriteJSONL (abm.lf_components)",
+            "config": {
+                "code": "from abm.lf_components import write_jsonl\n\n""def run(payload: dict, base_dir: str | None = None, stem: str | None = 'segments_dev'):\n""    return write_jsonl(payload, base_dir=base_dir, stem=stem)\n",
+                "inputs": [
+                    {
+                        "name": "payload",
+                        "type": "dict",
+                        "from": "logger"
+                    },
+                    {
+                        "name": "base_dir",
+                        "type": "str",
+                        "value": ""
+                    },
+                    {
+                        "name": "stem",
+                        "type": "str",
+                        "value": "segments_dev"
+                    }
+                ]
+            }
+        }
+    ],
+    "edges": [
+        {
+            "source": "loader",
+            "target": "selector",
+            "map": {
+                "payload": "payload"
+            }
+        },
+        {
+            "source": "selector",
+            "target": "segmenter",
+            "map": {
+                "payload": "payload"
+            }
+        },
+        {
+            "source": "segmenter",
+            "target": "filter",
+            "map": {
+                "payload": "payload"
+            }
+        },
+        {
+            "source": "filter",
+            "target": "logger",
+            "map": {
+                "payload": "payload"
+            }
+        },
+        {
+            "source": "logger",
+            "target": "writer",
+            "map": {
+                "payload": "payload"
+            }
+        }
+    ]
+}

@@ -17,8 +17,8 @@ from __future__ import annotations
 
 import json
 import sys
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 from abm.classifier.section_classifier import classify_sections
 from abm.classifier.types import ClassifierInputs, Page
@@ -112,9 +112,7 @@ def main(argv: list[str] | None = None) -> int:
         return 5
 
     # print a tiny summary to stdout for interactive usage
-    sys.stdout.write(
-        "Wrote classifier artifacts to " + str(out_dir) + "\n"
-    )
+    sys.stdout.write("Wrote classifier artifacts to " + str(out_dir) + "\n")
     return 0
 
 
