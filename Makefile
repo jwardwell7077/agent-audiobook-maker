@@ -194,6 +194,15 @@ test_all_optional:
 langflow:
 	@$(VENV_GUARD)
 	./scripts/run_langflow.sh
+	
+.PHONY: langflow-import-segments
+langflow-import-segments:
+	./scripts/import_segments_flow.sh
+
+.PHONY: segment
+segment:
+	@$(VENV_GUARD)
+	$(ACTIVATE) python -m src.abm.langflow_runner mvs --stem segments_dev
 
 
 ######################
