@@ -67,9 +67,7 @@ def main(argv: list[str] | None = None) -> int:
                 content = out_path.read_text(encoding="utf-8")
             except Exception:
                 content = ""
-            human = out_path.with_name(
-                out_path.stem + "_nopp" + out_path.suffix
-            )
+            human = out_path.with_name(out_path.stem + "_nopp" + out_path.suffix)
             human_text = content.replace("\f", opts.newline * 2)
             human.write_text(human_text, encoding="utf-8", newline="")
         return 0

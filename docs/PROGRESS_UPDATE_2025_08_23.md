@@ -34,11 +34,13 @@
 ### **Key Architectural Decisions**
 
 #### **Performance Targets Elevated**
+
 - **Before**: 80% F1 speaker attribution "good enough"
 - **After**: 95% F1 speaker attribution with professional-grade accuracy
 - **Impact**: Requires sophisticated multi-model ensemble approach
 
 #### **Component Strategy Refined**
+
 - **Before**: Simple heuristic-based segmentation
 - **After**: Advanced multi-layered attribution pipeline with:
   - Rule-based patterns (attribution phrases, action beats)
@@ -47,6 +49,7 @@
   - Character embedding similarity matching
 
 #### **System Architecture Enhanced**
+
 - **Conversation State Management**: Track speaker context across dialogue sequences
 - **Character Bible Integration**: Persistent character profiles and voice mapping
 - **Performance Monitoring**: Real-time tracking toward 95% F1 goal
@@ -71,17 +74,20 @@ The **95% F1 speaker attribution target** is achievable through:
 ## Current State Assessment
 
 ### **✅ Architecture & Planning: COMPLETE**
+
 - MVP scope clearly defined with measurable criteria
 - Technical approach validated with concrete implementation plan  
 - Component architecture designed for 95% F1 target
 - Risk assessment and mitigation strategies documented
 
 ### **🔄 Next Phase: LangFlow Component Implementation**
+
 - **Goal**: Rebuild all 6 existing components + add 9 new components
 - **Priority**: Get basic pipeline functional in LangFlow UI first
 - **Timeline**: Focus on Phase 1 components (segmentation → JSONL output)
 
 ### **📋 Immediate Next Steps**
+
 1. **Commit current documentation** - Capture architectural decisions
 2. **Rebuild core LangFlow components** - Focus on basic functionality first  
 3. **Establish component testing** - Ensure each component works in LangFlow UI
@@ -90,6 +96,7 @@ The **95% F1 speaker attribution target** is achievable through:
 ## Implementation Priority
 
 ### **Phase 1: Core Pipeline (Week 1)**
+
 1. **ABMChapterVolumeLoader** - Load volume manifest + chapter selection
 2. **ABMSegmentDialogueNarration** - Basic dialogue/narration segmentation  
 3. **ABMUtteranceJSONLWriter** - Write utterances to annotation schema
@@ -98,6 +105,7 @@ The **95% F1 speaker attribution target** is achievable through:
 **Success Criteria**: End-to-end PDF → JSONL workflow functional in LangFlow
 
 ### **Phase 2: Advanced Attribution (Weeks 2-3)**  
+
 5. **ABMAdvancedSpeakerAttributor** - Multi-model ensemble system
 6. **ABMConversationStateManager** - Context and turn-taking tracking
 7. **ABMPerformanceTracker** - Monitor progress toward 95% F1
@@ -118,15 +126,19 @@ The **95% F1 speaker attribution target** is achievable through:
 ## Key Insights & Lessons
 
 ### **Scope Clarity is Critical**
+
 Having a comprehensive MVP specification prevents scope creep and provides clear success criteria. The 95% F1 target is ambitious but achievable with the right technical approach.
 
 ### **Multi-Model Ensemble Approach**  
+
 No single technique can achieve 95% speaker attribution accuracy. The ensemble approach with 4 complementary models provides multiple paths to correct attribution.
 
 ### **Local-First Architecture**
+
 Maintaining local processing (no cloud dependencies) while achieving professional-grade accuracy requires sophisticated caching and optimization strategies.
 
 ### **Component-Based Development**
+
 LangFlow's visual component system is ideal for rapid prototyping and iteration of complex NLP pipelines, especially with proper component testing.
 
 ---
