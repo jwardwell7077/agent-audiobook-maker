@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import Any, Dict, List
 
 try:
-    from langflow.base.custom import Component  # type: ignore
+    from langflow.custom import Component  # type: ignore
     from langflow.io import DataInput, Output  # type: ignore
-    from langflow.schema.data import Data  # type: ignore
+    from langflow.schema import Data  # type: ignore
 except Exception:  # pragma: no cover
     class Component:
         def __init__(self) -> None:
