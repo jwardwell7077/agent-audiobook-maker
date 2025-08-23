@@ -62,25 +62,25 @@ classDiagram
 
     %% Core Pipeline Components
     class ABMChapterVolumeLoader {
-        +display_name: "Chapter Volume Loader"
-        +description: "Load book metadata and chapters from structured JSON"
-        +icon: "MaterialSymbolsFolderOpen"
+        +display_name: "📚 Chapter Volume Loader"
+        +description: "Loads structured chapter data with volume metadata"
+        +icon: "book-open"
         +name: "abm_chapter_volume_loader"
-        +inputs: [StrInput book_id, IntInput chapter_index]
-        +outputs: [Output chapter_payload]
-        -_load_volume_manifest(book_id: str) dict
+        +inputs: [StrInput file_path, DataInput volume_metadata, IntInput chapter_index]
+        +outputs: [Output chapter_data]
+        -_load_volume_manifest(file_path: str) dict
         -_extract_chapter_by_index(manifest: dict, index: int) dict
         -_validate_chapter_schema(data: dict) bool
         +build() Data
     }
 
     class ABMChapterSelector {
-        +display_name: "Chapter Selector"
-        +description: "Select single chapter by index or title substring"
-        +icon: "MaterialSymbolsFilterList"
+        +display_name: "🎯 Chapter Selector"
+        +description: "Selects chapters based on configurable criteria"
+        +icon: "filter"
         +name: "abm_chapter_selector"
-        +inputs: [DataInput payload, IntInput index, StrInput title_contains]
-        +outputs: [Output selected_chapter]
+        +inputs: [DataInput chapters_data, DataInput selection_criteria, DataInput range_config]
+        +outputs: [Output selected_chapters]
         -_select_by_index(chapters: list, index: int) dict
         -_select_by_title_fuzzy(chapters: list, title: str) dict
         -_validate_selection(chapter: dict) bool
@@ -88,12 +88,12 @@ classDiagram
     }
 
     class ABMSegmentDialogueNarration {
-        +display_name: "Segment Dialogue/Narration"
-        +description: "Segment chapter text into dialogue/narration utterances"
-        +icon: "MaterialSymbolsLyrics"
+        +display_name: "✂️ Segment Dialogue Narration"
+        +description: "Advanced dialogue/narration segmentation with ML classification"
+        +icon: "message-square"
         +name: "abm_segment_dialogue_narration"
-        +inputs: [DataInput chapter, IntInput max_utterance_length]
-        +outputs: [Output utterances]
+        +inputs: [DataInput chapter_content]
+        +outputs: [Output segmented_utterances]
         -_sentence_boundary_detection(text: str) list[str]
         -_dialogue_heuristics(sentence: str) bool
         -_create_utterance_record(text: str, idx: int, is_dialogue: bool) dict
@@ -101,13 +101,26 @@ classDiagram
         +build() Data
     }
 
-    class ABMUtteranceJSONLWriter {
-        +display_name: "Utterance JSONL Writer"
-        +description: "Write utterances to JSONL following annotation schema"
-        +icon: "MaterialSymbolsOutput"
+    class ABMUtteranceFilter {
+        +display_name: "🔍 Utterance Filter"
+        +description: "Multi-criteria utterance filtering with advanced logic"
+        +icon: "filter"
+        +name: "abm_utterance_filter"
+        +inputs: [DataInput utterances, IntInput min_length, IntInput max_length, DataInput exclude_patterns, DataInput include_only]
+        +outputs: [Output filtered_utterances]
+        -_apply_length_filters(data: list, min_len: int, max_len: int) list
+        -_apply_pattern_filters(data: list, patterns: list) list
+        -_validate_filter_logic(config: dict) bool
+        +build() Data
+    }
+
+    class ABMUtteranceJsonlWriter {
+        +display_name: "💾 Utterance JSONL Writer"
+        +description: "Professional JSONL writer with comprehensive metadata"
+        +icon: "file-text"
         +name: "abm_utterance_jsonl_writer"
-        +inputs: [DataInput utterances, StrInput output_path, StrInput schema_version]
-        +outputs: [Output file_info]
+        +inputs: [DataInput utterances_data, StrInput output_path]
+        +outputs: [Output written_file_info]
         -_validate_annotation_schema(utterances: list, version: str) bool
         -_compute_text_hashes(utterances: list) list
         -_write_jsonl_atomic(data: list, path: str) bool
@@ -271,7 +284,8 @@ classDiagram
     Component <|-- ABMChapterVolumeLoader
     Component <|-- ABMChapterSelector
     Component <|-- ABMSegmentDialogueNarration
-    Component <|-- ABMUtteranceJSONLWriter
+    Component <|-- ABMUtteranceFilter
+    Component <|-- ABMUtteranceJsonlWriter
     Component <|-- ABMSpeakerAttributionAgent
     Component <|-- ABMEmotionClassifier
     Component <|-- ABMQualityAssuranceAgent
@@ -296,8 +310,9 @@ classDiagram
     %% Data Flow Dependencies
     ABMChapterVolumeLoader --> ABMChapterSelector : chapter_payload
     ABMChapterSelector --> ABMSegmentDialogueNarration : selected_chapter
-    ABMSegmentDialogueNarration --> ABMUtteranceJSONLWriter : utterances
-    ABMUtteranceJSONLWriter --> ABMSpeakerAttributionAgent : utterance_jsonl
+    ABMSegmentDialogueNarration --> ABMUtteranceFilter : utterances
+    ABMUtteranceFilter --> ABMUtteranceJsonlWriter : filtered_utterances
+    ABMUtteranceJsonlWriter --> ABMSpeakerAttributionAgent : utterance_jsonl
     ABMSpeakerAttributionAgent --> ABMEmotionClassifier : speaker_utterances
     ABMEmotionClassifier --> ABMQualityAssuranceAgent : emotion_utterances
     ABMQualityAssuranceAgent --> ABMCharacterBibleBuilder : qa_utterances
