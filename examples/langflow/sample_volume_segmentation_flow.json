@@ -1,0 +1,96 @@
+{
+    "name": "Sample Volume Segmentation Flow",
+    "description": "Prototype: Load chapter JSON, segment dialogue vs narration, write utterances JSONL. Replace nodes with your custom components in lf_components.",
+    "version": "0.0.1",
+    "metadata": {
+        "created": "2025-08-22",
+        "tags": [
+            "segmentation",
+            "dialogue",
+            "narration"
+        ]
+    },
+    "nodes": [
+        {
+            "id": "chapter_loader",
+            "type": "PythonFunction",
+            "label": "ChapterVolumeLoader (stub)",
+            "config": {
+                "code": "# Inputs: data_root, book_id, pdf_stem, chapter_index\n# Output: { 'chapters_index': [..], 'selected_chapter': {...} }\n# Replace this with a custom component from lf_components later.\n# This stub just echoes inputs.\n\n\ndef run(data_root: str, book_id: str, pdf_stem: str, chapter_index: int):\n    return {\n        'chapters_index': [0],\n        'selected_chapter': {\n            'book_id': book_id,\n            'pdf_stem': pdf_stem,\n            'chapter_index': chapter_index,\n            'title': 'Stub Chapter',\n            'body': 'This is a stub chapter.\\n\\nShe said hello.'\n        }\n    }\n",
+                "inputs": [
+                    {
+                        "name": "data_root",
+                        "type": "str",
+                        "value": "data/clean"
+                    },
+                    {
+                        "name": "book_id",
+                        "type": "str",
+                        "value": "mvs"
+                    },
+                    {
+                        "name": "pdf_stem",
+                        "type": "str",
+                        "value": "MyVampireSystem_CH0001_0700"
+                    },
+                    {
+                        "name": "chapter_index",
+                        "type": "int",
+                        "value": 0
+                    }
+                ]
+            }
+        },
+        {
+            "id": "segmenter",
+            "type": "PythonFunction",
+            "label": "SegmentDialogueNarration (stub)",
+            "config": {
+                "code": "# Input: selected_chapter (dict)\n# Output: utterances_payload (dict with header + utterances list)\nimport re\n\n\ndef run(selected_chapter: dict):\n    text = selected_chapter.get('body', '')\n    parts = [p.strip() for p in re.split(r'[\\n\\.]+' , text) if p.strip()]\n    utterances = []\n    for idx, p in enumerate(parts):\n        role = 'dialogue' if (chr(34) in p) else 'narration'\n        utterances.append({'i': idx, 'role': role, 'text': p})\n    header = {k: selected_chapter.get(k) for k in ['book_id', 'pdf_stem', 'chapter_index', 'title']}\n    return {'header': header, 'utterances': utterances}\n",
+                "inputs": [
+                    {
+                        "name": "selected_chapter",
+                        "type": "dict",
+                        "from": "chapter_loader"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "writer",
+            "type": "PythonFunction",
+            "label": "UtteranceJSONLWriter (stub)",
+            "config": {
+                "code": "# Input: utterances_payload (dict)\n# Output: paths (dict)\nimport json, time\nfrom pathlib import Path\n\n\ndef run(utterances_payload: dict, out_dir: str = 'data/annotations'):\n    header = utterances_payload.get('header', {})\n    book = header.get('book_id', 'book')\n    stem = header.get('pdf_stem', 'volume')\n    ch = header.get('chapter_index', 0)\n    ts = int(time.time())\n    base = Path(out_dir) / book / stem\n    base.mkdir(parents=True, exist_ok=True)\n    jsonl_path = base / f'chapter_{ch:04d}_utterances_{ts}.jsonl'\n    with open(jsonl_path, 'w', encoding='utf-8') as f:\n        f.write(json.dumps({'type': 'header', **header}, ensure_ascii=False) + '\\n')\n        for u in utterances_payload.get('utterances', []):\n            f.write(json.dumps({'type': 'utterance', **u}, ensure_ascii=False) + '\\n')\n    return {'utterances_jsonl': str(jsonl_path)}\n",
+                "inputs": [
+                    {
+                        "name": "utterances_payload",
+                        "type": "dict",
+                        "from": "segmenter"
+                    },
+                    {
+                        "name": "out_dir",
+                        "type": "str",
+                        "value": "data/annotations"
+                    }
+                ]
+            }
+        }
+    ],
+    "edges": [
+        {
+            "source": "chapter_loader",
+            "target": "segmenter",
+            "map": {
+                "selected_chapter": "selected_chapter"
+            }
+        },
+        {
+            "source": "segmenter",
+            "target": "writer",
+            "map": {
+                "utterances_payload": "utterances_payload"
+            }
+        }
+    ]
+}

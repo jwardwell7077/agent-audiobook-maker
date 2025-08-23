@@ -7,10 +7,11 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Iterable
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Iterable, TypedDict
+from typing import TypedDict
 
 from abm.classifier.section_classifier import (
     _build_body_and_markers,  # reuse cleaning logic
@@ -139,19 +140,17 @@ def _find_line_positions(
 
     for i, raw_title in enumerate(titles, start=1):
         norm_title = _normalize_line(raw_title)
-        matches = [j for j, l in enumerate(norm_lines) if l == norm_title]
+        matches = [j for j, line in enumerate(norm_lines) if line == norm_title]
         if len(matches) == 0:
             # attempt fallback
             fb = _fallback_titles(i)
             fb_norm = [_normalize_line(x) for x in fb]
             fb_matches: list[int] = []
-            for j, l in enumerate(norm_lines):
-                if l in fb_norm:
+            for j, line in enumerate(norm_lines):
+                if line in fb_norm:
                     fb_matches.append(j)
             if fb_matches:
-                warnings.append(
-                    f"fallback used for title index {i}: '{raw_title}'"
-                )
+                warnings.append(f"fallback used for title index {i}: '{raw_title}'")
                 matches = fb_matches
             else:
                 unmatched.append(raw_title)
@@ -162,12 +161,7 @@ def _find_line_positions(
             duplicates.append({"title": raw_title, "count": len(matches)})
             continue
         if len(matches) > 1:
-            warnings.append(
-                (
-                    f"title '{raw_title}' matched {len(matches)} lines; "
-                    "using first occurrence"
-                )
-            )
+            warnings.append(f"title '{raw_title}' matched {len(matches)} lines; using first occurrence")
         line_idx = matches[0]
         starts.append(body_slice.start + offsets[line_idx])
 
@@ -186,12 +180,8 @@ def _slice_chapters(
     starts_sorted = sorted(set(start_points))
     chapters: list[Chapter] = []
     for idx, abs_start in enumerate(starts_sorted):
-        abs_end = (
-            starts_sorted[idx + 1]
-            if idx + 1 < len(starts_sorted)
-            else body_span[1]
-        )
-        title = titles[idx] if idx < len(titles) else f"Chapter {idx+1}"
+        abs_end = starts_sorted[idx + 1] if idx + 1 < len(starts_sorted) else body_span[1]
+        title = titles[idx] if idx < len(titles) else f"Chapter {idx + 1}"
         chapters.append(
             {
                 "index": idx + 1,
@@ -271,7 +261,7 @@ def chapterize_from_text(input_txt: Path) -> ChapterizerOutput:
     # Bounds check
     body_span = (max(0, body_span[0]), min(len(body_text), body_span[1]))
     slice_obj = BodySlice(
-        text=body_text[body_span[0]:body_span[1]],
+        text=body_text[body_span[0] : body_span[1]],
         start=body_span[0],
         end=body_span[1],
     )
@@ -292,15 +282,13 @@ def chapterize_from_text(input_txt: Path) -> ChapterizerOutput:
             headings_sorted = sorted(headings, key=lambda x: x[0])
             starts = [p for p, _ in headings_sorted]
             titles = [t for _, t in headings_sorted]
-            warns.append(
-                f"body_heading_fallback used: {len(headings_sorted)} chapters"
-            )
+            warns.append(f"body_heading_fallback used: {len(headings_sorted)} chapters")
 
     # Abort conditions
     if duplicates:
         return {
             "version": "1.0",
-            "created_at": datetime.now(timezone.utc).isoformat(),
+            "created_at": datetime.now(UTC).isoformat(),
             "chapters": [],
             "unmatched_titles": unmatched,
             "duplicate_title_matches": duplicates,
@@ -311,20 +299,17 @@ def chapterize_from_text(input_txt: Path) -> ChapterizerOutput:
         if unmatched_ratio > 0.4:
             return {
                 "version": "1.0",
-                "created_at": datetime.now(timezone.utc).isoformat(),
+                "created_at": datetime.now(UTC).isoformat(),
                 "chapters": [],
                 "unmatched_titles": unmatched,
                 "duplicate_title_matches": duplicates,
-                "warnings": [
-                    "aborted: too many unmatched titles (>40%)"
-                ]
-                + warns,
+                "warnings": ["aborted: too many unmatched titles (>40%)"] + warns,
             }
 
     chapters = _slice_chapters(body_text, starts, body_span, titles)
     return {
         "version": "1.0",
-        "created_at": datetime.now(timezone.utc).isoformat(),
+        "created_at": datetime.now(UTC).isoformat(),
         "chapters": chapters,
         "unmatched_titles": unmatched,
         "duplicate_title_matches": duplicates,
