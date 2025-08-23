@@ -3,47 +3,15 @@ from __future__ import annotations
 import json
 from typing import Any, Dict, Optional
 
-try:  # Optional import so repo stays green without LangFlow installed
-    from langflow.custom import Component  # type: ignore
-    from langflow.io import (  # type: ignore
-        BoolInput,
-        DataInput,
-        IntInput,
-        StrInput,
-        Output,
-    )
-    from langflow.schema import Data  # type: ignore
-except Exception:  # pragma: no cover - fallback lightweight stubs
-    class Component:  # minimal base for subclassing
-        def __init__(self) -> None:
-            self.status = ""
-
-        def log(self, msg: str) -> None:  # noqa: D401
-            pass
-
-    class _IO:
-        def __init__(self, *args, **kwargs) -> None:  # noqa: D401
-            pass
-
-    class DataInput(_IO):
-        pass
-
-    class IntInput(_IO):
-        pass
-
-    class StrInput(_IO):
-        pass
-
-    class BoolInput(_IO):
-        pass
-
-    class Output:
-        def __init__(self, *args, **kwargs) -> None:  # noqa: D401
-            pass
-
-    class Data:
-        def __init__(self, data: Any) -> None:  # noqa: D401
-            self.data = data
+from langflow.custom import Component
+from langflow.io import (
+    BoolInput,
+    DataInput,
+    IntInput,
+    StrInput,
+    Output,
+)
+from langflow.schema import Data
 
 
 class ABMPayloadLogger(Component):
