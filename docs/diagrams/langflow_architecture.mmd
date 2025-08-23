@@ -24,12 +24,13 @@ graph TB
         DirectoryLoader["📂 Directory Loader"]
     end
 
-    %% Custom ABM Components (Final MVP)
-    subgraph "Core Pipeline Components"
-        ChapterLoader["📚 ABMChapterVolumeLoader<br/>Loads structured chapter data"]
-        ChapterSelector["🎯 ABMChapterSelector<br/>Selects chapters by criteria"]
-        Segmenter["✂️ ABMSegmentDialogueNarration<br/>Segments into utterances"]
-        JSONLWriter["💾 ABMUtteranceJSONLWriter<br/>Writes annotation JSONL"]
+    %% Custom ABM Components (Production Ready - August 2025)
+    subgraph "Core Pipeline Components ✅ PRODUCTION READY"
+        ChapterLoader["📚 ABMChapterVolumeLoader<br/>✅ Loads structured chapter data<br/>📊 3 inputs, 1 output"]
+        ChapterSelector["🎯 ABMChapterSelector<br/>✅ Selects chapters by criteria<br/>📊 3 inputs, 1 output"]  
+        Segmenter["✂️ ABMSegmentDialogueNarration<br/>✅ Advanced dialogue/narration segmentation<br/>📊 1 input, 1 output"]
+        UtteranceFilter["🔍 ABMUtteranceFilter<br/>✅ Multi-criteria filtering system<br/>📊 5 inputs, 1 output"]
+        JSONLWriter["💾 ABMUtteranceJsonlWriter<br/>✅ Professional JSONL with metadata<br/>📊 2 inputs, 1 output"]
     end
 
     subgraph "Multi-Agent Enhancement"
@@ -74,8 +75,8 @@ graph TB
     TextRegex --> Segmenter
     TextFilter --> Segmenter
     
-    Segmenter --> JSONBuilder
-    JSONBuilder --> JSONLWriter
+    Segmenter --> UtteranceFilter
+    UtteranceFilter --> JSONLWriter
     JSONLWriter --> SegmentedJSONL
 
     %% Multi-Agent Enhancement Flow
