@@ -4,7 +4,7 @@ import json
 from typing import Any, Dict, Optional
 
 try:  # Optional import so repo stays green without LangFlow installed
-    from langflow.base.custom import Component  # type: ignore
+    from langflow.custom import Component  # type: ignore
     from langflow.io import (  # type: ignore
         BoolInput,
         DataInput,
@@ -12,7 +12,7 @@ try:  # Optional import so repo stays green without LangFlow installed
         StrInput,
         Output,
     )
-    from langflow.schema.data import Data  # type: ignore
+    from langflow.schema import Data  # type: ignore
 except Exception:  # pragma: no cover - fallback lightweight stubs
     class Component:  # minimal base for subclassing
         def __init__(self) -> None:
