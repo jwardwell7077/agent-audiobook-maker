@@ -1,0 +1,136 @@
+%% LangFlow Audiobook Generation Architecture (Final MVP Specification)
+%% Shows the complete audiobook processing pipeline using LangFlow components
+
+graph TB
+    %% Data Sources
+    subgraph "Data Sources"
+        PDF[("PDF Books")]
+        VolumeJSON[("Volume Manifest JSON")]
+        ChapterJSON[("Chapter JSON Files")]
+        AnnotationJSONL[("Annotation JSONL")]
+    end
+
+    %% Built-in LangFlow Components
+    subgraph "Built-in LangFlow Components"
+        FileLoader["📁 File Loader"]
+        JSONLoader["📄 JSON Loader"]
+        JSONLLoader["📋 JSONL Loader"]
+        TextFilter["🔍 Text Filter"]
+        TextRegex["🔤 Text Regex"]
+        OllamaLLM["🤖 Ollama LLM"]
+        PromptTemplate["📝 Prompt Template"]
+        JSONBuilder["🔧 JSON Builder"]
+        DataTransform["🔄 Data Transform"]
+        DirectoryLoader["📂 Directory Loader"]
+    end
+
+    %% Custom ABM Components (Final MVP)
+    subgraph "Core Pipeline Components"
+        ChapterLoader["📚 ABMChapterVolumeLoader<br/>Loads structured chapter data"]
+        ChapterSelector["🎯 ABMChapterSelector<br/>Selects chapters by criteria"]
+        Segmenter["✂️ ABMSegmentDialogueNarration<br/>Segments into utterances"]
+        JSONLWriter["💾 ABMUtteranceJSONLWriter<br/>Writes annotation JSONL"]
+    end
+
+    subgraph "Multi-Agent Enhancement"
+        SpeakerAgent["👤 ABMSpeakerAttributionAgent<br/>Identifies dialogue speakers"]
+        EmotionAgent["😊 ABMEmotionClassifier<br/>Classifies emotional tone"]
+        QAAgent["✅ ABMQualityAssuranceAgent<br/>Validates annotation quality"]
+        CharacterBible["📖 ABMCharacterBibleBuilder<br/>Builds character profiles"]
+    end
+
+    subgraph "Audio Generation Pipeline"
+        ProsodyGen["🎵 ABMProsodyGenerator<br/>Generates prosodic markup"]
+        SSMLBuilder["🗣️ ABMSSMLBuilder<br/>Builds TTS-ready SSML"]
+        TTSRenderer["🎙️ ABMTTSRenderer<br/>Renders audio stems"]
+        AudioMaster["🎧 ABMAudioMaster<br/>Masters final audiobook"]
+    end
+
+    subgraph "System Utilities"
+        PayloadLogger["📊 ABMPayloadLogger<br/>Debug and monitoring"]
+        CacheManager["💾 ABMCacheManager<br/>Hash-based caching"]
+    end
+
+    %% Output Artifacts
+    subgraph "Output Artifacts"
+        SegmentedJSONL[("Segmented Utterances<br/>v1.jsonl")]
+        EnrichedJSONL[("Enriched Utterances<br/>v2-v4.jsonl")]
+        CharProfiles[("Character Profiles<br/>JSON")]
+        SSMLFiles[("SSML Files<br/>Chapter-specific")]
+        AudioStems[("Audio Stems<br/>WAV per utterance")]
+        ChapterAudio[("Chapter Audio<br/>Mastered WAV")]
+        BookAudio[("Final Audiobook<br/>Complete MP3/WAV")]
+    end
+
+    %% Main Processing Flow - Annotation Pipeline
+    VolumeJSON --> FileLoader
+    ChapterJSON --> JSONLoader
+    FileLoader --> ChapterLoader
+    JSONLoader --> ChapterLoader
+    ChapterLoader --> ChapterSelector
+    ChapterSelector --> Segmenter
+    
+    %% Text processing integration
+    TextRegex --> Segmenter
+    TextFilter --> Segmenter
+    
+    Segmenter --> JSONBuilder
+    JSONBuilder --> JSONLWriter
+    JSONLWriter --> SegmentedJSONL
+
+    %% Multi-Agent Enhancement Flow
+    SegmentedJSONL --> JSONLLoader
+    JSONLLoader --> SpeakerAgent
+    
+    %% LLM integration for speaker attribution
+    OllamaLLM --> SpeakerAgent
+    PromptTemplate --> SpeakerAgent
+    
+    SpeakerAgent --> EmotionAgent
+    EmotionAgent --> QAAgent
+    QAAgent --> DataTransform
+    DataTransform --> JSONLWriter
+    JSONLWriter --> EnrichedJSONL
+
+    %% Character analysis (multi-chapter)
+    DirectoryLoader --> CharacterBible
+    EnrichedJSONL --> CharacterBible
+    CharacterBible --> CharProfiles
+
+    %% Audio Generation Flow
+    EnrichedJSONL --> JSONLLoader
+    CharProfiles --> ProsodyGen
+    JSONLLoader --> ProsodyGen
+    ProsodyGen --> SSMLBuilder
+    SSMLBuilder --> SSMLFiles
+    SSMLFiles --> TTSRenderer
+    TTSRenderer --> AudioStems
+    AudioStems --> AudioMaster
+    AudioMaster --> ChapterAudio
+    AudioMaster --> BookAudio
+
+    %% Cross-cutting concerns
+    CacheManager -.-> ChapterLoader
+    CacheManager -.-> SpeakerAgent
+    CacheManager -.-> EmotionAgent
+    CacheManager -.-> TTSRenderer
+    
+    PayloadLogger -.-> ChapterLoader
+    PayloadLogger -.-> SpeakerAgent
+    PayloadLogger -.-> QAAgent
+    PayloadLogger -.-> TTSRenderer
+
+    %% Styling for final spec
+    classDef core fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef multiagent fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef audio fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef builtin fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef utility fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    classDef data fill:#fffde7,stroke:#f57f17,stroke-width:2px
+
+    class ChapterLoader,ChapterSelector,Segmenter,JSONLWriter core
+    class SpeakerAgent,EmotionAgent,QAAgent,CharacterBible multiagent
+    class ProsodyGen,SSMLBuilder,TTSRenderer,AudioMaster audio
+    class FileLoader,JSONLoader,JSONLLoader,TextFilter,TextRegex,OllamaLLM,PromptTemplate,JSONBuilder,DataTransform,DirectoryLoader builtin
+    class PayloadLogger,CacheManager utility
+    class PDF,VolumeJSON,ChapterJSON,AnnotationJSONL,SegmentedJSONL,EnrichedJSONL,CharProfiles,SSMLFiles,AudioStems,ChapterAudio,BookAudio data
