@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from .lf_components import (
+from abm.lf_components import (
     chapter_volume_loader,
     segment_dialogue_narration,
     utterance_jsonl_writer,

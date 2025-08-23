@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any
 
 
 @dataclass(frozen=True)
@@ -12,7 +12,7 @@ class Utterance:
     chapter_title: str
 
 
-def simple_segment(text: str) -> List[Dict[str, str]]:
+def simple_segment(text: str) -> list[dict[str, str]]:
     """Split body text into utterances using a basic quote/line heuristic.
 
     Rules (deterministic, no ML):
@@ -21,8 +21,8 @@ def simple_segment(text: str) -> List[Dict[str, str]]:
             narration.
     - Trim whitespace and ignore empty chunks.
     """
-    utterances: List[Dict[str, str]] = []
-    buf: List[str] = []
+    utterances: list[dict[str, str]] = []
+    buf: list[str] = []
     buf_has_quote = False
 
     def flush() -> None:
@@ -50,7 +50,7 @@ def simple_segment(text: str) -> List[Dict[str, str]]:
     return utterances
 
 
-def run(payload: Dict[str, Any]) -> Dict[str, Any]:
+def run(payload: dict[str, Any]) -> dict[str, Any]:
     """LangFlow-compatible entry.
 
     Input payload: {"book": str, "chapters": [{index,title,body_text}]}
@@ -59,16 +59,18 @@ def run(payload: Dict[str, Any]) -> Dict[str, Any]:
     """
     book = payload.get("book", "")
     chapters = payload.get("chapters", [])
-    out: List[Dict[str, Any]] = []
+    out: list[dict[str, Any]] = []
     for ch in chapters:
         ch_idx = int(ch.get("index", 0))
         ch_title = str(ch.get("title", ""))
         body = str(ch.get("body_text", ""))
-        for u in simple_segment(body):
-            out.append({
+        out.extend(
+            {
                 "role": u["role"],
                 "text": u["text"],
                 "chapter_index": ch_idx,
                 "chapter_title": ch_title,
-            })
+            }
+            for u in simple_segment(body)
+        )
     return {"book": book, "utterances": out}
