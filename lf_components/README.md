@@ -1,10 +1,13 @@
 # LangFlow Custom Components
 
-Drop custom Python components here to use in LangFlow via the "Custom Component" loader. Suggested modules:
+Drop custom Python components here to use in LangFlow via the "Custom Component" loader. Available modules:
 
-- chapter_volume_loader.py
-- segment_dialogue_narration.py
-- utterance_jsonl_writer.py
+- chapter_volume_loader.py — load `data/clean/<book>/chapters.json`
+- chapter_selector.py — pick one chapter by index or title substring
+- segment_dialogue_narration.py — deterministic dialogue/narration split
+- utterance_filter.py — filter utterances by role/length/substring
+- payload_logger.py — log + pass-through for easy debugging in flows
+- utterance_jsonl_writer.py — write `data/annotations/<book>/<stem>.jsonl`
 
 Naming convention: each file should expose a `run(**kwargs)` function.
 
@@ -29,3 +32,10 @@ def run(data_root: str, book_id: str, pdf_stem: str, chapter_index: int):
         }
     }
 ```
+
+Quick wiring in LangFlow:
+
+- Use Python Function blocks and select these files; the `run(...)` function will appear. Wire:
+    1) chapter_volume_loader.run(book="mvs") → 2) chapter_selector.run(index=0)
+    → 3) segment_dialogue_narration.run(...) → 4) utterance_filter.run(role="dialogue")
+    → 5) payload_logger.run(preview_key="utterances") → 6) utterance_jsonl_writer.run(stem="segments_dev")
