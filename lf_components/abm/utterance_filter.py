@@ -2,47 +2,15 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
-try:
-    from langflow.custom import Component  # type: ignore
-    from langflow.io import (  # type: ignore
-        BoolInput,
-        DataInput,
-        IntInput,
-        StrInput,
-        Output,
-    )
-    from langflow.schema import Data  # type: ignore
-except Exception:  # pragma: no cover
-    class Component:
-        def __init__(self) -> None:
-            self.status = ""
-
-        def log(self, msg: str) -> None:
-            pass
-
-    class _IO:
-        def __init__(self, *args, **kwargs) -> None:
-            pass
-
-    class DataInput(_IO):
-        pass
-
-    class IntInput(_IO):
-        pass
-
-    class StrInput(_IO):
-        pass
-
-    class BoolInput(_IO):
-        pass
-
-    class Output:
-        def __init__(self, *args, **kwargs) -> None:
-            pass
-
-    class Data:
-        def __init__(self, data: Any) -> None:
-            self.data = data
+from langflow.custom import Component
+from langflow.io import (
+    BoolInput,
+    DataInput,
+    IntInput,
+    StrInput,
+    Output,
+)
+from langflow.schema import Data
 
 
 class ABMUtteranceFilter(Component):
