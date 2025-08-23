@@ -44,10 +44,18 @@ echo " - Python path: ${PYTHONPATH}"
 echo " - Components path: ${COMPONENTS_PATH}"
 echo " - Import from 'abm.lf_components' or use auto-discovered custom components."
 
+# Show a quick inventory of custom components directory for debugging
+if [[ -d "$COMPONENTS_PATH" ]]; then
+  echo "[run_langflow] Components directory tree (one level):"
+  find "$COMPONENTS_PATH" -maxdepth 2 -type f -name "*.py" -printf "  %P\n" | sort || true
+fi
+
 if [[ -d "$COMPONENTS_PATH" ]]; then
   exec langflow run --host "$HOST" --port "$PORT" \
-    --components-path "$COMPONENTS_PATH"
+    --components-path "$COMPONENTS_PATH" \
+    --log-level debug --dev --no-open-browser
 else
   echo "[run_langflow] Components path not found: $COMPONENTS_PATH (continuing without --components-path)" >&2
-  exec langflow run --host "$HOST" --port "$PORT"
+  exec langflow run --host "$HOST" --port "$PORT" \
+    --log-level debug --dev --no-open-browser
 fi
