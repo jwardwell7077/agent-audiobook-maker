@@ -1,8 +1,10 @@
 # LangFlow Implementation
 
-> **Purpose**: Visual workflow prototyping for the Agent Audiobook Maker annotation pipeline using LangFlow.
+> **Purpose**: Visual workflow prototyping for the Agent Audiobook Maker annotation pipeline using LangFlow, evolving toward a comprehensive two-agent system.
 
-This is our current implementation approach for Phase 1 - using LangFlow's visual interface to rapidly prototype and validate the annotation pipeline before transitioning to a production multi-agent system.
+This is our current implementation approach for Phase 1 - using LangFlow's visual interface to rapidly prototype and validate the annotation pipeline. The system is transitioning from basic segmentation to a sophisticated two-agent architecture featuring dialogue classification and speaker attribution before moving to a production multi-agent system.
+
+**Two-Agent System Integration**: The pipeline now incorporates hybrid dialogue classification (heuristic + AI fallback) and speaker attribution agents with PostgreSQL character database integration. See [Two-Agent System Specification](../../02-specifications/components/two-agent-dialogue-speaker-system.md) for complete architecture details.
 
 ## Quick Navigation
 
@@ -80,12 +82,22 @@ Loads book chapters from structured JSON or fallback text files
 
 ### Segment Dialogue/Narration  
 
+**Legacy Component** (being upgraded to two-agent system)
+
 Splits chapter text into dialogue and narration utterances
 
 - Input: Chapter payload with text content
 - Output: Utterances array with role classification (dialogue/narration)
 - Algorithm: Quote-based heuristic detection
-- Status: ✅ Working, ready for ML enhancement
+- Status: ✅ Working, transitioning to hybrid dialogue classifier agent
+- **Migration**: Will be enhanced with AI classification fallback and confidence scoring
+
+**Future Enhancement**: This component is evolving into the Dialogue Classifier Agent with:
+
+- Hybrid heuristic + AI classification approach
+- Context window analysis (5-segment windows)
+- Confidence scoring for classification accuracy
+- Support for mixed dialogue/narration segments
 
 ### Chapter Selector
 
@@ -114,9 +126,28 @@ Filters utterances by role, length, or content criteria
 - Features: Role filtering, length bounds, substring matching
 - Status: ✅ Working with multiple filter types
 
+### Speaker Attribution Agent
+
+**New Component** (part of two-agent system)
+
+Associates dialogue segments with specific characters using database-driven lookup
+
+- Input: Dialogue segments from Dialogue Classifier Agent
+- Output: Speaker-attributed dialogue with character associations
+- Features: Character database integration, alias resolution, confidence scoring
+- Database: PostgreSQL with JSONB character profiles
+- Status: 🚧 Architecture complete, implementation in progress
+
+Key capabilities:
+
+- Real-time character lookup by name and aliases
+- Automatic character record creation for new speakers
+- Speaker vs addressee detection in dialogue
+- Character profile building for voice casting integration
+
 ## Workflow Examples
 
-### Basic Segmentation Flow
+### Legacy Basic Segmentation Flow
 
 ```mermaid
 graph LR
@@ -128,25 +159,57 @@ graph LR
 
 This flow loads a book volume, selects a specific chapter, segments it into dialogue/narration utterances, and writes the results to a JSONL file.
 
+### Two-Agent System Flow (New Architecture)
+
+```mermaid
+graph LR
+    A[Volume Loader] --> B[Chapter Selector]
+    B --> C[Dialogue Classifier Agent]
+    C --> D[Speaker Attribution Agent]
+    D --> E[(Character Database)]
+    D --> F[JSONL Writer]
+    F --> G[File Output]
+```
+
+The enhanced flow incorporates the two-agent system with database-driven character tracking and speaker attribution.
+
 ### Filtered Processing Flow
 
 ```mermaid  
 graph LR
     A[Volume Loader] --> B[Chapter Selector]
-    B --> C[Segment D/N]
-    C --> D[Utterance Filter]
-    D --> E[JSONL Writer]
-    E --> F[File Output]
+    B --> C[Dialogue Classifier Agent]
+    C --> D[Speaker Attribution Agent] 
+    D --> E[Utterance Filter]
+    E --> F[JSONL Writer]
+    F --> G[File Output]
 ```
 
-This flow adds filtering to remove unwanted utterances (e.g., too short, specific roles) before writing to output.
+This flow adds filtering capabilities after speaker attribution to remove unwanted utterances before final output.
 
 ## Development Status
 
-- **Phase**: Rapid prototyping with LangFlow
-- **Components**: 7 custom components available
-- **Status**: Ready for workflow testing
-- **Next Steps**: ML enhancement for speaker identification
+- **Phase**: Transitioning from rapid prototyping to two-agent architecture
+- **Legacy Components**: 7 custom components available and working
+- **New Components**: 2-agent system (dialogue classifier + speaker attribution) designed
+- **Database Integration**: PostgreSQL schema complete for character management  
+- **Status**: Legacy system ready for workflow testing, two-agent system architecture complete
+- **Next Steps**: Implementation of hybrid dialogue classifier and speaker attribution agents
+
+## Architecture Evolution
+
+### Current State (Legacy LangFlow)
+
+- Basic heuristic dialogue/narration segmentation
+- File-based processing and output
+- Limited character awareness
+
+### Target State (Two-Agent System)
+
+- Hybrid dialogue classification (heuristic + AI fallback)
+- Database-driven character tracking and speaker attribution
+- Confidence scoring and quality metrics
+- Voice casting preparation capabilities
 
 ## Related Documentation
 
