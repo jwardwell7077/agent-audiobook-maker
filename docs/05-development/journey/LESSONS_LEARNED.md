@@ -70,3 +70,28 @@ Deterministic text derivation is prerequisite for meaningful content-addressable
 
 - Provide a utility script to regenerate hashes and diff against current snapshot (guardrails for intentional vs accidental changes).
 - Optionally store a compressed canonical text bundle for deeper diffing beyond the first 20-line preview.
+
+## 2025-08-24
+
+### Mermaid Diagram Reliability on GitHub
+
+- Issue: Multiple GitHub render failures — “Parse error” and “No diagram type detected”. Root causes:
+  - `.mmd` files wrapped in ```mermaid fences; GitHub and tools expect raw Mermaid in standalone `.mmd` files.
+  - Labels with parentheses, e.g., `PyMuPDF (fitz)`, can break the parser unless quoted.
+  - Using flowchart dotted link syntax (`-.->`) inside `classDiagram` (UML) blocks; correct dependency arrow is `..>`.
+  - Duplicate `classDiagram` directives and stray custom fence headers like `mermaid.radar`.
+- Fixes:
+  - Removed code fences from `.mmd` files; kept only raw Mermaid DSL.
+  - Quoted or simplified labels with punctuation; preferred `"PyMuPDF / fitz"`.
+  - Replaced `-.->` with `..>` in class diagrams; kept proper UML arrows elsewhere.
+  - Ensured only one directive per diagram and used standard `mermaid` fences when embedding in `.md`.
+- Lessons:
+  - Keep `.mmd` raw; only `.md` uses ```mermaid fences.
+  - Quote labels containing parentheses or special chars.
+  - Use diagram-appropriate relations; UML arrows differ from flowchart links.
+  - Add a quick validation step or preview before commit to avoid doc regressions.
+- Checklist we now follow (also added to HOW_TO_DOCUMENT.md):
+  - No fences in `.mmd` files; first line is `flowchart ...` or `classDiagram`.
+  - No duplicate directives.
+  - Quote/simplify labels with punctuation.
+  - For class diagrams, use `..>`, `..|>`, `<|--`, `o--`, `*--`, `-->`/`--`.
