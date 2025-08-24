@@ -16,7 +16,7 @@ This section contains all the technical diagrams that illustrate how the Agent A
 
 ## Architecture Diagrams
 
-### 🏗️ [High-Level Architecture](high_level_architecture.mmd)
+### 🏗️ [High-Level Architecture](architecture/high_level_architecture.mmd)
 
 System overview showing major components and data flow
 
@@ -25,38 +25,13 @@ System overview showing major components and data flow
 - **Level**: 30,000-foot view
 - **Key Elements**: Major subsystems, external dependencies, data stores
 
-```mermaid
-%%{display}%%
-graph TB
-    subgraph "Input Processing"
-        PDF[PDF Files] --> PdfToText[PDF to Text]
-        TXT[Text Files] --> TextProcessor[Text Processing]
-    end
-    
-    subgraph "Content Analysis"
-        TextProcessor --> Classifier[Section Classifier]
-        PdfToText --> Classifier
-        Classifier --> Chapterizer[Chapter Structure]
-    end
-    
-    subgraph "Annotation Pipeline"  
-        Chapterizer --> Segmenter[Dialogue/Narration]
-        Segmenter --> Annotator[Metadata Generation]
-    end
-    
-    subgraph "Output & Quality"
-        Annotator --> QualityGate[Quality Assurance]
-        QualityGate --> Output[Structured JSON/JSONL]
-    end
-```text
-
 > This is a simplified representation – see full diagram for implementation details.
 
 ## Workflow Diagrams
 
 ### 📄 [PDF to Text Flow](pdf_to_text_flow.mmd)
 
-**Detailed workflow for PDF ingestion and text extraction**
+#### Detailed workflow for PDF ingestion and text extraction
 
 - **Process**: PDF → Text extraction → Validation → Storage
 - **Error handling**: Malformed PDFs, encoding issues, layout problems
@@ -65,7 +40,7 @@ graph TB
 
 ### 📝 [TXT to JSON Processing](txt_to_json_spec.mmd)
 
-**Text file to structured annotation workflow**
+#### Text file to structured annotation workflow
 
 - **Process**: Text → Classification → Segmentation → Annotation
 - **Components**: Section classifier, chapterizer, dialogue segmenter
@@ -74,9 +49,9 @@ graph TB
 
 ## Component State Machines
 
-### 📚 [Chapterizer FSM](chapterizer_fsm.mmd)
+### 📚 [Chapterizer FSM](state-machines/chapterizer_fsm.mmd)
 
-**Finite state machine for chapter detection and structuring**
+#### Finite state machine for chapter detection and structuring
 
 **States:**
 
@@ -92,9 +67,9 @@ graph TB
 - Content boundaries (page breaks, whitespace)
 - Validation results (pass/fail)
 
-### 🔍 [Section Classifier FSM](section_classifier_fsm.mmd)
+### 🔍 [Section Classifier FSM](state-machines/section_classifier_fsm.mmd)
 
-**State machine for classifying different text sections**
+#### State machine for classifying different text sections
 
 **States:**
 
@@ -110,9 +85,9 @@ graph TB
 - Front Matter, Back Matter, Bibliography
 - Footnotes, Headers, Page Numbers
 
-### ✅ [Quality Gate FSM](quality_gate_fsm.mmd)
+### ✅ [Quality Gate FSM](state-machines/quality_gate_fsm.mmd)
 
-**State machine for quality assurance workflows**
+#### State machine for quality assurance workflows
 
 **States:**
 
@@ -131,18 +106,18 @@ graph TB
 
 ## UML Diagrams  
 
-### 🔧 [Component UML](pdf_to_text_uml.mmd)
+### 🔧 [Component UML](uml/pdf_to_text_uml.mmd)
 
-**Class diagrams for PDF processing components**
+#### Class diagrams for PDF processing components
 
 - **Classes**: PDFReader, TextExtractor, QualityValidator
 - **Interfaces**: ITextProcessor, IQualityGate, IFileHandler
 - **Relationships**: Inheritance, composition, dependencies
 - **Methods**: Key public APIs and data transformations
 
-### 📊 [Data Model UML](structured_json_schema.mmd)
+### 📊 [Data Model UML](flows/structured_json_schema.mmd)
 
-**Entity relationship diagrams for data schemas**
+#### Entity relationship diagrams for data schemas
 
 - **Entities**: Book, Chapter, Utterance, Speaker, Annotation
 - **Relationships**: One-to-many, many-to-many mappings
@@ -154,7 +129,6 @@ graph TB
 ### 🔄 Processing Pipeline
 
 ```mermaid
-%%{display}%%
 sequenceDiagram
     participant Input as Input Files
     participant Processor as Text Processor
@@ -168,12 +142,11 @@ sequenceDiagram
     Classifier->>Chapterizer: Classified sections
     Chapterizer->>Annotator: Chapter structure  
     Annotator->>Output: Annotated JSONL
-```text
+```
 
 ### 🔍 Quality Assurance Flow
 
 ```mermaid
-%%{display}%%
 graph LR
     A[Raw Output] --> B{Automated QA}
     B -->|Pass| C[Approved]
@@ -181,7 +154,7 @@ graph LR
     D -->|Approve| C
     D -->|Reject| E[Rework]
     E --> A
-```text
+```
 
 ## Diagram Maintenance
 
