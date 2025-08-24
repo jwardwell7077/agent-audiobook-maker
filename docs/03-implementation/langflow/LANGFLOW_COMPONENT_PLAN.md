@@ -4,9 +4,9 @@ Last updated: 2025-08-23 (Documentation synchronized with production components)
 
 ## Diagrams
 
-- **Architecture**: [diagrams/langflow_architecture.mmd](diagrams/langflow_architecture.mmd)
-- **UML Class Structure**: [diagrams/langflow_uml.mmd](diagrams/langflow_uml.mmd)  
-- **Finite State Machine**: [diagrams/langflow_fsm.mmd](diagrams/langflow_fsm.mmd)
+- **Architecture**: [../../04-diagrams/architecture/langflow_architecture.mmd](../../04-diagrams/architecture/langflow_architecture.mmd)
+- **UML Class Structure**: [../../04-diagrams/uml/langflow_uml.mmd](../../04-diagrams/uml/langflow_uml.mmd)  
+- **Finite State Machine**: [../../04-diagrams/flows/langflow_fsm.mmd](../../04-diagrams/flows/langflow_fsm.mmd)
 
 ## Executive Summary
 

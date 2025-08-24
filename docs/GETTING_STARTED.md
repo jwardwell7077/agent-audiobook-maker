@@ -8,11 +8,11 @@ Agent Audiobook Maker transforms long-form PDFs (like novels) into high-quality,
 
 ```mermaid
 graph LR
-    PDF[📕 PDF Novel] --> Extract[🔍 Extract Text]
-    Extract --> Annotate[🏷️ Annotate Dialogue]
-    Annotate --> Cast[🎭 Cast Voices] 
-    Cast --> Render[🎙️ Render Audio]
-    Render --> Master[🎵 Master Audiobook]
+    PDF[PDF Novel] --> Extract[Extract Text]
+    Extract --> Annotate[Annotate Dialogue]
+    Annotate --> Cast[Cast Voices] 
+    Cast --> Render[Render Audio]
+    Render --> Master[Master Audiobook]
 ```
 
 ## Current Status

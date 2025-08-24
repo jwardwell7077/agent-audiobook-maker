@@ -24,7 +24,7 @@ flowchart LR
   CLEAN --> TXT[Write .txt]
 ```
 
-Diagram source: [diagrams/pdf_to_text_flow.mmd](diagrams/pdf_to_text_flow.mmd)
+Diagram source: [../../04-diagrams/flows/pdf_to_text_flow.mmd](../../04-diagrams/flows/pdf_to_text_flow.mmd)
 
 UML (class)
 
