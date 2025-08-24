@@ -1,3 +1,4 @@
+```mermaid
 %% LangFlow Audiobook Component UML (Final MVP Specification)
 %% Shows the complete class structure for the functional audiobook processing system
 
@@ -322,11 +323,11 @@ classDiagram
     ABMTTSRenderer --> ABMAudioMaster : audio_stems
 
     %% Cross-cutting Concerns
-    ABMCacheManager -.-> ABMChapterVolumeLoader : caches
-    ABMCacheManager -.-> ABMSpeakerAttributionAgent : caches
-    ABMCacheManager -.-> ABMEmotionClassifier : caches
-    ABMCacheManager -.-> ABMTTSRenderer : caches
-    ABMPayloadLogger -.-> ABMChapterVolumeLoader : logs
-    ABMPayloadLogger -.-> ABMSpeakerAttributionAgent : logs
-    ABMPayloadLogger -.-> ABMQualityAssuranceAgent : logs
-    ABMPayloadLogger -.-> ABMTTSRenderer : logs
+    ABMCacheManager ..> ABMChapterVolumeLoader : caches
+    ABMCacheManager ..> ABMSpeakerAttributionAgent : caches
+    ABMCacheManager ..> ABMEmotionClassifier : caches
+    ABMCacheManager ..> ABMTTSRenderer : caches
+    ABMPayloadLogger ..> ABMChapterVolumeLoader : logs
+    ABMPayloadLogger ..> ABMSpeakerAttributionAgent : logs
+    ABMPayloadLogger ..> ABMQualityAssuranceAgent : logs
+    ABMPayloadLogger ..> ABMTTSRenderer : logs

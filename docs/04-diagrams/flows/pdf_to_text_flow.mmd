@@ -1,4 +1,6 @@
+```mermaid
 flowchart LR
-  PDF[PDF file] -->|PyMuPDF (fitz)| EXTRACT[Extract pages]
+  PDF[PDF file] -->|"PyMuPDF (fitz)"| EXTRACT[Extract pages]
   EXTRACT --> CLEAN[Normalize & clean]
   CLEAN --> TXT[Write .txt]
+```
