@@ -157,6 +157,7 @@ flowchart TD
 ### 📍 Direct Attribution (Highest Confidence: 0.9+)
 
 **Explicit Dialogue Tags:**
+
 ```text
 Examples:
 • "Hello," John said.
@@ -165,6 +166,7 @@ Examples:
 ```
 
 **Speaker Identification Patterns:**
+
 - Character names followed by speech verbs
 - Pronoun + speech verb combinations  
 - Character titles and formal names
@@ -173,6 +175,7 @@ Examples:
 ### 🔍 Contextual Attribution (Medium Confidence: 0.7+)
 
 **Conversation Flow Analysis:**
+
 ```text
 Turn-taking patterns:
 • Speaker A → Speaker B → Speaker A
@@ -181,6 +184,7 @@ Turn-taking patterns:
 ```
 
 **Contextual Clues:**
+
 - Character mentioned in surrounding narration
 - Actions attributed to characters before/after dialogue
 - Scene setting and character presence
@@ -189,6 +193,7 @@ Turn-taking patterns:
 ### 💬 Conversation Flow Inference (Lower Confidence: 0.4-0.6)
 
 **Turn-Taking Logic:**
+
 ```text
 Pattern: "Hello," she said. "How are you?" "Fine, thanks."
 Result: 
@@ -200,6 +205,7 @@ Result:
 ### ❓ Unknown Speaker Handling (Confidence: 0.3)
 
 **Scenarios:**
+
 - No attribution clues found
 - Multiple possible speakers
 - Unclear conversation context
@@ -264,6 +270,7 @@ graph LR
 ## Example Processing Scenarios
 
 ### High-Confidence Direct Attribution
+
 ```text
 Input: "I think we should leave," Sarah said quietly.
   ↓
@@ -277,6 +284,7 @@ Output: character_id=42, confidence=0.95, method=direct
 ```
 
 ### Contextual Attribution
+
 ```text
 Input: Sarah walked to the window. "It's getting dark."
   ↓
@@ -290,6 +298,7 @@ Output: character_id=42, confidence=0.8, method=contextual
 ```
 
 ### Conversation Flow Inference
+
 ```text
 Previous: John said, "Where are you going?"
 Current: "To the store."
@@ -302,6 +311,7 @@ Output: character_id=inferred, confidence=0.5, method=inferred
 ```
 
 ### New Character Detection
+
 ```text
 Input: "Hello there," called a voice from the shadows.
   ↓
@@ -317,18 +327,21 @@ Output: character_id=new, confidence=0.3, method=unknown
 ## Performance Characteristics
 
 ### Speed
+
 - **Database Lookup**: ~5-10ms per query
 - **Attribution Analysis**: ~10-20ms per utterance  
 - **Profile Updates**: ~5ms per character update
 - **Total Processing**: ~20-35ms per dialogue utterance
 
 ### Accuracy Targets
+
 - **Direct Attribution**: 95%+ accuracy
 - **Contextual Attribution**: 80%+ accuracy  
 - **Flow Inference**: 60%+ accuracy
 - **Overall System**: 85%+ accuracy across all methods
 
 ### Resource Usage
+
 - **Memory**: ~100MB for character database cache
 - **CPU**: Moderate for pattern matching and analysis
 - **Database**: Read-heavy with periodic writes for updates
@@ -336,17 +349,20 @@ Output: character_id=new, confidence=0.3, method=unknown
 ## Integration Points
 
 ### Input Sources
+
 - Agent 1 (Dialogue Classifier) classified utterances
 - Existing character databases
 - Chapter processing workflows
 
 ### Output Destinations  
+
 - Voice casting profile generation
 - Character relationship mapping
 - TTS speaker assignment
 - Quality assurance workflows
 
 ### Dependencies
+
 - PostgreSQL (character and utterance storage)
 - Agent 1 output format compatibility
 - LangFlow runtime environment
@@ -354,12 +370,14 @@ Output: character_id=new, confidence=0.3, method=unknown
 ## Configuration
 
 ### Environment Variables
+
 - `CHARACTER_DB_URL`: Character database connection
 - `ATTRIBUTION_CONFIDENCE_MIN`: Minimum confidence threshold (default: 0.3)
 - `NEW_CHARACTER_THRESHOLD`: Threshold for creating new characters (default: 0.5)
 - `PROFILE_UPDATE_BATCH_SIZE`: Database batch size (default: 100)
 
 ### Component Parameters
+
 - `attribution_method`: "all" | "direct_only" | "contextual_only"
 - `min_confidence`: Minimum confidence for attribution (0.0-1.0)
 - `create_new_characters`: Enable/disable new character creation
@@ -368,12 +386,14 @@ Output: character_id=new, confidence=0.3, method=unknown
 ## Error Handling
 
 ### Graceful Degradation
+
 1. **Database Unavailable**: Process in memory, queue for later persistence
 2. **Attribution Failure**: Return unknown speaker with error details
 3. **Character Creation Error**: Log error, continue with temp character ID
 4. **Profile Update Failure**: Continue processing, log for retry
 
 ### Logging
+
 - Character attribution decisions at INFO level
 - New character creation at INFO level
 - Profile updates at DEBUG level
@@ -382,6 +402,7 @@ Output: character_id=new, confidence=0.3, method=unknown
 ---
 
 **Related Documentation**:
+
 - [Agent 1 Dialogue Classifier Flow](agent-1-dialogue-classifier-flow.md)
 - [Two-Agent System Specification](../../02-specifications/components/two-agent-dialogue-speaker-system.md)
 - [Database Schema](../../../database/init/01-init-schema.sql)
