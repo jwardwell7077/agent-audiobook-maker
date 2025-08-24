@@ -6,7 +6,7 @@ Successfully reorganized **57 documentation files** from a flat structure into a
 
 ## New Structure Overview
 
-```
+```text
 docs/
 ├── README.md                    # 🎯 Main documentation index
 ├── GETTING_STARTED.md           # 🚀 New contributor guide
@@ -57,7 +57,7 @@ docs/
 │   └── templates/             # Document templates
 │
 └── 06-appendices/             # 📚 Reference materials (planned)
-```
+```text
 
 ## Key Improvements
 

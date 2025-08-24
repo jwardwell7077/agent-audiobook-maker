@@ -141,12 +141,12 @@ The **Audio Book Maker MVP** delivers a complete, deterministic pipeline that co
 
 ### **Data Flow**
 
-```
+```text
 PDF Upload → TOC Parse → Chapter Extract → Utterance Segment → 
 Speaker Identify → Emotion Classify → Character Bible → 
 Prosody Generate → SSML Build → TTS Render → Audio Master → 
 Final Audiobook
-```
+```text
 
 ## Technical Dependencies
 
@@ -180,7 +180,7 @@ Final Audiobook
 
 #### Journey 1: First-Time Book Processing
 
-```
+```text
 As a book enthusiast,
 I want to upload a PDF novel and get a professionally-narrated audiobook,
 So that I can enjoy the story in audio format with distinct character voices.
@@ -191,11 +191,11 @@ Steps:
 3. Review generated character voice assignments
 4. Download final audiobook file
 5. Verify audio quality and character consistency
-```
+```text
 
 #### Journey 2: Quality Review & Reprocessing  
 
-```
+```text
 As a content creator,
 I want to review and adjust voice/emotion settings before final rendering,
 So that I can ensure the audiobook meets my quality standards.
@@ -206,11 +206,11 @@ Steps:
 3. Adjust voice assignments or emotion mappings (if needed)
 4. Regenerate audio with new settings
 5. Compare outputs and select final version
-```
+```text
 
 #### Journey 3: Error Recovery
 
-```
+```text
 As any user,
 I want the system to handle processing failures gracefully,
 So that I don't lose progress and can understand what went wrong.
@@ -221,7 +221,7 @@ Steps:
 3. System preserves completed stages
 4. Retry processing from failure point
 5. Successfully complete with fallback strategies
-```
+```text
 
 ## Definition of Done
 
