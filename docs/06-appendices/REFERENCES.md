@@ -173,7 +173,7 @@ This comprehensive reference collection supports learning, development, and trou
 
 ### Online Courses
 
-#### Multi-Agent Systems
+#### Multi-Agent Systems - Courses
 
 - **"Multi-Agent Systems"** - University of Edinburgh (Coursera)
   - <https://www.coursera.org/learn/multiagent>
@@ -183,7 +183,7 @@ This comprehensive reference collection supports learning, development, and trou
   - <https://www.coursera.org/learn/ai-for-everyone>
   - Business-oriented AI overview
 
-#### Natural Language Processing
+#### Natural Language Processing - Courses
 
 - **"Natural Language Processing Specialization"** - deeplearning.ai
   - <https://www.coursera.org/specializations/natural-language-processing>
@@ -235,7 +235,7 @@ This comprehensive reference collection supports learning, development, and trou
 - **r/LanguageTechnology** - <https://reddit.com/r/LanguageTechnology>  
 - **Stack Overflow** - <https://stackoverflow.com/questions/tagged/artificial-intelligence>
 
-#### Python Development
+#### Python Development - Community
 
 - **r/Python** - <https://reddit.com/r/Python>
 - **Python.org Community** - <https://www.python.org/community/>
