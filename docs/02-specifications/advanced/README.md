@@ -8,7 +8,7 @@ This section contains specifications for sophisticated features that involve mul
 
 ### 🧠 [Advanced Speaker Attribution](ADVANCED_SPEAKER_ATTRIBUTION.md)
 
-**Machine learning-based speaker identification for dialogue**
+#### Machine learning-based speaker identification for dialogue
 
 A sophisticated approach to identifying speakers in dialogue using:
 
@@ -23,7 +23,7 @@ A sophisticated approach to identifying speakers in dialogue using:
 
 ### 📋 [MVP Specification](MVP_SPECIFICATION.md)  
 
-**Minimum viable product definition and acceptance criteria**
+#### Minimum viable product definition and acceptance criteria
 
 Comprehensive definition of what constitutes a successful MVP for the Agent Audiobook Maker:
 
@@ -40,7 +40,7 @@ Comprehensive definition of what constitutes a successful MVP for the Agent Audi
 
 ### 🎭 Character Voice Casting (Planned - Phase 3)
 
-**Automated character-to-voice profile mapping**
+#### Automated character-to-voice profile mapping
 
 - Character personality analysis from dialogue patterns
 - Voice profile matching based on character traits  
@@ -49,7 +49,7 @@ Comprehensive definition of what constitutes a successful MVP for the Agent Audi
 
 ### 🎵 Prosody and Emotional Modeling (Planned - Phase 3)
 
-**Advanced audio rendering with emotional context**
+#### Advanced audio rendering with emotional context
 
 - Emotional state detection from text context
 - Prosodic feature generation (pace, pitch, emphasis)
@@ -58,7 +58,7 @@ Comprehensive definition of what constitutes a successful MVP for the Agent Audi
 
 ### 🔧 Advanced Quality Gates (Planned - Phase 4)
 
-**Sophisticated validation and quality assurance**
+#### Sophisticated validation and quality assurance
 
 - Multi-modal quality assessment (text + audio)
 - Automated regression detection across versions

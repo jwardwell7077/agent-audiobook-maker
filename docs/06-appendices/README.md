@@ -16,7 +16,7 @@ This section provides supplementary information that supports the main documenta
 
 ### 📖 [Glossary](GLOSSARY.md)
 
-**Comprehensive definitions of technical terms and concepts**
+#### Comprehensive definitions of technical terms and concepts
 
 Essential terminology for the Agent Audiobook Maker project:
 
@@ -29,7 +29,7 @@ Essential terminology for the Agent Audiobook Maker project:
 
 ### 🔧 [Troubleshooting](TROUBLESHOOTING.md)
 
-**Common problems, error messages, and their solutions**
+#### Common problems, error messages, and their solutions
 
 Practical problem-solving guide organized by area:
 
@@ -43,7 +43,7 @@ Practical problem-solving guide organized by area:
 
 ### 📚 [References](REFERENCES.md)
 
-**External resources, documentation, and learning materials**
+#### External resources, documentation, and learning materials
 
 Curated collection of useful resources:
 

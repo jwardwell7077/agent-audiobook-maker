@@ -72,7 +72,7 @@ graph LR
 
 - 📝 [Specifications](../02-specifications/README.md) - Detailed technical specs
 - 🎨 [Diagrams](../04-diagrams/README.md) - Visual architecture documentation  
-- 📈 [Development Journey](../05-development/journey/README.md) - How we got here
+- 📈 [Development Journey](../05-development/journey/DEVELOPMENT_JOURNEY.md) - How we got here
 
 ---
 

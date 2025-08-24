@@ -231,11 +231,11 @@ graph LR
 
 ## Related Sections
 
-- 🏗️ [Architecture](../../01-project-overview/ARCHITECTURE.md) - What these diagrams illustrate
-- 📋 [Specifications](../../02-specifications/README.md) - Requirements these diagrams support
-- 🔧 [Implementation](../../03-implementation/README.md) - Code that implements these designs
-- 📝 [Data Schemas](../data-schemas/README.md) - Detailed schema documentation
+- 🏗️ [Architecture](../01-project-overview/ARCHITECTURE.md) - What these diagrams illustrate
+- 📋 [Specifications](../02-specifications/README.md) - Requirements these diagrams support
+- 🔧 [Implementation](../03-implementation/README.md) - Code that implements these designs
+- 📝 [Data Schemas](../02-specifications/data-schemas/README.md) - Detailed schema documentation
 
 ---
 
-*Part of [Documentation Index](../../README.md)*
+*Part of [Documentation Index](../README.md)*

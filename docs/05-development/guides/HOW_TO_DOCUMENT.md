@@ -354,7 +354,7 @@ Important performance notes and optimization tips.
 ## Reference Documents
 
 - [Specification](../../02-specifications/components/COMPONENT_SPEC.md)
-- [Examples](examples/README.md)
+- [Examples](../../03-implementation/examples/classifier/)
 
 ### Implementation Guide Template
 
