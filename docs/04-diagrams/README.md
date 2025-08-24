@@ -8,11 +8,12 @@ This section contains all the technical diagrams that illustrate how the Agent A
 
 | Diagram Type | Purpose | Files |
 |-------------|---------|-------|
-| 🏗️ **Architecture** | System overview and component relationships | `high_level_architecture.mmd` |
-| 🔄 **Workflows** | Data processing pipelines | `pdf_to_text_flow.mmd` |
-| 🤖 **Components** | Individual component behavior | `chapterizer_fsm.mmd`, `section_classifier_fsm.mmd` |
-| 📊 **Data Models** | Schema and structure diagrams | `structured_json_schema.mmd` |
-| 🧠 **State Machines** | Finite state machine behaviors | `quality_gate_fsm.mmd` |
+| 🏗️ **Architecture** | System overview and component relationships | `architecture/two-agent-system-architecture.md` |
+| 🔄 **Data Flow** | Processing pipelines and data movement | `data-flow/two-agent-system-data-flow.md` |
+| 🤖 **State Machines** | Component behavior and state transitions | `fsm/two-agent-system-fsm.md` |
+| 📊 **UML Diagrams** | Class structures and relationships | `uml/two-agent-system-uml.md` |
+| 🗄️ **Database Schema** | Data models and relationships | `database/two-agent-system-database-schema.md` |
+| 📋 **Early Design Evolution** | Initial concepts and alternative approaches | `supplementary/early-design-diagrams.md` |
 
 ## Architecture Diagrams
 
@@ -228,6 +229,21 @@ graph LR
 3. **Link from specifications** where relevant
 4. **Test rendering** in multiple viewers
 5. **Get feedback** from domain experts
+
+## Design Evolution Documentation
+
+### Early Design Concepts
+
+The `supplementary/early-design-diagrams.md` document captures important diagrams and data models from the initial design phase:
+
+- **File-Based Character Data Model** - Original JSON/JSONL approach considered
+- **Enhanced Agent 2 Diagrams** - Detailed speaker attribution flows  
+- **Speaker vs Addressee Detection Logic** - Character role disambiguation
+- **Character Lookup Flow** - Database query optimization strategies
+- **5-Segment Context Windows** - Memory-efficient processing approach
+- **Enhanced Segmentation Output** - Metadata enrichment structures
+
+These diagrams show the design evolution from file-based storage to the final PostgreSQL-based architecture, preserving important architectural decisions and alternative approaches considered.
 
 ## Related Sections
 
