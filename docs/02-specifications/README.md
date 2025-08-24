@@ -7,9 +7,11 @@ This section contains the formal specifications that drive implementation. Each 
 ## Data Schemas
 
 ### 📊 [Data Schemas Overview](data-schemas/README.md)
+
 Core data structures and formats used throughout the system
 
 **Documents:**
+
 - [Structured JSON Schema](data-schemas/STRUCTURED_JSON_SCHEMA.md) - Chapter and volume manifest format
 - [Annotation Schema](data-schemas/ANNOTATION_SCHEMA.md) - Utterance annotation format with versioning
 - [JSON Schema Files](data-schemas/schemas/) - Machine-readable schema definitions
@@ -17,14 +19,17 @@ Core data structures and formats used throughout the system
 ## Component Specifications
 
 ### ⚙️ [Component Specs Overview](components/README.md)
+
 Detailed specifications for each system component
 
 **Ingestion Pipeline:**
+
 - [PDF to Text Spec](components/PDF_TO_TEXT_SPEC.md) - Text extraction from PDF files
 - [PDF to Text CLI Spec](components/PDF_TO_TEXT_CLI_SPEC.md) - Command-line interface
 - [Text to JSON Spec](components/TXT_TO_JSON_SPEC.md) - Text structuring
 
 **Classification & Structuring:**
+
 - [Section Classifier Spec](components/SECTION_CLASSIFIER_SPEC.md) - TOC and section detection
 - [Chapterizer Spec](components/CHAPTERIZER_SPEC.md) - Chapter boundary detection
 - [Quality Gate Spec](components/QUALITY_GATE_SPEC.md) - Validation and QA checks
@@ -32,9 +37,11 @@ Detailed specifications for each system component
 ## Advanced Features
 
 ### 🚀 [Advanced Specifications](advanced/README.md)
+
 Complex features and system-wide specifications
 
 **Documents:**
+
 - [Advanced Speaker Attribution](advanced/ADVANCED_SPEAKER_ATTRIBUTION.md) - ML-based speaker identification
 - [MVP Specification](advanced/MVP_SPECIFICATION.md) - Minimum viable product definition
 
@@ -43,6 +50,7 @@ Complex features and system-wide specifications
 All specifications in this section follow these standards:
 
 ### Required Sections
+
 1. **Purpose & Scope** - What this component does and doesn't do
 2. **Requirements** - Numbered, testable requirements
 3. **Interface Specification** - Inputs, outputs, and APIs
@@ -51,6 +59,7 @@ All specifications in this section follow these standards:
 6. **Testing Criteria** - How to validate the implementation
 
 ### Quality Standards
+
 - **Testable**: Every requirement maps to specific test cases
 - **Versioned**: Schema changes are tracked with migration paths
 - **Examples**: Real-world examples for every data structure

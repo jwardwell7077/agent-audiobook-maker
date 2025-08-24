@@ -7,6 +7,7 @@ This section contains formal specifications for all major components, following 
 ## Component Categories
 
 ### Ingestion Pipeline
+
 **Transform PDFs into structured, reproducible text artifacts**
 
 - **[PDF to Text Spec](PDF_TO_TEXT_SPEC.md)** - Core text extraction with PyMuPDF
@@ -14,12 +15,14 @@ This section contains formal specifications for all major components, following 
 - **[Text to JSON Spec](TXT_TO_JSON_SPEC.md)** - Text structuring and serialization
 
 ### Classification & Structuring  
+
 **Organize extracted text into meaningful sections and chapters**
 
 - **[Section Classifier Spec](SECTION_CLASSIFIER_SPEC.md)** - TOC detection and section classification
 - **[Chapterizer Spec](CHAPTERIZER_SPEC.md)** - Chapter boundary detection and splitting
 
 ### Quality & Validation
+
 **Ensure output quality and catch processing issues**
 
 - **[Quality Gate Spec](QUALITY_GATE_SPEC.md)** - Validation checks and quality assurance
@@ -27,6 +30,7 @@ This section contains formal specifications for all major components, following 
 ## Specification Standards
 
 ### Required Sections
+
 Every component specification includes:
 
 1. **Purpose & Scope** - What the component does and boundary conditions
@@ -38,6 +42,7 @@ Every component specification includes:
 7. **Dependencies** - External libraries, system requirements, version constraints
 
 ### Quality Standards
+
 - **Testable Requirements** - Every requirement maps to automated tests
 - **Versioned Interfaces** - Schema changes tracked with migration paths
 - **Real Examples** - Working examples for all data structures
@@ -79,16 +84,19 @@ graph LR
 ## Design Principles
 
 ### Deterministic Processing
+
 - **Reproducible outputs** - Same input always produces identical results
 - **Content hashing** - SHA-256 hashes for validation and caching
 - **Stable ordering** - Consistent sort orders for lists and collections
 
 ### Error Handling
+
 - **Graceful degradation** - Continue processing when possible
 - **Structured errors** - Machine-readable error codes and messages  
 - **Recovery paths** - Clear guidance for fixing common issues
 
 ### Testability
+
 - **Unit testable** - Each component can be tested in isolation
 - **Integration tested** - End-to-end pipeline validation
 - **Regression protected** - Hash-based change detection
@@ -96,6 +104,7 @@ graph LR
 ## Usage Patterns
 
 ### For Component Developers
+
 1. **Read the specification** completely before implementing
 2. **Implement interfaces exactly** as specified  
 3. **Write tests first** following the testing criteria
@@ -103,12 +112,14 @@ graph LR
 5. **Handle all error cases** listed in the specification
 
 ### For Integration Developers  
+
 1. **Understand data flow** between components
 2. **Respect interface contracts** - don't bypass validation
 3. **Chain components** using their specified output formats
 4. **Handle errors** at appropriate integration points
 
 ### For QA/Testing
+
 1. **Map requirements to tests** - every numbered requirement should have tests
 2. **Test error conditions** - not just happy paths
 3. **Validate outputs** against schemas and examples
