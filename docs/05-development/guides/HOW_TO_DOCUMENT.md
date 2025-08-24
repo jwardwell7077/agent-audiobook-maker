@@ -37,7 +37,7 @@ docs/
 ├── 04-diagrams/                # Visual documentation
 ├── 05-development/             # Contributor resources
 └── 06-appendices/              # Reference materials
-```
+```text
 
 ### Section Purposes
 
@@ -241,7 +241,7 @@ Key information about what users will find:
 ---
 
 *Part of [Documentation Index](../../README.md)*
-```
+```text
 
 ### Technical Specification Template
 
@@ -273,7 +273,7 @@ Brief description of the component/feature and its role in the system.
 {
   "example": "input format"
 }
-```
+```text
 
 ### Output Format
 
@@ -281,7 +281,7 @@ Brief description of the component/feature and its role in the system.
 {
   "example": "output format"
 }
-```
+```text
 
 ## Behavior Specification
 
@@ -331,13 +331,13 @@ Description or diagram of how data flows through the implementation.
 
 ```bash
 # Step-by-step commands
-```
+```text
 
 ### Basic Usage
 
 ```python
 # Example code
-```
+```text
 
 ## Advanced Features
 
@@ -391,13 +391,13 @@ Description or diagram of how data flows through the implementation.
 
 ```bash
 # Step-by-step commands
-```
+```text
 
 ### Configuration
 
 ```python
 # Example code
-```
+```text
 
 ## Implementation Features
 
@@ -520,7 +520,7 @@ npx markdownlint-cli docs/ --fix
 
 # Check specific files
 npx markdownlint-cli docs/README.md
-```
+```text
 
 **Quality Checks**:
 
