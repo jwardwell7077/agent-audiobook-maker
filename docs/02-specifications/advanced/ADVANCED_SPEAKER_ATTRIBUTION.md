@@ -17,11 +17,11 @@
 
 ### **Performance Gap Assessment**
 
-```text
+```
 Current: ~60-70% (estimated, heuristic-based)
 Target:   95% F1 score
 Gap:      25-35 percentage points improvement needed
-```text
+```
 
 ## Technical Strategy Overview
 
@@ -50,7 +50,7 @@ def enhanced_segment(text: str) -> List[Dict[str, str]]:
         r'["""][^"""]*["""]', # Smart quotes / Unicode quotes
     ]
     # Implementation with regex + context validation
-```text
+```
 
 #### **Narrative Context Parsing**
 
@@ -74,7 +74,7 @@ class RuleBasedAttributor:
     def attribute_speaker(self, utterance: str, context: str) -> Dict:
         # Rule-based matching with confidence scoring
         pass
-```text
+```
 
 #### **Model 2: NER + Coreference Resolution (Target: 85% F1)**
 
@@ -94,7 +94,7 @@ class CorefAttributor:
         # Full chapter coreference resolution
         # Link pronouns to character entities
         pass
-```text
+```
 
 #### **Model 3: LLM-Based Attribution (Target: 90% F1)**
 
@@ -118,7 +118,7 @@ class LLMAttributor:
         """
         # LLM inference with structured output
         pass
-```text
+```
 
 #### **Model 4: Character Embedding Similarity (Target: 88% F1)**
 
@@ -137,7 +137,7 @@ class EmbeddingAttributor:
     def similarity_attribution(self, utterance: str, characters: List[str]) -> Dict:
         """Find most similar character based on speech patterns."""
         pass
-```text
+```
 
 ### **Layer 3: Ensemble Attribution System**
 
@@ -167,7 +167,7 @@ class EnsembleAttributor:
         # Weighted voting with confidence thresholding
         final_prediction = self._ensemble_vote(predictions)
         return final_prediction
-```text
+```
 
 ### **Layer 4: Character State Management**
 
@@ -194,7 +194,7 @@ class ConversationState:
         """Use conversation flow to predict likely next speaker."""
         # Implement turn-taking heuristics
         pass
-```text
+```
 
 #### **Character Bible Integration**
 
@@ -216,7 +216,7 @@ class CharacterBible:
     def resolve_alias(self, speaker_candidate: str) -> str:
         """Resolve speaker alias to canonical character name."""
         pass
-```text
+```
 
 ### **Layer 5: Training Data & Evaluation Pipeline**
 
@@ -234,7 +234,7 @@ GOLD_STANDARD_ANNOTATIONS = [
     },
     # ... 500+ manually verified examples
 ]
-```text
+```
 
 #### **Automated Evaluation Pipeline**
 
@@ -254,7 +254,7 @@ def evaluate_speaker_attribution(predictions: List[Dict],
     f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
     
     return {'precision': precision, 'recall': recall, 'f1': f1}
-```text
+```
 
 ## Implementation Roadmap
 
@@ -324,7 +324,7 @@ dependencies:
   - torch>=1.12.0
   - ollama  # For local LLM inference
   - datasets>=2.0.0  # For evaluation datasets
-```text
+```
 
 ## Risk Mitigation
 

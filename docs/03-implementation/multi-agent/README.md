@@ -152,7 +152,7 @@ content_agent = Agent(
     tools=[genre_classifier, style_analyzer],
     verbose=True
 )
-```text
+```
 
 ### Orchestration: LangGraph
 
@@ -165,7 +165,7 @@ workflow = Graph()
 workflow.add_node("analyze", content_analysis_node)
 workflow.add_node("segment", segmentation_node)
 workflow.add_edge("analyze", "segment")
-```text
+```
 
 ### Memory: Redis + Vector Store
 
@@ -191,7 +191,7 @@ graph TD
     C --> D[Annotation]
     D --> E[Quality Check]
     E --> F[Output]
-```text
+```
 
 **Use case**: Standard book processing with clear dependencies
 
@@ -204,7 +204,7 @@ graph TD
     B --> D[Annotation Agent]
     C --> D
     D --> E[QA Merge]
-```text
+```
 
 **Use case**: Complex books requiring simultaneous analysis
 
@@ -217,7 +217,7 @@ graph TD
     B -->|Fail| D[Human Review]
     D --> E[Agent Reprocessing]
     E --> F[Final Output]
-```text
+```
 
 **Use case**: High-quality requirements with human oversight
 
@@ -229,7 +229,7 @@ graph TD
     B -->|Low| C[Refinement Agents]
     B -->|High| D[Output]
     C --> A
-```text
+```
 
 **Use case**: Adaptive quality improvement
 
@@ -250,7 +250,7 @@ graph TD
     },
     "chapter_id": "chapter_001"
 }
-```text
+```
 
 ### Shared Knowledge Base
 

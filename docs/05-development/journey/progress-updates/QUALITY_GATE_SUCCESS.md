@@ -10,7 +10,7 @@
 ```bash
 $ python -m ruff check src/
 All checks passed!
-```text
+```
 
 **Issues Resolved**:
 
@@ -32,7 +32,7 @@ $ python -m pymarkdown scan docs/LANGFLOW_COMPONENT_SUCCESS_CLEAN.md
 
 $ python -m pymarkdown scan docs/COMPONENT_TEST_RESULTS.md
 # No output = all checks passed
-```text
+```
 
 **Issues Resolved**:
 
@@ -52,7 +52,7 @@ $ python -m pymarkdown scan docs/COMPONENT_TEST_RESULTS.md
 ✅ Component 5: ABM Utterance Filter
 ✅ All components properly inherit from Component
 🎉 All components ready and linting passed!
-```text
+```
 
 ## Engineering Discipline Demonstrated
 

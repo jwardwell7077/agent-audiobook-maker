@@ -22,7 +22,7 @@ graph LR
     
     Structured --> Validation{✅ JSON Schema}
     Annotation --> Validation
-```text
+```
 
 ## Documents in This Section
 

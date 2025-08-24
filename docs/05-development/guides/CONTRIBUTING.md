@@ -88,14 +88,14 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -U pip ruff mypy pre-commit pydantic
 pre-commit install
-```text
+```
 
 KISS reminder: Minimal is better. You can also use the Make target which installs only the documented dev tools:
 
 ```bash
 make dev_setup
 source .venv/bin/activate
-```text
+```
 
 Single virtual environment policy:
 
@@ -126,7 +126,7 @@ Run manually across all files:
 
 ```bash
 pre-commit run --all-files
-```text
+```
 
 If coverage gate fails, add missing docstrings or consciously exclude paths before raising threshold.
 
@@ -146,7 +146,7 @@ ruff format .
 ruff check .
 ruff format --check .
 mypy .
-```text
+```
 
 ## Commit/PR checklist
 
@@ -176,7 +176,7 @@ fail-under = 95
 exclude = ["tests", "alembic"]
 verbose = 1
 style = "google"
-```text
+```
 
 - `pydoclint` – validate param/return sections align with signatures.
 - Add a pre-commit hook or CI step combining: `ruff check .`, `mypy .`, `pytest -q`, `interrogate -c pyproject.toml`.
@@ -204,7 +204,7 @@ def add(a: int, b: int) -> int:
     Returns:
         Sum of `a` and `b`.
     """
-```text
+```
 
 ## Recent Refactor Patterns (Ingest & Annotation Endpoints)
 

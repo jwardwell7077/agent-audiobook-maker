@@ -26,7 +26,7 @@ flowchart LR
 
   Report -->|all pass| Pass[("Gate Pass")]
   Report -->|any fail| Fail[("Gate Fail")]
-```text
+```
 
 Source: docs/diagrams/quality_gate_architecture.mmd
 
@@ -53,7 +53,7 @@ classDiagram
   }
   QualityGateRunner --> GateConfig
   QualityGateRunner --> QualityGateReport
-```text
+```
 
 Source: docs/diagrams/quality_gate_uml.mmd
 
@@ -71,7 +71,7 @@ stateDiagram-v2
   Pass --> Report
   Fail --> Report
   Report --> [*]
-```text
+```
 
 Source: docs/diagrams/quality_gate_fsm.mmd
 

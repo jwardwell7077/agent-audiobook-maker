@@ -17,7 +17,7 @@ Last updated: 2025-08-14
   "text": "Dialogue example...",
   "is_dialogue": true
 }
-```text
+```
 
 ## Planned Enriched (v2 – Speaker / Emotion / QA)
 
@@ -39,7 +39,7 @@ Last updated: 2025-08-14
   "layer_versions": { "segmentation": 1, "speaker": 1, "emotion": 1 },
   "created_at": "2025-08-14T12:00:00Z"
 }
-```text
+```
 
 ## Full Target (v4 – Prosody / SSML / TTS)
 

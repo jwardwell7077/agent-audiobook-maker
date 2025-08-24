@@ -72,7 +72,7 @@ graph LR
     end
     
     L4 -.evolution.-> M1
-```text
+```
 
 ### Data Flow Patterns
 
