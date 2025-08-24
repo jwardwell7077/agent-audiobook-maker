@@ -1,80 +1,153 @@
 # LangFlow Implementation
 
-> **Purpose**: Visual workflow prototyping for the Agent Audiobook Maker annotation pipeline using LangFlow.
+> **Purpose**: Visual workflow prototyping for the Agent Audiobook Maker annotation pipeline using LangFlow, evolving toward a comprehensive two-agent system.
 
-This is our current implementation approach for Phase 1 - using LangFlow's visual interface to rapidly prototype and validate the annotation pipeline before transitioning to a production multi-agent system.
+This is our current implementation approach for Phase 1 - using LangFlow's visual interface to rapidly prototype and validate the annotation pipeline. The system is transitioning from basic segmentation to a sophisticated two-agent architecture featuring dialogue classification and speaker attribution before moving to a production multi-agent system.
 
-## Why LangFlow?
+**Two-Agent System Integration**: The pipeline now incorporates hybrid dialogue classification (heuristic + AI fallback) and speaker attribution agents with PostgreSQL character database integration. See [Two-Agent System Specification](../../02-specifications/components/two-agent-dialogue-speaker-system.md) for complete architecture details.
 
-### Rapid Prototyping
+## Quick Navigation
 
-- **Visual design** - Build workflows without code complexity
-- **Real-time testing** - Immediate feedback on component integration
-- **Stakeholder demos** - Non-technical stakeholders can understand workflows
-- **Quick iteration** - Change logic without full rebuild cycles
+| Category | Purpose | Files |
+|----------|---------|-------|
+| 📚 **Setup & Usage** | Getting started with LangFlow | `SETUP_GUIDE.md` |
+| �� **Workflows** | Pre-built examples and patterns | `WORKFLOWS.md` |
+| 📊 **Component Results** | Testing and validation docs | `COMPONENT_TEST_RESULTS.md` |
+| 🎯 **Success Stories** | Implementation milestones | `LANGFLOW_COMPONENT_SUCCESS.md` |
 
-### Component Reusability
+## Contents
 
-- **Modular design** - Components can be reused across workflows
-- **Standard interfaces** - LangFlow enforces consistent data contracts
-- **Version control** - Workflows can be exported as JSON and versioned
+### Setup Guide
 
-### Learning Platform  
+Complete setup and configuration guide - see [SETUP_GUIDE.md](SETUP_GUIDE.md)
 
-- **Multi-agent concepts** - Practice agent coordination patterns
-- **Data flow validation** - Ensure components work together correctly
-- **Error handling** - Debug integration issues visually
+Everything needed to get LangFlow running with ABM components:
+
+- Environment configuration and prerequisites
+- Component discovery and loading  
+- Step-by-step setup instructions
+- Troubleshooting common issues
+
+*Use this when setting up LangFlow for the first time.*
+
+### Workflows
+
+Pre-built workflows and usage examples - see [WORKFLOWS.md](WORKFLOWS.md)
+
+Working examples for different processing scenarios:
+
+- MVP processing workflow (ready to import)
+- Sample data processing examples
+- Manual workflow building instructions
+- Advanced processing patterns
+
+*Use this to understand how components work together.*
+
+### Component Test Results
+
+Validation and testing outcomes - see [COMPONENT_TEST_RESULTS.md](COMPONENT_TEST_RESULTS.md)
+
+Results from component testing and integration:
+
+- Individual component validation
+- End-to-end workflow testing
+- Performance benchmarks
+- Quality metrics
+
+*Use this to understand component reliability and performance.*
+
+### Component Success
+
+Implementation milestones and achievements - see [LANGFLOW_COMPONENT_SUCCESS.md](LANGFLOW_COMPONENT_SUCCESS.md)
+
+Major milestones in LangFlow implementation:
+
+- Component development progress
+- Integration breakthroughs
+- UI discovery solutions
+- Production readiness status
+
+*Use this to understand the implementation journey.*
 
 ## Current Components
 
-### 📚 [Chapter Volume Loader](abm_chapter_volume_loader.py)
+### Chapter Volume Loader
 
-**Loads book chapters from structured JSON or fallback text files**
+Loads book chapters from structured JSON or fallback text files
 
 - Input: Book ID and manifest path
 - Output: Structured payload with book metadata and chapters
 - Features: Automatic fallback to .txt files if JSON unavailable
 - Status: ✅ Working and tested
 
-### ✂️ [Segment Dialogue/Narration](abm_segment_dialogue_narration.py)  
+### Segment Dialogue/Narration  
 
-**Splits chapter text into dialogue and narration utterances**
+**Legacy Component** (being upgraded to two-agent system)
+
+Splits chapter text into dialogue and narration utterances
 
 - Input: Chapter payload with text content
 - Output: Utterances array with role classification (dialogue/narration)
 - Algorithm: Quote-based heuristic detection
-- Status: ✅ Working, ready for ML enhancement
+- Status: ✅ Working, transitioning to hybrid dialogue classifier agent
+- **Migration**: Will be enhanced with AI classification fallback and confidence scoring
 
-### 🎯 [Chapter Selector](abm_chapter_selector.py)
+**Future Enhancement**: This component is evolving into the Dialogue Classifier Agent with:
 
-**Selects specific chapter by index for processing**
+- Hybrid heuristic + AI classification approach
+- Context window analysis (5-segment windows)
+- Confidence scoring for classification accuracy
+- Support for mixed dialogue/narration segments
+
+### Chapter Selector
+
+Selects specific chapter by index for processing
 
 - Input: Multi-chapter payload and chapter index
 - Output: Single chapter payload for downstream processing  
 - Features: Bounds checking and validation
 - Status: ✅ Working and tested
 
-### 🗂️ [Utterance JSONL Writer](abm_utterance_jsonl_writer.py)
+### Utterance JSONL Writer
 
-**Writes utterances to JSONL files for persistence**
+Writes utterances to JSONL files for persistence
 
 - Input: Utterances payload with book/chapter metadata
 - Output: File path and processing statistics
 - Features: Automatic directory creation, filename templates
 - Status: ✅ Working with configurable paths
 
-### 🔍 [Utterance Filter](abm_utterance_filter.py)
+### Utterance Filter
 
-**Filters utterances by role, length, or content criteria**
+Filters utterances by role, length, or content criteria
 
 - Input: Utterances payload with filter parameters
 - Output: Filtered utterances matching criteria
 - Features: Role filtering, length bounds, substring matching
 - Status: ✅ Working with multiple filter types
 
+### Speaker Attribution Agent
+
+**New Component** (part of two-agent system)
+
+Associates dialogue segments with specific characters using database-driven lookup
+
+- Input: Dialogue segments from Dialogue Classifier Agent
+- Output: Speaker-attributed dialogue with character associations
+- Features: Character database integration, alias resolution, confidence scoring
+- Database: PostgreSQL with JSONB character profiles
+- Status: 🚧 Architecture complete, implementation in progress
+
+Key capabilities:
+
+- Real-time character lookup by name and aliases
+- Automatic character record creation for new speakers
+- Speaker vs addressee detection in dialogue
+- Character profile building for voice casting integration
+
 ## Workflow Examples
 
-### Basic Segmentation Flow
+### Legacy Basic Segmentation Flow
 
 ```mermaid
 graph LR
@@ -82,153 +155,64 @@ graph LR
     B --> C[Segment D/N]
     C --> D[JSONL Writer]
     D --> E[File Output]
-```text
+```
 
-1. **Load** book chapters from `data/clean/<book>/chapters.json`
-2. **Select** specific chapter for processing
-3. **Segment** text into dialogue/narration utterances
-4. **Write** results to `data/annotations/<book>/utterances.jsonl`
+This flow loads a book volume, selects a specific chapter, segments it into dialogue/narration utterances, and writes the results to a JSONL file.
 
-### Quality Assurance Flow
+### Two-Agent System Flow (New Architecture)
 
 ```mermaid
 graph LR
-    A[Volume Loader] --> B[Segmenter]
-    B --> C[Utterance Filter]
-    C --> D[QA Validation]
-    D --> E[JSONL Writer]
-```text
+    A[Volume Loader] --> B[Chapter Selector]
+    B --> C[Dialogue Classifier Agent]
+    C --> D[Speaker Attribution Agent]
+    D --> E[(Character Database)]
+    D --> F[JSONL Writer]
+    F --> G[File Output]
+```
 
-1. **Segment** chapter text into utterances  
-2. **Filter** utterances by quality criteria
-3. **Validate** against expected patterns
-4. **Write** validated results
+The enhanced flow incorporates the two-agent system with database-driven character tracking and speaker attribution.
 
-## Component Development
+### Filtered Processing Flow
 
-### Creating New Components
+```mermaid  
+graph LR
+    A[Volume Loader] --> B[Chapter Selector]
+    B --> C[Dialogue Classifier Agent]
+    C --> D[Speaker Attribution Agent] 
+    D --> E[Utterance Filter]
+    E --> F[JSONL Writer]
+    F --> G[File Output]
+```
 
-1. **Inherit from Component**
+This flow adds filtering capabilities after speaker attribution to remove unwanted utterances before final output.
 
-```python
-from langflow.custom import Component
-from langflow.io import DataInput, Output
-from langflow.schema import Data
+## Development Status
 
-class MyComponent(Component):
-    display_name = "My Component"
-    description = "What this component does"
-    icon = "icon-name"  # Lucide icon
-    name = "my_component"
-```text
+- **Phase**: Transitioning from rapid prototyping to two-agent architecture
+- **Legacy Components**: 7 custom components available and working
+- **New Components**: 2-agent system (dialogue classifier + speaker attribution) designed
+- **Database Integration**: PostgreSQL schema complete for character management  
+- **Status**: Legacy system ready for workflow testing, two-agent system architecture complete
+- **Next Steps**: Implementation of hybrid dialogue classifier and speaker attribution agents
 
-2. **Define Inputs and Outputs**
+## Architecture Evolution
 
-```python
-inputs = [
-    DataInput(
-        name="payload",
-        display_name="Input Data", 
-        info="Description of expected input",
-        required=True
-    )
-]
+### Current State (Legacy LangFlow)
 
-outputs = [
-    Output(
-        display_name="Result", 
-        name="result",
-        method="process"
-    )
-]
-```text
+- Basic heuristic dialogue/narration segmentation
+- File-based processing and output
+- Limited character awareness
 
-3. **Implement Processing Logic**
+### Target State (Two-Agent System)
 
-```python
-def process(self) -> Data:
-    # Access input data
-    input_data = self.payload.data
-    
-    # Process the data
-    result = {"processed": input_data}
-    
-    # Return as Data object
-    return Data(data=result)
-```text
+- Hybrid dialogue classification (heuristic + AI fallback)
+- Database-driven character tracking and speaker attribution
+- Confidence scoring and quality metrics
+- Voice casting preparation capabilities
 
-### Component Testing
+## Related Documentation
 
-- **Unit tests** in `tests/unit_tests/test_langflow_components_optional.py`
-- **Integration tests** with real data samples
-- **Visual testing** in LangFlow UI with sample inputs
-
-## LangFlow Setup
-
-### Installation
-
-```bash
-# Install in your virtual environment
-pip install langflow
-
-# Run with custom components
-./scripts/run_langflow.sh
-```text
-
-### Component Discovery
-
-- Components automatically discovered from `src/abm/lf_components/audiobook/`
-- Must inherit from `langflow.custom.Component`
-- Must be in Python package with `__init__.py`
-
-### UI Usage
-
-1. **Start LangFlow**: `./scripts/run_langflow.sh`
-2. **Open browser**: <http://localhost:7860>
-3. **Import workflow**: Use JSON files from `examples/langflow/`
-4. **Add components**: Drag from "Audiobook" category
-5. **Connect workflow**: Link component inputs/outputs
-6. **Test execution**: Run workflow with sample data
-
-## Transition to Multi-Agent
-
-### Phase 2 Migration Strategy
-
-1. **Extract core logic** from LangFlow components
-2. **Wrap as CrewAI agents** with specialized roles  
-3. **Implement coordination** using LangGraph orchestration
-4. **Add production features** (error handling, monitoring, caching)
-5. **Maintain LangFlow** for rapid prototyping of new features
-
-### Preserved Patterns
-
-- **Component interfaces** will remain similar
-- **Data schemas** will be maintained for compatibility
-- **Workflow concepts** translate to agent coordination
-- **Testing approaches** apply to agent validation
-
-## Success Metrics
-
-### Current Phase 1 Goals
-
-- ✅ All components working in LangFlow UI
-- ✅ End-to-end workflow produces valid JSONL
-- ✅ Visual debugging and validation possible
-- 🚧 Sample workflows documented and versioned
-
-### Phase 2 Transition Goals  
-
-- 🎯 Core logic extracted to reusable modules
-- 🎯 Agent roles mapped to component responsibilities
-- 🎯 Production orchestration layer designed
-- 🎯 Performance benchmarks established
-
-## Related Sections
-
-- 🤖 [Multi-Agent Implementation](../multi-agent/README.md) - Future production approach
-- 📝 [Component Specifications](../../02-specifications/components/README.md) - What these components should achieve
-- 📈 [Development Journey](../../05-development/journey/README.md) - How this approach evolved
-
----
-
-*Part of [Implementation](../README.md) | [Documentation Index](../../README.md)*
+- [Component Implementation](../../../lf_components/README.md) - Source code for all components
+- [Integration Testing](../../../tests/integration/) - End-to-end testing scenarios
+- [Development Journey](../../05-development/journey/README.md) - Implementation history and lessons learned

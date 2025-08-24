@@ -1,0 +1,362 @@
+{
+    "description": "MVP Audiobook Processing Flow - Complete pipeline from chapter data to annotated JSONL output",
+    "name": "MVP Audiobook Processing Flow",
+    "id": "mvp_audiobook_flow",
+    "data": {
+        "nodes": [
+            {
+                "id": "data_config_1",
+                "type": "ABMDataConfig",
+                "position": {
+                    "x": 100,
+                    "y": 200
+                },
+                "data": {
+                    "node": {
+                        "description": "Configure data paths for the audiobook processing pipeline",
+                        "display_name": "ABM Data Config",
+                        "documentation": "Sets up standardized data paths for books, clean data, and annotations",
+                        "template": {
+                            "book_name": {
+                                "display_name": "Book Name",
+                                "info": "Name of the book to process (e.g., 'mvs')",
+                                "type": "str",
+                                "value": "mvs",
+                                "required": true
+                            },
+                            "validate_paths": {
+                                "display_name": "Validate Paths",
+                                "info": "Whether to validate that data paths exist",
+                                "type": "bool",
+                                "value": true,
+                                "required": false
+                            },
+                            "custom_data_root": {
+                                "display_name": "Custom Data Root",
+                                "info": "Optional custom path to data root directory",
+                                "type": "str",
+                                "value": "",
+                                "required": false
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "chapter_loader_1",
+                "type": "ABMChapterVolumeLoader",
+                "position": {
+                    "x": 400,
+                    "y": 200
+                },
+                "data": {
+                    "node": {
+                        "description": "Load chapter data from JSON file for processing",
+                        "display_name": "Chapter Volume Loader",
+                        "documentation": "Loads chapter data from clean/mvs/chapters.json with full chapter content",
+                        "template": {
+                            "chapters_file": {
+                                "display_name": "Chapters File",
+                                "info": "Path to chapters.json file",
+                                "type": "str",
+                                "value": "",
+                                "required": true
+                            },
+                            "load_full_content": {
+                                "display_name": "Load Full Content",
+                                "info": "Whether to load full chapter body text",
+                                "type": "bool",
+                                "value": true,
+                                "required": false
+                            },
+                            "max_chapters": {
+                                "display_name": "Max Chapters",
+                                "info": "Maximum number of chapters to load (0 for all)",
+                                "type": "int",
+                                "value": 3,
+                                "required": false
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "chapter_selector_1",
+                "type": "ABMChapterSelector",
+                "position": {
+                    "x": 700,
+                    "y": 200
+                },
+                "data": {
+                    "node": {
+                        "description": "Select specific chapters for processing",
+                        "display_name": "Chapter Selector",
+                        "documentation": "Filters chapters by index, title or range for targeted processing",
+                        "template": {
+                            "chapters_data": {
+                                "display_name": "Chapters Data",
+                                "info": "Input chapters data from loader",
+                                "type": "Data",
+                                "value": "",
+                                "required": true
+                            },
+                            "selection_mode": {
+                                "display_name": "Selection Mode",
+                                "info": "How to select chapters: 'all', 'range', 'specific'",
+                                "type": "str",
+                                "value": "range",
+                                "required": true
+                            },
+                            "chapter_range": {
+                                "display_name": "Chapter Range",
+                                "info": "Range of chapters to select (e.g., '1-3')",
+                                "type": "str",
+                                "value": "1-3",
+                                "required": false
+                            },
+                            "specific_chapters": {
+                                "display_name": "Specific Chapters",
+                                "info": "Comma-separated list of chapter indices",
+                                "type": "str",
+                                "value": "",
+                                "required": false
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "dialogue_narrator_1",
+                "type": "ABMSegmentDialogueNarration",
+                "position": {
+                    "x": 1000,
+                    "y": 200
+                },
+                "data": {
+                    "node": {
+                        "description": "Segment chapters into dialogue and narration parts",
+                        "display_name": "Dialogue & Narration Segmenter",
+                        "documentation": "Analyzes chapter text to identify dialogue vs narration segments for voice processing",
+                        "template": {
+                            "chapters_data": {
+                                "display_name": "Chapters Data",
+                                "info": "Selected chapters data from selector",
+                                "type": "Data",
+                                "value": "",
+                                "required": true
+                            },
+                            "min_segment_length": {
+                                "display_name": "Min Segment Length",
+                                "info": "Minimum length for text segments in characters",
+                                "type": "int",
+                                "value": 100,
+                                "required": false
+                            },
+                            "dialogue_markers": {
+                                "display_name": "Dialogue Markers",
+                                "info": "Characters that indicate dialogue (quotation marks)",
+                                "type": "str",
+                                "value": "\"\"''",
+                                "required": false
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "utterance_filter_1",
+                "type": "ABMUtteranceFilter",
+                "position": {
+                    "x": 1300,
+                    "y": 200
+                },
+                "data": {
+                    "node": {
+                        "description": "Filter and refine utterances based on quality criteria",
+                        "display_name": "Utterance Filter",
+                        "documentation": "Applies filtering rules to clean up utterances for optimal audio generation",
+                        "template": {
+                            "utterances_data": {
+                                "display_name": "Utterances Data",
+                                "info": "Segmented utterances from dialogue/narration processor",
+                                "type": "Data",
+                                "value": "",
+                                "required": true
+                            },
+                            "min_length": {
+                                "display_name": "Min Length",
+                                "info": "Minimum utterance length in characters",
+                                "type": "int",
+                                "value": 50,
+                                "required": false
+                            },
+                            "max_length": {
+                                "display_name": "Max Length",
+                                "info": "Maximum utterance length in characters",
+                                "type": "int",
+                                "value": 5000,
+                                "required": false
+                            },
+                            "filter_empty": {
+                                "display_name": "Filter Empty",
+                                "info": "Remove empty or whitespace-only utterances",
+                                "type": "bool",
+                                "value": true,
+                                "required": false
+                            },
+                            "filter_special_chars": {
+                                "display_name": "Filter Special Characters",
+                                "info": "Remove utterances with excessive special characters",
+                                "type": "bool",
+                                "value": true,
+                                "required": false
+                            },
+                            "preserve_dialogue": {
+                                "display_name": "Preserve Dialogue",
+                                "info": "Always preserve dialogue segments even if they don't meet other criteria",
+                                "type": "bool",
+                                "value": true,
+                                "required": false
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "jsonl_writer_1",
+                "type": "ABMUtteranceJsonlWriter",
+                "position": {
+                    "x": 1600,
+                    "y": 200
+                },
+                "data": {
+                    "node": {
+                        "description": "Write filtered utterances to JSONL output file",
+                        "display_name": "JSONL Writer",
+                        "documentation": "Exports processed utterances to JSONL format for audio generation pipeline",
+                        "template": {
+                            "utterances_data": {
+                                "display_name": "Utterances Data",
+                                "info": "Filtered utterances from filter component",
+                                "type": "Data",
+                                "value": "",
+                                "required": true
+                            },
+                            "output_file": {
+                                "display_name": "Output File",
+                                "info": "Path to output JSONL file",
+                                "type": "str",
+                                "value": "",
+                                "required": true
+                            },
+                            "include_metadata": {
+                                "display_name": "Include Metadata",
+                                "info": "Include chapter metadata in output",
+                                "type": "bool",
+                                "value": true,
+                                "required": false
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "edges": [
+            {
+                "id": "data_config_to_loader",
+                "source": "data_config_1",
+                "target": "chapter_loader_1",
+                "sourceHandle": "data_paths",
+                "targetHandle": "chapters_file",
+                "data": {
+                    "targetHandle": {
+                        "dataType": "str",
+                        "id": "chapters_file"
+                    },
+                    "sourceHandle": {
+                        "dataType": "dict",
+                        "id": "data_paths"
+                    }
+                }
+            },
+            {
+                "id": "loader_to_selector",
+                "source": "chapter_loader_1",
+                "target": "chapter_selector_1",
+                "sourceHandle": "chapters_data",
+                "targetHandle": "chapters_data",
+                "data": {
+                    "targetHandle": {
+                        "dataType": "Data",
+                        "id": "chapters_data"
+                    },
+                    "sourceHandle": {
+                        "dataType": "Data",
+                        "id": "chapters_data"
+                    }
+                }
+            },
+            {
+                "id": "selector_to_segmenter",
+                "source": "chapter_selector_1",
+                "target": "dialogue_narrator_1",
+                "sourceHandle": "selected_chapters",
+                "targetHandle": "chapters_data",
+                "data": {
+                    "targetHandle": {
+                        "dataType": "Data",
+                        "id": "chapters_data"
+                    },
+                    "sourceHandle": {
+                        "dataType": "Data",
+                        "id": "selected_chapters"
+                    }
+                }
+            },
+            {
+                "id": "segmenter_to_filter",
+                "source": "dialogue_narrator_1",
+                "target": "utterance_filter_1",
+                "sourceHandle": "utterances",
+                "targetHandle": "utterances_data",
+                "data": {
+                    "targetHandle": {
+                        "dataType": "Data",
+                        "id": "utterances_data"
+                    },
+                    "sourceHandle": {
+                        "dataType": "Data",
+                        "id": "utterances"
+                    }
+                }
+            },
+            {
+                "id": "filter_to_writer",
+                "source": "utterance_filter_1",
+                "target": "jsonl_writer_1",
+                "sourceHandle": "filtered_utterances",
+                "targetHandle": "utterances_data",
+                "data": {
+                    "targetHandle": {
+                        "dataType": "Data",
+                        "id": "utterances_data"
+                    },
+                    "sourceHandle": {
+                        "dataType": "Data",
+                        "id": "filtered_utterances"
+                    }
+                }
+            }
+        ],
+        "viewport": {
+            "x": 0,
+            "y": 0,
+            "zoom": 0.8
+        }
+    },
+    "is_component": false,
+    "updated_at": "2025-01-27T10:30:00.000Z",
+    "folder_id": null,
+    "flows": [],
+    "user_id": "mvp-demo"
+}

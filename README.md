@@ -34,11 +34,13 @@ See `docs/KISS.md` for the policy and guardrails.
 
 ## High-Level Architecture
 
-The KISS slice today is a local-first CLI that produces deterministic file artifacts. The diagram below shows today and the forward path.
+The KISS slice today is a local-first CLI that produces deterministic file artifacts. The system is evolving from simple segmentation to a sophisticated two-agent system for dialogue classification and speaker attribution. The diagram below shows today and the forward path.
 
 Source: [docs/diagrams/high_level_architecture.mmd](docs/diagrams/high_level_architecture.mmd)
 
 Full documentation index: [docs/README.md](docs/README.md)
+
+**Two-Agent System**: The annotation pipeline now features a hybrid dialogue classifier (heuristic + AI fallback) and speaker attribution agent with PostgreSQL character database integration. See [Two-Agent System Documentation](docs/02-specifications/components/two-agent-dialogue-speaker-system.md) for complete specifications.
 
 ```mermaid
 flowchart LR
@@ -81,17 +83,19 @@ See more in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 Structured JSON schema: [docs/STRUCTURED_JSON_SCHEMA.md](docs/STRUCTURED_JSON_SCHEMA.md).
 
-## Status Snapshot (2025-08-14)
+## Status Snapshot (2025-01-14)
 
 | Layer                           | State                       | Notes                                                                           |
 | ------------------------------- | --------------------------- | ------------------------------------------------------------------------------- |
 | Ingestion                       | Stable + deterministic      | Structured TOC only; per‑chapter JSON + volume manifest; hash regression tests. |
-| Annotation (LangFlow prototype) | Loader → Segmenter → Writer | Produces dialogue/narration utterances JSONL.                                   |
+| Annotation (Two-Agent System)   | Architecture complete       | Hybrid dialogue classifier + speaker attribution with PostgreSQL integration.   |
+| Annotation (LangFlow prototype) | Loader → Segmenter → Writer | Produces dialogue/narration utterances JSONL. Upgrading to two-agent system.   |
+| Character Database              | Schema designed             | PostgreSQL with JSONB profiles, aliases, and text associations.                |
 | LangGraph Graph                 | Minimal sample              | Will be replaced by chapter annotation / casting graph.                         |
-| Casting                         | Planned                     | Character bible + voice mapping next phase.                                     |
+| Casting                         | Character profiling ready   | Database-driven character bible + voice mapping integration.                    |
 | TTS Rendering                   | Prototype stubs             | Real XTTS/Piper integration upcoming.                                           |
 | Dagster Orchestration           | Partial                     | Ingestion + preliminary rendering assets.                                       |
-| Roadmap Docs                    | Added                       | `docs/MULTI_AGENT_ROADMAP.md` & updated `docs/CONTEXT.md`.                      |
+| Roadmap Docs                    | Updated                     | Two-agent system specs, FSM diagrams, and UML architecture added.              |
 
 ## Multi‑Agent Migration Path
 
