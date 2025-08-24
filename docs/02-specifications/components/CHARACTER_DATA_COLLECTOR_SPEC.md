@@ -107,6 +107,7 @@ sequenceDiagram
 ```
 
 ### Dialogue Collection Schema
+
 **File**: `data/characters/{book_id}/dialogue_collection.jsonl`
 
 ```jsonc
@@ -126,6 +127,7 @@ sequenceDiagram
 ```
 
 ### Narration Context Schema  
+
 **File**: `data/characters/{book_id}/narration_context.jsonl`
 
 ```jsonc
@@ -190,6 +192,7 @@ sequenceDiagram
 ## Implementation Plan
 
 ### Phase 1: Core Data Collection (Week 1)
+
 1. Create `ABMCharacterDataCollector` component class
 2. Implement input validation and normalization  
 3. Create basic character registry logic
@@ -197,6 +200,7 @@ sequenceDiagram
 5. Write unit tests for core logic
 
 ### Phase 2: File Operations (Week 1)
+
 6. Implement atomic file writing operations
 7. Add directory creation and path handling
 8. Create narration context collection
@@ -204,6 +208,7 @@ sequenceDiagram
 10. Write integration tests with sample data
 
 ### Phase 3: LangFlow Integration (Week 1)
+
 11. Add LangFlow component interface
 12. Create component metadata and documentation  
 13. Test with existing pipeline components
@@ -211,6 +216,7 @@ sequenceDiagram
 15. Create example workflow
 
 ### Phase 4: Testing and Documentation (Week 1)
+
 16. Comprehensive testing with MVS sample data
 17. Performance testing and optimization
 18. Create component documentation
@@ -230,11 +236,13 @@ data/characters/{book_id}/
 ## Integration Points
 
 ### Input Requirements
+
 - Expects utterances from `ABMSpeakerAttributionAgent`
 - Requires `speaker` field with character identification
 - Uses `role` field to distinguish dialogue vs narration
 
 ### Output Usage
+
 - Files can be processed by future casting analysis tools
 - Data structure supports data mining and ML training
 - Compatible with existing annotation schema evolution

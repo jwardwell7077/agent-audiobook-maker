@@ -9,6 +9,7 @@ The two-agent system uses a relational database model with PostgreSQL and JSONB 
 ### Core Tables
 
 #### 1. Books Table (Existing)
+
 ```sql
 CREATE TABLE books (
     id SERIAL PRIMARY KEY,
@@ -27,6 +28,7 @@ CREATE INDEX idx_books_metadata ON books USING GIN(metadata);
 ```
 
 #### 2. Chapters Table (Existing)
+
 ```sql
 CREATE TABLE chapters (
     id SERIAL PRIMARY KEY,
@@ -48,6 +50,7 @@ CREATE INDEX idx_chapters_index ON chapters(book_id, chapter_index);
 ```
 
 #### 3. Enhanced Utterances Table
+
 ```sql
 CREATE TABLE utterances (
     id SERIAL PRIMARY KEY,
@@ -102,6 +105,7 @@ CREATE INDEX idx_utterances_unprocessed ON utterances(book_id, processed_by_agen
 ```
 
 #### 4. Characters Table (New)
+
 ```sql
 CREATE TABLE characters (
     id SERIAL PRIMARY KEY,
@@ -169,6 +173,7 @@ FOREIGN KEY (first_appearance_segment_id) REFERENCES utterances(id) ON DELETE SE
 ```
 
 #### 5. Character Text Segments Table (New)
+
 ```sql
 CREATE TABLE character_text_segments (
     id SERIAL PRIMARY KEY,
@@ -321,6 +326,7 @@ The `characters.profile` JSONB field stores comprehensive character information:
 ### Data Processing Views
 
 #### Character Summary View
+
 ```sql
 CREATE VIEW character_summary AS
 SELECT 
@@ -353,6 +359,7 @@ GROUP BY c.id;
 ```
 
 #### Dialogue Analysis View
+
 ```sql
 CREATE VIEW character_dialogue_analysis AS
 SELECT 
@@ -377,6 +384,7 @@ GROUP BY c.id, c.name;
 ### Data Migration Strategy
 
 #### Migration Script Structure
+
 ```sql
 -- Migration: Add Two-Agent System Tables
 -- Version: 2.0.0
@@ -411,6 +419,7 @@ COMMIT;
 #### Query Optimization Strategies
 
 1. **Character Lookup Optimization**
+
 ```sql
 -- Optimized character search with aliases
 CREATE OR REPLACE FUNCTION find_character(
@@ -452,6 +461,7 @@ $$ LANGUAGE plpgsql;
 ```
 
 2. **Batch Processing Optimization**
+
 ```sql
 -- Batch update character statistics
 CREATE OR REPLACE FUNCTION update_character_statistics(p_character_ids INTEGER[]) 
@@ -482,6 +492,7 @@ $$ LANGUAGE plpgsql;
 ### Data Validation Rules
 
 #### Consistency Checks
+
 ```sql
 -- Ensure character-utterance associations are valid
 CREATE OR REPLACE FUNCTION validate_character_associations() 
@@ -530,6 +541,7 @@ $$ LANGUAGE plpgsql;
 ### Backup and Recovery Considerations
 
 #### Character Data Backup Strategy
+
 ```sql
 -- Export character data for backup
 CREATE OR REPLACE FUNCTION export_character_data(p_book_id INTEGER)
