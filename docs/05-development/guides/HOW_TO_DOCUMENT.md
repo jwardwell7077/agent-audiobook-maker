@@ -572,3 +572,86 @@ npx markdownlint-cli docs/README.md
 ---
 
 *Part of [Development Guides](README.md) | [Documentation Index](../../README.md)*
+
+## Mermaid diagrams: authoring and embedding
+
+This project uses Mermaid for diagrams. Follow these rules to avoid GitHub rendering errors and flaky parsing.
+
+### When creating standalone diagram files (`*.mmd` in `docs/04-diagrams/**`)
+
+- Store RAW Mermaid DSL only. Do NOT wrap in a code fence.
+  - First non-comment line must be the diagram directive, e.g. `flowchart LR` or `classDiagram`.
+- Keep comments on their own lines using `%%`.
+- Examples:
+
+  - Flowchart file:
+    
+    flowchart LR
+      PDF[PDF file] -->|"PyMuPDF / fitz"| EXTRACT[Extract pages]
+      EXTRACT --> CLEAN[Normalize & clean]
+      CLEAN --> TXT[Write .txt]
+    
+  - Class diagram file:
+    
+    classDiagram
+      direction TB
+      Component <|-- ABMChapterVolumeLoader
+      ABMCacheManager ..> ABMTTSRenderer : caches
+    
+
+### When embedding diagrams inside Markdown (`.md`)
+
+- Use a single fenced block with the language `mermaid`.
+- Put the directive (`flowchart LR`, `classDiagram`, etc.) as the first line inside the fence.
+- Do not nest fences or add blank lines immediately after ```mermaid.
+- Example:
+  
+  ```mermaid
+  flowchart LR
+    A --> B
+  ```
+
+### GitHub-specific pitfalls and fixes
+
+- Parentheses and special characters in edge labels can break parsing.
+  - Prefer to avoid `(` and `)` in labels; if needed, wrap the label in double quotes: `-->|"Call (fitz)"|`.
+  - Safer alternative: replace with `/` or `-` (e.g., `PyMuPDF / fitz`).
+- Don’t use `mermaid.radar` or custom fence languages—only `mermaid` is supported by GitHub.
+- Don’t duplicate diagram directives (e.g., avoid `classDiagram` on two consecutive lines).
+- Class diagram relations use UML arrows, not flowchart link syntax:
+  - Dependency: `..>`
+  - Realization: `..|>`
+  - Inheritance: `<|--`
+  - Aggregation: `o--`
+  - Composition: `*--`
+  - Association: `-->` or `--`
+  - Do NOT use `-.->` (that’s a flowchart dotted link). Use `..>` in class diagrams instead.
+- Edge label syntax for flowcharts:
+  - `A -->|text| B` or `A -- text --> B`
+  - Quote labels if they include punctuation: `A -->|"Link (v1)"| B`
+- Keep a direction line for readability in large diagrams: `direction TB` or `direction LR` (class diagrams only).
+
+### Validation and tests
+
+- We include unit tests to validate Mermaid syntax and catch regressions.
+  - Run just the Mermaid tests:
+
+    pytest tests/unit_tests/test_mermaid_*.py -q
+
+- Locally preview in VS Code with a Mermaid extension, or use the project’s validator where available.
+
+### Naming and organization
+
+- Place flow/process diagrams under `docs/04-diagrams/flows/`.
+- Place UML class diagrams under `docs/04-diagrams/uml/`.
+- Architecture/system overviews under `docs/04-diagrams/architecture/`.
+- Use `snake_case` filenames that reflect content, e.g., `pdf_to_text_flow.mmd`, `langflow_uml.mmd`.
+
+### Quick checklist (before committing)
+
+- No code fences in `.mmd` files.
+- First line is the correct directive.
+- No duplicate directives.
+- Labels with punctuation are quoted or simplified.
+- Class diagram uses UML arrows (e.g., `..>`), not flowchart dotted links.
+- File is placed in the correct subfolder and named descriptively.
