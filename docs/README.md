@@ -1,89 +1,169 @@
-# Documentation Index
+# Agent Audiobook Maker Documentation
 
-AI‑generated, Copilot‑assisted. Categorized reference for fast navigation.
+> **Comprehensive documentation for the Agent Audiobook Maker project - your complete guide to understanding, developing, and contributing to the system.**
 
-## Overview & Policy
+Welcome to the documentation hub! This project transforms raw text into structured audiobook annotations using AI agents and workflow orchestration.
 
-- KISS policy: [KISS.md](KISS.md)
-- Project context: [CONTEXT.md](CONTEXT.md)
-- Development journey: [DEVELOPMENT_JOURNEY.md](DEVELOPMENT_JOURNEY.md)
-- Lessons learned: [LESSONS_LEARNED.md](LESSONS_LEARNED.md)
+## 🚀 Quick Start
 
-### Tenets (short)
+### New to the Project?
 
-- KISS
-- TDD + spec-first
-- Local-first artifacts
-- Contract-first
-- Minimal complexity
+- 📖 **[Getting Started Guide](GETTING_STARTED.md)** - Essential onboarding for new contributors
+- 🎯 **[Project Overview](01-project-overview/README.md)** - Understand the vision and architecture
+- 🔧 **[Development Setup](05-development/README.md)** - Get your environment ready
 
-## Architecture & Specs
+### Need Something Specific?
 
-- High‑level architecture: [ARCHITECTURE.md](ARCHITECTURE.md)
-  - Diagram source: [diagrams/high_level_architecture.mmd](diagrams/high_level_architecture.mmd)
-  - Component spec: PDF→Text [PDF_TO_TEXT_SPEC.md](PDF_TO_TEXT_SPEC.md)
-  - CLI spec: [PDF_TO_TEXT_CLI_SPEC.md](PDF_TO_TEXT_CLI_SPEC.md)
-  - TXT→JSON spec: [TXT_TO_JSON_SPEC.md](TXT_TO_JSON_SPEC.md)
+- 📋 **Specifications** → [02-specifications/](02-specifications/README.md)
+- 🛠️ **Implementation** → [03-implementation/](03-implementation/README.md)  
+- 📊 **Diagrams** → [04-diagrams/](04-diagrams/README.md)
+- 🔍 **Troubleshooting** → [06-appendices/TROUBLESHOOTING.md](06-appendices/TROUBLESHOOTING.md)
 
-## Data Contracts / Schemas
+## 📚 Documentation Structure
 
-- Structured JSON (volume manifest + per‑chapter): [STRUCTURED_JSON_SCHEMA.md](STRUCTURED_JSON_SCHEMA.md)
-  - Diagram: [diagrams/structured_json_schema.mmd](diagrams/structured_json_schema.mmd)
-- Annotation schema: [ANNOTATION_SCHEMA.md](ANNOTATION_SCHEMA.md)
+Our documentation is organized into 6 main sections designed for different needs and audiences:
 
-## Section Classifier
+| Section | Purpose | Audience | Key Content |
+|---------|---------|----------|-------------|
+| **[📋 01-Project Overview](01-project-overview/README.md)** | Vision, architecture, and context | All stakeholders | Vision, architecture, project context |
+| **[📝 02-Specifications](02-specifications/README.md)** | Technical requirements and contracts | Developers, architects | API specs, data schemas, components |
+| **[🔧 03-Implementation](03-implementation/README.md)** | How the system is built | Developers | LangFlow, multi-agent approaches |
+| **[📊 04-Diagrams](04-diagrams/README.md)** | Visual representations | All technical roles | Architecture, workflows, state machines |
+| **[👥 05-Development](05-development/README.md)** | Contributor resources | Contributors, maintainers | Processes, journey, roadmaps |
+| **[📚 06-Appendices](06-appendices/README.md)** | Reference materials | All users | Glossary, troubleshooting, resources |
 
-- Design spec: [SECTION_CLASSIFIER_SPEC.md](SECTION_CLASSIFIER_SPEC.md)
-  - Flow diagram: [diagrams/section_classifier.mmd](diagrams/section_classifier.mmd)
-  - FSM diagram: [diagrams/section_classifier_fsm.mmd](diagrams/section_classifier_fsm.mmd)
-  - UML: [diagrams/section_classifier_uml.mmd](diagrams/section_classifier_uml.mmd)
-  - Outputs: four JSON files (front_matter.json, toc.json, chapters_section.json, back_matter.json); page-number-only lines removed, mixed lines cleaned with warnings
-  - Schemas: [schemas/classifier/front_matter.schema.json](schemas/classifier/front_matter.schema.json), [schemas/classifier/toc.schema.json](schemas/classifier/toc.schema.json), [schemas/classifier/chapters_section.schema.json](schemas/classifier/chapters_section.schema.json), [schemas/classifier/back_matter.schema.json](schemas/classifier/back_matter.schema.json)
-  - Examples: [examples/classifier/front_matter.example.json](examples/classifier/front_matter.example.json), [examples/classifier/toc.example.json](examples/classifier/toc.example.json), [examples/classifier/chapters_section.example.json](examples/classifier/chapters_section.example.json), [examples/classifier/back_matter.example.json](examples/classifier/back_matter.example.json)
+## 🎯 Find What You Need
 
-## Chapterizer
+### By Role
 
-- Design spec: [CHAPTERIZER_SPEC.md](CHAPTERIZER_SPEC.md)
-  - FSM diagram: [diagrams/chapterizer_fsm.mmd](diagrams/chapterizer_fsm.mmd)
-  - UML: [diagrams/chapterizer_uml.mmd](diagrams/chapterizer_uml.mmd)
+#### 🆕 New Contributor
 
-## CLI quick links (source)
+1. [Getting Started](GETTING_STARTED.md) - Setup and onboarding
+2. [Contributing Guide](05-development/guides/CONTRIBUTING.md) - Process and standards
+3. [Architecture Overview](01-project-overview/ARCHITECTURE.md) - System understanding
 
-- PDF→Text CLI: `src/abm/ingestion/pdf_to_text_cli.py`
-- Classifier CLI: `src/abm/classifier/classifier_cli.py`
-- Chapterizer CLI: `src/abm/structuring/chapterizer_cli.py`
+#### 💻 Developer
 
-## Roadmap
+1. [Component Specifications](02-specifications/components/README.md) - What to build
+2. [LangFlow Implementation](03-implementation/langflow/README.md) - Current approach
+3. [Data Schemas](02-specifications/data-schemas/README.md) - Data structures
 
-- Multi‑agent roadmap: [MULTI_AGENT_ROADMAP.md](MULTI_AGENT_ROADMAP.md)
-- LangFlow component plan: [LANGFLOW_COMPONENT_PLAN.md](LANGFLOW_COMPONENT_PLAN.md)
-- Learning path (LangFlow/LangChain/LangSmith/LangGraph/CrewAI): [LEARNING_PATH_MULTI_AGENT.md](LEARNING_PATH_MULTI_AGENT.md)
+#### 🏗️ Architect  
 
-## Templates
+1. [System Architecture](01-project-overview/ARCHITECTURE.md) - High-level design
+2. [Multi-Agent Roadmap](05-development/planning/MULTI_AGENT_ROADMAP.md) - Future direction
+3. [Diagrams Collection](04-diagrams/README.md) - Visual documentation
 
-- Full Design Spec: [templates/FULL_DESIGN_SPEC_TEMPLATE.md](templates/FULL_DESIGN_SPEC_TEMPLATE.md)
-- Test Plan: [templates/TEST_PLAN_TEMPLATE.md](templates/TEST_PLAN_TEMPLATE.md)
+#### 📖 Domain Expert
 
-## Quality
+1. [Project Vision](01-project-overview/VISION.md) - Business understanding
+2. [Quality Specifications](02-specifications/advanced/QUALITY_GATE_SPEC.md) - Standards
+3. [Troubleshooting](06-appendices/TROUBLESHOOTING.md) - Problem solving
 
-- Quality Gate Spec: [design/QUALITY_GATE_SPEC.md](design/QUALITY_GATE_SPEC.md)
+### By Task
 
-## Diagrams catalog
+#### 🔍 Understanding the System
 
-- High level: [diagrams/high_level_architecture.mmd](diagrams/high_level_architecture.mmd)
-- PDF→Text: [diagrams/pdf_to_text_flow.mmd](diagrams/pdf_to_text_flow.mmd), [diagrams/pdf_to_text_uml.mmd](diagrams/pdf_to_text_uml.mmd)
-- Section Classifier: [diagrams/section_classifier.mmd](diagrams/section_classifier.mmd), [diagrams/section_classifier_fsm.mmd](diagrams/section_classifier_fsm.mmd), [diagrams/section_classifier_uml.mmd](diagrams/section_classifier_uml.mmd)
-- Chapterizer: [diagrams/chapterizer_fsm.mmd](diagrams/chapterizer_fsm.mmd), [diagrams/chapterizer_uml.mmd](diagrams/chapterizer_uml.mmd)
-- Quality Gate: [diagrams/quality_gate_architecture.mmd](diagrams/quality_gate_architecture.mmd), [diagrams/quality_gate_fsm.mmd](diagrams/quality_gate_fsm.mmd), [diagrams/quality_gate_uml.mmd](diagrams/quality_gate_uml.mmd)
-- Structured JSON: [diagrams/structured_json_schema.mmd](diagrams/structured_json_schema.mmd)
+- [Project Vision](01-project-overview/VISION.md) - Why this exists
+- [Architecture](01-project-overview/ARCHITECTURE.md) - How it's designed
+- [Component Diagrams](04-diagrams/README.md) - Visual system overview
 
-## Examples
+#### 🛠️ Building Features
 
-- Classifier artifacts: [examples/classifier/](examples/classifier/)
+- [Component Specs](02-specifications/components/README.md) - Requirements
+- [Data Schemas](02-specifications/data-schemas/README.md) - Data contracts
+- [Implementation Guide](03-implementation/README.md) - Technical approaches
 
-## How to read this repo
+#### 🐛 Solving Problems
 
-- Start with [KISS.md](KISS.md) and the root README’s Quickstart.
-- Skim [ARCHITECTURE.md](ARCHITECTURE.md), then the Structured JSON/Annotation schemas.
-- Dive into the Section Classifier spec if you’re extending ingestion.
-- Reference Context/Journey/Lessons for rationale and decisions.
+- [Troubleshooting Guide](06-appendices/TROUBLESHOOTING.md) - Common solutions
+- [Development Issues](05-development/README.md#troubleshooting) - Dev-specific problems
+- [Glossary](06-appendices/GLOSSARY.md) - Term definitions
+
+#### 📈 Planning & Strategy
+
+- [Development Journey](05-development/journey/README.md) - Project evolution
+- [Multi-Agent Roadmap](05-development/planning/MULTI_AGENT_ROADMAP.md) - Future plans
+- [Lessons Learned](05-development/journey/LESSONS_LEARNED.md) - Experience insights
+
+## 🔥 Recent Updates
+
+### Latest Changes
+
+- ✅ Complete documentation reorganization into logical 6-section structure
+- ✅ LangFlow component implementation with full UI integration
+- ✅ Multi-agent system architecture planning and roadmap
+- ✅ Comprehensive troubleshooting and reference materials
+
+### What's New
+
+- **LangFlow Components**: Production-ready audiobook processing components
+- **Quality Gates**: Automated validation and error detection systems  
+- **Multi-Agent Planning**: Detailed roadmap for production architecture
+- **Documentation Reorganization**: Professional knowledge base structure
+
+## 🚀 Getting Started Paths
+
+### 👋 I'm New Here
+
+```text
+📖 GETTING_STARTED.md → 🎯 Project Overview → 🔧 Development Setup
+```text
+
+### 💻 I Want to Contribute
+
+```text
+🤝 CONTRIBUTING.md → 🏗️ Architecture → 📝 Component Specs → 🛠️ Implementation
+```text
+
+### 🔍 I Need to Solve a Problem
+
+```text
+🚨 TROUBLESHOOTING.md → 📚 Glossary → 🏠 Relevant Section
+```text
+
+### 📊 I Want to Understand the System
+
+```text
+🎯 Vision → 🏗️ Architecture → 📊 Diagrams → 📋 Specifications
+```text
+
+## 💡 Pro Tips
+
+### Documentation Navigation
+
+- 🍞 **Follow the breadcrumbs** - Each page shows its location in the hierarchy
+- 🔗 **Use cross-references** - Related sections are linked throughout
+- 📑 **Start with section READMEs** - They provide comprehensive overviews
+- 🔍 **Check the glossary** - Unknown terms are defined in appendices
+
+### Contributing to Docs
+
+- 📝 **Update cross-references** when moving or renaming files  
+- 🎯 **Add content to appropriate sections** based on audience and purpose
+- 📋 **Update section README files** when adding new documents
+- 🔄 **Maintain the breadcrumb navigation** in all pages
+
+## 🏗️ System Overview
+
+The Agent Audiobook Maker is a sophisticated text processing pipeline that transforms raw books into richly annotated content suitable for audiobook production. The system uses:
+
+- **📄 Text Ingestion**: PDF and text file processing with quality validation
+- **🔍 Content Analysis**: Chapter detection, structure classification, quality assessment
+- **✂️ Intelligent Segmentation**: Dialogue/narration separation with speaker attribution
+- **🤖 AI-Powered Annotation**: Rich metadata generation for audio production
+- **🎯 Quality Assurance**: Automated validation and human-in-the-loop workflows
+
+**Current Status**: Phase 1 (LangFlow Implementation) - Production ready components  
+**Next Phase**: Phase 2 (Multi-Agent System) - Advanced coordination and intelligence
+
+---
+
+## 📞 Need Help?
+
+- 🔍 **Search this documentation** - Use your browser's find function
+- 📚 **Check the glossary** - [06-appendices/GLOSSARY.md](06-appendices/GLOSSARY.md)
+- 🛠️ **Try troubleshooting** - [06-appendices/TROUBLESHOOTING.md](06-appendices/TROUBLESHOOTING.md)
+- 💬 **Ask questions** - Create an issue in the GitHub repository
+
+### Happy documenting! 🎉
