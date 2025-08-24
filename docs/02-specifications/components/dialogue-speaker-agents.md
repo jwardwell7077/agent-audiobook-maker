@@ -151,21 +151,23 @@ ADD COLUMN processed_by_agents TIMESTAMP;
 - **FR-SA-4**: Collect character-related text for profile building
 
 #### Attribution Strategy
+
 1. **Direct Attribution**:
    - Explicit dialogue tags ("John said")
    - Speaker identification phrases
-   
+
 2. **Contextual Attribution**:
    - Conversation context and turn-taking
    - Character presence in scene
    - Speech patterns and vocabulary
-   
+
 3. **Character Discovery**:
    - New character introduction patterns
    - Name extraction and normalization
    - Alias/nickname detection
 
 #### Input Schema
+
 ```json
 {
   "segment_id": "integer",
@@ -185,6 +187,7 @@ ADD COLUMN processed_by_agents TIMESTAMP;
 ```
 
 #### Output Schema
+
 ```json
 {
   "segment_id": "integer",
@@ -219,7 +222,8 @@ ADD COLUMN processed_by_agents TIMESTAMP;
 
 ### Data Collection Strategy
 
-#### For Each Character:
+#### For Each Character
+
 1. **Direct Dialogue**: All spoken words attributed to the character
 2. **Character Descriptions**: Narrative text describing the character
 3. **Character Actions**: Actions performed by the character
@@ -227,6 +231,7 @@ ADD COLUMN processed_by_agents TIMESTAMP;
 5. **Context**: Surrounding narrative when character appears
 
 #### Profile Schema
+
 ```json
 {
   "character_id": "integer",
@@ -259,6 +264,7 @@ ADD COLUMN processed_by_agents TIMESTAMP;
 ## Processing Pipeline
 
 ### Sequential Flow
+
 1. **Input**: Segmented text from existing pipeline
 2. **Agent 1**: Classify dialogue vs narration
    - Update `utterances.dialogue_classification`
@@ -272,6 +278,7 @@ ADD COLUMN processed_by_agents TIMESTAMP;
    - Maintain character relationship mappings
 
 ### Error Handling
+
 - **Low Confidence Classifications**: Flag for manual review
 - **Ambiguous Speaker Attribution**: Store multiple candidates
 - **Character Name Conflicts**: Use disambiguation strategies
@@ -280,16 +287,19 @@ ADD COLUMN processed_by_agents TIMESTAMP;
 ## Performance Requirements
 
 ### Throughput
+
 - Process 1000 text segments per minute
 - Handle books up to 500,000 words
 - Support concurrent processing of multiple books
 
 ### Accuracy Targets
+
 - Dialogue classification: >95% accuracy
 - Speaker attribution: >85% accuracy for clear cases
 - Character discovery: >90% recall for named characters
 
 ### Scalability
+
 - Stateless agent design for horizontal scaling
 - Database connection pooling
 - Batch processing capabilities
@@ -297,16 +307,19 @@ ADD COLUMN processed_by_agents TIMESTAMP;
 ## Integration Points
 
 ### LangFlow Components
+
 - Input from existing segmentation pipeline
 - Output to voice casting and TTS systems
 - Integration with quality gates
 
 ### Database Integration
+
 - Connection to existing PostgreSQL instance
 - Transaction management for data consistency
 - Migration scripts for schema updates
 
 ### Monitoring and Logging
+
 - Agent processing metrics
 - Classification accuracy tracking
 - Performance monitoring
@@ -315,16 +328,19 @@ ADD COLUMN processed_by_agents TIMESTAMP;
 ## Testing Strategy
 
 ### Unit Tests
+
 - Individual agent logic
 - Database operations
 - Schema validation
 
 ### Integration Tests
+
 - Full pipeline processing
 - Database consistency
 - Error handling scenarios
 
 ### Performance Tests
+
 - Load testing with large texts
 - Memory usage profiling
 - Database query optimization
@@ -332,21 +348,25 @@ ADD COLUMN processed_by_agents TIMESTAMP;
 ## Implementation Phases
 
 ### Phase 1: Core Infrastructure
+
 - Database schema implementation
 - Basic agent frameworks
 - Simple classification rules
 
 ### Phase 2: Agent Development
+
 - Dialogue classifier implementation
 - Speaker attribution logic
 - Character discovery algorithms
 
 ### Phase 3: Profile Building
+
 - Character data aggregation
 - Profile schema implementation
 - Relationship detection
 
 ### Phase 4: Optimization
+
 - Performance tuning
 - Advanced classification algorithms
 - Quality improvements
