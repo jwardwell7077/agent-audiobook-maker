@@ -62,23 +62,27 @@ docs/
 ## Key Improvements
 
 ### 1. **Clear User Paths**
+
 - **New users**: Start with Getting Started → Project Overview
 - **Developers**: Jump to Implementation section
 - **Designers**: Visual documentation in Diagrams section
 - **Contributors**: Development guides and templates
 
 ### 2. **Logical Grouping**
+
 - **Related documents co-located** (e.g., all LangFlow docs together)
 - **Type-based organization** (specs vs. implementation vs. journey)
 - **Visual separation** of different concerns
 
 ### 3. **Enhanced Discoverability**
+
 - **Comprehensive index** with quick navigation table
 - **Section-level README files** explaining what's in each area
 - **Cross-references** between related sections
 - **Status indicators** for project phases
 
 ### 4. **Improved Navigation**
+
 - **Breadcrumb-style navigation** with "Part of [Section]" footers
 - **Quick reference tables** for common tasks
 - **Visual hierarchy** with emojis and clear headings
@@ -103,16 +107,19 @@ docs/
 ## Benefits
 
 ### For New Users
+
 - **Clear entry point** with Getting Started guide
 - **Progressive disclosure** from overview to implementation details
 - **Quick navigation** to relevant sections based on goals
 
 ### For Contributors
+
 - **Easy to find** relevant documentation for their work
 - **Templates and guides** in obvious locations
 - **Development history** available for context
 
 ### For Maintainers
+
 - **Logical place** to add new documentation
 - **Consistent structure** across all sections
 - **Scalable organization** that grows with the project

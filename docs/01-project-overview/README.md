@@ -9,25 +9,33 @@ Agent Audiobook Maker is a local-first, multi-agent system that transforms novel
 ## Documents in This Section
 
 ### 🎯 [Project Vision & Goals](VISION.md)
+
 **New document** - The "why" behind this project
+
 - Problem statement and motivation
 - Target users and use cases
 - Success criteria and goals
 
 ### 📋 [System Context](CONTEXT.md)
+
 **Core document** - Technical environment and constraints
+
 - Hardware requirements (WSL2, GPU, etc.)
 - Development machine setup
 - Performance targets and limitations
 
 ### 🏛️ [Project Principles (KISS)](KISS.md)
+
 **Foundation document** - Core tenets and policies
+
 - Keep It Simple, Simple philosophy
 - Local-first approach
 - TDD and spec-first development
 
 ### 🏗️ [High-Level Architecture](ARCHITECTURE.md)
+
 **Technical overview** - System design and data flow
+
 - Pipeline stages (ingestion → annotation → rendering)
 - Component relationships
 - Current vs. future architecture

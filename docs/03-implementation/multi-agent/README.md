@@ -7,18 +7,21 @@ This represents Phase 2 of our implementation strategy - transitioning from Lang
 ## Why Multi-Agent Architecture?
 
 ### Specialized Intelligence
+
 - **Expert agents** - Each agent optimized for specific domain knowledge
 - **Focused responsibilities** - Single purpose agents with clear boundaries  
 - **Intelligent coordination** - Agents communicate and collaborate autonomously
 - **Adaptive workflows** - System adjusts to content complexity and quality
 
 ### Production Scalability
+
 - **Parallel processing** - Multiple agents working simultaneously
 - **Resource optimization** - Agents scale independently based on demand
 - **Error resilience** - System continues if individual agents fail
 - **Quality assurance** - Built-in validation and correction loops
 
 ### Advanced Capabilities
+
 - **Memory systems** - Agents remember context across chapters/books
 - **Learning mechanisms** - System improves from processing experience
 - **Human-in-the-loop** - Seamless human oversight and intervention
@@ -27,90 +30,108 @@ This represents Phase 2 of our implementation strategy - transitioning from Lang
 ## Planned Agent Roles
 
 ### 📖 Content Analysis Agent
+
 **Understands book structure, genre, and narrative patterns**
 
 **Responsibilities:**
+
 - Analyze book metadata (genre, author style, publication era)
 - Identify narrative structure (POV, tense, story arcs)
 - Detect content patterns (dialogue style, description density)
 - Provide context to downstream agents
 
 **Tools:**
+
 - Genre classification models
 - Author style analysis
 - Narrative structure detection
 - Content pattern recognition
 
 ### ✂️ Segmentation Agent  
+
 **Expert in splitting text into meaningful utterances**
 
 **Responsibilities:**
+
 - Detect dialogue vs narration boundaries
 - Handle complex punctuation and formatting
 - Identify speaker changes and attribution
 - Segment narration into natural units
 
 **Tools:**
+
 - Quote detection algorithms
 - Speaker identification models
 - Punctuation analysis
 - Natural language boundaries
 
 ### 🎭 Speaker Identification Agent
+
 **Identifies and tracks characters/speakers throughout book**
 
 **Responsibilities:**
+
 - Build character registry from text analysis
 - Track speaker patterns and speech characteristics  
 - Resolve ambiguous speaker attribution
 - Maintain character consistency across chapters
 
 **Tools:**
+
 - Named entity recognition
 - Character relationship mapping
 - Speech pattern analysis
 - Context-aware attribution
 
 ### 📝 Annotation Agent
+
 **Creates rich metadata and classifications for utterances**
 
 **Responsibilities:**
+
 - Generate utterance metadata (length, complexity, etc.)
 - Classify emotional tone and intensity
 - Identify special content (sound effects, music, etc.)
 - Create narrator instruction annotations
 
 **Tools:**
+
 - Sentiment analysis models
 - Content classification
 - Metadata extraction
 - Instruction generation
 
 ### 🔍 Quality Assurance Agent
+
 **Validates annotations and ensures output quality**
 
 **Responsibilities:**
+
 - Validate segmentation accuracy
 - Check speaker consistency
 - Verify annotation completeness
 - Flag quality issues for review
 
 **Tools:**
+
 - Validation rule engines
 - Consistency checking
 - Quality scoring models
 - Error detection
 
 ### 🧭 Orchestration Agent
+
 **Coordinates workflow and manages agent interactions**
 
 **Responsibilities:**
+
 - Route content between agents
 - Manage processing priorities
 - Handle error recovery
 - Coordinate human interventions
 
 **Tools:**
+
 - LangGraph workflow engine
 - Agent communication protocols
 - Error handling frameworks
@@ -119,6 +140,7 @@ This represents Phase 2 of our implementation strategy - transitioning from Lang
 ## Technology Stack
 
 ### Agent Framework: CrewAI
+
 ```python
 from crewai import Agent, Task, Crew, Process
 
@@ -133,6 +155,7 @@ content_agent = Agent(
 ```
 
 ### Orchestration: LangGraph
+
 ```python
 from langgraph.graph import Graph, Node
 from langgraph.checkpoints import MemorySaver
@@ -145,11 +168,13 @@ workflow.add_edge("analyze", "segment")
 ```
 
 ### Memory: Redis + Vector Store
+
 - **Short-term memory**: Redis for active chapter context
 - **Long-term memory**: Vector store for book-wide patterns
 - **Shared memory**: Cross-agent knowledge sharing
 
 ### Monitoring: LangSmith
+
 - **Agent performance tracking**
 - **Workflow execution monitoring**  
 - **Quality metrics collection**
@@ -158,6 +183,7 @@ workflow.add_edge("analyze", "segment")
 ## Workflow Patterns
 
 ### Sequential Processing
+
 ```mermaid
 graph TD
     A[Content Analysis] --> B[Segmentation]
@@ -170,6 +196,7 @@ graph TD
 **Use case**: Standard book processing with clear dependencies
 
 ### Parallel Analysis
+
 ```mermaid
 graph TD
     A[Content Analysis] --> B[Segmentation]
@@ -182,6 +209,7 @@ graph TD
 **Use case**: Complex books requiring simultaneous analysis
 
 ### Human-in-the-Loop
+
 ```mermaid
 graph TD
     A[Auto Processing] --> B{Quality Check}
@@ -194,6 +222,7 @@ graph TD
 **Use case**: High-quality requirements with human oversight
 
 ### Iterative Refinement
+
 ```mermaid
 graph TD
     A[Initial Pass] --> B[Quality Score]
@@ -207,6 +236,7 @@ graph TD
 ## Data Flow & Memory
 
 ### Agent Communication
+
 ```python
 # Example inter-agent message
 {
@@ -223,12 +253,14 @@ graph TD
 ```
 
 ### Shared Knowledge Base
+
 - **Character profiles**: Cross-chapter speaker information
 - **Style patterns**: Author-specific detection rules
 - **Quality baselines**: Expected output standards
 - **Processing history**: Previous chapter insights
 
 ### State Management
+
 - **Chapter state**: Current processing context
 - **Book state**: Accumulated knowledge across chapters
 - **Agent state**: Individual agent memory and configuration
@@ -259,6 +291,7 @@ graph TD
    - Quality metrics validation
 
 ### Preserved Patterns
+
 - **Data schemas** remain compatible
 - **Component interfaces** adapted to agent roles
 - **Workflow logic** translated to graph structures
@@ -267,24 +300,28 @@ graph TD
 ## Development Roadmap
 
 ### Milestone 1: Agent Foundation
+
 - 🎯 Implement basic agent roles
 - 🎯 Set up CrewAI framework
 - 🎯 Create simple sequential workflows
 - 🎯 Basic memory and communication
 
 ### Milestone 2: Advanced Coordination
+
 - 🎯 Implement LangGraph orchestration
 - 🎯 Add parallel processing capabilities
 - 🎯 Sophisticated memory systems
 - 🎯 Error handling and recovery
 
 ### Milestone 3: Production Features
+
 - 🎯 Human-in-the-loop workflows
 - 🎯 Quality assurance automation
 - 🎯 Performance monitoring
 - 🎯 Scalability optimizations
 
 ### Milestone 4: Intelligence Enhancements
+
 - 🎯 Learning from feedback
 - 🎯 Adaptive workflow optimization
 - 🎯 Advanced context understanding
@@ -293,12 +330,14 @@ graph TD
 ## Success Metrics
 
 ### Performance Goals
+
 - **Throughput**: 10x faster than LangFlow prototypes
 - **Accuracy**: 95% segmentation accuracy on complex texts
 - **Reliability**: 99.9% uptime with error recovery
 - **Scalability**: Process 100+ books concurrently
 
 ### Quality Goals
+
 - **Speaker accuracy**: 98% correct attribution
 - **Annotation completeness**: All utterances fully annotated
 - **Human satisfaction**: 90% approval rate on output
