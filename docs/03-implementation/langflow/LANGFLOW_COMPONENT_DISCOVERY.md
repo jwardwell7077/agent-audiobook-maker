@@ -53,9 +53,9 @@ The `LANGFLOW_COMPONENTS_PATH` environment variable was not properly exported du
 
 After the fix, LangFlow startup shows:
 
-```
+```text
 - LANGFLOW_COMPONENTS_PATH: /home/jon/repos/audio-book-maker-lg/src/abm/lf_components
-```
+```text
 
 And the "Audiobook" category appears in the LangFlow UI with all 6 components visible.
 

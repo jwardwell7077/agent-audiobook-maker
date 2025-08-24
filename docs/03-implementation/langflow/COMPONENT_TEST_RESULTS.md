@@ -19,7 +19,7 @@
 ✓ ABMUtteranceFilter properly inherits from Component
 
 🎉 All components ready for LangFlow integration!
-```
+```text
 
 ## LangFlow Server Discovery Results
 
@@ -40,7 +40,7 @@
 ✓ Loading Components...
 ✓ Adding Starter Projects...
 ■ Launching Langflow...
-```
+```text
 
 ## Engineering Discipline Results
 

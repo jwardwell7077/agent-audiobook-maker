@@ -39,7 +39,7 @@ flowchart LR
   Artifacts -.sync.-> DB
   Annos -.sync.-> DB
   Renders -.sync.-> DB
-```
+```text
 
 Legend
 

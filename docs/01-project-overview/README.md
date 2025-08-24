@@ -59,7 +59,7 @@ graph LR
         Cast --> Render[🎙️ TTS]
         Render --> Master[🎵 Master]
     end
-```
+```text
 
 ## How to Navigate
 

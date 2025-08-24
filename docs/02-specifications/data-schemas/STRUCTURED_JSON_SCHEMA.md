@@ -73,7 +73,7 @@ classDiagram
   VolumeManifest "1" o-- "1" Stats : stats
   ChapterJson "1" o-- "1" Pages : pages
   ChapterJson "1" o-- "0..1" Meta : meta
-```
+```text
 
 ## Volume Manifest (v1.1)
 
@@ -145,7 +145,7 @@ Example (v1.1)
     }
   ]
 }
-```
+```text
 
 ## Per‑Chapter JSON (v1.0) – optional (materialized view)
 
@@ -181,7 +181,7 @@ Example
   "text_sha256": "ab91...",
   "meta": { "warnings": [] }
 }
-```
+```text
 
 ## Hashing Notes
 
