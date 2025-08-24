@@ -1,13 +1,13 @@
-```mermaid
 classDiagram
-  class SectionClassifier {
-    +classify(pages: Page[]) SectionOutputs
-    -_build_body_and_markers(pages: Page[]) BodyResult
-    -_detect_toc(body: string) TocResult
-    -_label_pages(pages: Page[]) PageLabels
-    -_smooth_labels(labels: PageLabels) PageLabels
-    -_compute_spans(labels: PageLabels, body: string) Sections
-  }
+  classDiagram
+    class SectionClassifier {
+      +classify(pages: Page[]) SectionOutputs
+      -_build_body_and_markers(pages: Page[]) BodyResult
+      -_detect_toc(body: string) TocResult
+      -_label_pages(pages: Page[]) PageLabels
+      -_smooth_labels(labels: PageLabels) PageLabels
+      -_compute_spans(labels: PageLabels, body: string) Sections
+    }
 
     class Page {
       +int index
@@ -49,4 +49,3 @@ classDiagram
       +string raw
       +int line_in_toc
     }
-```

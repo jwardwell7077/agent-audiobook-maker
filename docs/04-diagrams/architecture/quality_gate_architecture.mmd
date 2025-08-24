@@ -1,4 +1,3 @@
-```mermaid
 flowchart LR
   Dev["Developer/CI"] --> GateRunner["Quality Gate Runner (pre-commit/CI)"]
   GateRunner --> Ruff["Ruff (format + lint)"]
@@ -11,4 +10,3 @@ flowchart LR
 
   Report -->|all pass| Pass[("Gate Pass")]
   Report -->|any fail| Fail[("Gate Fail")]
-```
