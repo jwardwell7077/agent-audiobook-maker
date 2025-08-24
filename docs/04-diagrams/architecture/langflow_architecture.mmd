@@ -16,7 +16,7 @@ graph TB
         JSONLoader["📄 JSON Loader"]
         JSONLLoader["📋 JSONL Loader"]
         TextFilter["🔍 Text Filter"]
-        TextRegex["🔤 Text Regex"]
+        TextRegex["🔥 Text Regex"]
         OllamaLLM["🤖 Ollama LLM"]
         PromptTemplate["📝 Prompt Template"]
         JSONBuilder["🔧 JSON Builder"]
@@ -64,64 +64,53 @@ graph TB
     end
 
     %% Main Processing Flow - Annotation Pipeline
-    VolumeJSON --> FileLoader
-    ChapterJSON --> JSONLoader
-    FileLoader --> ChapterLoader
-    JSONLoader --> ChapterLoader
-    ChapterLoader --> ChapterSelector
-    ChapterSelector --> Segmenter
+    VolumeJSON  FileLoader
+    ChapterJSON  JSONLoader
+    FileLoader  ChapterLoader
+    JSONLoader  ChapterLoader
+    ChapterLoader  ChapterSelector
+    ChapterSelector  Segmenter
     
     %% Text processing integration
-    TextRegex --> Segmenter
-    TextFilter --> Segmenter
+    TextRegex  Segmenter
+    TextFilter  Segmenter
     
-    Segmenter --> UtteranceFilter
-    UtteranceFilter --> JSONLWriter
-    JSONLWriter --> SegmentedJSONL
+    Segmenter  UtteranceFilter
+    UtteranceFilter  JSONLWriter
+    JSONLWriter  SegmentedJSONL
 
     %% Multi-Agent Enhancement Flow
-    SegmentedJSONL --> JSONLLoader
-    JSONLLoader --> SpeakerAgent
+    SegmentedJSONL  JSONLLoader
+    JSONLLoader  SpeakerAgent
     
     %% LLM integration for speaker attribution
-    OllamaLLM --> SpeakerAgent
-    PromptTemplate --> SpeakerAgent
+    OllamaLLM  SpeakerAgent
+    PromptTemplate  SpeakerAgent
     
-    SpeakerAgent --> EmotionAgent
-    EmotionAgent --> QAAgent
-    QAAgent --> DataTransform
-    DataTransform --> JSONLWriter
-    JSONLWriter --> EnrichedJSONL
+    SpeakerAgent  EmotionAgent
+    EmotionAgent  QAAgent
+    QAAgent  DataTransform
+    DataTransform  JSONLWriter
+    JSONLWriter  EnrichedJSONL
 
     %% Character analysis (multi-chapter)
-    DirectoryLoader --> CharacterBible
-    EnrichedJSONL --> CharacterBible
-    CharacterBible --> CharProfiles
+    DirectoryLoader  CharacterBible
+    EnrichedJSONL  CharacterBible
+    CharacterBible  CharProfiles
 
     %% Audio Generation Flow
-    EnrichedJSONL --> JSONLLoader
-    CharProfiles --> ProsodyGen
-    JSONLLoader --> ProsodyGen
-    ProsodyGen --> SSMLBuilder
-    SSMLBuilder --> SSMLFiles
-    SSMLFiles --> TTSRenderer
-    TTSRenderer --> AudioStems
-    AudioStems --> AudioMaster
-    AudioMaster --> ChapterAudio
-    AudioMaster --> BookAudio
+    EnrichedJSONL  JSONLLoader
+    CharProfiles  ProsodyGen
+    JSONLLoader  ProsodyGen
+    ProsodyGen  SSMLBuilder
+    SSMLBuilder  SSMLFiles
+    SSMLFiles  TTSRenderer
+    TTSRenderer  AudioStems
+    AudioStems  AudioMaster
+    AudioMaster  ChapterAudio
+    AudioMaster  BookAudio
 
     %% Cross-cutting concerns
-    CacheManager -.-> ChapterLoader
-    CacheManager -.-> SpeakerAgent
-    CacheManager -.-> EmotionAgent
-    CacheManager -.-> TTSRenderer
-    
-    PayloadLogger -.-> ChapterLoader
-    PayloadLogger -.-> SpeakerAgent
-    PayloadLogger -.-> QAAgent
-    PayloadLogger -.-> TTSRenderer
-
-    %% Styling for final spec
     classDef core fill:#e1f5fe,stroke:#01579b,stroke-width:2px
     classDef multiagent fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
     classDef audio fill:#fff3e0,stroke:#e65100,stroke-width:2px

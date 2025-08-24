@@ -11,16 +11,16 @@ flowchart LR
   Sections[("Sections {front_matter_pages, toc_pages, back_matter_pages}")]
   Warnings[("Warnings & Confidences")]
 
-  TXT --> Pre --> TOCDetect --> TOCEntries
-  Pre --> HeadingDetect --> PageLabel --> Smooth --> Anchors --> Chapters
-  TOCEntries --> Anchors
-  Smooth --> Sections
-  Anchors --> Warnings
-  TOCEntries --> Warnings
-  PageLabel --> Warnings
+  TXT  Pre  TOCDetect  TOCEntries
+  Pre  HeadingDetect  PageLabel  Smooth  Anchors  Chapters
+  TOCEntries  Anchors
+  Smooth  Sections
+  Anchors  Warnings
+  TOCEntries  Warnings
+  PageLabel  Warnings
 
   Outputs{{"Outputs"}}
-  Chapters --> Outputs
-  Sections --> Outputs
-  TOCEntries --> Outputs
-  Warnings --> Outputs
+  Chapters  Outputs
+  Sections  Outputs
+  TOCEntries  Outputs
+  Warnings  Outputs

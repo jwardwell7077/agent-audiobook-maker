@@ -1,6 +1,6 @@
 stateDiagram-v2
-  [*] --> Init
-  Init --> Front: start
+  [*]  Init
+  Init  Front: start
 
   state "Front Matter" as Front
   state TOC
@@ -21,20 +21,20 @@ stateDiagram-v2
   %% G_after_last_chapter: expected chapters (from TOC) reached
   %% G_sustained_back: >= 2 consecutive back-signal pages
 
-  Front --> TOC: E_toc
-  Front --> Body: E_heading || !E_toc && !E_front
-  Front --> Front: E_front && !E_heading && !E_toc
+  Front  TOC: E_toc
+  Front  Body: E_heading || !E_toc && !E_front
+  Front  Front: E_front && !E_heading && !E_toc
 
-  TOC --> TOC: G_toc_detected
-  TOC --> Body: E_heading || !G_toc_detected
+  TOC  TOC: G_toc_detected
+  TOC  Body: E_heading || !G_toc_detected
 
-  Body --> Body: !(E_back && (G_after_last_chapter || G_sustained_back))
-  Body --> Back: E_back && (G_after_last_chapter || G_sustained_back)
+  Body  Body: !(E_back && (G_after_last_chapter || G_sustained_back))
+  Body  Back: E_back && (G_after_last_chapter || G_sustained_back)
 
-  Back --> Back: !E_eof
-  Back --> End: E_eof
+  Back  Back: !E_eof
+  Back  End: E_eof
 
-  Body --> End: E_eof
-  TOC --> End: E_eof
-  Front --> End: E_eof
-  End --> [*]
+  Body  End: E_eof
+  TOC  End: E_eof
+  Front  End: E_eof
+  End  [*]

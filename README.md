@@ -53,8 +53,8 @@ flowchart LR
     Annos[("data/annotations/<book>/<chapter>.jsonl")]
   end
 
-  CLI --> PDF --> TXT --> JSONRaw --> JSONStruct --> Artifacts
-  Artifacts --> Annot --> Annos
+  CLI  PDF  TXT  JSONRaw  JSONStruct  Artifacts
+  Artifacts  Annot  Annos
 
   subgraph Later["Later (roadmap)"]
     Casting["Casting (character bible)"]
@@ -67,7 +67,7 @@ flowchart LR
     DB[("Postgres (JSONB)")]
   end
 
-  Annos -.-> Casting -.-> SSML -.-> TTS --> Stems --> Renders --> Master
+  Annos -.-> Casting -.-> SSML -.-> TTS  Stems  Renders  Master
   Orchestrator -.controls.-> JSONStruct
   Orchestrator -.controls.-> Annot
   Orchestrator -.controls.-> TTS

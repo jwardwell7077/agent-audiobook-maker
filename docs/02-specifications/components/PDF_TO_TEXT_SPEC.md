@@ -19,9 +19,9 @@ Assumptions and constraints
 
 ```mermaid
 flowchart LR
-  PDF[PDF file] -->|PyMuPDF (fitz)| EXTRACT[Extract pages]
-  EXTRACT --> CLEAN[Normalize & clean]
-  CLEAN --> TXT[Write .txt]
+  PDF[PDF file] |PyMuPDF (fitz)| EXTRACT[Extract pages]
+  EXTRACT  CLEAN[Normalize & clean]
+  CLEAN  TXT[Write .txt]
 ```
 
 Diagram source: [../../04-diagrams/flows/pdf_to_text_flow.mmd](../../04-diagrams/flows/pdf_to_text_flow.mmd)
@@ -46,7 +46,7 @@ classDiagram
       -_write(out_path: str, text: str) -> None
     }
 
-    PdfToTextExtractor --> PdfToTextOptions
+    PdfToTextExtractor  PdfToTextOptions
 ```
 
 ## Contracts

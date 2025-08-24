@@ -60,15 +60,15 @@ Current examples include:
 ```mermaid
 graph LR
     subgraph "LangFlow Approach (Phase 1)"
-        L1[Volume Loader] --> L2[Segmenter] 
-        L2 --> L3[JSONL Writer]
-        L3 --> L4[Visual Validation]
+        L1[Volume Loader]  L2[Segmenter] 
+        L2  L3[JSONL Writer]
+        L3  L4[Visual Validation]
     end
     
     subgraph "Multi-Agent Approach (Phase 2+)"
-        M1[Speaker Agent] --> M2[Emotion Agent]
-        M2 --> M3[QA Agent]
-        M3 --> M4[Orchestrator]
+        M1[Speaker Agent]  M2[Emotion Agent]
+        M2  M3[QA Agent]
+        M3  M4[Orchestrator]
     end
     
     L4 -.evolution.-> M1

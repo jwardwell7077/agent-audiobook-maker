@@ -78,10 +78,10 @@ This is our current implementation approach for Phase 1 - using LangFlow's visua
 
 ```mermaid
 graph LR
-    A[Volume Loader] --> B[Chapter Selector]
-    B --> C[Segment D/N]
-    C --> D[JSONL Writer]
-    D --> E[File Output]
+    A[Volume Loader]  B[Chapter Selector]
+    B  C[Segment D/N]
+    C  D[JSONL Writer]
+    D  E[File Output]
 ```
 
 1. **Load** book chapters from `data/clean/<book>/chapters.json`
@@ -93,10 +93,10 @@ graph LR
 
 ```mermaid
 graph LR
-    A[Volume Loader] --> B[Segmenter]
-    B --> C[Utterance Filter]
-    C --> D[QA Validation]
-    D --> E[JSONL Writer]
+    A[Volume Loader]  B[Segmenter]
+    B  C[Utterance Filter]
+    C  D[QA Validation]
+    D  E[JSONL Writer]
 ```
 
 1. **Segment** chapter text into utterances  

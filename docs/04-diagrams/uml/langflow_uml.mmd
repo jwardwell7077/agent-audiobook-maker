@@ -303,23 +303,23 @@ classDiagram
     Input <|-- DataInput
 
     %% Composition Relationships
-    Component --> Data : produces
-    Component --> Input : configures
-    Component --> Output : defines
+    Component  Data : produces
+    Component  Input : configures
+    Component  Output : defines
 
     %% Data Flow Dependencies
-    ABMChapterVolumeLoader --> ABMChapterSelector : chapter_payload
-    ABMChapterSelector --> ABMSegmentDialogueNarration : selected_chapter
-    ABMSegmentDialogueNarration --> ABMUtteranceFilter : utterances
-    ABMUtteranceFilter --> ABMUtteranceJsonlWriter : filtered_utterances
-    ABMUtteranceJsonlWriter --> ABMSpeakerAttributionAgent : utterance_jsonl
-    ABMSpeakerAttributionAgent --> ABMEmotionClassifier : speaker_utterances
-    ABMEmotionClassifier --> ABMQualityAssuranceAgent : emotion_utterances
-    ABMQualityAssuranceAgent --> ABMCharacterBibleBuilder : qa_utterances
-    ABMCharacterBibleBuilder --> ABMProsodyGenerator : character_profiles
-    ABMProsodyGenerator --> ABMSSMLBuilder : prosody_utterances
-    ABMSSMLBuilder --> ABMTTSRenderer : ssml_documents
-    ABMTTSRenderer --> ABMAudioMaster : audio_stems
+    ABMChapterVolumeLoader  ABMChapterSelector : chapter_payload
+    ABMChapterSelector  ABMSegmentDialogueNarration : selected_chapter
+    ABMSegmentDialogueNarration  ABMUtteranceFilter : utterances
+    ABMUtteranceFilter  ABMUtteranceJsonlWriter : filtered_utterances
+    ABMUtteranceJsonlWriter  ABMSpeakerAttributionAgent : utterance_jsonl
+    ABMSpeakerAttributionAgent  ABMEmotionClassifier : speaker_utterances
+    ABMEmotionClassifier  ABMQualityAssuranceAgent : emotion_utterances
+    ABMQualityAssuranceAgent  ABMCharacterBibleBuilder : qa_utterances
+    ABMCharacterBibleBuilder  ABMProsodyGenerator : character_profiles
+    ABMProsodyGenerator  ABMSSMLBuilder : prosody_utterances
+    ABMSSMLBuilder  ABMTTSRenderer : ssml_documents
+    ABMTTSRenderer  ABMAudioMaster : audio_stems
 
     %% Cross-cutting Concerns
     ABMCacheManager -.-> ABMChapterVolumeLoader : caches

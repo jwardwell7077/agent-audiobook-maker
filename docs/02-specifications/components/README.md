@@ -64,20 +64,20 @@ Every component specification includes:
 ```mermaid
 graph LR
     subgraph "Ingestion Pipeline"
-        PDF[📕 PDF] --> Extract[🔍 PDF to Text]
-        Extract --> Classify[📋 Section Classifier] 
-        Classify --> Chapter[📚 Chapterizer]
-        Chapter --> Structure[📊 Text to JSON]
+        PDF[📕 PDF]  Extract[🔍 PDF to Text]
+        Extract  Classify[📋 Section Classifier] 
+        Classify  Chapter[📚 Chapterizer]
+        Chapter  Structure[📊 Text to JSON]
     end
     
     subgraph "Quality Assurance"
-        Structure --> QualityGate[✅ Quality Gate]
-        QualityGate --> Output[📁 Structured Output]
+        Structure  QualityGate[✅ Quality Gate]
+        QualityGate  Output[📁 Structured Output]
     end
     
     subgraph "Interfaces"
-        CLI[💻 PDF CLI] --> Extract
-        API[🔌 REST API] --> Extract
+        CLI[💻 PDF CLI]  Extract
+        API[🔌 REST API]  Extract
     end
 ```
 

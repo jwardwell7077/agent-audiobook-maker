@@ -16,12 +16,12 @@ The system uses three main data formats:
 
 ```mermaid
 graph LR
-    PDF[📕 PDF Input] --> Structured[📊 Structured JSON]
-    Structured --> Annotation[🏷️ Annotation Schema]
-    Annotation --> Audio[🎵 Audio Output]
+    PDF[📕 PDF Input]  Structured[📊 Structured JSON]
+    Structured  Annotation[🏷️ Annotation Schema]
+    Annotation  Audio[🎵 Audio Output]
     
-    Structured --> Validation{✅ JSON Schema}
-    Annotation --> Validation
+    Structured  Validation{✅ JSON Schema}
+    Annotation  Validation
 ```
 
 ## Documents in This Section
