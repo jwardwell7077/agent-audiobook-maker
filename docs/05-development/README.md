@@ -17,6 +17,7 @@ This section contains all the information needed to understand the project's dev
 ## Getting Started
 
 ### 🔧 [Contributing Guide](contributing/CONTRIBUTING.md)
+
 **Complete guide for new contributors**
 
 Essential information for anyone wanting to contribute:
@@ -32,12 +33,14 @@ Essential information for anyone wanting to contribute:
 ### 🏗️ Development Environment
 
 **Required Tools:**
+
 - Python 3.11+ with virtual environment
 - VS Code with recommended extensions
 - Git with conventional commit standards
 - Make for task automation
 
 **Quick Setup:**
+
 ```bash
 # Clone and setup
 git clone <repo-url>
@@ -54,6 +57,7 @@ make lint
 ## Project Evolution
 
 ### 📈 [Development Journey](journey/DEVELOPMENT_JOURNEY.md)
+
 **Chronicle of project evolution, decisions, and pivots**
 
 This document tracks the major phases of project development:
@@ -67,6 +71,7 @@ This document tracks the major phases of project development:
 *Essential reading for understanding current architecture and future direction.*
 
 ### 🎓 [Lessons Learned](journey/LESSONS_LEARNED.md)
+
 **Distilled wisdom from development experience**
 
 Key insights from project development:
@@ -81,6 +86,7 @@ Key insights from project development:
 ## Strategic Planning
 
 ### 🗺️ [Multi-Agent Roadmap](planning/MULTI_AGENT_ROADMAP.md)
+
 **Detailed plan for transitioning to production multi-agent system**
 
 Comprehensive roadmap for Phase 2 development:
@@ -91,6 +97,7 @@ Comprehensive roadmap for Phase 2 development:
 - **Success metrics**: How to measure progress and completion
 
 ### 🧠 [Learning Path](planning/LEARNING_PATH_MULTI_AGENT.md)
+
 **Skills and knowledge required for multi-agent development**
 
 Educational roadmap for team members:
@@ -103,6 +110,7 @@ Educational roadmap for team members:
 ## Development Philosophy
 
 ### 💎 [KISS Principle](philosophy/KISS.md)
+
 **Keep It Simple, Stupid - Our approach to system design**
 
 Core design philosophy guiding all technical decisions:
@@ -129,12 +137,14 @@ Core design philosophy guiding all technical decisions:
 ### 🔄 Workflow Standards
 
 **Branch Strategy:**
+
 - `main` - Production-ready code
 - `develop` - Integration branch for features
 - `feature/*` - Individual feature development
 - `hotfix/*` - Critical production fixes
 
 **Commit Standards:**
+
 - Use conventional commits (feat, fix, docs, etc.)
 - Clear, descriptive messages
 - Include issue references where applicable
@@ -142,12 +152,14 @@ Core design philosophy guiding all technical decisions:
 ### ✅ Quality Assurance
 
 **Testing Requirements:**
+
 - Unit tests for all core logic
 - Integration tests for workflows
 - End-to-end tests for critical paths
 - Manual testing for UI and complex scenarios
 
 **Code Quality:**
+
 - Automated linting (pylint, black, mypy)
 - Code review required for all changes
 - Documentation updates for public APIs
@@ -156,12 +168,14 @@ Core design philosophy guiding all technical decisions:
 ### 📊 Monitoring & Metrics
 
 **Development Metrics:**
+
 - Test coverage percentage
 - Build success rates  
 - Code review turnaround times
 - Issue resolution times
 
 **System Metrics:**
+
 - Processing throughput (books/hour)
 - Annotation accuracy rates
 - Error rates and types
@@ -172,12 +186,14 @@ Core design philosophy guiding all technical decisions:
 ### 👥 Team Structure
 
 **Current Contributors:**
+
 - Project maintainer and primary developer
 - Documentation specialist
 - Quality assurance focus
 - Domain experts (audiobook production knowledge)
 
 **Contribution Areas:**
+
 - Core engine development (Python)
 - LangFlow component creation
 - Multi-agent system design
@@ -187,12 +203,14 @@ Core design philosophy guiding all technical decisions:
 ### 💬 Communication
 
 **Channels:**
+
 - GitHub issues for bug reports and feature requests
 - Pull request discussions for code review
 - Documentation updates for process changes
 - Project README for major announcements
 
 **Meeting Cadence:**
+
 - Weekly development check-ins (as needed)
 - Monthly architecture reviews
 - Quarterly roadmap planning
@@ -203,12 +221,14 @@ Core design philosophy guiding all technical decisions:
 ### 🛠️ Development Tools
 
 **Essential:**
+
 - **VS Code** - Primary IDE with extensions
 - **GitHub Desktop** or command-line Git
 - **Python debugger** - Built into VS Code
 - **Make** - Task automation
 
 **Recommended:**
+
 - **Postman** - API testing (for future API development)
 - **Docker** - Containerization and deployment
 - **Jupyter** - Data exploration and prototyping  
@@ -217,12 +237,14 @@ Core design philosophy guiding all technical decisions:
 ### 📚 Learning Resources
 
 **Multi-Agent Systems:**
+
 - CrewAI documentation and examples
 - LangGraph tutorials and patterns
 - Multi-agent design patterns
 - Production ML best practices
 
 **Python Development:**
+
 - Clean Code principles
 - Testing with pytest
 - Async programming patterns
@@ -233,18 +255,21 @@ Core design philosophy guiding all technical decisions:
 ### 📈 Development Health
 
 **Code Quality:**
+
 - Test coverage > 80%
 - Linting compliance > 95%
 - Documentation coverage for all public APIs
 - No critical security vulnerabilities
 
 **Process Efficiency:**
+
 - Average PR review time < 48 hours
 - Build success rate > 95%
 - Issue resolution time improving over time
 - Contributor onboarding time < 1 week
 
 **Product Impact:**
+
 - User satisfaction with annotation quality
 - Processing speed improvements
 - Reduced manual intervention required

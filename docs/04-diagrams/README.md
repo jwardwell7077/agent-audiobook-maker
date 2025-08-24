@@ -17,6 +17,7 @@ This section contains all the technical diagrams that illustrate how the Agent A
 ## Architecture Diagrams
 
 ### 🏗️ [High-Level Architecture](high_level_architecture.mmd)
+
 **System overview showing major components and data flow**
 
 - **Purpose**: Executive summary of system design
@@ -54,6 +55,7 @@ graph TB
 ## Workflow Diagrams
 
 ### 📄 [PDF to Text Flow](pdf_to_text_flow.mmd)
+
 **Detailed workflow for PDF ingestion and text extraction**
 
 - **Process**: PDF → Text extraction → Validation → Storage
@@ -62,6 +64,7 @@ graph TB
 - **Output**: Clean text files ready for annotation
 
 ### 📝 [TXT to JSON Processing](txt_to_json_spec.mmd)
+
 **Text file to structured annotation workflow**
 
 - **Process**: Text → Classification → Segmentation → Annotation
@@ -72,9 +75,11 @@ graph TB
 ## Component State Machines
 
 ### 📚 [Chapterizer FSM](chapterizer_fsm.mmd)
+
 **Finite state machine for chapter detection and structuring**
 
 **States:**
+
 - `SCANNING` - Looking for chapter boundaries
 - `CHAPTER_START` - Found potential chapter beginning  
 - `CONTENT_PROCESSING` - Processing chapter content
@@ -82,14 +87,17 @@ graph TB
 - `COMPLETE` - Chapter successfully processed
 
 **Triggers:**
+
 - Chapter markers (numbers, titles, formatting)
 - Content boundaries (page breaks, whitespace)
 - Validation results (pass/fail)
 
 ### 🔍 [Section Classifier FSM](section_classifier_fsm.mmd)
+
 **State machine for classifying different text sections**
 
 **States:**
+
 - `ANALYSIS` - Analyzing text characteristics
 - `TOC_DETECTION` - Looking for table of contents  
 - `CHAPTER_CLASSIFICATION` - Identifying chapter content
@@ -97,14 +105,17 @@ graph TB
 - `FINAL_CLASSIFICATION` - Assigning final labels
 
 **Classifications:**
+
 - Table of Contents, Chapter Content, Index, Appendix
 - Front Matter, Back Matter, Bibliography
 - Footnotes, Headers, Page Numbers
 
 ### ✅ [Quality Gate FSM](quality_gate_fsm.mmd)
+
 **State machine for quality assurance workflows**
 
 **States:**
+
 - `INTAKE` - Receiving content for validation
 - `AUTOMATED_CHECKS` - Running automated quality rules
 - `SCORING` - Calculating quality metrics
@@ -113,6 +124,7 @@ graph TB
 - `REJECTED` - Failed validation, needs rework
 
 **Quality Metrics:**
+
 - Segmentation accuracy, speaker consistency
 - Annotation completeness, metadata quality
 - Format compliance, schema validation
@@ -120,6 +132,7 @@ graph TB
 ## UML Diagrams  
 
 ### 🔧 [Component UML](pdf_to_text_uml.mmd)
+
 **Class diagrams for PDF processing components**
 
 - **Classes**: PDFReader, TextExtractor, QualityValidator
@@ -128,6 +141,7 @@ graph TB
 - **Methods**: Key public APIs and data transformations
 
 ### 📊 [Data Model UML](structured_json_schema.mmd)
+
 **Entity relationship diagrams for data schemas**
 
 - **Entities**: Book, Chapter, Utterance, Speaker, Annotation
@@ -138,6 +152,7 @@ graph TB
 ## Data Flow Diagrams
 
 ### 🔄 Processing Pipeline
+
 ```mermaid
 %%{display}%%
 sequenceDiagram
@@ -156,6 +171,7 @@ sequenceDiagram
 ```
 
 ### 🔍 Quality Assurance Flow
+
 ```mermaid
 %%{display}%%
 graph LR
@@ -170,17 +186,20 @@ graph LR
 ## Diagram Maintenance
 
 ### File Formats
+
 - **Mermaid (.mmd)**: Primary format for all diagrams
 - **Renderable**: Can be viewed in GitHub, VS Code, documentation sites
 - **Version controlled**: Text-based format tracks changes clearly
 
 ### Updating Diagrams
+
 1. **Edit .mmd files** directly in VS Code with Mermaid extension
 2. **Test rendering** before committing changes
 3. **Update documentation** if diagram changes affect specifications
 4. **Coordinate with code** - ensure diagrams match implementation
 
 ### Viewing Diagrams
+
 - **GitHub**: Automatically renders Mermaid in README files
 - **VS Code**: Install Mermaid preview extension
 - **Documentation site**: Hugo/MkDocs with Mermaid plugin
@@ -189,18 +208,21 @@ graph LR
 ## Contributing New Diagrams
 
 ### When to Create Diagrams
+
 - **New major feature** - Architecture impact
 - **Complex workflow** - Multi-step processes  
 - **State machine** - Component behavior
 - **Data relationships** - Schema changes
 
 ### Diagram Standards
+
 - **Consistent styling** - Use established color schemes
 - **Clear labels** - Descriptive node and edge labels
 - **Appropriate level** - Match audience and purpose
 - **Documentation** - Include purpose and context
 
 ### Review Process
+
 1. **Create diagram** in appropriate category
 2. **Add to this index** with description and purpose  
 3. **Link from specifications** where relevant
