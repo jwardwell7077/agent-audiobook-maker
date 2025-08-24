@@ -1,3 +1,4 @@
+```mermaid
 %% LangFlow Audiobook Generation Architecture (Final MVP Specification)
 %% Shows the complete audiobook processing pipeline using LangFlow components
 
@@ -135,3 +136,4 @@ graph TB
     class FileLoader,JSONLoader,JSONLLoader,TextFilter,TextRegex,OllamaLLM,PromptTemplate,JSONBuilder,DataTransform,DirectoryLoader builtin
     class PayloadLogger,CacheManager utility
     class PDF,VolumeJSON,ChapterJSON,AnnotationJSONL,SegmentedJSONL,EnrichedJSONL,CharProfiles,SSMLFiles,AudioStems,ChapterAudio,BookAudio data
+```

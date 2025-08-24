@@ -195,5 +195,5 @@ Example
 
 ## Related
 
-- Annotation records: [docs/ANNOTATION_SCHEMA.md](ANNOTATION_SCHEMA.md)
-- Architecture overview: [docs/ARCHITECTURE.md](ARCHITECTURE.md)
+- Annotation records: [ANNOTATION_SCHEMA.md](ANNOTATION_SCHEMA.md)
+- Architecture overview: [ARCHITECTURE.md](../../01-project-overview/ARCHITECTURE.md)

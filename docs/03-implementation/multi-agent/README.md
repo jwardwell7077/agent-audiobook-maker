@@ -346,8 +346,8 @@ graph TD
 ## Related Sections
 
 - 🔧 [LangFlow Implementation](../langflow/README.md) - Current prototype approach
-- 📋 [Multi-Agent Roadmap](../../05-development/planning/MULTI_AGENT_ROADMAP.md) - Detailed transition plan
-- 🧠 [Learning Path](../../05-development/planning/LEARNING_PATH_MULTI_AGENT.md) - Skills and knowledge needed
+- 📋 [Multi-Agent Roadmap](MULTI_AGENT_ROADMAP.md) - Detailed transition plan
+- 🧠 [Learning Path](LEARNING_PATH_MULTI_AGENT.md) - Skills and knowledge needed
 - 🏗️ [Architecture](../../01-project-overview/ARCHITECTURE.md) - System design overview
 
 ---

@@ -136,7 +136,7 @@ agent-audiobook-maker/
 
 - **Documentation**: Start with this index and follow the links
 - **Issues**: Check existing GitHub issues or create a new one
-- **Questions**: Read the [Development Journey](05-development/journey/README.md) for context
+- **Questions**: Read the [Development Journey](05-development/journey/DEVELOPMENT_JOURNEY.md) for context
 
 ## Next Steps
 
@@ -145,7 +145,7 @@ Choose your path:
 - **📖 Learn More**: [Project Overview](01-project-overview/README.md)
 - **🛠️ Start Coding**: [Implementation Guide](03-implementation/README.md)  
 - **🎨 See Visuals**: [Architecture Diagrams](04-diagrams/README.md)
-- **📈 Follow Progress**: [Development Journey](05-development/journey/README.md)
+- **📈 Follow Progress**: [Development Journey](05-development/journey/DEVELOPMENT_JOURNEY.md)
 
 ---
 

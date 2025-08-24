@@ -42,9 +42,9 @@ Essential information for project contributors:
 
 ## Related Sections
 
-- 🔗 [Development Journey](../journey/README.md) - Project evolution and lessons learned
-- 🔗 [Development Planning](../planning/README.md) - Roadmaps and strategic planning
-- 🔗 [Development Templates](../templates/README.md) - Reusable document templates
+- 🔗 [Development Journey](../journey/DEVELOPMENT_JOURNEY.md) - Project evolution and lessons learned
+- 🔗 [Development Planning](../planning/NEW_STRUCTURE_PROPOSAL.md) - Roadmaps and strategic planning
+- 🔗 [Development Templates](../templates/FULL_DESIGN_SPEC_TEMPLATE.md) - Reusable document templates
 
 ---
 

@@ -323,9 +323,9 @@ The MVP is considered **complete and ready for release** when:
 
 ### **Reference Documents**
 
-- [LANGFLOW_COMPONENT_PLAN.md](LANGFLOW_COMPONENT_PLAN.md) - Detailed component specifications
-- [DEVELOPMENT_JOURNEY.md](DEVELOPMENT_JOURNEY.md) - Current ingestion pipeline status
-- [MULTI_AGENT_ROADMAP.md](MULTI_AGENT_ROADMAP.md) - Future roadmap beyond MVP
+- [LANGFLOW_COMPONENT_PLAN.md](../../03-implementation/langflow/LANGFLOW_COMPONENT_PLAN.md) - Detailed component specifications
+- [DEVELOPMENT_JOURNEY.md](../../05-development/journey/DEVELOPMENT_JOURNEY.md) - Current ingestion pipeline status
+- [MULTI_AGENT_ROADMAP.md](../../03-implementation/multi-agent/MULTI_AGENT_ROADMAP.md) - Future roadmap beyond MVP
 - [Architecture Diagrams](diagrams/) - System architecture and component relationships
 
 ### **Test Data Requirements**
