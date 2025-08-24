@@ -79,7 +79,7 @@ graph LR
         CLI[💻 PDF CLI] --> Extract
         API[🔌 REST API] --> Extract
     end
-```
+```text
 
 ## Design Principles
 

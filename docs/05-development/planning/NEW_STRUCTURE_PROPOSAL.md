@@ -98,7 +98,7 @@ docs/
     ├── glossary.md                     # New - technical terms
     ├── troubleshooting.md              # New - common issues
     └── references.md                   # New - external links
-```
+```text
 
 ## Benefits of This Structure
 

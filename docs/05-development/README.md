@@ -64,7 +64,7 @@ pip install -r requirements-dev.txt
 # Verify setup
 make test
 make lint
-```
+```text
 
 ## Project Evolution
 

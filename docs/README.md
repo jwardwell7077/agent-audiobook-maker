@@ -108,25 +108,25 @@ Our documentation is organized into 6 main sections designed for different needs
 
 ```text
 📖 GETTING_STARTED.md → 🎯 Project Overview → 🔧 Development Setup
-```
+```text
 
 ### 💻 I Want to Contribute
 
 ```text
 🤝 CONTRIBUTING.md → 🏗️ Architecture → 📝 Component Specs → 🛠️ Implementation
-```
+```text
 
 ### 🔍 I Need to Solve a Problem
 
 ```text
 🚨 TROUBLESHOOTING.md → 📚 Glossary → 🏠 Relevant Section
-```
+```text
 
 ### 📊 I Want to Understand the System
 
 ```text
 🎯 Vision → 🏗️ Architecture → 📊 Diagrams → 📋 Specifications
-```
+```text
 
 ## 💡 Pro Tips
 

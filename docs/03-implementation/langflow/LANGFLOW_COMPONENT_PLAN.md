@@ -256,7 +256,7 @@ flowchart LR
     F --> G[ABMSpeakerAttributionAgent]
     G --> H[ABMEmotionClassifier]
     H --> I[ABMQualityAssuranceAgent]
-```
+```text
 
 ### **Workflow 2: Audio Generation Pipeline**
 
@@ -268,7 +268,7 @@ flowchart LR
     D --> E[ABMTTSRenderer]
     E --> F[Built-in File Operations]
     F --> G[ABMAudioMaster]
-```
+```text
 
 ---
 

@@ -48,7 +48,7 @@ graph TB
         Annotator --> QualityGate[Quality Assurance]
         QualityGate --> Output[Structured JSON/JSONL]
     end
-```
+```text
 
 > This is a simplified representation – see full diagram for implementation details.
 
@@ -168,7 +168,7 @@ sequenceDiagram
     Classifier->>Chapterizer: Classified sections
     Chapterizer->>Annotator: Chapter structure  
     Annotator->>Output: Annotated JSONL
-```
+```text
 
 ### 🔍 Quality Assurance Flow
 
@@ -181,7 +181,7 @@ graph LR
     D -->|Approve| C
     D -->|Reject| E[Rework]
     E --> A
-```
+```text
 
 ## Diagram Maintenance
 

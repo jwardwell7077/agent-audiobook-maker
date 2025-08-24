@@ -10,7 +10,7 @@ This guide is organized by problem area to help you quickly find solutions. Chec
 |---------|-------------|-------------|
 | Import errors, missing modules | Environment Setup | [Python Environment](#python-environment) |
 | LangFlow UI won't start | LangFlow Issues | [LangFlow Problems](#langflow-problems) |
-| Components don't appear | Component Loading | [Component Discovery](#component-discovery) |
+| Components don't appear | Component Loading | [Component Loading Issues](#component-loading-issues) |
 | Processing fails on certain books | Data Quality | [Text Processing](#text-processing) |
 | Slow processing, memory errors | Performance | [Performance Issues](#performance-issues) |
 | Tests failing, build errors | Development | [Development Issues](#development-issues) |
@@ -148,7 +148,7 @@ src/abm/lf_components/
 
 **Problem**: Workflows fail during execution
 
-```
+```text
 Component execution failed: [Component Name]
 ```
 
@@ -172,7 +172,7 @@ Component execution failed: [Component Name]
 
 **Problem**: PDF extraction produces garbled text
 
-```
+```text
 Extracted text contains: ï¿½ï¿½ï¿½ symbols
 ```
 
@@ -187,7 +187,7 @@ Extracted text contains: ï¿½ï¿½ï¿½ symbols
 
 **Problem**: Special characters display incorrectly
 
-```
+```text
 UnicodeDecodeError: 'utf-8' codec can't decode byte
 ```
 
@@ -226,7 +226,7 @@ with open('file.txt', 'r', encoding='utf-8', errors='replace') as f:
 
 **Problem**: Processing runs out of memory
 
-```
+```text
 MemoryError: Unable to allocate array
 ```
 

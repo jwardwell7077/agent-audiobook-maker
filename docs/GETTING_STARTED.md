@@ -13,7 +13,7 @@ graph LR
     Annotate --> Cast[🎭 Cast Voices] 
     Cast --> Render[🎙️ Render Audio]
     Render --> Master[🎵 Master Audiobook]
-```
+```text
 
 ## Current Status
 
@@ -47,7 +47,7 @@ pip install -r requirements-dev.txt
 
 # Verify setup
 make test
-```
+```text
 
 ## Understanding the Architecture
 
@@ -92,7 +92,7 @@ Start with these documents in order:
 ```bash
 # Process a PDF into structured chapters
 python -m abm.ingestion.pdf_to_text_cli input.pdf
-```
+```text
 
 ### Working with LangFlow Components
 
@@ -102,7 +102,7 @@ pip install langflow
 
 # Run LangFlow with custom components
 ./scripts/run_langflow.sh
-```
+```text
 
 ### Testing
 
@@ -115,7 +115,7 @@ make test_coverage
 
 # Run quality checks
 make quality_gate
-```
+```text
 
 ## Project Structure
 
@@ -130,7 +130,7 @@ agent-audiobook-maker/
 ├── docs/                    # Documentation (you are here)
 ├── data/                    # Working directory (gitignored)
 └── scripts/                 # Helper scripts
-```
+```text
 
 ## Getting Help
 
