@@ -215,13 +215,30 @@ Artifacts (structured-only):
 langgraph dev
 ```
 
-For LangFlow component prototyping (custom components under `lf_components/`):
+For LangFlow component prototyping with ABM custom components:
 
 ```bash
+# Launch LangFlow with custom components auto-discovery
 scripts/run_langflow.sh
 ```
 
+This script automatically:
+
+- Loads configuration from `.env` file (including `LANGFLOW_COMPONENTS_PATH`)
+- Sets up Python path for component imports
+- Launches LangFlow with custom ABM components visible in "Audiobook" category
+
+The custom components are located at `src/abm/lf_components/audiobook/` and include:
+
+- **ABM Chapter Selector** - Selects chapters from volumes
+- **ABM Chapter Volume Loader** - Loads volume data for processing
+- **ABM Segment Dialogue Narration** - Segments dialogue and narration
+- **ABM Utterance Filter** - Filters utterances by criteria
+- **ABM Utterance JSONL Writer** - Writes utterances to JSONL format
+
 Import the sample flow (`examples/langflow/sample_volume_segmentation_flow.json`) and adjust the `book_id` + manifest path fields.
+
+> **Note**: If components don't appear, ensure `LANGFLOW_COMPONENTS_PATH` is properly set in `.env`. See `docs/LANGFLOW_COMPONENT_DISCOVERY.md` for troubleshooting.
 
 ## Prototype LangFlow Components
 
