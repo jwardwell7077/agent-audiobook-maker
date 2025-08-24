@@ -36,25 +36,25 @@ Our documentation is organized into 6 main sections designed for different needs
 
 ### By Role
 
-**🆕 New Contributor**
+#### 🆕 New Contributor
 
 1. [Getting Started](GETTING_STARTED.md) - Setup and onboarding
 2. [Contributing Guide](05-development/guides/CONTRIBUTING.md) - Process and standards
 3. [Architecture Overview](01-project-overview/ARCHITECTURE.md) - System understanding
 
-**💻 Developer**
+#### 💻 Developer
 
 1. [Component Specifications](02-specifications/components/README.md) - What to build
 2. [LangFlow Implementation](03-implementation/langflow/README.md) - Current approach
 3. [Data Schemas](02-specifications/data-schemas/README.md) - Data structures
 
-**🏗️ Architect**  
+#### 🏗️ Architect  
 
 1. [System Architecture](01-project-overview/ARCHITECTURE.md) - High-level design
 2. [Multi-Agent Roadmap](05-development/planning/MULTI_AGENT_ROADMAP.md) - Future direction
 3. [Diagrams Collection](04-diagrams/README.md) - Visual documentation
 
-**📖 Domain Expert**
+#### 📖 Domain Expert
 
 1. [Project Vision](01-project-overview/VISION.md) - Business understanding
 2. [Quality Specifications](02-specifications/advanced/QUALITY_GATE_SPEC.md) - Standards
@@ -62,25 +62,25 @@ Our documentation is organized into 6 main sections designed for different needs
 
 ### By Task
 
-**🔍 Understanding the System**
+#### 🔍 Understanding the System
 
 - [Project Vision](01-project-overview/VISION.md) - Why this exists
 - [Architecture](01-project-overview/ARCHITECTURE.md) - How it's designed
 - [Component Diagrams](04-diagrams/README.md) - Visual system overview
 
-**🛠️ Building Features**  
+#### 🛠️ Building Features
 
 - [Component Specs](02-specifications/components/README.md) - Requirements
 - [Data Schemas](02-specifications/data-schemas/README.md) - Data contracts
 - [Implementation Guide](03-implementation/README.md) - Technical approaches
 
-**🐛 Solving Problems**
+#### 🐛 Solving Problems
 
 - [Troubleshooting Guide](06-appendices/TROUBLESHOOTING.md) - Common solutions
 - [Development Issues](05-development/README.md#troubleshooting) - Dev-specific problems
 - [Glossary](06-appendices/GLOSSARY.md) - Term definitions
 
-**📈 Planning & Strategy**
+#### 📈 Planning & Strategy
 
 - [Development Journey](05-development/journey/README.md) - Project evolution
 - [Multi-Agent Roadmap](05-development/planning/MULTI_AGENT_ROADMAP.md) - Future plans
@@ -106,25 +106,25 @@ Our documentation is organized into 6 main sections designed for different needs
 
 ### 👋 I'm New Here
 
-```
+```text
 📖 GETTING_STARTED.md → 🎯 Project Overview → 🔧 Development Setup
 ```
 
 ### 💻 I Want to Contribute
 
-```  
+```text
 🤝 CONTRIBUTING.md → 🏗️ Architecture → 📝 Component Specs → 🛠️ Implementation
 ```
 
 ### 🔍 I Need to Solve a Problem
 
-```
+```text
 🚨 TROUBLESHOOTING.md → 📚 Glossary → 🏠 Relevant Section
 ```
 
 ### 📊 I Want to Understand the System
 
-```
+```text
 🎯 Vision → 🏗️ Architecture → 📊 Diagrams → 📋 Specifications
 ```
 
@@ -166,4 +166,4 @@ The Agent Audiobook Maker is a sophisticated text processing pipeline that trans
 - 🛠️ **Try troubleshooting** - [06-appendices/TROUBLESHOOTING.md](06-appendices/TROUBLESHOOTING.md)
 - 💬 **Ask questions** - Create an issue in the GitHub repository
 
-*Happy documenting! 🎉*
+### Happy documenting! 🎉
