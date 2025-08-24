@@ -2,7 +2,7 @@
 
 Last updated: 2025-08-21
 
-Source diagram: [docs/diagrams/section_classifier.mmd](diagrams/section_classifier.mmd)
+Source diagram: [../../04-diagrams/flows/section_classifier.mmd](../../04-diagrams/flows/section_classifier.mmd)
 
 ## Purpose
 
@@ -119,9 +119,9 @@ Notes
 
 ## Finite State Machine
 
-Diagram: [docs/diagrams/section_classifier_fsm.mmd](diagrams/section_classifier_fsm.mmd)
+Diagram: [../../04-diagrams/state-machines/section_classifier_fsm.mmd](../../04-diagrams/state-machines/section_classifier_fsm.mmd)
 
-UML (component/service): [docs/diagrams/section_classifier_uml.mmd](diagrams/section_classifier_uml.mmd)
+UML (component/service): [../../04-diagrams/uml/section_classifier_uml.mmd](../../04-diagrams/uml/section_classifier_uml.mmd)
 
 States
 

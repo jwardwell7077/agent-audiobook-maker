@@ -9,7 +9,7 @@ This section contains all the technical diagrams that illustrate how the Agent A
 | Diagram Type | Purpose | Files |
 |-------------|---------|-------|
 | 🏗️ **Architecture** | System overview and component relationships | `high_level_architecture.mmd` |
-| 🔄 **Workflows** | Data processing pipelines | `pdf_to_text_flow.mmd` |
+| 🔄 **Workflows** | Data processing pipelines | `flows/pdf_to_text_flow.mmd` |
 | 🤖 **Components** | Individual component behavior | `chapterizer_fsm.mmd`, `section_classifier_fsm.mmd` |
 | 📊 **Data Models** | Schema and structure diagrams | `structured_json_schema.mmd` |
 | 🧠 **State Machines** | Finite state machine behaviors | `quality_gate_fsm.mmd` |
@@ -29,7 +29,7 @@ System overview showing major components and data flow
 
 ## Workflow Diagrams
 
-### 📄 [PDF to Text Flow](pdf_to_text_flow.mmd)
+### 📄 [PDF to Text Flow](flows/pdf_to_text_flow.mmd)
 
 #### Detailed workflow for PDF ingestion and text extraction
 
@@ -38,7 +38,7 @@ System overview showing major components and data flow
 - **Quality gates**: Text quality validation, formatting preservation
 - **Output**: Clean text files ready for annotation
 
-### 📝 [TXT to JSON Processing](txt_to_json_spec.mmd)
+### 📝 [Structured JSON Schema](flows/structured_json_schema.mmd)
 
 #### Text file to structured annotation workflow
 
