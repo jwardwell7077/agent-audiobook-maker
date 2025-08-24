@@ -22,7 +22,7 @@ flowchart LR
   PDF[PDF file] -->|PyMuPDF (fitz)| EXTRACT[Extract pages]
   EXTRACT --> CLEAN[Normalize & clean]
   CLEAN --> TXT[Write .txt]
-```text
+```
 
 Diagram source: [diagrams/pdf_to_text_flow.mmd](diagrams/pdf_to_text_flow.mmd)
 
@@ -47,7 +47,7 @@ classDiagram
     }
 
     PdfToTextExtractor --> PdfToTextOptions
-```text
+```
 
 ## Contracts
 

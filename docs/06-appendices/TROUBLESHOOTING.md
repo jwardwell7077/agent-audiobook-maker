@@ -148,7 +148,7 @@ src/abm/lf_components/
 
 **Problem**: Workflows fail during execution
 
-```text
+```
 Component execution failed: [Component Name]
 ```
 
@@ -172,7 +172,7 @@ Component execution failed: [Component Name]
 
 **Problem**: PDF extraction produces garbled text
 
-```text
+```
 Extracted text contains: ï¿½ï¿½ï¿½ symbols
 ```
 
@@ -187,7 +187,7 @@ Extracted text contains: ï¿½ï¿½ï¿½ symbols
 
 **Problem**: Special characters display incorrectly
 
-```text
+```
 UnicodeDecodeError: 'utf-8' codec can't decode byte
 ```
 
@@ -226,7 +226,7 @@ with open('file.txt', 'r', encoding='utf-8', errors='replace') as f:
 
 **Problem**: Processing runs out of memory
 
-```text
+```
 MemoryError: Unable to allocate array
 ```
 

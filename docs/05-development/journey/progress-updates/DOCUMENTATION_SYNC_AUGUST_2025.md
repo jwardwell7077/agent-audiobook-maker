@@ -49,9 +49,9 @@ All 5 LangFlow components are now production-ready with full documentation synch
 
 ## Pipeline Flow (Updated)
 
-```text
+```
 File Loader → ChapterVolumeLoader → ChapterSelector → SegmentDialogueNarration → UtteranceFilter → UtteranceJsonlWriter
-```text
+```
 
 ## Key Changes Made
 

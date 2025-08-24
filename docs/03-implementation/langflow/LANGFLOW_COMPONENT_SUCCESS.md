@@ -103,7 +103,7 @@ We didn't just fix - we **enhanced** with superior algorithms:
 ✓ Component 5: ABM Utterance Filter
 ✓ All components properly inherit from Component
 🎉 All components ready for LangFlow integration!
-```text
+```
 
 ### Technical Debt Eliminated
 
@@ -153,7 +153,7 @@ This systematic approach should be applied to all future development:
 
 ### Directory Structure
 
-```text
+```
 /src/abm/lf_components/
 ├── __init__.py
 └── audiobook/                    # Category folder
@@ -163,7 +163,7 @@ This systematic approach should be applied to all future development:
     ├── abm_utterance_jsonl_writer.py
     ├── abm_chapter_selector.py
     └── abm_utterance_filter.py
-```text
+```
 
 ### Enhanced Algorithms Preserved
 

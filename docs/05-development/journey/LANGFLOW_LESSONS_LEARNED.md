@@ -18,12 +18,12 @@ This document captures the lessons learned during the integration of Audio Book 
 
 #### What Works (Per Official Documentation)
 
-```text
+```
 /your/custom/components/path/    # Base directory set by LANGFLOW_COMPONENTS_PATH
     └── category_name/          # Required category subfolder (determines menu location)
         ├── __init__.py         # Required (Python package requirement)
         └── custom_component.py # Component file
-```text
+```
 
 #### What Doesn't Work
 
@@ -58,14 +58,14 @@ This document captures the lessons learned during the integration of Audio Book 
 
 ```bash
 export LANGFLOW_COMPONENTS_PATH="/home/jon/repos/audio-book-maker-lg/src/abm/lf_components"
-```text
+```
 
 **Validation Commands That Work**:
 
 ```bash
 # Test individual component imports
 python -c "from abm.lf_components.abm_chapter_volume_loader import ABMChapterVolumeLoader; print('✅', ABMChapterVolumeLoader.display_name)"
-```text
+```
 
 ### 4. LangFlow Startup Behavior
 
@@ -95,18 +95,18 @@ python -c "from abm.lf_components.abm_chapter_volume_loader import ABMChapterVol
 from .audiobook.abm_chapter_selector import ABMChapterSelector
 from .audiobook.abm_chapter_volume_loader import ABMChapterVolumeLoader
 # ... etc
-```text
+```
 
 **Result**: Interfered with LangFlow's auto-discovery mechanism
 
 ### Attempt 2: Nested Directory Structure
 
-```text
+```
 lf_components/
   audiobook/
     abm_component1.py
     abm_component2.py
-```text
+```
 
 **Result**: Components not discovered by LangFlow
 
@@ -114,7 +114,7 @@ lf_components/
 
 ```bash
 ./scripts/run_langflow.sh &
-```text
+```
 
 **Result**: Process starts and immediately shuts down
 
@@ -175,10 +175,10 @@ lf_components/
 
 **Expected Change**:
 
-```text
+```
 BEFORE: /src/abm/lf_components/abm_*.py
 AFTER:  /src/abm/lf_components/audiobook/abm_*.py
-```text
+```
 
 **Predicted Outcome**:
 

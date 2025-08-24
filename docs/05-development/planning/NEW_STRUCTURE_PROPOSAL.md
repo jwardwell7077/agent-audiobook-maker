@@ -8,7 +8,7 @@
 
 ## Proposed Structure
 
-```text
+```
 docs/
 ├── README.md                           # Main documentation index
 ├── GETTING_STARTED.md                  # Quick start guide
@@ -98,7 +98,7 @@ docs/
     ├── glossary.md                     # New - technical terms
     ├── troubleshooting.md              # New - common issues
     └── references.md                   # New - external links
-```text
+```
 
 ## Benefits of This Structure
 

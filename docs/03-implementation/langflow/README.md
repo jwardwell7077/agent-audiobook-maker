@@ -82,7 +82,7 @@ graph LR
     B --> C[Segment D/N]
     C --> D[JSONL Writer]
     D --> E[File Output]
-```text
+```
 
 1. **Load** book chapters from `data/clean/<book>/chapters.json`
 2. **Select** specific chapter for processing
@@ -97,7 +97,7 @@ graph LR
     B --> C[Utterance Filter]
     C --> D[QA Validation]
     D --> E[JSONL Writer]
-```text
+```
 
 1. **Segment** chapter text into utterances  
 2. **Filter** utterances by quality criteria
@@ -120,7 +120,7 @@ class MyComponent(Component):
     description = "What this component does"
     icon = "icon-name"  # Lucide icon
     name = "my_component"
-```text
+```
 
 2. **Define Inputs and Outputs**
 
@@ -141,7 +141,7 @@ outputs = [
         method="process"
     )
 ]
-```text
+```
 
 3. **Implement Processing Logic**
 
@@ -155,7 +155,7 @@ def process(self) -> Data:
     
     # Return as Data object
     return Data(data=result)
-```text
+```
 
 ### Component Testing
 
@@ -173,7 +173,7 @@ pip install langflow
 
 # Run with custom components
 ./scripts/run_langflow.sh
-```text
+```
 
 ### Component Discovery
 
