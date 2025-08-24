@@ -90,6 +90,8 @@ Our documentation is organized into 6 main sections designed for different needs
 
 ### Latest Changes
 
+- ✅ **Two-Agent System Architecture** - Complete technical specifications for dialogue classification and speaker attribution
+- ✅ **Database-Driven Character Management** - PostgreSQL schema for character profiles and voice casting
 - ✅ Complete documentation reorganization into logical 6-section structure
 - ✅ LangFlow component implementation with full UI integration
 - ✅ Multi-agent system architecture planning and roadmap
@@ -97,6 +99,8 @@ Our documentation is organized into 6 main sections designed for different needs
 
 ### What's New
 
+- **Two-Agent System**: Hybrid dialogue classifier and speaker attribution agents with database integration
+- **Character Database**: PostgreSQL-based character profiling for voice casting decisions  
 - **LangFlow Components**: Production-ready audiobook processing components
 - **Quality Gates**: Automated validation and error detection systems  
 - **Multi-Agent Planning**: Detailed roadmap for production architecture
@@ -146,16 +150,24 @@ Our documentation is organized into 6 main sections designed for different needs
 
 ## 🏗️ System Overview
 
-The Agent Audiobook Maker is a sophisticated text processing pipeline that transforms raw books into richly annotated content suitable for audiobook production. The system uses:
+The Agent Audiobook Maker is a sophisticated text processing pipeline that transforms raw books into richly annotated content suitable for audiobook production. The system has evolved from simple segmentation to a comprehensive two-agent architecture:
 
 - **📄 Text Ingestion**: PDF and text file processing with quality validation
 - **🔍 Content Analysis**: Chapter detection, structure classification, quality assessment
-- **✂️ Intelligent Segmentation**: Dialogue/narration separation with speaker attribution
-- **🤖 AI-Powered Annotation**: Rich metadata generation for audio production
+- **✂️ Intelligent Segmentation**: Advanced two-agent system for dialogue/narration classification and speaker attribution
+- **🗄️ Character Database**: PostgreSQL-driven character profiling and voice casting preparation
+- **🤖 AI-Powered Annotation**: Rich metadata generation with confidence scoring and quality metrics
 - **🎯 Quality Assurance**: Automated validation and human-in-the-loop workflows
 
-**Current Status**: Phase 1 (LangFlow Implementation) - Production ready components  
-**Next Phase**: Phase 2 (Multi-Agent System) - Advanced coordination and intelligence
+**Current Status**: Phase 1+ (Two-Agent Architecture) - Hybrid classification with database integration  
+**Next Phase**: Phase 2 (Multi-Agent System) - Advanced orchestration and production deployment
+
+**Two-Agent System Features**:
+
+- Hybrid dialogue classification (heuristic + AI fallback)  
+- Database-driven speaker attribution with character tracking
+- Confidence scoring for quality assurance
+- Character profile building for voice casting decisions
 
 ---
 
