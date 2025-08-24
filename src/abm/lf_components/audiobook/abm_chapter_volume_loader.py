@@ -36,7 +36,7 @@ class ABMChapterVolumeLoader(Component):
             display_name="Base Data Directory",
             info="Base directory containing book data",
             value="/home/jon/repos/audio-book-maker-lg/data/clean",
-            advanced=True,
+            required=False,
         ),
     ]
 
