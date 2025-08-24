@@ -18,7 +18,7 @@ This section contains all the technical diagrams that illustrate how the Agent A
 
 ### 🏗️ [High-Level Architecture](high_level_architecture.mmd)
 
-**System overview showing major components and data flow**
+System overview showing major components and data flow
 
 - **Purpose**: Executive summary of system design
 - **Audience**: Stakeholders, new developers, architects
@@ -50,7 +50,7 @@ graph TB
     end
 ```
 
-*This is a simplified representation - see full diagram for implementation details*
+> This is a simplified representation – see full diagram for implementation details.
 
 ## Workflow Diagrams
 
