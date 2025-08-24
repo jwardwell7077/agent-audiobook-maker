@@ -53,8 +53,9 @@ graph LR
 
 **Evolution Path:**
 
-- v1: Basic segmentation (dialogue/narration) - **Current**
-- v2: Speaker attribution and emotion classification - **Phase 2**
+- v1: Basic segmentation (dialogue/narration) - **Legacy LangFlow**
+- v1.5: Two-agent system (hybrid classification + speaker attribution) - **Current** 
+- v2: Enhanced CrewAI integration with emotion classification - **Phase 2**
 - v3: Prosody analysis and quality gates - **Phase 3**  
 - v4: SSML generation and TTS metadata - **Phase 4**
 
