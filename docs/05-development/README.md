@@ -8,7 +8,8 @@ This section contains all the information needed to understand the project's dev
 
 | Category | Purpose | Key Documents |
 |----------|---------|---------------|
-| 🚀 **Getting Started** | New contributor onboarding | `CONTRIBUTING.md`, setup guides |
+| � **Guides** | Process documentation and how-to guides | `HOW_TO_DOCUMENT.md`, `CONTRIBUTING.md` |
+| �🚀 **Getting Started** | New contributor onboarding | Setup guides, environment config |
 | 📈 **Journey** | Project evolution and lessons learned | `DEVELOPMENT_JOURNEY.md`, `LESSONS_LEARNED.md` |
 | 🗺️ **Planning** | Roadmaps and strategic direction | `MULTI_AGENT_ROADMAP.md`, learning paths |
 | 📋 **Processes** | Development workflows and standards | Code review, testing practices |
@@ -16,9 +17,20 @@ This section contains all the information needed to understand the project's dev
 
 ## Getting Started
 
-### 🔧 [Contributing Guide](contributing/CONTRIBUTING.md)
+### � [Development Guides](guides/README.md)
 
-**Complete guide for new contributors**
+Process documentation and how-to guides for contributing to the project
+
+Essential guides for effective contribution:
+
+- **[How to Document](guides/HOW_TO_DOCUMENT.md)** - Complete guide for creating and maintaining project documentation
+- **[Contributing Guide](guides/CONTRIBUTING.md)** - Development workflow, standards, and processes
+
+*Start here for comprehensive guidance on project contribution practices.*
+
+### 🔧 [Contributing Guide](guides/CONTRIBUTING.md)
+
+Complete guide for new contributors
 
 Essential information for anyone wanting to contribute:
 
