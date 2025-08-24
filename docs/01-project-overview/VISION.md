@@ -60,21 +60,25 @@ Agent Audiobook Maker provides an **automated, local-first pipeline** that:
 ## Success Criteria
 
 ### Phase 1 (Current) - LangFlow Prototype
+
 - ✅ Extract structured chapters from PDF novels
 - 🚧 Segment text into dialogue vs narration utterances
 - 🚧 Create visual workflow in LangFlow for annotation
 
 ### Phase 2 - Multi-Agent System
+
 - ⏳ Attribute dialogue to specific speakers with 80%+ accuracy
 - ⏳ Classify emotional context of utterances
 - ⏳ Implement quality assurance checks
 
 ### Phase 3 - Audio Rendering
+
 - ⏳ Generate high-quality TTS audio matching character voices
 - ⏳ Master final audiobook meeting EBU R128 standards
 - ⏳ Process a 300-page novel in under 4 hours (local RTX 4070)
 
 ### Long-term Vision
+
 - ⏳ Support multiple languages and accents
 - ⏳ Custom voice cloning for character consistency
 - ⏳ Integration with audiobook distribution platforms
@@ -91,16 +95,19 @@ Agent Audiobook Maker provides an **automated, local-first pipeline** that:
 ## Measuring Success
 
 ### Technical Metrics
+
 - **Processing speed**: Characters/minute throughput
 - **Quality scores**: Speaker attribution accuracy, audio fidelity
 - **Reliability**: Successful end-to-end processing rate
 
 ### User Experience
+
 - **Setup time**: Minutes from clone to first successful run
 - **Learning curve**: Time to understand and modify the pipeline
 - **Output quality**: User satisfaction with generated audiobooks
 
 ### Community Impact
+
 - **Adoption**: GitHub stars, forks, real-world usage
 - **Contributions**: External PRs and component additions
 - **Ecosystem**: Third-party tools and integrations

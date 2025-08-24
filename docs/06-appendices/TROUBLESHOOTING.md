@@ -20,11 +20,13 @@ This guide is organized by problem area to help you quickly find solutions. Chec
 ### Virtual Environment Issues
 
 **Problem**: `pip install` fails or installs to wrong location
+
 ```bash
 ERROR: Could not install packages due to an EnvironmentError
 ```
 
 **Solution**: Ensure virtual environment is activated
+
 ```bash
 # Create new virtual environment
 python -m venv venv
@@ -40,11 +42,13 @@ which python
 ```
 
 **Problem**: Import errors despite packages being installed
+
 ```python
 ModuleNotFoundError: No module named 'langflow'
 ```
 
 **Solutions**:
+
 1. Check virtual environment activation: `which python`
 2. Reinstall requirements: `pip install -r requirements-dev.txt`
 3. Check Python version: `python --version` (should be 3.11+)
@@ -53,11 +57,13 @@ ModuleNotFoundError: No module named 'langflow'
 ### Dependency Conflicts
 
 **Problem**: Package version conflicts during installation
+
 ```bash
 ERROR: pip's dependency resolver does not currently support backtracking
 ```
 
 **Solutions**:
+
 1. Create fresh virtual environment
 2. Install packages individually to identify conflicts
 3. Check `requirements-dev.txt` for version pins
@@ -68,11 +74,13 @@ ERROR: pip's dependency resolver does not currently support backtracking
 **Problem**: Code fails with syntax or compatibility errors
 
 **Check Python version**:
+
 ```bash
 python --version  # Should be 3.11+
 ```
 
 **Solutions**:
+
 1. Install Python 3.11 or higher
 2. Update virtual environment to use correct Python
 3. Use `pyenv` for Python version management
@@ -82,11 +90,13 @@ python --version  # Should be 3.11+
 ### UI Won't Start
 
 **Problem**: LangFlow server fails to start
+
 ```bash
 Error starting LangFlow server
 ```
 
 **Diagnostic steps**:
+
 ```bash
 # Check if port is in use
 lsof -i :7860
@@ -99,6 +109,7 @@ langflow --version
 ```
 
 **Solutions**:
+
 1. Kill existing LangFlow processes: `pkill -f langflow`
 2. Try different port: `langflow run --port 8080`
 3. Clear LangFlow cache: `rm -rf ~/.cache/langflow`
@@ -109,6 +120,7 @@ langflow --version
 **Problem**: Custom components don't appear in UI
 
 **Check component structure**:
+
 ```bash
 # Components must be in proper package structure
 src/abm/lf_components/
@@ -119,12 +131,14 @@ src/abm/lf_components/
 ```
 
 **Diagnostic steps**:
+
 1. Check component inherits from `Component`
 2. Verify `__init__.py` files exist
 3. Check component imports don't fail
 4. Restart LangFlow after changes
 
 **Solutions**:
+
 1. Add missing `__init__.py` files
 2. Fix import errors in component files
 3. Check component class name matches file name
@@ -133,17 +147,20 @@ src/abm/lf_components/
 ### Workflow Execution Failures
 
 **Problem**: Workflows fail during execution
+
 ```
 Component execution failed: [Component Name]
 ```
 
 **Debugging steps**:
+
 1. Check component logs in LangFlow UI
 2. Test component with minimal input
 3. Verify input/output data types match
 4. Check for missing required inputs
 
 **Common causes**:
+
 - Data type mismatches between components
 - Missing required input parameters
 - File path issues (use absolute paths)
@@ -154,11 +171,13 @@ Component execution failed: [Component Name]
 ### File Format Issues
 
 **Problem**: PDF extraction produces garbled text
+
 ```
 Extracted text contains: ï¿½ï¿½ï¿½ symbols
 ```
 
 **Solutions**:
+
 1. Check PDF is not password-protected
 2. Try different PDF extraction method
 3. Verify PDF is text-based (not scanned images)
@@ -167,14 +186,17 @@ Extracted text contains: ï¿½ï¿½ï¿½ symbols
 ### Character Encoding Problems
 
 **Problem**: Special characters display incorrectly
+
 ```
 UnicodeDecodeError: 'utf-8' codec can't decode byte
 ```
 
 **Solutions**:
+
 1. Detect file encoding: `chardet your_file.txt`
 2. Convert to UTF-8: `iconv -f ISO-8859-1 -t UTF-8 input.txt > output.txt`
 3. Handle encoding in Python:
+
 ```python
 with open('file.txt', 'r', encoding='utf-8', errors='replace') as f:
     content = f.read()
@@ -185,12 +207,14 @@ with open('file.txt', 'r', encoding='utf-8', errors='replace') as f:
 **Problem**: Dialogue detection fails or produces poor results
 
 **Common causes**:
+
 - Inconsistent quote styles ("curly" vs "straight" quotes)
 - Missing or malformed dialogue tags
 - Complex nested dialogue
 - Non-standard formatting
 
 **Solutions**:
+
 1. Normalize quotes before processing
 2. Adjust dialogue detection parameters
 3. Add custom rules for specific book formatting
@@ -201,11 +225,13 @@ with open('file.txt', 'r', encoding='utf-8', errors='replace') as f:
 ### Memory Problems
 
 **Problem**: Processing runs out of memory
+
 ```
 MemoryError: Unable to allocate array
 ```
 
 **Solutions**:
+
 1. Process books in smaller chunks
 2. Increase system swap space
 3. Use streaming processing for large files
@@ -216,12 +242,14 @@ MemoryError: Unable to allocate array
 **Problem**: Processing takes much longer than expected
 
 **Diagnostic steps**:
+
 1. Profile processing time by component
 2. Check system resource usage
 3. Identify bottleneck operations
 4. Test with smaller sample files
 
 **Optimization approaches**:
+
 1. Parallel processing for independent operations  
 2. Caching for repeated operations
 3. Optimize text processing algorithms
@@ -232,6 +260,7 @@ MemoryError: Unable to allocate array
 **Problem**: Running out of storage during processing
 
 **Solutions**:
+
 1. Clean temporary files: `rm -rf /tmp/langflow_*`
 2. Archive or delete old output files
 3. Process books individually rather than batches
@@ -242,11 +271,13 @@ MemoryError: Unable to allocate array
 ### Testing Problems
 
 **Problem**: Tests fail unexpectedly
+
 ```bash
 FAILED tests/test_something.py::test_function - AssertionError
 ```
 
 **Solutions**:
+
 1. Run single test for debugging: `pytest tests/test_file.py::test_name -v`
 2. Check test data and fixtures are available
 3. Verify test environment matches requirements
@@ -255,11 +286,13 @@ FAILED tests/test_something.py::test_function - AssertionError
 ### Linting Failures
 
 **Problem**: Code fails linting checks
+
 ```bash
 pylint: error: Your code has been rated at 5.0/10
 ```
 
 **Solutions**:
+
 1. Fix formatting: `black src/`
 2. Sort imports: `isort src/`
 3. Check type hints: `mypy src/`
@@ -270,6 +303,7 @@ pylint: error: Your code has been rated at 5.0/10
 **Problem**: Git operations fail or behave unexpectedly
 
 **Common issues**:
+
 1. Merge conflicts: Use `git mergetool` or manual resolution
 2. Large file issues: Check if files should be in `.gitignore`
 3. Branch confusion: Use `git status` and `git branch` to orient
@@ -282,6 +316,7 @@ pylint: error: Your code has been rated at 5.0/10
 **Problem**: New component doesn't work as expected
 
 **Development checklist**:
+
 1. Component inherits from correct base class
 2. Input/output types properly defined
 3. Required methods implemented
@@ -293,6 +328,7 @@ pylint: error: Your code has been rated at 5.0/10
 **Problem**: Components don't connect properly in workflows
 
 **Common causes**:
+
 1. Output type doesn't match input type
 2. Data structure inconsistencies
 3. Missing error handling
@@ -303,6 +339,7 @@ pylint: error: Your code has been rated at 5.0/10
 ### Information to Gather
 
 When reporting issues, include:
+
 1. **Environment**: Python version, OS, installed packages
 2. **Steps to reproduce**: Exact commands and inputs used
 3. **Error messages**: Complete error output, not just snippets

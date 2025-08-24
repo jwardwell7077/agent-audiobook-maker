@@ -7,17 +7,20 @@ This is our current implementation approach for Phase 1 - using LangFlow's visua
 ## Why LangFlow?
 
 ### Rapid Prototyping
+
 - **Visual design** - Build workflows without code complexity
 - **Real-time testing** - Immediate feedback on component integration
 - **Stakeholder demos** - Non-technical stakeholders can understand workflows
 - **Quick iteration** - Change logic without full rebuild cycles
 
 ### Component Reusability
+
 - **Modular design** - Components can be reused across workflows
 - **Standard interfaces** - LangFlow enforces consistent data contracts
 - **Version control** - Workflows can be exported as JSON and versioned
 
 ### Learning Platform  
+
 - **Multi-agent concepts** - Practice agent coordination patterns
 - **Data flow validation** - Ensure components work together correctly
 - **Error handling** - Debug integration issues visually
@@ -25,6 +28,7 @@ This is our current implementation approach for Phase 1 - using LangFlow's visua
 ## Current Components
 
 ### 📚 [Chapter Volume Loader](abm_chapter_volume_loader.py)
+
 **Loads book chapters from structured JSON or fallback text files**
 
 - Input: Book ID and manifest path
@@ -33,6 +37,7 @@ This is our current implementation approach for Phase 1 - using LangFlow's visua
 - Status: ✅ Working and tested
 
 ### ✂️ [Segment Dialogue/Narration](abm_segment_dialogue_narration.py)  
+
 **Splits chapter text into dialogue and narration utterances**
 
 - Input: Chapter payload with text content
@@ -41,6 +46,7 @@ This is our current implementation approach for Phase 1 - using LangFlow's visua
 - Status: ✅ Working, ready for ML enhancement
 
 ### 🎯 [Chapter Selector](abm_chapter_selector.py)
+
 **Selects specific chapter by index for processing**
 
 - Input: Multi-chapter payload and chapter index
@@ -49,6 +55,7 @@ This is our current implementation approach for Phase 1 - using LangFlow's visua
 - Status: ✅ Working and tested
 
 ### 🗂️ [Utterance JSONL Writer](abm_utterance_jsonl_writer.py)
+
 **Writes utterances to JSONL files for persistence**
 
 - Input: Utterances payload with book/chapter metadata
@@ -57,6 +64,7 @@ This is our current implementation approach for Phase 1 - using LangFlow's visua
 - Status: ✅ Working with configurable paths
 
 ### 🔍 [Utterance Filter](abm_utterance_filter.py)
+
 **Filters utterances by role, length, or content criteria**
 
 - Input: Utterances payload with filter parameters
@@ -67,6 +75,7 @@ This is our current implementation approach for Phase 1 - using LangFlow's visua
 ## Workflow Examples
 
 ### Basic Segmentation Flow
+
 ```mermaid
 graph LR
     A[Volume Loader] --> B[Chapter Selector]
@@ -81,6 +90,7 @@ graph LR
 4. **Write** results to `data/annotations/<book>/utterances.jsonl`
 
 ### Quality Assurance Flow
+
 ```mermaid
 graph LR
     A[Volume Loader] --> B[Segmenter]
@@ -99,6 +109,7 @@ graph LR
 ### Creating New Components
 
 1. **Inherit from Component**
+
 ```python
 from langflow.custom import Component
 from langflow.io import DataInput, Output
@@ -112,6 +123,7 @@ class MyComponent(Component):
 ```
 
 2. **Define Inputs and Outputs**
+
 ```python
 inputs = [
     DataInput(
@@ -132,6 +144,7 @@ outputs = [
 ```
 
 3. **Implement Processing Logic**
+
 ```python
 def process(self) -> Data:
     # Access input data
@@ -153,6 +166,7 @@ def process(self) -> Data:
 ## LangFlow Setup
 
 ### Installation
+
 ```bash
 # Install in your virtual environment
 pip install langflow
@@ -162,13 +176,15 @@ pip install langflow
 ```
 
 ### Component Discovery
+
 - Components automatically discovered from `src/abm/lf_components/audiobook/`
 - Must inherit from `langflow.custom.Component`
 - Must be in Python package with `__init__.py`
 
 ### UI Usage
+
 1. **Start LangFlow**: `./scripts/run_langflow.sh`
-2. **Open browser**: http://localhost:7860
+2. **Open browser**: <http://localhost:7860>
 3. **Import workflow**: Use JSON files from `examples/langflow/`
 4. **Add components**: Drag from "Audiobook" category
 5. **Connect workflow**: Link component inputs/outputs
@@ -185,6 +201,7 @@ pip install langflow
 5. **Maintain LangFlow** for rapid prototyping of new features
 
 ### Preserved Patterns
+
 - **Component interfaces** will remain similar
 - **Data schemas** will be maintained for compatibility
 - **Workflow concepts** translate to agent coordination
@@ -193,12 +210,14 @@ pip install langflow
 ## Success Metrics
 
 ### Current Phase 1 Goals
+
 - ✅ All components working in LangFlow UI
 - ✅ End-to-end workflow produces valid JSONL
 - ✅ Visual debugging and validation possible
 - 🚧 Sample workflows documented and versioned
 
 ### Phase 2 Transition Goals  
+
 - 🎯 Core logic extracted to reusable modules
 - 🎯 Agent roles mapped to component responsibilities
 - 🎯 Production orchestration layer designed
