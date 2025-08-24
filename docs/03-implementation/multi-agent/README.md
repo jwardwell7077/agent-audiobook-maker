@@ -186,11 +186,11 @@ workflow.add_edge("analyze", "segment")
 
 ```mermaid
 graph TD
-    A[Content Analysis] --> B[Segmentation]
-    B --> C[Speaker ID]
-    C --> D[Annotation]
-    D --> E[Quality Check]
-    E --> F[Output]
+    A[Content Analysis]  B[Segmentation]
+    B  C[Speaker ID]
+    C  D[Annotation]
+    D  E[Quality Check]
+    E  F[Output]
 ```
 
 **Use case**: Standard book processing with clear dependencies
@@ -199,11 +199,11 @@ graph TD
 
 ```mermaid
 graph TD
-    A[Content Analysis] --> B[Segmentation]
-    A --> C[Speaker Registry]
-    B --> D[Annotation Agent]
-    C --> D
-    D --> E[QA Merge]
+    A[Content Analysis]  B[Segmentation]
+    A  C[Speaker Registry]
+    B  D[Annotation Agent]
+    C  D
+    D  E[QA Merge]
 ```
 
 **Use case**: Complex books requiring simultaneous analysis
@@ -212,11 +212,11 @@ graph TD
 
 ```mermaid
 graph TD
-    A[Auto Processing] --> B{Quality Check}
-    B -->|Pass| C[Output]
-    B -->|Fail| D[Human Review]
-    D --> E[Agent Reprocessing]
-    E --> F[Final Output]
+    A[Auto Processing]  B{Quality Check}
+    B |Pass| C[Output]
+    B |Fail| D[Human Review]
+    D  E[Agent Reprocessing]
+    E  F[Final Output]
 ```
 
 **Use case**: High-quality requirements with human oversight
@@ -225,10 +225,10 @@ graph TD
 
 ```mermaid
 graph TD
-    A[Initial Pass] --> B[Quality Score]
-    B -->|Low| C[Refinement Agents]
-    B -->|High| D[Output]
-    C --> A
+    A[Initial Pass]  B[Quality Score]
+    B |Low| C[Refinement Agents]
+    B |High| D[Output]
+    C  A
 ```
 
 **Use case**: Adaptive quality improvement

@@ -248,26 +248,26 @@ All components in `src/abm/lf_components/audiobook/` are production-ready (Updat
 
 ```mermaid
 flowchart LR
-    A[Built-in File Loader] --> B[ABMChapterVolumeLoader]
-    B --> C[ABMChapterSelector] 
-    C --> D[ABMSegmentDialogueNarration]
-    D --> E[ABMUtteranceFilter]
-    E --> F[ABMUtteranceJsonlWriter]
-    F --> G[ABMSpeakerAttributionAgent]
-    G --> H[ABMEmotionClassifier]
-    H --> I[ABMQualityAssuranceAgent]
+    A[Built-in File Loader]  B[ABMChapterVolumeLoader]
+    B  C[ABMChapterSelector] 
+    C  D[ABMSegmentDialogueNarration]
+    D  E[ABMUtteranceFilter]
+    E  F[ABMUtteranceJsonlWriter]
+    F  G[ABMSpeakerAttributionAgent]
+    G  H[ABMEmotionClassifier]
+    H  I[ABMQualityAssuranceAgent]
 ```
 
 ### **Workflow 2: Audio Generation Pipeline**
 
 ```mermaid
 flowchart LR
-    A[Built-in JSONL Loader] --> B[ABMCharacterBibleBuilder]
-    B --> C[ABMProsodyGenerator]
-    C --> D[ABMSSMLBuilder] 
-    D --> E[ABMTTSRenderer]
-    E --> F[Built-in File Operations]
-    F --> G[ABMAudioMaster]
+    A[Built-in JSONL Loader]  B[ABMCharacterBibleBuilder]
+    B  C[ABMProsodyGenerator]
+    C  D[ABMSSMLBuilder] 
+    D  E[ABMTTSRenderer]
+    E  F[Built-in File Operations]
+    F  G[ABMAudioMaster]
 ```
 
 ---

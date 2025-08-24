@@ -1,11 +1,11 @@
 stateDiagram-v2
-  [*] --> Idle
-  Idle --> RunChecks: start
-  RunChecks --> LintCheck
-  LintCheck --> DocCheck
-  DocCheck --> CovCheck
-  CovCheck --> Pass: all ok
-  CovCheck --> Fail: any fail
-  Pass --> Report
-  Fail --> Report
-  Report --> [*]
+  [*]  Idle
+  Idle  RunChecks: start
+  RunChecks  LintCheck
+  LintCheck  DocCheck
+  DocCheck  CovCheck
+  CovCheck  Pass: all ok
+  CovCheck  Fail: any fail
+  Pass  Report
+  Fail  Report
+  Report  [*]

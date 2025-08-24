@@ -1,12 +1,12 @@
 flowchart LR
-  Dev["Developer/CI"] --> GateRunner["Quality Gate Runner (pre-commit/CI)"]
-  GateRunner --> Ruff["Ruff (format + lint)"]
-  GateRunner --> Docs["Docstring Coverage (interrogate)"]
-  GateRunner --> Cov["Test Coverage (pytest-cov)"]
+  Dev["Developer/CI"]  GateRunner["Quality Gate Runner (pre-commit/CI)"]
+  GateRunner  Ruff["Ruff (format + lint)"]
+  GateRunner  Docs["Docstring Coverage (interrogate)"]
+  GateRunner  Cov["Test Coverage (pytest-cov)"]
 
-  Ruff --> Report["Aggregate Report"]
-  Docs --> Report
-  Cov --> Report
+  Ruff  Report["Aggregate Report"]
+  Docs  Report
+  Cov  Report
 
-  Report -->|all pass| Pass[("Gate Pass")]
-  Report -->|any fail| Fail[("Gate Fail")]
+  Report |all pass| Pass[("Gate Pass")]
+  Report |any fail| Fail[("Gate Fail")]

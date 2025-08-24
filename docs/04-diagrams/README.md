@@ -148,12 +148,12 @@ sequenceDiagram
 
 ```mermaid
 graph LR
-    A[Raw Output] --> B{Automated QA}
-    B -->|Pass| C[Approved]
-    B -->|Fail| D[Human Review]
-    D -->|Approve| C
-    D -->|Reject| E[Rework]
-    E --> A
+    A[Raw Output]  B{Automated QA}
+    B |Pass| C[Approved]
+    B |Fail| D[Human Review]
+    D |Approve| C
+    D |Reject| E[Rework]
+    E  A
 ```
 
 ## Diagram Maintenance

@@ -15,17 +15,17 @@ Last updated: 2025-08-21
 
 ```mermaid
 flowchart LR
-  Dev["Developer/CI"] --> GateRunner["Quality Gate Runner (pre-commit/CI)"]
-  GateRunner --> Ruff["Ruff (format + lint)"]
-  GateRunner --> Docs["Docstring Coverage (interrogate)"]
-  GateRunner --> Cov["Test Coverage (pytest-cov)"]
+  Dev["Developer/CI"]  GateRunner["Quality Gate Runner (pre-commit/CI)"]
+  GateRunner  Ruff["Ruff (format + lint)"]
+  GateRunner  Docs["Docstring Coverage (interrogate)"]
+  GateRunner  Cov["Test Coverage (pytest-cov)"]
 
-  Ruff --> Report["Aggregate Report"]
-  Docs --> Report
-  Cov --> Report
+  Ruff  Report["Aggregate Report"]
+  Docs  Report
+  Cov  Report
 
-  Report -->|all pass| Pass[("Gate Pass")]
-  Report -->|any fail| Fail[("Gate Fail")]
+  Report |all pass| Pass[("Gate Pass")]
+  Report |any fail| Fail[("Gate Fail")]
 ```
 
 Source: docs/diagrams/quality_gate_architecture.mmd
@@ -51,8 +51,8 @@ classDiagram
     + coverage_ok: bool
     + details: dict
   }
-  QualityGateRunner --> GateConfig
-  QualityGateRunner --> QualityGateReport
+  QualityGateRunner  GateConfig
+  QualityGateRunner  QualityGateReport
 ```
 
 Source: docs/diagrams/quality_gate_uml.mmd
@@ -61,16 +61,16 @@ Source: docs/diagrams/quality_gate_uml.mmd
 
 ```mermaid
 stateDiagram-v2
-  [*] --> Idle
-  Idle --> RunChecks: start
-  RunChecks --> LintCheck
-  LintCheck --> DocCheck
-  DocCheck --> CovCheck
-  CovCheck --> Pass: all ok
-  CovCheck --> Fail: any fail
-  Pass --> Report
-  Fail --> Report
-  Report --> [*]
+  [*]  Idle
+  Idle  RunChecks: start
+  RunChecks  LintCheck
+  LintCheck  DocCheck
+  DocCheck  CovCheck
+  CovCheck  Pass: all ok
+  CovCheck  Fail: any fail
+  Pass  Report
+  Fail  Report
+  Report  [*]
 ```
 
 Source: docs/diagrams/quality_gate_fsm.mmd

@@ -5,191 +5,191 @@ stateDiagram-v2
     direction LR
 
     %% System States
-    [*] --> Idle : System Ready
+    [*]  Idle : System Ready
 
     %% Core Processing Pipeline States
     state CorePipeline {
-        Idle --> LoadingChapter : process_book(book_id, chapter_id)
-        LoadingChapter --> ChapterReady : chapter_loaded
-        LoadingChapter --> LoadFailed : load_error
+        Idle  LoadingChapter : process_book(book_id, chapter_id)
+        LoadingChapter  ChapterReady : chapter_loaded
+        LoadingChapter  LoadFailed : load_error
 
-        ChapterReady --> SelectingChapter : select_chapter(criteria)
-        SelectingChapter --> ChapterSelected : chapter_selected
-        SelectingChapter --> SelectionFailed : selection_error
+        ChapterReady  SelectingChapter : select_chapter(criteria)
+        SelectingChapter  ChapterSelected : chapter_selected
+        SelectingChapter  SelectionFailed : selection_error
 
-        ChapterSelected --> Segmenting : segment_text()
-        Segmenting --> SegmentationComplete : utterances_created
-        Segmenting --> SegmentationFailed : segmentation_error
+        ChapterSelected  Segmenting : segment_text()
+        Segmenting  SegmentationComplete : utterances_created
+        Segmenting  SegmentationFailed : segmentation_error
 
-        SegmentationComplete --> WritingBaseJSONL : write_v1_annotations()
-        WritingBaseJSONL --> BaseAnnotationsReady : jsonl_written
-        WritingBaseJSONL --> WriteFailed : write_error
+        SegmentationComplete  WritingBaseJSONL : write_v1_annotations()
+        WritingBaseJSONL  BaseAnnotationsReady : jsonl_written
+        WritingBaseJSONL  WriteFailed : write_error
     }
 
     %% Multi-Agent Enhancement States
     state Enhancement {
-        BaseAnnotationsReady --> LoadingUtterances : enhance_annotations()
-        LoadingUtterances --> SpeakerAttribution : utterances_loaded
-        LoadingUtterances --> EnhancementFailed : load_error
+        BaseAnnotationsReady  LoadingUtterances : enhance_annotations()
+        LoadingUtterances  SpeakerAttribution : utterances_loaded
+        LoadingUtterances  EnhancementFailed : load_error
 
-        SpeakerAttribution --> SpeakersIdentified : speakers_attributed
-        SpeakerAttribution --> AttributionFailed : attribution_error
+        SpeakerAttribution  SpeakersIdentified : speakers_attributed
+        SpeakerAttribution  AttributionFailed : attribution_error
 
-        SpeakersIdentified --> EmotionClassification : classify_emotions()
-        EmotionClassification --> EmotionsClassified : emotions_classified
-        EmotionClassification --> EmotionFailed : classification_error
+        SpeakersIdentified  EmotionClassification : classify_emotions()
+        EmotionClassification  EmotionsClassified : emotions_classified
+        EmotionClassification  EmotionFailed : classification_error
 
-        EmotionsClassified --> QualityAssurance : validate_annotations()
-        QualityAssurance --> QAValidated : qa_passed
-        QualityAssurance --> QAFailed : qa_validation_failed
+        EmotionsClassified  QualityAssurance : validate_annotations()
+        QualityAssurance  QAValidated : qa_passed
+        QualityAssurance  QAFailed : qa_validation_failed
 
-        QAValidated --> WritingEnrichedJSONL : write_v4_annotations()
-        WritingEnrichedJSONL --> EnrichedAnnotationsReady : enriched_jsonl_written
-        WritingEnrichedJSONL --> EnrichedWriteFailed : enriched_write_error
+        QAValidated  WritingEnrichedJSONL : write_v4_annotations()
+        WritingEnrichedJSONL  EnrichedAnnotationsReady : enriched_jsonl_written
+        WritingEnrichedJSONL  EnrichedWriteFailed : enriched_write_error
     }
 
     %% Character Analysis State
     state CharacterAnalysis {
-        EnrichedAnnotationsReady --> BuildingCharacterBible : build_character_profiles()
-        BuildingCharacterBible --> CharacterBibleReady : character_profiles_built
-        BuildingCharacterBible --> CharacterAnalysisFailed : character_building_error
+        EnrichedAnnotationsReady  BuildingCharacterBible : build_character_profiles()
+        BuildingCharacterBible  CharacterBibleReady : character_profiles_built
+        BuildingCharacterBible  CharacterAnalysisFailed : character_building_error
     }
 
     %% Audio Generation Pipeline States  
     state AudioPipeline {
-        CharacterBibleReady --> GeneratingProsody : generate_prosody()
-        GeneratingProsody --> ProsodyReady : prosody_generated
-        GeneratingProsody --> ProsodyFailed : prosody_error
+        CharacterBibleReady  GeneratingProsody : generate_prosody()
+        GeneratingProsody  ProsodyReady : prosody_generated
+        GeneratingProsody  ProsodyFailed : prosody_error
 
-        ProsodyReady --> BuildingSSML : build_ssml()
-        BuildingSSML --> SSMLReady : ssml_built
-        BuildingSSML --> SSMLFailed : ssml_error
+        ProsodyReady  BuildingSSML : build_ssml()
+        BuildingSSML  SSMLReady : ssml_built
+        BuildingSSML  SSMLFailed : ssml_error
 
-        SSMLReady --> RenderingTTS : render_audio()
-        RenderingTTS --> AudioStemsReady : stems_rendered
-        RenderingTTS --> TTSFailed : tts_error
+        SSMLReady  RenderingTTS : render_audio()
+        RenderingTTS  AudioStemsReady : stems_rendered
+        RenderingTTS  TTSFailed : tts_error
 
-        AudioStemsReady --> MasteringAudio : master_audiobook()
-        MasteringAudio --> AudiobookComplete : mastering_complete
-        MasteringAudio --> MasteringFailed : mastering_error
+        AudioStemsReady  MasteringAudio : master_audiobook()
+        MasteringAudio  AudiobookComplete : mastering_complete
+        MasteringAudio  MasteringFailed : mastering_error
     }
 
     %% Success Terminal State
-    AudiobookComplete --> BookReady : finalize_outputs()
-    BookReady --> Idle : reset_for_next_book()
-    BookReady --> [*] : shutdown_system()
+    AudiobookComplete  BookReady : finalize_outputs()
+    BookReady  Idle : reset_for_next_book()
+    BookReady  [*] : shutdown_system()
 
     %% Error Handling & Recovery States
     state ErrorRecovery {
-        LoadFailed --> RetryLoad : retry_load() [attempt < 3]
-        LoadFailed --> FatalError : max_retries_exceeded()
+        LoadFailed  RetryLoad : retry_load() [attempt < 3]
+        LoadFailed  FatalError : max_retries_exceeded()
 
-        SelectionFailed --> RetrySelection : retry_selection() [attempt < 3]
-        SelectionFailed --> FatalError : max_retries_exceeded()
+        SelectionFailed  RetrySelection : retry_selection() [attempt < 3]
+        SelectionFailed  FatalError : max_retries_exceeded()
 
-        SegmentationFailed --> RetrySegmentation : retry_segmentation() [attempt < 3]
-        SegmentationFailed --> FatalError : max_retries_exceeded()
+        SegmentationFailed  RetrySegmentation : retry_segmentation() [attempt < 3]
+        SegmentationFailed  FatalError : max_retries_exceeded()
 
-        WriteFailed --> RetryWrite : retry_write() [attempt < 3]
-        WriteFailed --> FatalError : max_retries_exceeded()
+        WriteFailed  RetryWrite : retry_write() [attempt < 3]
+        WriteFailed  FatalError : max_retries_exceeded()
 
-        EnhancementFailed --> RetryEnhancement : retry_enhancement() [attempt < 3]
-        EnhancementFailed --> FatalError : max_retries_exceeded()
+        EnhancementFailed  RetryEnhancement : retry_enhancement() [attempt < 3]
+        EnhancementFailed  FatalError : max_retries_exceeded()
 
-        AttributionFailed --> RetryAttribution : retry_attribution() [attempt < 3]
-        AttributionFailed --> FallbackAttribution : use_heuristic_only()
+        AttributionFailed  RetryAttribution : retry_attribution() [attempt < 3]
+        AttributionFailed  FallbackAttribution : use_heuristic_only()
 
-        EmotionFailed --> RetryEmotion : retry_emotion() [attempt < 3]
-        EmotionFailed --> FallbackEmotion : use_neutral_emotion()
+        EmotionFailed  RetryEmotion : retry_emotion() [attempt < 3]
+        EmotionFailed  FallbackEmotion : use_neutral_emotion()
 
-        QAFailed --> AdjustThresholds : lower_qa_thresholds()
-        QAFailed --> SkipQA : bypass_qa_validation()
+        QAFailed  AdjustThresholds : lower_qa_thresholds()
+        QAFailed  SkipQA : bypass_qa_validation()
 
-        EnrichedWriteFailed --> RetryEnrichedWrite : retry_enriched_write() [attempt < 3]
-        EnrichedWriteFailed --> FatalError : max_retries_exceeded()
+        EnrichedWriteFailed  RetryEnrichedWrite : retry_enriched_write() [attempt < 3]
+        EnrichedWriteFailed  FatalError : max_retries_exceeded()
 
-        CharacterAnalysisFailed --> RetryCharacterAnalysis : retry_character_analysis() [attempt < 3]
-        CharacterAnalysisFailed --> UseDefaultProfiles : apply_default_character_profiles()
+        CharacterAnalysisFailed  RetryCharacterAnalysis : retry_character_analysis() [attempt < 3]
+        CharacterAnalysisFailed  UseDefaultProfiles : apply_default_character_profiles()
 
-        ProsodyFailed --> RetryProsody : retry_prosody() [attempt < 3]
-        ProsodyFailed --> SimpleProsody : use_basic_prosody_rules()
+        ProsodyFailed  RetryProsody : retry_prosody() [attempt < 3]
+        ProsodyFailed  SimpleProsody : use_basic_prosody_rules()
 
-        SSMLFailed --> RetrySSML : retry_ssml() [attempt < 3]
-        SSMLFailed --> PlainTextSSML : generate_plain_ssml()
+        SSMLFailed  RetrySSML : retry_ssml() [attempt < 3]
+        SSMLFailed  PlainTextSSML : generate_plain_ssml()
 
-        TTSFailed --> RetryTTS : retry_tts() [attempt < 3]
-        TTSFailed --> FallbackTTS : switch_to_piper_engine()
+        TTSFailed  RetryTTS : retry_tts() [attempt < 3]
+        TTSFailed  FallbackTTS : switch_to_piper_engine()
 
-        MasteringFailed --> RetryMastering : retry_mastering() [attempt < 3]
-        MasteringFailed --> BasicMastering : apply_basic_loudness_only()
+        MasteringFailed  RetryMastering : retry_mastering() [attempt < 3]
+        MasteringFailed  BasicMastering : apply_basic_loudness_only()
 
-        FatalError --> LogError : log_fatal_error()
-        LogError --> [*] : system_abort()
+        FatalError  LogError : log_fatal_error()
+        LogError  [*] : system_abort()
     }
 
     %% Recovery Paths Back to Main Flow
-    RetryLoad --> LoadingChapter : reattempt_load()
-    RetrySelection --> SelectingChapter : reattempt_selection()
-    RetrySegmentation --> Segmenting : reattempt_segmentation()
-    RetryWrite --> WritingBaseJSONL : reattempt_write()
-    RetryEnhancement --> LoadingUtterances : reattempt_enhancement()
-    RetryAttribution --> SpeakerAttribution : reattempt_attribution()
-    FallbackAttribution --> SpeakersIdentified : attribution_with_heuristics()
-    RetryEmotion --> EmotionClassification : reattempt_emotion()
-    FallbackEmotion --> EmotionsClassified : emotions_with_neutral()
-    AdjustThresholds --> QualityAssurance : qa_with_lower_thresholds()
-    SkipQA --> QAValidated : qa_bypassed()
-    RetryEnrichedWrite --> WritingEnrichedJSONL : reattempt_enriched_write()
-    RetryCharacterAnalysis --> BuildingCharacterBible : reattempt_character_analysis()
-    UseDefaultProfiles --> CharacterBibleReady : character_profiles_default()
-    RetryProsody --> GeneratingProsody : reattempt_prosody()
-    SimpleProsody --> ProsodyReady : prosody_with_basic_rules()
-    RetrySSML --> BuildingSSML : reattempt_ssml()
-    PlainTextSSML --> SSMLReady : ssml_with_plain_text()
-    RetryTTS --> RenderingTTS : reattempt_tts()
-    FallbackTTS --> AudioStemsReady : stems_with_piper()
-    RetryMastering --> MasteringAudio : reattempt_mastering()
-    BasicMastering --> AudiobookComplete : audiobook_with_basic_mastering()
+    RetryLoad  LoadingChapter : reattempt_load()
+    RetrySelection  SelectingChapter : reattempt_selection()
+    RetrySegmentation  Segmenting : reattempt_segmentation()
+    RetryWrite  WritingBaseJSONL : reattempt_write()
+    RetryEnhancement  LoadingUtterances : reattempt_enhancement()
+    RetryAttribution  SpeakerAttribution : reattempt_attribution()
+    FallbackAttribution  SpeakersIdentified : attribution_with_heuristics()
+    RetryEmotion  EmotionClassification : reattempt_emotion()
+    FallbackEmotion  EmotionsClassified : emotions_with_neutral()
+    AdjustThresholds  QualityAssurance : qa_with_lower_thresholds()
+    SkipQA  QAValidated : qa_bypassed()
+    RetryEnrichedWrite  WritingEnrichedJSONL : reattempt_enriched_write()
+    RetryCharacterAnalysis  BuildingCharacterBible : reattempt_character_analysis()
+    UseDefaultProfiles  CharacterBibleReady : character_profiles_default()
+    RetryProsody  GeneratingProsody : reattempt_prosody()
+    SimpleProsody  ProsodyReady : prosody_with_basic_rules()
+    RetrySSML  BuildingSSML : reattempt_ssml()
+    PlainTextSSML  SSMLReady : ssml_with_plain_text()
+    RetryTTS  RenderingTTS : reattempt_tts()
+    FallbackTTS  AudioStemsReady : stems_with_piper()
+    RetryMastering  MasteringAudio : reattempt_mastering()
+    BasicMastering  AudiobookComplete : audiobook_with_basic_mastering()
 
     %% Concurrent Caching Operations (Parallel State)
     state CacheOperations {
         state cache_fork <<fork>>
         state cache_join <<join>>
 
-        [*] --> cache_fork
-        cache_fork --> CheckingCache : cache_lookup(hash_key)
-        cache_fork --> ProcessingWithoutCache : bypass_cache()
+        [*]  cache_fork
+        cache_fork  CheckingCache : cache_lookup(hash_key)
+        cache_fork  ProcessingWithoutCache : bypass_cache()
 
-        CheckingCache --> CacheHit : cache_found()
-        CheckingCache --> CacheMiss : cache_not_found()
+        CheckingCache  CacheHit : cache_found()
+        CheckingCache  CacheMiss : cache_not_found()
 
-        CacheHit --> cache_join
-        CacheMiss --> ProcessingAndCaching : process_and_store()
-        ProcessingAndCaching --> cache_join
-        ProcessingWithoutCache --> cache_join
+        CacheHit  cache_join
+        CacheMiss  ProcessingAndCaching : process_and_store()
+        ProcessingAndCaching  cache_join
+        ProcessingWithoutCache  cache_join
 
-        cache_join --> [*]
+        cache_join  [*]
     }
 
     %% Monitoring and Logging (Parallel State)
     state SystemMonitoring {
-        [*] --> MonitoringActive : system_start()
-        MonitoringActive --> LoggingPayload : log_request()
-        LoggingPayload --> PayloadLogged : log_completed()
-        PayloadLogged --> MonitoringActive : continue_monitoring()
-        MonitoringActive --> [*] : system_shutdown()
+        [*]  MonitoringActive : system_start()
+        MonitoringActive  LoggingPayload : log_request()
+        LoggingPayload  PayloadLogged : log_completed()
+        PayloadLogged  MonitoringActive : continue_monitoring()
+        MonitoringActive  [*] : system_shutdown()
     }
 
     %% Batch Processing Support
     state BatchProcessing {
-        [*] --> BatchIdle : batch_system_ready()
-        BatchIdle --> ProcessingBatch : process_multiple_books()
-        ProcessingBatch --> BatchItemProcessing : process_next_book()
-        BatchItemProcessing --> BatchItemComplete : book_completed()
-        BatchItemComplete --> ProcessingBatch : continue_batch() [more_books]
-        BatchItemComplete --> BatchComplete : finish_batch() [no_more_books]
-        BatchComplete --> BatchIdle : reset_for_next_batch()
-        BatchIdle --> [*] : shutdown_batch_system()
+        [*]  BatchIdle : batch_system_ready()
+        BatchIdle  ProcessingBatch : process_multiple_books()
+        ProcessingBatch  BatchItemProcessing : process_next_book()
+        BatchItemProcessing  BatchItemComplete : book_completed()
+        BatchItemComplete  ProcessingBatch : continue_batch() [more_books]
+        BatchItemComplete  BatchComplete : finish_batch() [no_more_books]
+        BatchComplete  BatchIdle : reset_for_next_batch()
+        BatchIdle  [*] : shutdown_batch_system()
     }
 
     %% State Notes for Clarity
