@@ -125,9 +125,10 @@ def _default_output_for_input(p: Path) -> Path:
     return p.with_suffix(".txt")
 
 
-def main(argv: list[str] | None = None) -> int:
+if __name__ == "__main__":  # pragma: no cover
     import argparse
     import sys
+
     parser = argparse.ArgumentParser(description="Raw PDF → text extraction")
     parser.add_argument("input", help="Path to input PDF")
     parser.add_argument("output", nargs="?", help="Path to output .txt file")
@@ -141,7 +142,7 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Enable a set of normalizations to match known artifact formatting",
     )
-    args = parser.parse_args(argv)
+    args = parser.parse_args()
     in_p = Path(args.input)
     out_p = Path(args.output) if args.output else _default_output_for_input(in_p)
     opts = RawExtractOptions(
@@ -154,17 +155,13 @@ def main(argv: list[str] | None = None) -> int:
     )
     try:
         RawPdfTextExtractor().extract(in_p, out_p, opts)
-        return 0
+        sys.exit(0)
     except FileNotFoundError as exc:
         print(f"Error: {exc}", file=sys.stderr)
-        return 2
+        sys.exit(2)
     except ValueError as exc:
         print(f"Error: {exc}", file=sys.stderr)
-        return 3
+        sys.exit(3)
     except Exception as exc:  # pragma: no cover
         print(f"Unexpected error: {exc}", file=sys.stderr)
-        return 1
-
-
-if __name__ == "__main__":  # pragma: no cover
-    raise SystemExit(main())
+        sys.exit(1)
