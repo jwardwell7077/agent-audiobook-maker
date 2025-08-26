@@ -1,6 +1,8 @@
-# PDF → Text CLI — Design Spec
+# PDF → Text CLI — Design Spec (Deprecated)
 
-Status: Draft
+Note: This CLI has been deprecated in favor of the unified ingestion pipeline v2. Use `python -m abm.ingestion.ingest_pdf <pdf> --out-dir <dir> [--mode dev]` instead. See docs/INGESTION_PIPELINE_V2.md.
+
+Status: Deprecated
 Owner: jon
 Last updated: 2025-08-21
 
