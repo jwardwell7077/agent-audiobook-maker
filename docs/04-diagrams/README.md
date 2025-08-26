@@ -69,13 +69,14 @@ graph TB
 **Text file to structured annotation workflow**
 
 - **Process**: Text → Classification → Segmentation → Annotation
-- **Components**: Section classifier, chapterizer, dialogue segmenter
+- **Components**: Section classifier, chapterizer (deprecated), dialogue segmenter
 - **Quality control**: Validation at each stage
 - **Output**: Structured JSON with rich metadata
 
 ## Component State Machines
 
 ### 📚 [Chapterizer FSM](chapterizer_fsm.mmd)
+Note: The Chapterizer component is deprecated; chapter structure is derived from the Section Classifier outputs.
 
 **Finite state machine for chapter detection and structuring**
 
