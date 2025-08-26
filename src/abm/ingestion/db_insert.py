@@ -110,7 +110,7 @@ class PgInserter:
                 # Batch insert for performance
                 params = [(doc_id, idx, text) for idx, text in _iter_blocks()]
                 for chunk_start in range(0, len(params), 1000):
-                    chunk = params[chunk_start:chunk_start + 1000]
+                    chunk = params[chunk_start : chunk_start + 1000]
                     cur.executemany(ins_sql, chunk)
                     inserted_blocks += len(chunk)
 
