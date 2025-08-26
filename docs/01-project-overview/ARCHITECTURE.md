@@ -16,8 +16,8 @@ flowchart LR
     %% Upstream structuring stages (new)
     SectionClassifier["Section Classifier"]
     Classified(("classified/front_matter.json | toc.json |\nchapters_section.json | back_matter.json"))
-    Chapterizer["Chapterizer"]
-    TxtStructured["TXT→Structured (paragraphs[])"]
+  %% Chapterizer removed; chapter structure derived from classifier outputs
+  TxtStructured["TXT→Structured (paragraphs[])"]
 
     JSONStruct(("Structured JSON (manifest + chapters)"))
     
@@ -32,7 +32,7 @@ flowchart LR
   end
 
   %% Ingest and structuring pipeline
-  CLI --> PDF --> TXT --> SectionClassifier --> Classified --> Chapterizer --> TxtStructured --> JSONStruct --> Artifacts
+  CLI --> PDF --> TXT --> SectionClassifier --> Classified --> TxtStructured --> JSONStruct --> Artifacts
 
   %% Two-agent consumption
   Artifacts --> DialogueAgent
@@ -69,4 +69,4 @@ Legend
 
 Notes
 
-- Upstream source of truth for the two-agent system is the chapters_section.json produced by Section Classifier; Chapterizer slices chapters from the chapters_section span; TXT→Structured preserves paragraphs and blank lines for downstream fidelity.
+- Upstream source of truth for the two-agent system is the chapters_section.json produced by Section Classifier; TXT→Structured consumes chapter spans directly; paragraphs and blank lines are preserved for downstream fidelity.

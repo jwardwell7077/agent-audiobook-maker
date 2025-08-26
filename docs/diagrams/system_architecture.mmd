@@ -8,7 +8,6 @@ flowchart LR
 	TXT[("extracted_full.txt")]:::today
 	SectionClassifier["Section Classifier"]:::today
 	Classified[("front_matter.json | toc.json |\nchapters_section.json | back_matter.json")]:::today
-	Chapterizer["Chapterizer"]:::today
 	Structurer["TXT→Structured (paragraphs[])"]:::today
 	JSONStruct[("Structured JSON: manifest + per-chapter")]:::today
 	CleanArtifacts(("data/clean/<book>/<chapter>.json\n<pdf_stem>_volume.json")):::today
@@ -36,7 +35,7 @@ flowchart LR
 	DB[("Postgres (JSONB)")]:::future
 
 	%% Flow
-	CLI --> PDF --> TXT --> SectionClassifier --> Classified --> Chapterizer --> Structurer --> JSONStruct --> CleanArtifacts
+	CLI --> PDF --> TXT --> SectionClassifier --> Classified --> Structurer --> JSONStruct --> CleanArtifacts
 	CleanArtifacts --> DialogueAgent --> SpeakerAgent --> Annos
 	SpeakerAgent <--> CharDB
 

@@ -41,11 +41,11 @@ graph TB
     subgraph "Content Analysis"
         TextProcessor --> Classifier[Section Classifier]
         PdfToText --> Classifier
-        Classifier --> Chapterizer[Chapter Structure]
+        Classifier --> Annotator[Metadata Generation]
     end
     
     subgraph "Annotation Pipeline"  
-        Chapterizer --> Segmenter[Dialogue/Narration]
+        Classifier --> Segmenter[Dialogue/Narration]
         Segmenter --> Annotator[Metadata Generation]
     end
     
@@ -164,14 +164,12 @@ sequenceDiagram
     participant Input as Input Files
     participant Processor as Text Processor
     participant Classifier as Section Classifier  
-    participant Chapterizer as Chapter Structure
     participant Annotator as Annotation Engine
     participant Output as Structured Output
     
     Input->>Processor: Raw text/PDF
     Processor->>Classifier: Clean text
-    Classifier->>Chapterizer: Classified sections
-    Chapterizer->>Annotator: Chapter structure  
+    Classifier->>Annotator: Classified sections + chapter spans
     Annotator->>Output: Annotated JSONL
 ```text
 

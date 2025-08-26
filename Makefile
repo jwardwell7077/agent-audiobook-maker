@@ -167,11 +167,11 @@ dev_mvs_classify:
 	$(ACTIVATE) python -m abm.classifier.classifier_cli \
 		data/clean/mvs/mvs.txt data/clean/mvs/classified
 
-# Run the chapterizer CLI on local mvs text and emit chapters.json and readable variants
+# Chapterizer removed; chapter structure comes from classifier outputs
 dev_mvs_chapterize:
 	@echo "Chapterizer removed; see classifier outputs for chapter info."
 
-# One-shot: pdf->text --dev, classifier, chapterizer --dev
+# One-shot: pdf->text --dev, classifier
 dev_mvs_all: dev_mvs_txt dev_mvs_classify
 
 # Fast unit tests only
