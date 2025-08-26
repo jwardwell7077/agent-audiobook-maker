@@ -1,0 +1,25 @@
+C4Context
+    title Agent Audiobook Maker – System Overview (C4 Context)
+
+    Person(operator, "Operator", "Runs CLI locally; reviews outputs")
+
+    System_Boundary(abm, "Agent Audiobook Maker (Local System)") {
+      System(cli, "CLI/Orchestrator", "Runs pipeline, hash-based resume")
+      SystemDb(pg, "Postgres", "JSONB: books, chapters, annotations, characters, tts_profiles, stems, renders")
+      System(fs, "Filesystem", "data/: clean, annotations, ssml, stems, renders")
+      System(agents, "Agents Suite", "Dialogue, Speaker, Alias, Casting, SSML, TTS, Mastering")
+      System(tts, "TTS Engines", "Piper (CPU), XTTS v2 (CUDA)")
+    }
+
+    System_Ext(langflow, "LangFlow", "Prototype visual flows (segmentation)")
+    System_Ext(ollama, "Local LLM (Ollama)", "Optional AI fallback for ambiguity")
+
+    Rel(operator, cli, "Invokes, monitors")
+    Rel(cli, pg, "Reads/Writes")
+    Rel(cli, fs, "Reads/Writes")
+    Rel(cli, agents, "Invokes")
+    Rel(agents, tts, "Generates audio")
+    Rel(cli, langflow, "Exports/imports flows (optional)")
+    Rel(agents, ollama, "LLM fallback (flagged)")
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")

@@ -1,0 +1,62 @@
+C4Component
+    title Agent Audiobook Maker – Component Diagram (MVP)
+
+    Container_Boundary(app, "ABM Application (Python)") {
+      Component(orches, "Orchestrator", "Python", "Runs pipeline; hash-based resume; CLI entrypoint")
+      Component(dbmod, "DB Repo Layer", "Python", "Upserts/selects: books, chapters, annotations, characters, tts_profiles, stems, renders")
+      Component(fsmod, "FS Artifacts", "Python", "Reads/writes artifacts; hashing; paths")
+
+      Component(ing, "Ingestion", "PDF→WellDone→JSONL; meta; hashing")
+      Component(sec, "SectionClassifier", "Detects TOC; maps chapters; emits sections")
+
+      Component(dlg, "DialogueClassifierAgent", "Paragraphs→utterances; dialogue/narration")
+      Component(spk, "SpeakerAttributionAgent", "Assign speakers; UNKNOWN fallback")
+      Component(alias, "AliasResolverAgent", "Merge aliases; canonicalization")
+      Component(casta, "CastingAssistantAgent", "Builds CharacterProfiles")
+      Component(castd, "CastingDirectorAgent", "Maps voices; writes tts_profiles")
+      Component(ssml, "SSMLAgent", "SSML per utterance/chapter; deterministic")
+      Component(tts, "TTSAgent", "Synthesize stems; bounded variance")
+      Component(mast, "MasteringAgent", "Stitch + normalize (EBU R128)")
+    }
+
+    Rel(orches, ing, "Invoke")
+    Rel(orches, sec, "Invoke")
+    Rel(orches, dlg, "Invoke")
+    Rel(orches, spk, "Invoke")
+    Rel(orches, alias, "Invoke")
+    Rel(orches, casta, "Invoke")
+    Rel(orches, castd, "Invoke")
+    Rel(orches, ssml, "Invoke")
+    Rel(orches, tts, "Invoke")
+    Rel(orches, mast, "Invoke")
+
+    Rel(ing, fsmod, "Write JSONL/meta")
+    Rel(ing, dbmod, "Upsert book/chapters")
+
+    Rel(sec, fsmod, "Read JSONL / Write chapters.json,toc.json")
+    Rel(sec, dbmod, "Update chapter payload")
+
+    Rel(dlg, fsmod, "Read chapters.json / Write utterances.jsonl")
+    Rel(dlg, dbmod, "Insert/Update annotations")
+
+    Rel(spk, fsmod, "Read utterances.jsonl")
+    Rel(spk, dbmod, "Upsert characters / Update annotations")
+
+    Rel(alias, dbmod, "Update characters.profile")
+
+    Rel(casta, fsmod, "Write character_profiles.json")
+    Rel(casta, dbmod, "Update characters.profile")
+
+    Rel(castd, fsmod, "Write casting_plan.json")
+    Rel(castd, dbmod, "Upsert tts_profiles")
+
+    Rel(ssml, fsmod, "Write SSML files; paths recorded")
+    Rel(ssml, dbmod, "Update annotations (ssml paths)")
+
+    Rel(tts, fsmod, "Read SSML / Write stems")
+    Rel(tts, dbmod, "Insert stems rows")
+
+    Rel(mast, fsmod, "Read stems / Write chapter WAV")
+    Rel(mast, dbmod, "Upsert renders row")
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")

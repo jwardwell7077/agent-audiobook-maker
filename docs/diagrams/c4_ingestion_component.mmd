@@ -1,0 +1,21 @@
+C4Component
+    title Ingestion – Component Diagram
+
+    Container_Boundary(ingb, "Ingestion Subsystem") {
+      Component(cli, "CLI Entrypoint", "Python", "Args parsing; mode=dev/prod; calls pipeline")
+      Component(extract, "RawPdfTextExtractor", "Python", "PDF → raw text; multi-backend")
+      Component(norm, "RawToWellDone", "Python", "Normalize paragraphs; TOC bullet split; options")
+      Component(jsonl, "WellDoneToJSONL", "Python", "Emit JSONL + meta (one block per line)")
+      Component(orches, "PdfIngestPipeline", "Python", "Runs extract→normalize→JSONL; DB upsert")
+      Component(dbrepo, "DB Repo Layer", "Python", "Upsert book, chapters; compute hashes")
+      Component(fs, "Filesystem", "ext4", "Write raw.txt, well_done.txt, jsonl, meta (dev)")
+    }
+
+    Rel(cli, orches, "Invoke")
+    Rel(orches, extract, "Call")
+    Rel(orches, norm, "Call")
+    Rel(orches, jsonl, "Call")
+    Rel(orches, dbrepo, "Upsert book/chapters")
+    Rel(orches, fs, "Write artifacts (dev)")
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")

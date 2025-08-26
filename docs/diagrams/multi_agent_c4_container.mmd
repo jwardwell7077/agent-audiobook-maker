@@ -1,0 +1,65 @@
+C4Container
+    title Agent Audiobook Maker – Container Diagram (MVP)
+
+    Person(user, "Operator", "Runs CLI to process books locally")
+
+    Container_Boundary(app, "Agent Audiobook Maker") {
+      Container(cli, "CLI/Orchestrator", "Python", "Drives ingestion → agents → rendering; hash-based resume")
+      ContainerDb(pg, "Postgres", "JSONB", "Books, chapters, annotations, characters, tts_profiles, stems, renders")
+      Container(fs, "Filesystem", "ext4", "Artifacts under data/: clean, annotations, ssml, stems, renders")
+
+      Container(ing, "Ingestion", "Python", "PDF → well_done → JSONL + meta; upserts book/chapters")
+      Container(struct, "Section Classifier", "Python", "front/toc/chapters/back; updates chapter payload")
+
+      Container(dlg, "DialogueClassifierAgent", "Python", "Paragraphs → utterances; dialogue/narration")
+      Container(spk, "SpeakerAttributionAgent", "Python", "Assign speakers; UNKNOWN fallback")
+      Container(alias, "AliasResolverAgent", "Python", "Merge variants; update aliases")
+      Container(casta, "CastingAssistantAgent", "Python", "CharacterProfiles from evidence")
+      Container(castd, "CastingDirectorAgent", "Python", "Map to voice catalog; upsert tts_profiles")
+      Container(ssml, "SSMLAgent", "Python", "Build SSML per utterance/chapter")
+      Container(ttp, "TTSAgent", "Piper/XTTS", "Synthesize stems; bounded variance")
+      Container(master, "MasteringAgent", "Python", "Stitch + normalize to EBU R128")
+    }
+
+    Rel(user, cli, "Runs")
+
+    Rel(cli, ing, "Invoke")
+    Rel(ing, fs, "Write JSONL/meta")
+    Rel(ing, pg, "Upsert book/chapters")
+
+    Rel(cli, struct, "Invoke")
+    Rel(struct, fs, "Read JSONL / Write chapters.json,toc.json")
+    Rel(struct, pg, "Update chapter payload")
+
+    Rel(cli, dlg, "Invoke")
+    Rel(dlg, fs, "Read chapters.json / Write utterances.jsonl")
+    Rel(dlg, pg, "Insert/Update annotations")
+
+    Rel(cli, spk, "Invoke")
+    Rel(spk, fs, "Read utterances.jsonl")
+    Rel(spk, pg, "Upsert characters / Update annotations")
+
+    Rel(cli, alias, "Invoke")
+    Rel(alias, pg, "Update characters.profile (aliases)")
+
+    Rel(cli, casta, "Invoke")
+    Rel(casta, fs, "Write character_profiles.json")
+    Rel(casta, pg, "Update characters.profile (traits)")
+
+    Rel(cli, castd, "Invoke")
+    Rel(castd, fs, "Write casting_plan.json")
+    Rel(castd, pg, "Upsert tts_profiles")
+
+    Rel(cli, ssml, "Invoke")
+    Rel(ssml, fs, "Write SSML files; paths recorded")
+    Rel(ssml, pg, "Update annotations (ssml paths)")
+
+    Rel(cli, ttp, "Invoke")
+    Rel(ttp, fs, "Read SSML / Write stems")
+    Rel(ttp, pg, "Insert stems rows")
+
+    Rel(cli, master, "Invoke")
+    Rel(master, fs, "Read stems / Write chapter WAV")
+    Rel(master, pg, "Upsert renders row")
+
+    UpdateLayoutConfig($c4ShapeInRow="4", $c4BoundaryInRow="1")
