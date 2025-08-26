@@ -1,4 +1,6 @@
-# Chapterizer – Design Spec
+# Chapterizer – Design Spec (Deprecated)
+
+Note: The Chapterizer component has been removed. Chapter structure is now derived from the Section Classifier outputs (toc.json, chapters_section.json). This spec remains for historical reference.
 
 Last updated: 2025-08-21
 

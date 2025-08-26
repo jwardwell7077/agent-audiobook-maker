@@ -25,13 +25,13 @@ Detailed specifications for each system component
 **Ingestion Pipeline:**
 
 - [PDF to Text Spec](components/PDF_TO_TEXT_SPEC.md) - Text extraction from PDF files
-- [PDF to Text CLI Spec](components/PDF_TO_TEXT_CLI_SPEC.md) - Command-line interface
+- PDF to Text CLI is deprecated; use the consolidated ingest_pdf CLI
 - [Text to JSON Spec](components/TXT_TO_JSON_SPEC.md) - Text structuring
 
 **Classification & Structuring:**
 
 - [Section Classifier Spec](components/SECTION_CLASSIFIER_SPEC.md) - TOC and section detection
-- [Chapterizer Spec](components/CHAPTERIZER_SPEC.md) - Chapter boundary detection
+- Chapterizer has been removed; chapter structure derives from classifier outputs
 - [Quality Gate Spec](components/QUALITY_GATE_SPEC.md) - Validation and QA checks
 
 ## Advanced Features
