@@ -19,7 +19,7 @@ This section contains formal specifications for all major components, following 
 **Organize extracted text into meaningful sections and chapters**
 
 - **[Section Classifier Spec](SECTION_CLASSIFIER_SPEC.md)** - TOC detection and section classification
-- **[Chapterizer Spec](CHAPTERIZER_SPEC.md)** - Chapter boundary detection and splitting
+- Chapterizer removed; chapter structure derives from classifier outputs (see deprecated [CHAPTERIZER_SPEC.md](CHAPTERIZER_SPEC.md))
 
 ### Quality & Validation
 
@@ -54,7 +54,7 @@ Every component specification includes:
 |-----------|---------------|----------------|-------|--------|
 | PDF to Text | ✅ Complete | ✅ Complete | ✅ Complete | 🟢 Stable |
 | Section Classifier | ✅ Complete | ✅ Complete | ✅ Complete | 🟢 Stable |  
-| Chapterizer | ✅ Complete | ✅ Complete | ✅ Complete | 🟢 Stable |
+| Chapterizer | 🛑 Deprecated | n/a | n/a | ⛔ Removed |
 | Text to JSON | ✅ Complete | ✅ Complete | ✅ Complete | 🟢 Stable |
 | Quality Gate | ✅ Complete | ✅ Complete | ✅ Complete | 🟢 Stable |
 | PDF CLI | ✅ Complete | ✅ Complete | ✅ Complete | 🟢 Stable |
@@ -66,8 +66,7 @@ graph LR
     subgraph "Ingestion Pipeline"
         PDF[📕 PDF] --> Extract[🔍 PDF to Text]
         Extract --> Classify[📋 Section Classifier] 
-        Classify --> Chapter[📚 Chapterizer]
-        Chapter --> Structure[📊 Text to JSON]
+    Classify --> Structure[📊 Text to JSON]
     end
     
     subgraph "Quality Assurance"
