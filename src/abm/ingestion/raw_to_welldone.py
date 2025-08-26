@@ -30,14 +30,68 @@ class WellDoneOptions:
     dedupe_inline_spaces: bool = True
     # Strip trailing spaces at end of lines
     strip_trailing_spaces: bool = True
+    # When True, split every non-empty line into its own paragraph (blank-line separated)
+    split_each_line: bool = False
+    # When True, promote heading-like lines (e.g., "Chapter 4: Title") to standalone paragraphs
+    split_headings: bool = False
 
 
 class RawToWellDone:
     def process_text(self, text: str, opts: WellDoneOptions | None = None) -> str:
         opts = opts or WellDoneOptions()
         paragraphs = self._split_paragraphs(text)
-        out = [self._process_paragraph(p, opts) for p in paragraphs]
+        # First, optionally split heading-like lines out as their own paragraphs
+        if opts.split_headings:
+            paragraphs = self._apply_split_headings(paragraphs, opts)
+        # Optionally explode each line into its own paragraph unit
+        if opts.split_each_line:
+            exploded = [
+                (ln.rstrip() if opts.strip_trailing_spaces else ln)
+                for para in paragraphs
+                for ln in para.replace("\r\n", "\n").replace("\r", "\n").split("\n")
+                if ln and ln.strip()
+            ]
+            out = [self._process_paragraph(p, opts) for p in exploded]
+        else:
+            out = [self._process_paragraph(p, opts) for p in paragraphs]
         return "\n\n".join(out) + ("\n" if text.endswith("\n") else "")
+
+    def _apply_split_headings(self, paragraphs: list[str], opts: WellDoneOptions) -> list[str]:
+        # Detect heading-like lines: Chapter, Chap., Ch., Prologue, Epilogue (+ optional numbers/titles)
+        # Keep it conservative and anchored at line start; apply a modest length guard.
+        heading_re = re.compile(
+            r"^\s*(?:chapter|chap\.?|ch\.?|prologue|epilogue)\b[\s.:IVXLCDM0-9-]*.*$",
+            re.IGNORECASE,
+        )
+        max_len = 120
+        result: list[str] = []
+        for para in paragraphs:
+            # Normalize newlines and optionally strip trailing spaces per option
+            lines = [
+                (ln.rstrip() if opts.strip_trailing_spaces else ln)
+                for ln in para.replace("\r\n", "\n").replace("\r", "\n").split("\n")
+            ]
+            if len(lines) <= 1:
+                result.append(para)
+                continue
+            buf: list[str] = []
+
+            def flush_buf() -> None:
+                nonlocal buf
+                if buf:
+                    result.append("\n".join(buf))
+                    buf = []
+
+            for ln in lines:
+                s = ln.strip()
+                if s and len(s) <= max_len and heading_re.match(s):
+                    # Found a heading-like line; flush any accumulated text as its own paragraph
+                    flush_buf()
+                    result.append(ln)
+                else:
+                    buf.append(ln)
+            flush_buf()
+        return result
 
     def _split_paragraphs(self, text: str) -> list[str]:
         parts = re.split(r"\n\s*\n+", text.replace("\r\n", "\n").replace("\r", "\n"))
@@ -50,6 +104,19 @@ class RawToWellDone:
             joined = re.sub(r"(\w)-\n(\w)", r"\1\2", "\n".join(lines))
         else:
             joined = "\n".join(lines)
+
+        # Heuristic: if this looks like a TOC/list with many bullets, split into individual items
+        # Treat '•' bullets as list item starts. If 3+ bullets found, explode into separate paragraphs.
+        bullet_count = joined.count("•")
+        if bullet_count >= 3:
+            parts = [seg.strip() for seg in joined.split("•")]
+            items = [f"• {seg}" for seg in parts if seg]
+            if items:
+                text = "\n\n".join(items)
+                # Optionally normalize spaces inside items
+                if opts.dedupe_inline_spaces:
+                    text = re.sub(r" {2,}", " ", text)
+                return text
 
         if opts.reflow_paragraphs:
             # Join single newlines that likely represent wraps, not paragraph breaks

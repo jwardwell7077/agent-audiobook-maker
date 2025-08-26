@@ -1,12 +1,12 @@
-"""High-level orchestrator: PDF → raw text and well-done text.
+"""High-level orchestrator: PDF → raw, well-done text, and JSONL.
 
 This module composes:
 - pdf_to_raw_text.RawPdfTextExtractor for minimal, fidelity-first extraction.
 - raw_to_welldone.RawToWellDone for reflow and cleanup (paragraph-preserving).
 
 Modes:
-- dev: write only raw output (closest to the source), minimal processing.
-- both (default): write both raw and well-done outputs.
+- dev: write ALL artifacts (raw, well-done.txt, ingest meta, JSONL + JSONL meta) and also stub a DB insert.
+- prod: write NO artifacts; only stub a DB insert (DB not ready yet).
 """
 
 from __future__ import annotations
@@ -17,7 +17,6 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Any
 
-from abm.ingestion.db_insert import PgInserter
 from abm.ingestion.pdf_to_raw_text import RawExtractOptions, RawPdfTextExtractor
 from abm.ingestion.raw_to_welldone import RawToWellDone, WellDoneOptions
 from abm.ingestion.welldone_to_json import WellDoneToJSONL
@@ -27,14 +26,18 @@ from abm.ingestion.welldone_to_json import WellDoneToJSONL
 class PipelineOptions:
     # write form-feed between pages in raw
     preserve_form_feeds: bool = False
-    # dev mode instructs pipeline to persist intermediate well-done text as a file
-    mode: str = "both"  # "dev" | "both"
+    # Mode behavior:
+    # - dev: write artifacts + stub DB insert
+    # - prod: no artifacts, stub DB insert only
+    mode: str = "dev"  # "dev" | "prod"
     # well-done options
     reflow_paragraphs: bool = True
     dehyphenate_wraps: bool = True
     dedupe_inline_spaces: bool = True
     strip_trailing_spaces: bool = True
-    # When true, generate JSONL and insert into Postgres if DATABASE_URL is Postgres
+    # Deprecated: JSONL emission flag retained for CLI compatibility; in dev we write JSONL, in prod we don't.
+    emit_jsonl: bool = True
+    # Deprecated: actual DB insert is currently stubbed (DB not ready)
     insert_to_pg: bool = False
 
 
@@ -61,12 +64,6 @@ class PdfIngestPipeline:
         )
 
         written: dict[str, Path] = {}
-        raw_path = out_d / (pdf_p.stem + "_raw.txt")
-        raw_path.write_text(raw_text, encoding="utf-8")
-        written["raw"] = raw_path
-
-        # Always compute well-done in memory; in dev mode we also persist the intermediate file
-        wd_path: Path | None = None
         processor = RawToWellDone()
         well = processor.process_text(
             raw_text,
@@ -77,31 +74,38 @@ class PdfIngestPipeline:
                 strip_trailing_spaces=opts.strip_trailing_spaces,
             ),
         )
-        if opts.mode in ("dev", "both"):
+
+        base_name = f"{pdf_p.stem}_well_done"
+
+        if opts.mode == "dev":
+            # Write raw
+            raw_path = out_d / (pdf_p.stem + "_raw.txt")
+            raw_path.write_text(raw_text, encoding="utf-8")
+            written["raw"] = raw_path
+
+            # Write well-done text file (for inspection)
             wd_path = out_d / (pdf_p.stem + "_well_done.txt")
             wd_path.write_text(well, encoding="utf-8")
             written["well_done"] = wd_path
 
-        # Write a sidecar meta JSON for downstream tools
-        meta = _build_meta(pdf_p, out_d, raw_path, wd_path, opts)
-        meta_path = out_d / (pdf_p.stem + "_ingest_meta.json")
-        meta_path.write_text(_json_dumps(meta) + "\n", encoding="utf-8")
-        written["meta"] = meta_path
+            # Write ingest meta sidecar
+            meta = _build_meta(pdf_p, out_d, raw_path, wd_path, opts)
+            meta_path = out_d / (pdf_p.stem + "_ingest_meta.json")
+            meta_path.write_text(_json_dumps(meta) + "\n", encoding="utf-8")
+            written["meta"] = meta_path
 
-        # Optional: convert well-done to JSONL and insert into Postgres
-        if opts.insert_to_pg:
-            base_name = f"{pdf_p.stem}_well_done"
+            # Write JSONL + meta for downstream tools
             conv = WellDoneToJSONL()
             out_paths = conv.convert_text(well, base_name=base_name, out_dir=out_d, ingest_meta_path=meta_path)
             written["jsonl"] = out_paths["jsonl"]
             written["jsonl_meta"] = out_paths["meta"]
-            inserter = PgInserter()
-            res = inserter.insert_from_jsonl(out_paths["jsonl"], out_paths["meta"])
-            # Best-effort: we don't fail the pipeline on DB issues; print a note
-            try:
-                print(f"pg_insert: {res.status}{' - ' + (res.reason or '') if res.reason else ''}")
-            except Exception:
-                pass
+
+            # Stub DB insert (dev also inserts) — TODO: implement actual DB insertion when DB is ready
+            _stub_db_insert(mode="dev", base_name=base_name, jsonl_path=out_paths["jsonl"], meta_path=out_paths["meta"])
+        else:
+            # prod: do NOT write any artifacts; only stub a DB insert using in-memory data
+            meta = _build_meta_ephemeral(pdf_p, out_d, opts)
+            _stub_db_insert(mode="prod", base_name=base_name, well_text=well, meta=meta)
 
         return written
 
@@ -160,20 +164,76 @@ def _default_out_dir(p: Path) -> Path:
     return Path(p).parent / "clean"
 
 
+def _build_meta_ephemeral(
+    pdf_p: Path,
+    out_d: Path,
+    opts: PipelineOptions,
+) -> dict[str, Any]:
+    """Build a minimal meta dict without relying on file artifacts (used in prod mode)."""
+    parts = list(pdf_p.parts)
+    book = None
+    try:
+        idx = parts.index("books")
+        if idx + 1 < len(parts):
+            book = parts[idx + 1]
+    except ValueError:
+        book = None
+    now = datetime.now(UTC).isoformat()
+    return {
+        "book": book,
+        "source_pdf": str(pdf_p),
+        "out_dir": str(out_d),
+        "mode": opts.mode,
+        "options": asdict(opts),
+        "created_at": now,
+    }
+
+
+def _stub_db_insert(
+    mode: str,
+    base_name: str,
+    jsonl_path: Path | None = None,
+    meta_path: Path | None = None,
+    well_text: str | None = None,
+    meta: dict[str, Any] | None = None,
+) -> None:
+    """Temporary stub for DB insertion.
+
+    TODO: Replace with real Postgres insertion once the DB is ready. In dev mode, we receive file paths
+    for JSONL and meta. In prod mode, we avoid writing artifacts and receive in-memory data instead.
+    """
+    try:
+        if mode == "dev":
+            print(f"[DB STUB] Would insert JSONL '{jsonl_path}' with meta '{meta_path}' into DB (base={base_name})")
+        else:
+            # For prod, don't write files; use in-memory content
+            print(
+                f"[DB STUB] Would insert in-memory data for '{base_name}' into DB "
+                f"(blocks from well_text, meta present={meta is not None})"
+            )
+    except Exception:
+        pass
+
+
 if __name__ == "__main__":
     import argparse
     import sys
 
-    parser = argparse.ArgumentParser(description="Ingest PDF → (raw|well-done) text + meta")
+    parser = argparse.ArgumentParser(description="Ingest PDF → dev: write artifacts; prod: DB insert only (stub)")
     parser.add_argument("input", help="Path to input PDF")
     parser.add_argument("--out-dir", help="Output directory (defaults to data/clean/<book>/)")
-    parser.add_argument("--mode", choices=["dev", "both"], default="both")
+    parser.add_argument("--mode", choices=["dev", "prod"], default="dev")
     parser.add_argument("--preserve-form-feeds", action="store_true")
     parser.add_argument("--no-reflow", action="store_true")
     parser.add_argument("--no-dehyphenate", action="store_true")
     parser.add_argument("--no-dedupe-spaces", action="store_true")
     parser.add_argument("--no-strip-trailing", action="store_true")
-    parser.add_argument("--insert-pg", action="store_true", help="Generate JSONL and insert into Postgres if available")
+    parser.add_argument(
+        "--emit-jsonl",
+        action="store_true",
+        help="Deprecated; JSONL is always written as <stem>_well_done.jsonl with meta",
+    )
+    parser.add_argument("--insert-pg", action="store_true", help="Insert generated JSONL into Postgres if available")
     args = parser.parse_args()
 
     pdf_p = Path(args.input)
@@ -186,6 +246,8 @@ if __name__ == "__main__":
         dehyphenate_wraps=not args.no_dehyphenate,
         dedupe_inline_spaces=not args.no_dedupe_spaces,
         strip_trailing_spaces=not args.no_strip_trailing,
+        # In dev mode we emit JSONL; in prod we avoid writing any artifacts
+        emit_jsonl=True,
         insert_to_pg=args.insert_pg,
     )
     try:
