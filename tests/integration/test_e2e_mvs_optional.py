@@ -18,19 +18,14 @@ def test_e2e_mvs_optional(tmp_path: Path) -> None:
         pytest = None  # type: ignore[assignment]
 
     from abm.ingestion.ingest_pdf import PdfIngestPipeline, PipelineOptions
-    classifier_main = importlib.import_module(
-        "abm.classifier.classifier_cli"
-    ).main
 
-    pdf = Path(
-        "data/books/mvs/source_pdfs/MyVampireSystem_CH0001_0700.pdf"
-    )
+    classifier_main = importlib.import_module("abm.classifier.classifier_cli").main
+
+    pdf = Path("data/books/mvs/source_pdfs/MyVampireSystem_CH0001_0700.pdf")
     # Only run when explicitly enabled to avoid long runtime in CI
     if os.getenv("ABM_E2E_MVS") != "1" or not pdf.exists():
-        if ('pytest' in globals() and pytest is not None):
-            reason = (
-                "set ABM_E2E_MVS=1 and ensure mvs PDF exists to run"
-            )
+        if "pytest" in globals() and pytest is not None:
+            reason = "set ABM_E2E_MVS=1 and ensure mvs PDF exists to run"
             pytest.skip(reason)
         return
 
