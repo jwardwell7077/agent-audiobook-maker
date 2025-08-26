@@ -62,3 +62,8 @@ Transitions:
 - Duplicate header/footer: one title matches >5 times → abort.
 - Fallback numeric pattern used → warn, still slice.
 - No matches at all → abort.
+
+## Integration
+
+- Source of truth upstream: the Section Classifier emits `chapters_section.json` alongside other classified artifacts. The Chapterizer must operate on the `chapters_section` span within the continuous `body_text` and produce a deterministic `chapters.json`.
+- Downstream: each `chapters[i].body_text` is fed into TXT→Structured to generate `paragraphs[]` while preserving explicit blank lines.

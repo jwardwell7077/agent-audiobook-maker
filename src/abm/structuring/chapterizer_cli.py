@@ -25,9 +25,8 @@ def main(argv: list[str] | None = None) -> int:
         "--dev",
         action="store_true",
         help=(
-            "Dev mode: also write a human-readable JSON copy with word-wrapped"
-            " body_text (suffix _readable.json) while preserving the main"
-            " artifact"
+            "Dev mode: also write a human-readable JSON copy and text file "
+            "derived from paragraphs[] (suffix _readable.*) while preserving the main artifact"
         ),
     )
     args = parser.parse_args(argv)
@@ -49,10 +48,14 @@ def main(argv: list[str] | None = None) -> int:
         }
 
         for ch in data.get("chapters", []):
-            # Copy all fields; add an explicit array of lines for readability
+            # Copy all fields; include explicit body_lines reconstructed from paragraphs
             new_ch = dict(ch)
-            bt = ch.get("body_text", "")
-            new_ch["body_lines"] = bt.splitlines()
+            paras = ch.get("paragraphs", [])
+            if isinstance(paras, list):
+                reconstructed = "\n\n".join(p for p in paras if isinstance(p, str))
+            else:
+                reconstructed = ""
+            new_ch["body_lines"] = reconstructed.splitlines()
             readable["chapters"].append(new_ch)
 
         readable_path = out_p.with_name(out_p.stem + "_readable" + out_p.suffix)
@@ -68,8 +71,11 @@ def main(argv: list[str] | None = None) -> int:
             idx = ch.get("index", 0)
             lines.append(f"=== Chapter {idx}: {title} ===")
             lines.append("")
-            # Append the original body text (no dev-time wrapping)
-            body = ch.get("body_text", "")
+            paras = ch.get("paragraphs", [])
+            if isinstance(paras, list):
+                body = "\n\n".join(p for p in paras if isinstance(p, str))
+            else:
+                body = ""
             lines.append(body)
             lines.append("")
             lines.append("")

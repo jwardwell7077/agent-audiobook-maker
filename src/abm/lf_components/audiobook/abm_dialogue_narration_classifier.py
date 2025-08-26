@@ -44,9 +44,9 @@ class ABMDialogueNarrationClassifier(Component):
 
     outputs = [
         Output(
-            name="classified_data", 
-            display_name="Classified Data", 
-            method="classify_dialogue_narration"
+            name="classified_data",
+            display_name="Classified Data",
+            method="classify_dialogue_narration",
         )
     ]
 
@@ -70,15 +70,13 @@ class ABMDialogueNarrationClassifier(Component):
             narration_count = 0
 
             for chapter in chapters:
-                body_text = chapter.get("body_text", "")
-                if not body_text:
+                # Require paragraphs[] schema
+                if not isinstance(chapter.get("paragraphs"), list):
                     continue
+                paragraphs = [p for p in chapter.get("paragraphs") if isinstance(p, str) and p.strip()]
 
-                # Split into paragraphs
-                paragraphs = [p.strip() for p in body_text.split('\n\n') if p.strip()]
-                
                 chapter_segments = []
-                
+
                 for i, paragraph in enumerate(paragraphs):
                     if self.classification_method == "quotes":
                         classification = self._classify_by_quotes(paragraph)
@@ -99,9 +97,9 @@ class ABMDialogueNarrationClassifier(Component):
                         "has_quotes": '"' in paragraph,
                         "has_dialogue_tags": self._has_dialogue_tags(paragraph),
                     }
-                    
+
                     chapter_segments.append(segment)
-                    
+
                     if classification["type"] == "dialogue":
                         dialogue_count += 1
                     elif classification["type"] == "narration":
@@ -115,7 +113,7 @@ class ABMDialogueNarrationClassifier(Component):
                     "dialogue_segments": len([s for s in chapter_segments if s["type"] == "dialogue"]),
                     "narration_segments": len([s for s in chapter_segments if s["type"] == "narration"]),
                 }
-                
+
                 classified_chapters.append(classified_chapter)
                 total_segments += len(chapter_segments)
 
@@ -130,11 +128,13 @@ class ABMDialogueNarrationClassifier(Component):
                 "volume": input_data.get("volume"),
             }
 
-            status_msg = (f"Classified {total_segments} segments: "
-                         f"{dialogue_count} dialogue, {narration_count} narration "
-                         f"using {self.classification_method} method")
+            status_msg = (
+                f"Classified {total_segments} segments: "
+                f"{dialogue_count} dialogue, {narration_count} narration "
+                f"using {self.classification_method} method"
+            )
             self.status = status_msg
-            
+
             return Data(data=result_data)
 
         except Exception as e:
@@ -146,7 +146,7 @@ class ABMDialogueNarrationClassifier(Component):
         """Simple rule-based classification using quotation marks."""
         has_quotes = '"' in paragraph
         has_dialogue_tags = self._has_dialogue_tags(paragraph)
-        
+
         if has_quotes:
             confidence = 0.9 if has_dialogue_tags else 0.7
             return {"type": "dialogue", "confidence": confidence, "method": "quotes"}
@@ -157,30 +157,27 @@ class ABMDialogueNarrationClassifier(Component):
         """LLM-based classification with context."""
         # Placeholder for LLM integration
         # Would send paragraph + context to LLM for classification
-        
-        system_prompt = """
-        Classify this paragraph as either "dialogue" or "narration".
-        Consider the context and writing style.
-        Return JSON: {"type": "dialogue|narration", "confidence": 0.95, "reasoning": "brief explanation"}
-        """
-        
+
+        # Placeholder system prompt (not executed yet)
+        # Classify this paragraph as either dialogue or narration and return a JSON structure.
+
         # For now, fallback to quote-based with lower confidence
         quote_result = self._classify_by_quotes(paragraph)
         return {
             "type": quote_result["type"],
             "confidence": quote_result["confidence"] * 0.8,  # Lower confidence for placeholder
-            "method": "llm_placeholder"
+            "method": "llm_placeholder",
         }
 
     def _classify_hybrid(self, paragraph: str, context: list, index: int) -> dict:
         """Hybrid approach: use quotes first, then LLM for ambiguous cases."""
         quote_result = self._classify_by_quotes(paragraph)
-        
+
         # If quote-based classification is confident, use it
         if quote_result["confidence"] >= self.confidence_threshold:
             quote_result["method"] = "hybrid_quotes"
             return quote_result
-        
+
         # Otherwise, use LLM for refinement
         llm_result = self._classify_by_llm(paragraph, context, index)
         llm_result["method"] = "hybrid_llm"
@@ -188,6 +185,17 @@ class ABMDialogueNarrationClassifier(Component):
 
     def _has_dialogue_tags(self, paragraph: str) -> bool:
         """Check if paragraph has dialogue attribution tags."""
-        dialogue_tags = ['said', 'asked', 'replied', 'shouted', 'whispered', 'exclaimed', 
-                        'muttered', 'called', 'yelled', 'continued', 'added']
+        dialogue_tags = [
+            "said",
+            "asked",
+            "replied",
+            "shouted",
+            "whispered",
+            "exclaimed",
+            "muttered",
+            "called",
+            "yelled",
+            "continued",
+            "added",
+        ]
         return any(tag in paragraph.lower() for tag in dialogue_tags)

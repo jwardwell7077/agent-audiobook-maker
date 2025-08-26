@@ -37,6 +37,9 @@ classDiagram
       +bool dedupe_whitespace = true
       +bool preserve_form_feeds = false
       +str newline = "\\n"
+      +bool use_blocks = true
+      +bool insert_blank_line_between_blocks = true
+      +int block_gap_threshold = 6
     }
 
     class PdfToTextExtractor {
@@ -57,6 +60,9 @@ Inputs
 - options (optional):
   - dedupe_whitespace: bool (default true)
   - preserve_form_feeds: bool (default false)
+  - use_blocks: bool (default true) – enable block-aware extraction to preserve layout-driven paragraph breaks.
+  - insert_blank_line_between_blocks: bool (default true) – add a blank line between blocks when vertical gaps exceed threshold.
+  - block_gap_threshold: int (default 6) – vertical gap threshold (pixels/points per PyMuPDF units) that defines a block break.
 
 Outputs
 
@@ -67,6 +73,7 @@ Invariants and guarantees
 
 - UTF‑8 encoding, newline = "\n".
 - Page order preserved; a single form feed ("\f") between pages when preserve_form_feeds=true, else a blank line.
+- When use_blocks=true, intra-page blocks are joined with explicit blank lines when insert_blank_line_between_blocks=true and the vertical gap between their bounding boxes exceeds block_gap_threshold.
 - No PDF object text reordering beyond library defaults; we do not attempt multi‑column reconstruction in this slice.
 
 Error modes and edge cases

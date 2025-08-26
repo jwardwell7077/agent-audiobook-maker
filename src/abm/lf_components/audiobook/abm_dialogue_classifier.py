@@ -10,9 +10,11 @@ Part of the two-agent character tracking system for voice casting profile buildi
 import logging
 import os
 import re
+from typing import Any, cast
+
 import requests
 from langflow.custom import Component
-from langflow.io import DropdownInput, FloatInput, IntInput, MessageTextInput, Output
+from langflow.io import DataInput, DropdownInput, FloatInput, IntInput, MessageTextInput, Output
 from langflow.schema import Data
 
 logger = logging.getLogger(__name__)
@@ -25,11 +27,22 @@ class ABMDialogueClassifier(Component):
     name = "ABMDialogueClassifier"
 
     inputs = [
+        # New: Single-wire data input to avoid manual field mapping
+        DataInput(
+            name="utterance_data",
+            display_name="Utterance Data",
+            info=(
+                "Full utterance payload (from ABMChunkIterator). If provided, this overrides individual "
+                "text/context/id fields. Expected keys: utterance_text, book_id, chapter_id, utterance_idx, "
+                "context_before, context_after."
+            ),
+            required=False,
+        ),
         MessageTextInput(
             name="utterance_text",
             display_name="Utterance Text",
             info="The text utterance to classify",
-            required=True,
+            required=False,  # optional when using utterance_data
         ),
         MessageTextInput(
             name="book_id",
@@ -175,12 +188,18 @@ class ABMDialogueClassifier(Component):
 
     def find_attribution_clues(self, text: str) -> list[str]:
         """Find speaker attribution clues using pattern matching."""
-        clues = []
+        clues: list[str] = []
 
         for tag, pattern in self.attribution_patterns.items():
             matches = re.findall(pattern, text, re.IGNORECASE)
-            for match in matches:
-                clues.append(f"{tag} {match}")
+            # Normalize matches: can be str or tuple depending on groups
+            normalized = []
+            for m in matches:
+                if isinstance(m, tuple):
+                    normalized.append(f"{tag} {' '.join(m)}")
+                else:
+                    normalized.append(f"{tag} {m}")
+            clues.extend(normalized)
 
         return clues
 
@@ -192,14 +211,21 @@ class ABMDialogueClassifier(Component):
         text_lower = text.lower()
 
         # Check for dialogue patterns
-        best_confidence = 0.0
+        best_confidence: float = 0.0
         best_method = "heuristic_unknown"
         dialogue_text = None
 
         for pattern_name, pattern_info in self.dialogue_patterns.items():
-            if re.search(pattern_info["pattern"], text):
-                if pattern_info["confidence"] > best_confidence:
-                    best_confidence = pattern_info["confidence"]
+            pinfo = cast(dict[str, Any], pattern_info)
+            pattern_str: str = str(pinfo.get("pattern", ""))
+            if re.search(pattern_str, text):
+                conf_raw: Any = pinfo.get("confidence", 0.0)
+                try:
+                    conf_val: float = float(conf_raw) if conf_raw is not None else 0.0
+                except (TypeError, ValueError):
+                    conf_val = 0.0
+                if conf_val > best_confidence:
+                    best_confidence = conf_val
                     best_method = f"heuristic_{pattern_name}"
                     dialogue_text = self.extract_dialogue_text(text)
 
@@ -293,13 +319,55 @@ Classification:"""
     def classify_utterance(self) -> Data:
         """Main classification method."""
         try:
-            # Get inputs
-            text = self.utterance_text
-            book_id = self.book_id or "UNKNOWN_BOOK"
-            chapter_id = self.chapter_id or "UNKNOWN_CHAPTER"
-            utterance_idx = self.utterance_idx
-            context_before = self.context_before or ""
-            context_after = self.context_after or ""
+            # Prefer single-wire Data input when available
+            payload: dict[str, Any] | None = None
+            try:
+                if hasattr(self, "utterance_data") and self.utterance_data:
+                    if isinstance(self.utterance_data, Data):
+                        # unwrap Data
+                        if isinstance(self.utterance_data.data, dict):
+                            payload = self.utterance_data.data
+                    elif isinstance(self.utterance_data, dict):
+                        payload = self.utterance_data
+            except Exception:
+                payload = None
+
+            # Helper to pull value from payload with fallbacks
+            def _get(key: str, default: Any = None) -> Any:
+                if payload and isinstance(payload, dict):
+                    # support alternative field names
+                    if key in payload:
+                        return payload.get(key, default)
+                    # common alternates
+                    alt_map = {
+                        "utterance_text": ["text", "content", "chunk_text"],
+                        "chapter_id": ["chapter", "chapterId"],
+                        "book_id": ["book", "bookId"],
+                        "utterance_idx": ["chunk_id", "index", "id"],
+                        "context_before": ["prev", "before"],
+                        "context_after": ["next", "after"],
+                    }
+                    for alt in alt_map.get(key, []):
+                        if alt in payload:
+                            return payload.get(alt, default)
+                return default
+
+            # Resolve inputs, preferring payload values
+            text_val = _get("utterance_text", self.utterance_text)
+            text = str(text_val) if text_val is not None else ""
+            book_id_val = _get("book_id", self.book_id)
+            book_id = str(book_id_val) if book_id_val else "UNKNOWN_BOOK"
+            chapter_id_val = _get("chapter_id", self.chapter_id)
+            chapter_id = str(chapter_id_val) if chapter_id_val else "UNKNOWN_CHAPTER"
+            utterance_idx_val = _get("utterance_idx", self.utterance_idx)
+            try:
+                utterance_idx = int(utterance_idx_val) if utterance_idx_val is not None else 0
+            except (TypeError, ValueError):
+                utterance_idx = 0
+            cb = _get("context_before", self.context_before)
+            context_before = str(cb) if cb is not None else ""
+            ca = _get("context_after", self.context_after)
+            context_after = str(ca) if ca is not None else ""
             method = self.classification_method
             threshold = self.confidence_threshold
 

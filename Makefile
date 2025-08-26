@@ -222,6 +222,27 @@ help:
 	@echo 'tests                        - run unit tests'
 	@echo 'test TEST_FILE=<test_file>   - run all tests in file'
 	@echo 'test_watch                   - run unit tests in watch mode'
+	@echo 'make install                 - install base + test deps (uv or pip)'
+	@echo 'make lint                    - ruff checks'
+	@echo 'make type                    - mypy checks'
+	@echo 'make itest                   - run LangFlow REST flow via tools/run_flow.py'
+
+
+# Lightweight helpers for the components/ tooling pack
+.PHONY: install lint type itest
+install:
+	uv pip install -e . || pip install -e .
+	uv pip install pytest ruff mypy requests || pip install pytest ruff mypy requests
+
+lint:
+	ruff check .
+	ruff format --check .
+
+type:
+	mypy .
+
+itest:
+	python tools/run_flow.py
 
 
 # Minimal KISS dev setup

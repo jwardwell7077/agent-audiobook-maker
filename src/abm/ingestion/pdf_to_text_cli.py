@@ -23,7 +23,15 @@ def main(argv: list[str] | None = None) -> int:
         description="Extract text from a PDF using PyMuPDF (fitz).",
     )
     parser.add_argument("input", help="Path to input PDF")
-    parser.add_argument("output", help="Path to output .txt file")
+    parser.add_argument(
+        "output",
+        nargs="?",
+        help=(
+            "Optional path to output .txt file. If omitted, a default path is derived: "
+            "for inputs like data/books/<book>/source_pdfs/*.pdf -> data/clean/<book>/<book>.txt; "
+            "otherwise next to the input with .txt extension."
+        ),
+    )
     parser.add_argument(
         "--no-dedupe-whitespace",
         action="store_true",
@@ -40,14 +48,7 @@ def main(argv: list[str] | None = None) -> int:
         choices=["\n", "\r\n"],
         help="Newline to use in output",
     )
-    parser.add_argument(
-        "--dev",
-        action="store_true",
-        help=(
-            "Dev mode: also write a human-readable copy with double newlines "
-            "(suffix _nopp.txt) while preserving the main artifact"
-        ),
-    )
+    # Note: Single output only; no dev secondary artifacts.
 
     args = parser.parse_args(argv)
 
@@ -57,19 +58,24 @@ def main(argv: list[str] | None = None) -> int:
         newline=args.newline,
     )
 
-    out_path = Path(args.output)
+    # Resolve default output path if not provided
+    def _default_output_for_input(p: Path) -> Path:
+        parts = list(p.parts)
+        try:
+            idx = parts.index("books")
+            # Expect structure: data/books/<book>/...
+            if idx + 1 < len(parts):
+                book = parts[idx + 1]
+                # Write to data/clean/<book>/<book>.txt
+                return Path("data") / "clean" / book / f"{book}.txt"
+        except ValueError:
+            pass
+        # Fallback: sibling .txt next to input
+        return p.with_suffix(".txt")
+
+    out_path = Path(args.output) if args.output else _default_output_for_input(Path(args.input))
     try:
         PdfToTextExtractor().extract(Path(args.input), out_path, opts)
-        if args.dev:
-            # Also create a human-readable copy with double newlines,
-            # replacing form-feeds
-            try:
-                content = out_path.read_text(encoding="utf-8")
-            except Exception:
-                content = ""
-            human = out_path.with_name(out_path.stem + "_nopp" + out_path.suffix)
-            human_text = content.replace("\f", opts.newline * 2)
-            human.write_text(human_text, encoding="utf-8", newline="")
         return 0
     except FileNotFoundError as exc:
         print(f"Error: {exc}", file=sys.stderr)

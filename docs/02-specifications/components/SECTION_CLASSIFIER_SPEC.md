@@ -103,6 +103,7 @@ Notes
 
 - Classifier outputs are stored as four separate JSON files under the classified folder for downstream chapterization.
 - Volume Manifest and Chapter JSON remain unchanged in v1.0; they may reference classifier outputs via paths in future versions.
+- Upstream source-of-truth for downstream slicing and annotation: `chapters_section.json`. Chapterizer must rely on the `chapters_section` span from this artifact to build `chapters.json`, and TXT→Structured should use those chapter slices to produce paragraphs[] with preserved blank lines.
 
 ## Tests (minimal)
 

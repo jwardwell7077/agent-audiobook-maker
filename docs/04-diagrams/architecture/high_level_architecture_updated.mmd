@@ -5,7 +5,7 @@ flowchart LR
     PDF[("PDF")]
     TXT[("Simple TXT")]
     JSONRaw[("JSON (per-chapter raw)")]
-    JSONStruct[("Structured JSON (manifest + chapters)")]
+      JSONStruct(("Structured JSON (manifest + chapters)"))
     
     subgraph TwoAgent["Two-Agent Annotation System"]
       DialogueAgent["Dialogue Classifier<br/>(Hybrid: Heuristic + AI)"]
@@ -17,7 +17,7 @@ flowchart LR
     Annos[("data/annotations/<book>/<chapter>.jsonl")]
   end
 
-  CLI --> PDF --> TXT --> JSONRaw --> JSONStruct --> Artifacts
+    CLI --> PDF --> TXT --> SectionClassifier --> Classified --> Chapterizer --> TxtStructured --> JSONStruct --> Artifacts
   Artifacts --> DialogueAgent
   DialogueAgent --> SpeakerAgent
   SpeakerAgent <--> CharDB
@@ -43,4 +43,9 @@ flowchart LR
   Artifacts -.sync.-> DB
   Annos -.sync.-> DB
   Renders -.sync.-> DB
+      %% Upstream structuring stages (added)
+      SectionClassifier["Section Classifier"]
+      Classified(("classified/front_matter.json | toc.json |\nchapters_section.json | back_matter.json"))
+      Chapterizer["Chapterizer"]
+      TxtStructured["TXT→Structured (paragraphs[])"]
 ```
