@@ -17,8 +17,10 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Any
 
+from abm.ingestion.db_insert import PgInserter
 from abm.ingestion.pdf_to_raw_text import RawExtractOptions, RawPdfTextExtractor
 from abm.ingestion.raw_to_welldone import RawToWellDone, WellDoneOptions
+from abm.ingestion.welldone_to_json import WellDoneToJSONL
 
 
 @dataclass(frozen=True)
@@ -32,6 +34,8 @@ class PipelineOptions:
     dehyphenate_wraps: bool = True
     dedupe_inline_spaces: bool = True
     strip_trailing_spaces: bool = True
+    # When true, generate JSONL and insert into Postgres if DATABASE_URL is Postgres
+    insert_to_pg: bool = False
 
 
 class PdfIngestPipeline:
@@ -83,6 +87,21 @@ class PdfIngestPipeline:
         meta_path = out_d / (pdf_p.stem + "_ingest_meta.json")
         meta_path.write_text(_json_dumps(meta) + "\n", encoding="utf-8")
         written["meta"] = meta_path
+
+        # Optional: convert well-done to JSONL and insert into Postgres
+        if opts.insert_to_pg:
+            base_name = f"{pdf_p.stem}_well_done"
+            conv = WellDoneToJSONL()
+            out_paths = conv.convert_text(well, base_name=base_name, out_dir=out_d, ingest_meta_path=meta_path)
+            written["jsonl"] = out_paths["jsonl"]
+            written["jsonl_meta"] = out_paths["meta"]
+            inserter = PgInserter()
+            res = inserter.insert_from_jsonl(out_paths["jsonl"], out_paths["meta"])
+            # Best-effort: we don't fail the pipeline on DB issues; print a note
+            try:
+                print(f"pg_insert: {res.status}{' - ' + (res.reason or '') if res.reason else ''}")
+            except Exception:
+                pass
 
         return written
 
@@ -153,6 +172,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--no-dehyphenate", action="store_true")
     parser.add_argument("--no-dedupe-spaces", action="store_true")
     parser.add_argument("--no-strip-trailing", action="store_true")
+    parser.add_argument("--insert-pg", action="store_true", help="Generate JSONL and insert into Postgres if available")
     args = parser.parse_args(argv)
 
     pdf_p = Path(args.input)
@@ -165,6 +185,7 @@ def main(argv: list[str] | None = None) -> int:
         dehyphenate_wraps=not args.no_dehyphenate,
         dedupe_inline_spaces=not args.no_dedupe_spaces,
         strip_trailing_spaces=not args.no_strip_trailing,
+        insert_to_pg=args.insert_pg,
     )
     try:
         written = PdfIngestPipeline().run(pdf_p, out_dir, opts)

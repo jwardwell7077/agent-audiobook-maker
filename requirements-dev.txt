@@ -12,3 +12,4 @@ mdformat-frontmatter==2.0.8
 pymarkdownlnt==0.9.32
 langflow
 requests
+psycopg[binary]
