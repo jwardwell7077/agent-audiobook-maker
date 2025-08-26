@@ -160,7 +160,7 @@ def _default_out_dir(p: Path) -> Path:
     return Path(p).parent / "clean"
 
 
-def main(argv: list[str] | None = None) -> int:
+if __name__ == "__main__":
     import argparse
     import sys
 
@@ -174,7 +174,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--no-dedupe-spaces", action="store_true")
     parser.add_argument("--no-strip-trailing", action="store_true")
     parser.add_argument("--insert-pg", action="store_true", help="Generate JSONL and insert into Postgres if available")
-    args = parser.parse_args(argv)
+    args = parser.parse_args()
 
     pdf_p = Path(args.input)
     out_dir = Path(args.out_dir) if args.out_dir else _default_out_dir(pdf_p)
@@ -192,17 +192,13 @@ def main(argv: list[str] | None = None) -> int:
         written = PdfIngestPipeline().run(pdf_p, out_dir, opts)
         for k, p in written.items():
             print(f"wrote {k}: {p}")
-        return 0
+        sys.exit(0)
     except FileNotFoundError as exc:
         print(f"Error: {exc}", file=sys.stderr)
-        return 2
+        sys.exit(2)
     except ValueError as exc:
         print(f"Error: {exc}", file=sys.stderr)
-        return 3
+        sys.exit(3)
     except Exception as exc:  # pragma: no cover
         print(f"Unexpected error: {exc}", file=sys.stderr)
-        return 1
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+        sys.exit(1)
