@@ -54,7 +54,9 @@ def test_chapterizer_duplicate_guard_or_single_match(tmp_path: Path) -> None:
         # Basic sanity on the first chapter
         c0 = chapters[0]
         assert c0["end_char"] > c0["start_char"]
-        assert c0["body_text"].strip() != ""
+        # paragraphs[] should be present and non-empty
+        assert isinstance(c0.get("paragraphs"), list)
+        assert any(isinstance(p, str) and p.strip() for p in c0["paragraphs"])  # type: ignore[index]
 
 
 def test_chapterizer_mvs_optional() -> None:

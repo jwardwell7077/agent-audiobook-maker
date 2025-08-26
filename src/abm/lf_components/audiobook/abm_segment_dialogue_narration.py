@@ -40,9 +40,11 @@ class ABMSegmentDialogueNarration(Component):
             total_segments = 0
 
             for chapter in chapters:
-                body_text = chapter.get("body_text", "")
-                if not body_text:
+                # Require paragraphs[] schema
+                if not isinstance(chapter.get("paragraphs"), list):
                     continue
+                para_list = [p for p in chapter.get("paragraphs") if isinstance(p, str) and p.strip()]
+                body_text = "\n\n".join(para_list)
 
                 # Advanced segmentation: accumulate lines until blank line
                 chapter_segments = []
@@ -75,6 +77,20 @@ class ABMSegmentDialogueNarration(Component):
                 # Don't forget final segment
                 buf, buf_has_quote = flush_segment(chapter_segments, buf, buf_has_quote)
 
+                # Fallback: if no segments were created by line-based logic, use paragraphs as segments
+                if not chapter_segments:
+                    for p in para_list:
+                        p_text = p.strip()
+                        if not p_text:
+                            continue
+                        chapter_segments.append(
+                            {
+                                "text": p_text,
+                                "type": ("dialogue" if '"' in p_text else "narration"),
+                                "length": len(p_text),
+                            }
+                        )
+
                 segmented_chapter = {
                     "chapter_index": chapter.get("index"),
                     "chapter_title": chapter.get("title"),
@@ -99,3 +115,13 @@ class ABMSegmentDialogueNarration(Component):
             error_msg = f"Failed to segment chapters: {str(e)}"
             self.status = f"Error: {error_msg}"
             return Data(data={"error": error_msg})
+
+
+def run(chapters_data: dict) -> dict:
+    """Convenience wrapper to segment using plain dict input.
+
+    Expects data exactly as produced by chapter_volume_loader.run(...).
+    """
+    comp = ABMSegmentDialogueNarration()
+    comp.chapters_data = Data(data=chapters_data)
+    return comp.segment_chapters().data

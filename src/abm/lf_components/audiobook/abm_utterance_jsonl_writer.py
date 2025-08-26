@@ -38,14 +38,7 @@ class ABMUtteranceJsonlWriter(Component):
         try:
             input_data = self.segmented_data.data
 
-            if "error" in input_data:
-                self.status = "Input contains error, passing through"
-                return Data(data=input_data)
-
             segmented_chapters = input_data.get("segmented_chapters", [])
-            if not segmented_chapters:
-                self.status = "No segmented chapters to write"
-                return Data(data=input_data)
 
             # Ensure output directory exists
             output_path = Path(self.output_file)
@@ -100,3 +93,24 @@ class ABMUtteranceJsonlWriter(Component):
             error_msg = f"Failed to write utterances: {str(e)}"
             self.status = f"Error: {error_msg}"
             return Data(data={"error": error_msg})
+
+
+def run(segmented_data: dict, base_dir: str | None = None, stem: str | None = None) -> dict:
+    """Convenience wrapper to write utterances as JSONL and return path.
+
+    - base_dir: when provided, file will be written under base_dir/output.
+    - stem: file name stem; defaults to segments_<timestamp> inside component.
+    """
+    # Compute default path if not provided
+    base = Path(base_dir) if base_dir else Path.cwd()
+    out_dir = base / "output"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    filename = (stem or "segments") + ".jsonl"
+    comp = ABMUtteranceJsonlWriter()
+    comp.segmented_data = Data(data=segmented_data)
+    comp.output_file = str(out_dir / filename)
+    result = comp.write_utterances().data
+    # Provide a legacy-friendly alias used by abm.langflow_runner
+    if "path" not in result and "output_file" in result:
+        result["path"] = result["output_file"]
+    return result

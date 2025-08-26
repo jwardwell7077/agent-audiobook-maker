@@ -78,3 +78,15 @@ class ABMChapterVolumeLoader(Component):
             error_msg = f"Failed to load chapters: {str(e)}"
             self.status = f"Error: {error_msg}"
             return Data(data={"error": error_msg})
+
+
+def run(book: str, base_dir: str) -> dict:
+    """Convenience wrapper used by abm.langflow_runner for CLI-style chaining."""
+    comp = ABMChapterVolumeLoader()
+    comp.book_name = book
+    comp.volume_number = 1
+    # base_dir is expected to be the project root; chapters live under data/clean/<book>/chapters.json
+    comp.base_data_dir = str(Path(base_dir) / "data" / "clean")
+    data = comp.load_chapters().data
+    # Return a plain dict for downstream non-LangFlow callers
+    return data

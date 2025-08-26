@@ -1,0 +1,51 @@
+flowchart LR
+	classDef today fill:#e3f2fd,stroke:#90caf9,color:#0d47a1
+	classDef future fill:#fce4ec,stroke:#f48fb1,color:#880e4f,stroke-dasharray: 5 5
+
+	%% Entry & ingestion (today)
+	CLI["CLI (ingest, annotate)"]:::today
+	PDF[("PDF source")]:::today
+	TXT[("extracted_full.txt")]:::today
+	SectionClassifier["Section Classifier"]:::today
+	Classified[("front_matter.json | toc.json |\nchapters_section.json | back_matter.json")]:::today
+	Chapterizer["Chapterizer"]:::today
+	Structurer["TXT→Structured (paragraphs[])"]:::today
+	JSONStruct[("Structured JSON: manifest + per-chapter")]:::today
+	CleanArtifacts(("data/clean/<book>/<chapter>.json\n<pdf_stem>_volume.json")):::today
+
+	%% Two-Agent system (annotation today; DB is future unless enabled)
+	subgraph TwoAgent["Two-Agent Annotation System"]
+		DialogueAgent["Dialogue Classifier (heuristic + AI)"]:::today
+		SpeakerAgent["Speaker Attribution (Character DB)"]:::today
+		CharDB[("PostgreSQL: characters, aliases, profiles")]:::future
+	end
+
+	Annos(("data/annotations/<book>/<chapter>.jsonl")):::today
+
+	%% Rendering (future)
+	subgraph TTS["Rendering Pipeline"]
+		Casting["Casting (character bible)"]:::future
+		SSML["SSML Assembly"]:::future
+		TTSNode["TTS (XTTS/Piper)"]:::future
+		Stems[("data/stems/…")]:::future
+		Renders[("data/renders/<book>/<chapter>.wav")]:::future
+		Master[("book_master.wav")]:::future
+	end
+
+	Orchestrator["Orchestrator (Dagster/LangGraph)"]:::future
+	DB[("Postgres (JSONB)")]:::future
+
+	%% Flow
+	CLI --> PDF --> TXT --> SectionClassifier --> Classified --> Chapterizer --> Structurer --> JSONStruct --> CleanArtifacts
+	CleanArtifacts --> DialogueAgent --> SpeakerAgent --> Annos
+	SpeakerAgent <--> CharDB
+
+	Annos -.-> Casting -.-> SSML -.-> TTSNode --> Stems --> Renders --> Master
+	Orchestrator -.controls.-> SectionClassifier
+	Orchestrator -.controls.-> TwoAgent
+	Orchestrator -.controls.-> TTSNode
+
+	CleanArtifacts -.sync.-> DB
+	Annos -.sync.-> DB
+	Renders -.sync.-> DB
+	CharDB -.integrates.-> DB

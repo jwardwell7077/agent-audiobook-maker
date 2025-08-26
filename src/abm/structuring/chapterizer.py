@@ -18,6 +18,7 @@ from abm.classifier.section_classifier import (
     classify_sections,
 )
 from abm.classifier.types import ClassifierInputs, Page, TOCEntry
+from abm.ingestion.txt_to_structured_json import parse_paragraphs
 
 
 class Chapter(TypedDict):
@@ -25,7 +26,7 @@ class Chapter(TypedDict):
     title: str
     start_char: int
     end_char: int
-    body_text: str
+    paragraphs: list[str]
 
 
 class ChapterizerOutput(TypedDict):
@@ -182,13 +183,16 @@ def _slice_chapters(
     for idx, abs_start in enumerate(starts_sorted):
         abs_end = starts_sorted[idx + 1] if idx + 1 < len(starts_sorted) else body_span[1]
         title = titles[idx] if idx < len(titles) else f"Chapter {idx + 1}"
+        # Extract chapter slice and split into paragraphs (by blank lines)
+        chapter_text = body_text[abs_start:abs_end]
+        paragraphs = parse_paragraphs(chapter_text)
         chapters.append(
             {
                 "index": idx + 1,
                 "title": title,
                 "start_char": abs_start,
                 "end_char": abs_end,
-                "body_text": body_text[abs_start:abs_end],
+                "paragraphs": paragraphs,
             }
         )
     return chapters

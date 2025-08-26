@@ -1,0 +1,247 @@
+{
+    "data": {
+        "edges": [
+            {
+                "id": "input-to-agent1",
+                "source": "sample-input",
+                "target": "agent1-classifier",
+                "sourceHandle": "text",
+                "targetHandle": "utterance_text",
+                "data": {},
+                "type": "default"
+            },
+            {
+                "id": "agent1-to-agent2",
+                "source": "agent1-classifier",
+                "target": "agent2-attribution",
+                "sourceHandle": "classified_utterance",
+                "targetHandle": "classified_utterance",
+                "data": {},
+                "type": "default"
+            },
+            {
+                "id": "agent2-to-output",
+                "source": "agent2-attribution",
+                "target": "final-output",
+                "sourceHandle": "speaker_attribution",
+                "targetHandle": "text",
+                "data": {},
+                "type": "default"
+            }
+        ],
+        "nodes": [
+            {
+                "id": "sample-input",
+                "type": "customNode",
+                "position": {
+                    "x": 50,
+                    "y": 300
+                },
+                "data": {
+                    "type": "TextInput",
+                    "node": {
+                        "template": {
+                            "input_value": {
+                                "display_name": "Sample Utterance",
+                                "multiline": true,
+                                "info": "Enter a sample utterance to test the two-agent system",
+                                "type": "str",
+                                "value": "\"We should build a shelter,\" Jack said angrily. \"The storm is coming!\""
+                            }
+                        },
+                        "display_name": "📝 Sample Input",
+                        "description": "Input text to test the two-agent dialogue processing system"
+                    }
+                }
+            },
+            {
+                "id": "agent1-classifier",
+                "type": "customNode",
+                "position": {
+                    "x": 350,
+                    "y": 200
+                },
+                "data": {
+                    "type": "ABMDialogueClassifier",
+                    "node": {
+                        "template": {
+                            "utterance_text": {
+                                "display_name": "Utterance Text",
+                                "info": "The text utterance to classify",
+                                "type": "str"
+                            },
+                            "book_id": {
+                                "display_name": "Book ID",
+                                "type": "str",
+                                "value": "lord_of_flies"
+                            },
+                            "chapter_id": {
+                                "display_name": "Chapter ID",
+                                "type": "str",
+                                "value": "chapter_1"
+                            },
+                            "utterance_idx": {
+                                "display_name": "Utterance Index",
+                                "type": "int",
+                                "value": 1
+                            },
+                            "context_before": {
+                                "display_name": "Context Before",
+                                "type": "str",
+                                "value": "The boys were arguing about priorities."
+                            },
+                            "context_after": {
+                                "display_name": "Context After",
+                                "type": "str",
+                                "value": "Ralph frowned at Jack's aggressive tone."
+                            },
+                            "min_confidence": {
+                                "display_name": "Min Confidence",
+                                "type": "float",
+                                "value": 0.7
+                            },
+                            "ai_classification_enabled": {
+                                "display_name": "AI Enabled",
+                                "type": "bool",
+                                "value": true
+                            },
+                            "ollama_model": {
+                                "display_name": "Ollama Model",
+                                "type": "str",
+                                "value": "llama3.2:1b"
+                            }
+                        },
+                        "display_name": "🤖 Agent 1: Dialogue Classifier",
+                        "description": "Hybrid dialogue vs. narration classification using heuristics + AI fallback"
+                    }
+                }
+            },
+            {
+                "id": "agent2-attribution",
+                "type": "customNode",
+                "position": {
+                    "x": 700,
+                    "y": 200
+                },
+                "data": {
+                    "type": "ABMSpeakerAttribution",
+                    "node": {
+                        "template": {
+                            "classified_utterance": {
+                                "display_name": "From Agent 1",
+                                "info": "Classification result from Agent 1",
+                                "type": "str"
+                            },
+                            "dialogue_text": {
+                                "display_name": "Dialogue Text",
+                                "type": "str",
+                                "value": "We should build a shelter. The storm is coming!"
+                            },
+                            "book_id": {
+                                "display_name": "Book ID",
+                                "type": "str",
+                                "value": "lord_of_flies"
+                            },
+                            "chapter_id": {
+                                "display_name": "Chapter ID",
+                                "type": "str",
+                                "value": "chapter_1"
+                            },
+                            "context_before": {
+                                "display_name": "Context Before",
+                                "type": "str",
+                                "value": "The boys were arguing about priorities."
+                            },
+                            "context_after": {
+                                "display_name": "Context After",
+                                "type": "str",
+                                "value": "Ralph frowned at Jack's aggressive tone."
+                            },
+                            "attribution_method": {
+                                "display_name": "Attribution Methods",
+                                "type": "str",
+                                "value": "all",
+                                "options": [
+                                    "all",
+                                    "direct_only",
+                                    "contextual_only",
+                                    "flow_only"
+                                ]
+                            },
+                            "min_confidence": {
+                                "display_name": "Min Confidence",
+                                "type": "float",
+                                "value": 0.3
+                            },
+                            "create_new_characters": {
+                                "display_name": "Create New Characters",
+                                "type": "bool",
+                                "value": true
+                            },
+                            "update_profiles": {
+                                "display_name": "Update Profiles",
+                                "type": "bool",
+                                "value": true
+                            }
+                        },
+                        "display_name": "🎭 Agent 2: Speaker Attribution",
+                        "description": "Multi-method speaker identification and character voice profile building"
+                    }
+                }
+            },
+            {
+                "id": "final-output",
+                "type": "customNode",
+                "position": {
+                    "x": 1050,
+                    "y": 300
+                },
+                "data": {
+                    "type": "TextOutput",
+                    "node": {
+                        "template": {
+                            "input_value": {
+                                "display_name": "Speaker Attribution Result",
+                                "info": "Final result with character identification and voice profile",
+                                "type": "str"
+                            }
+                        },
+                        "display_name": "📊 Final Output",
+                        "description": "Complete speaker attribution result with character profiles"
+                    }
+                }
+            },
+            {
+                "id": "info-panel",
+                "type": "customNode",
+                "position": {
+                    "x": 50,
+                    "y": 50
+                },
+                "data": {
+                    "type": "TextOutput",
+                    "node": {
+                        "template": {
+                            "input_value": {
+                                "display_name": "System Info",
+                                "type": "str",
+                                "value": "🎯 Two-Agent Character Tracking System\n\n📝 Agent 1: Dialogue Classifier\n• Hybrid detection (heuristics + AI)\n• 90% heuristic, 10% AI fallback\n• Classification: dialogue vs. narration\n\n🎭 Agent 2: Speaker Attribution\n• Multi-method speaker identification\n• Character profile building\n• Voice casting characteristics\n\n✨ Use this flow to:\n1. Classify utterances as dialogue/narration\n2. Identify WHO is speaking\n3. Build character voice profiles\n4. Generate voice casting data"
+                            }
+                        },
+                        "display_name": "ℹ️ System Overview",
+                        "description": "Information about the two-agent system"
+                    }
+                }
+            }
+        ],
+        "viewport": {
+            "x": 0,
+            "y": 0,
+            "zoom": 0.8
+        }
+    },
+    "description": "Complete two-agent system for dialogue processing: Agent 1 classifies dialogue vs narration, Agent 2 identifies speakers and builds character voice profiles for audiobook production.",
+    "name": "Two-Agent Dialogue & Speaker System",
+    "last_tested_version": "1.1.0",
+    "endpoint_name": "two_agent_dialogue_speaker"
+}
