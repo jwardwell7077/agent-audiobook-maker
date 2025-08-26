@@ -1,9 +1,8 @@
 """Command-line interface for the Section Classifier.
 
-Reads a plain text file that contains book pages joined either by form-feed
-characters (``\f``) or by double newlines, converts it into the classifier's
-Page objects, runs classification, and writes four JSON artifacts to an
-output directory.
+Reads a plain text file and splits it into paragraph blocks on blank-line
+boundaries, runs the block-based classifier, and writes four JSON artifacts to
+an output directory.
 
 Usage (programmatic):
     from abm.classifier import classifier_cli
@@ -16,38 +15,18 @@ This mirrors the style of ``pdf_to_text_cli`` for tests and simplicity.
 from __future__ import annotations
 
 import json
+import re
 import sys
-from collections.abc import Iterable
 from pathlib import Path
 
 from abm.classifier.section_classifier import classify_sections
-from abm.classifier.types import ClassifierInputs, Page
 
 
-def _split_pages(text: str) -> list[str]:
-    """Split the input text into page-sized strings.
+def _split_blocks(text: str) -> list[str]:
+    """Split input into paragraph blocks by blank-line boundaries."""
 
-    Prefer form-feed (\f) separators when present. Otherwise, treat double
-    newlines as page boundaries. Trailing whitespace is stripped.
-    """
-
-    if "\f" in text:
-        parts = text.split("\f")
-    else:
-        parts = text.split("\n\n")
-    # Normalize line endings and strip outer whitespace per page
-    return [p.strip("\n\r ") for p in parts]
-
-
-def _to_pages(raw_pages: Iterable[str]) -> list[Page]:
-    pages: list[Page] = []
-    for i, p in enumerate(raw_pages):
-        if not p:
-            lines: list[str] = []
-        else:
-            lines = p.splitlines()
-        pages.append(Page(page_index=i + 1, lines=lines))
-    return pages
+    parts = re.split(r"\n\s*\n+", text)
+    return [p for p in parts if p and p.strip()]
 
 
 def _write_json(path: Path, data: object) -> None:
@@ -85,10 +64,8 @@ def main(argv: list[str] | None = None) -> int:
         sys.stderr.write(f"Failed to read input: {exc}\n")
         return 4
 
-    raw_pages = _split_pages(text)
-    pages = _to_pages(raw_pages)
-    inputs: ClassifierInputs = {"pages": pages}
-    outputs = classify_sections(inputs)
+    blocks = _split_blocks(text)
+    outputs = classify_sections({"blocks": blocks})
 
     try:
         _write_json(
@@ -100,8 +77,8 @@ def main(argv: list[str] | None = None) -> int:
             outputs["toc"],  # type: ignore[index]
         )
         _write_json(
-            out_dir / "chapters_section.json",
-            outputs["chapters_section"],  # type: ignore[index]
+            out_dir / "chapters.json",
+            outputs["chapters"],  # type: ignore[index]
         )
         _write_json(
             out_dir / "back_matter.json",

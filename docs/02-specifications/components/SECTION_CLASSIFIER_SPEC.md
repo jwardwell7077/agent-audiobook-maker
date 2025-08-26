@@ -1,165 +1,89 @@
-# Section Classifier – Design Spec
+# Section Classifier – Block-based Design Spec
 
-Last updated: 2025-08-21
+Last updated: 2025-08-26
 
-Source diagram: [docs/diagrams/section_classifier.mmd](diagrams/section_classifier.mmd)
+This version replaces the prior page-based design with a paragraph/block-first approach.
 
 ## Purpose
 
-Identify front matter, TOC, body chapters region, and back matter in a novel PDF converted to simple TXT pages. Produce four separate JSON artifacts (one per section) and capture page-number markers while building a single continuous body of text (pages concatenated back-to-back, with page-number-only lines removed). If a line contains content plus a page number token, attempt to remove only the number and emit a warning.
+Given a plain-text book, split it into paragraph blocks (blank-line separated) and deterministically classify four regions: front matter, table of contents (TOC), chapters, and back matter. Emit four JSON artifacts using zero-based block indices as the source of truth.
 
-## Contract (Step 1 – Classifier)
+## Input
 
-- Input: pages: List[{ page_idx: int, lines: str[] }]
-- Continuous body text: join all page lines into a single text buffer, removing page-number-only lines. If a page number appears inline with other content, attempt to remove just the number token and emit a warning. Preserve line order and other content.
-Output artifacts (four separate JSON files in `data/clean/<book>/<pdf_stem>/classified/`):
-  - front_matter.json
-  - { span: [start_char, end_char], text_sha256, warnings: string[], document_meta: { page_markers: Array<{ page_index: int, line_index_global: int, value: string }> } }
-  - Schema: [docs/schemas/classifier/front_matter.schema.json](schemas/classifier/front_matter.schema.json)
-  - Example: [docs/examples/classifier/front_matter.example.json](examples/classifier/front_matter.example.json)
-  - toc.json
-  - { span: [start_char, end_char], entries: Array<{ title: string, page: int, raw: string, line_in_toc: int }>, warnings: string[] }
-  - Schema: [docs/schemas/classifier/toc.schema.json](schemas/classifier/toc.schema.json)
-  - Example: [docs/examples/classifier/toc.example.json](examples/classifier/toc.example.json)
-  - chapters_section.json
-  - { span: [start_char, end_char], per_page_labels: Array<{ page_index: int, label: 'front'|'toc'|'body'|'back', confidence: number }>, warnings: string[] }
-  - Schema: [docs/schemas/classifier/chapters_section.schema.json](schemas/classifier/chapters_section.schema.json)
-  - Example: [docs/examples/classifier/chapters_section.example.json](examples/classifier/chapters_section.example.json)
-  - back_matter.json
-  - { span: [start_char, end_char], text_sha256, warnings: string[] }
-  - Schema: [docs/schemas/classifier/back_matter.schema.json](schemas/classifier/back_matter.schema.json)
-  - Example: [docs/examples/classifier/back_matter.example.json](examples/classifier/back_matter.example.json)
+- txt_path: UTF-8 text with Unix newlines ("\n").
+- Block loading:
+  - Split on blank-line boundaries using regex like `\n\s*\n+`.
+  - Preserve inner whitespace and line breaks inside each block.
+  - Drop empty/whitespace-only blocks.
+  - Blocks are immutable; indexing is zero-based everywhere.
+  - Spans are inclusive: `[start_block, end_block]`.
 
-Notes
+## Outputs (four files)
 
-- page_markers capture page numbers detected and their location in the continuous text (global line index). Body text excludes page-number-only lines; mixed-content lines are cleaned if the page number token can be safely removed (warning recorded).
+Default directory: `data/clean/<book>/classified` (overridable).
 
-## Determinism
+- toc.json
+  - { entries: Array<{ chapter_index: number, title: string, start_block: number, end_block: number }> }
+- chapters.json
+  - { chapters: Array<{ chapter_index: number, title: string, start_block: number, end_block: number, paragraphs: string[] }> }
+- front_matter.json
+  - { span_blocks: [start:number, end:number] | [-1,-1] when empty, paragraphs: string[], warnings: string[] }
+- back_matter.json
+  - { span_blocks: [start:number, end:number] | [-1,-1] when empty, paragraphs: string[], warnings: string[] }
 
-- All rules heuristic and order-stable.
-- No network/ML calls.
-- Results depend only on input text and fixed regex/thresholds.
+Field names and shapes must match the example artifacts (ex_toc.json, ex_chapters.json) and current code.
 
-## Pipeline (high level)
+## TOC detection and use
 
-1. Preprocess
+- Detect a TOC heading via regex anchored at the start of a line (allow leading whitespace): `/^\s*(table of contents|contents)\b/i`.
+- After the heading, look ahead up to 5 blocks for TOC-like chapter list lines. Characteristics:
+  - Bullet is optional (•, -, *, or none).
+  - Case-insensitive; arbitrary whitespace allowed.
+  - Accept forms like: `Chapter 1: Title`, `1. Title`, `I. Title`, `Prologue`, `Epilogue`, optionally with dot leaders.
+- If the lookahead doesn’t present at least two TOC-like lines → error and exit.
+- Parse TOC entries (title and optional ordinal).
+- Find the first body block whose heading matches the first TOC entry by title (preferred) or ordinal (fallback). Once found, the TOC region is from the heading block index to the block before this first chapter block.
 
-- Normalize whitespace; keep page_index; preserve line boundaries.
-- Page numbers:
-  - If an entire line is a page number (e.g., `12`, `Page 12`, roman numerals), remove the line from body and record a page_marker.
-  - If a line contains content plus an apparent page number token, attempt to remove just the number token; record a page_marker and emit a warning.
-  - If ambiguous, keep the line as-is; record a warning.
+## Chapter matching and spans
 
-1. TOC Detection
+- For each TOC entry, locate its chapter heading block in the body:
+  - Match by title primarily (case-insensitive, whitespace-tolerant, minimal normalization).
+  - Fallback to matching by ordinal (`Chapter N`).
+  - Accept `Prologue` and `Epilogue` as chapters.
+  - Multiple chapter headings in one block → error and exit.
+  - TOC entry whose heading isn’t found → error and exit.
+- Each chapter is a contiguous, inclusive block range: `[start_block, end_block]`.
+  - The heading block is paragraph index 0 in that chapter’s `paragraphs` array.
+  - `end_block` is the block before the next chapter’s `start_block`; the last chapter ends at the last block.
 
-- Signals:
-  - Page contains keywords: /\\b(contents|table of contents)\\b/i
-  - Dotted leaders ratio: lines matching /.{3,}\\s\*\\d+$/
-  - Lines ending with page numbers: /\\d+$/
-  - Ascending page numbers across entries
-  - Entry density: many short lines
-- Output: toc entries [{title,page}] and toc_pages.
+## Front/back matter and unclaimed blocks
 
-1. Heading Detection (Body)
+- Maintain a `claimed` boolean per block (TOC + chapters claim their spans).
+- Front matter: all unclaimed blocks before the first chapter, excluding TOC blocks.
+- Back matter: all unclaimed blocks after the last chapter.
+- Before writing artifacts, if any unclaimed blocks remain, log a WARNING with their indices; at DEBUG, also log their contents.
 
-- Regexes:
-  - Chapter: /^(chapter)\\s+(\\d+|[IVXLCDM]+)\\b/i
-  - Numeric-only title: /^(\\d{1,3})$/
-  - Roman numeral line: /^(?:[IVXLCDM]+)$/
-  - Prologue/Epilogue: /\\b(prologue|epilogue)\\b/i
-  - Part: /^(part)\\s+(\\d+|[IVXLCDM]+)\\b/i
-- Heuristics:
-  - UPPERCASE short line (\<= 32 chars) with high alpha ratio
-  - Proximity to page top (first 10 lines)
+## Determinism and constraints
 
-1. Page Scoring + Labels
+- Pure regex/string heuristics; no network/ML.
+- Order-stable and deterministic: same input produces identical outputs.
+- Zero-based, inclusive spans in all outputs.
 
-- front signals: /copyright|isbn|all rights reserved|dedication|foreword|preface|prologue/i
-- back signals: /acknowledgments|about the author|reading group guide|afterword|notes|glossary|appendix|preview/i
-- toc signals: from TOC detection
-- body: default when chapter/part/prologue/epilogue/heading signals present
-- Produce label and confidence per page; include signals for explainability.
+## Error modes
 
-1. Smoothing
+- No TOC heading or insufficient TOC-like items in lookahead → error.
+- Multiple chapter headings in the same block → error.
+- TOC entry whose heading cannot be located in the body → error.
+- Overlapping or unsorted chapter spans (shouldn’t occur with the algorithm) → error.
 
-- Enforce logical order: Front → TOC? → Body → Back using a tiny state machine.
+## Tests (minimum)
 
-1. Section Spans
-
-- Compute spans for front_matter, toc, chapters_section, back_matter within the continuous text buffer.
-- Persist four JSON files with spans and metadata as described above.
-
-- If TOC present: anchor chapter starts to toc.page with ±1–2 page tolerance.
-- Else: use heading pages as starts.
-- Ends: next start_page − 1 (last chapter ends at last body page).
-- Validate: mismatch between expected (TOC count) and detected; emit warnings.
-
-## Output Schema Details
-
-- TOC entries `title` must be treated as-is; normalization only for whitespace trim when comparing.
-- When later used for title matching, titles must appear as the only entity on a line (anchor to line start/end), case- and space-insensitive.
+- Happy path: TOC present with `Chapter N: Title`; all chapters matched; verify indices and paragraphs grouped correctly.
+- Prologue/Epilogue variants.
+- TOC present but a chapter title mismatch → raises with clear message.
+- Multiple chapter headings in a single block → raises.
 
 ## Integration
 
-- Classifier outputs are stored as four separate JSON files under the classified folder for downstream chapterization.
-- Volume Manifest and Chapter JSON remain unchanged in v1.0; they may reference classifier outputs via paths in future versions.
-- Upstream source-of-truth for downstream slicing and annotation: `chapters_section.json`. Chapterizer must rely on the `chapters_section` span from this artifact to build `chapters.json`, and TXT→Structured should use those chapter slices to produce paragraphs[] with preserved blank lines.
-
-## Tests (minimal)
-
-- Happy path: TOC present, numeric Chapter N headings; assert chapter count and page anchors.
-- No TOC: detect headings; ensure front/back blocks identified.
-- Roman numerals: detect CHAPTER IV style.
-- Edge: epigraph page between header and first paragraph (should remain body; not a chapter start).
-
-## Future (optional)
-
-- Language-specific keyword lists.
-- Learning thresholds per book (but keep deterministic).
-- Per-chapter offset mapping (char offsets into concatenated text).
-
-## Finite State Machine
-
-Diagram: [docs/diagrams/section_classifier_fsm.mmd](diagrams/section_classifier_fsm.mmd)
-
-UML (component/service): [docs/diagrams/section_classifier_uml.mmd](diagrams/section_classifier_uml.mmd)
-
-States
-
-- Front (Front Matter)
-- TOC
-- Body
-- Back (Back Matter)
-- End
-
-Events (evaluated per page)
-
-- E_front: front signals present (copyright, isbn, dedication, foreword, preface, prologue)
-- E_toc: TOC signals ("Contents", dotted leaders, lines ending with numbers, entry density)
-- E_heading: heading signals (Chapter/Part/Prologue/Epilogue regex, UPPERCASE short line, numeric-only, Roman numerals)
-- E_back: back signals (acknowledgments, about the author, reading group guide, afterword, notes, glossary, appendix, preview)
-- E_page_num_line: line is page-number-only; remove and record marker
-- E_eof: end of pages
-
-Guards
-
-- G_toc_detected: we are on a TOC page or contiguous TOC continues
-- G_anchor_match: page matches TOC anchor within ± tolerance
-- G_after_last_chapter: expected chapters (from TOC) reached
-- G_sustained_back: >= 2 consecutive back-signal pages
-
-Transitions
-
-- Front → TOC: E_toc
-- Front → Body: E_heading OR (!E_toc AND !E_front)
-- Front → Front: E_front AND !E_heading AND !E_toc
-- TOC → TOC: G_toc_detected
-- TOC → Body: E_heading OR !G_toc_detected
-- Body → Body: NOT (E_back AND (G_after_last_chapter OR G_sustained_back))
-- Body → Back: E_back AND (G_after_last_chapter OR G_sustained_back)
-- Back → Back: NOT E_eof
-- Back → End: E_eof
-- Body → End: E_eof
-- TOC → End: E_eof
-- Front → End: E_eof
-- Any → same: E_page_num_line (remove line, record marker; does not affect state)
+- Downstream components consume `chapters.json` paragraphs and chapter indices directly; blocks remain the source of truth.
+- `txt_to_structured_json` can use chapter spans to produce per-chapter structured outputs if needed.
