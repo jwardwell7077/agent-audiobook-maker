@@ -100,7 +100,8 @@ ingest: init_dirs
 
 pdf_to_text:
 	@$(VENV_GUARD)
-	python -m abm.ingestion.pdf_to_text_cli $(FILE) $(OUT)
+	# Deprecated: use ingest_pdf instead
+	python -m abm.ingestion.ingest_pdf --help
 
 ######################
 # DATABASE / ALEMBIC
@@ -156,9 +157,9 @@ run_api:
 # Produce cleaned text from the local mvs PDF (dev only). Creates mvs.txt and mvs_nopp.txt.
 dev_mvs_txt:
 	@$(VENV_GUARD)
-	$(ACTIVATE) python -m abm.ingestion.pdf_to_text_cli \
+	$(ACTIVATE) python -m abm.ingestion.ingest_pdf \
 		data/books/mvs/source_pdfs/MyVampireSystem_CH0001_0700.pdf \
-		data/clean/mvs/mvs.txt --preserve-form-feeds --dev
+		--out-dir data/clean/mvs --mode dev --preserve-form-feeds
 
 # Run the classifier CLI on local mvs text and write artifacts under data/clean/mvs/classified
 dev_mvs_classify:
@@ -168,12 +169,10 @@ dev_mvs_classify:
 
 # Run the chapterizer CLI on local mvs text and emit chapters.json and readable variants
 dev_mvs_chapterize:
-	@$(VENV_GUARD)
-	$(ACTIVATE) python -m abm.structuring.chapterizer_cli \
-		data/clean/mvs/mvs.txt data/clean/mvs/chapters.json --dev
+	@echo "Chapterizer removed; see classifier outputs for chapter info."
 
 # One-shot: pdf->text --dev, classifier, chapterizer --dev
-dev_mvs_all: dev_mvs_txt dev_mvs_classify dev_mvs_chapterize
+dev_mvs_all: dev_mvs_txt dev_mvs_classify
 
 # Fast unit tests only
 test_quick:

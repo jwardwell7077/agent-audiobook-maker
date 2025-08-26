@@ -92,7 +92,7 @@ Error modes and edge cases
 ## Task Plan
 
 - [ ] Implement `src/ingestion/pdf_to_text.py` with a small `PdfToTextOptions` dataclass and `extract(pdf_path, out_path, options)` using PyMuPDF (fitz).
-- [ ] Add a thin CLI wrapper: `python -m src.ingestion.pdf_to_text_cli input.pdf output.txt --no-dedupe-whitespace --preserve-form-feeds`.
+- Deprecated: Use `python -m abm.ingestion.ingest_pdf <pdf> --out-dir <dir> [--mode dev] [--preserve-form-feeds]` instead of the old pdf_to_text_cli.
 - [ ] Tests: golden samples with tiny fixture PDFs; determinism test; encrypted/invalid file tests.
 - [ ] Wire into Makefile optional target `make pdf_to_text FILE=... OUT=...`.
 

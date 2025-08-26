@@ -90,9 +90,11 @@ Start with these documents in order:
 ### Running the Ingestion Pipeline
 
 ```bash
-# Process a PDF into structured chapters
-python -m abm.ingestion.pdf_to_text_cli input.pdf
-```text
+# Ingest a PDF → raw + well-done text (+ optional DB insert)
+python -m abm.ingestion.ingest_pdf input.pdf --mode both
+# To also generate JSONL and insert to Postgres if DATABASE_URL is Postgres:
+python -m abm.ingestion.ingest_pdf input.pdf --mode both --insert-pg
+```
 
 ### Working with LangFlow Components
 

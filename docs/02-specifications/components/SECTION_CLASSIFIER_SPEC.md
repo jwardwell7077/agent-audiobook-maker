@@ -86,4 +86,4 @@ Field names and shapes must match the example artifacts (ex_toc.json, ex_chapter
 ## Integration
 
 - Downstream components consume `chapters.json` paragraphs and chapter indices directly; blocks remain the source of truth.
-- `txt_to_structured_json` can use chapter spans to produce per-chapter structured outputs if needed.
+- Downstream can derive per-chapter JSON from JSONL blocks using chapter spans when needed.
