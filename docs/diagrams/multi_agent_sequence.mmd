@@ -1,0 +1,55 @@
+sequenceDiagram
+    autonumber
+    participant PDF as PDF
+    participant Ingest as Ingestion Orchestrator
+    participant FS as File System
+    participant DB as Postgres (JSONB)
+    participant Struct as SectionClassifier
+    participant Dlg as DialogueClassifierAgent
+    participant Spk as SpeakerAttributionAgent
+    participant Alias as AliasResolverAgent
+    participant CastA as CastingAssistantAgent
+    participant CastD as CastingDirectorAgent
+    participant SSML as SSMLAgent
+    participant TTS as TTSAgent
+    participant Mast as MasteringAgent
+
+    PDF->>Ingest: Load source PDF
+    Ingest->>FS: Write well_done.jsonl + meta
+    Ingest->>DB: Upsert book, chapters (hashes, payload)
+
+    Struct->>FS: Read JSONL blocks
+    Struct->>FS: Write chapters.json, toc.json
+    Struct->>DB: Update chapter payload (sections)
+
+    Dlg->>FS: Read chapters.json
+    Dlg->>FS: Write utterances.jsonl
+    Dlg->>DB: Insert/Update annotations (counts, hashes)
+
+    Spk->>FS: Read utterances.jsonl
+    Spk->>DB: Read characters
+    Spk->>DB: Upsert characters
+    Spk->>DB: Update annotations (speaker labels)
+
+    Alias->>DB: Read characters
+    Alias->>DB: Update characters.profile (aliases)
+
+    CastA->>DB: Read characters
+    CastA->>FS: Write character_profiles.json
+    CastA->>DB: Update characters.profile (traits scaffold)
+
+    CastD->>DB: Read characters
+    CastD->>DB: Upsert tts_profiles
+    CastD->>FS: Write casting_plan.json
+
+    SSML->>FS: Read utterances + casting
+    SSML->>FS: Write SSML files
+    SSML->>DB: Update annotations (ssml paths)
+
+    TTS->>FS: Read SSML files
+    TTS->>FS: Write stems
+    TTS->>DB: Insert stems rows
+
+    Mast->>FS: Read stems
+    Mast->>FS: Write chapter render (WAV)
+    Mast->>DB: Upsert renders row

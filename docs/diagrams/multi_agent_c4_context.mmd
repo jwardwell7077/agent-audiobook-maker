@@ -1,0 +1,18 @@
+C4Context
+    title Agent Audiobook Maker – System Context (MVP)
+
+    Person(operator, "Operator", "Runs CLI locally; reviews outputs")
+
+    System_Boundary(abm, "Agent Audiobook Maker (Local Machine)") {
+      System(cli, "CLI/Orchestrator", "Runs pipeline and agents; deterministic resume")
+      SystemDb(pg, "Postgres", "JSONB: books, chapters, annotations, characters, tts_profiles, stems, renders")
+      System(fs, "Filesystem", "data/: clean, annotations, ssml, stems, renders")
+      System(agents, "Agents Suite", "Dialogue, Speaker, Alias, Casting, SSML, TTS, Mastering")
+    }
+
+    Rel(operator, cli, "Invokes, monitors")
+    Rel(cli, pg, "Reads/Writes")
+    Rel(cli, fs, "Reads/Writes")
+    Rel(cli, agents, "Invokes")
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")

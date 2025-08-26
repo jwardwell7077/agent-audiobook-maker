@@ -14,6 +14,10 @@ This section contains all the technical diagrams that illustrate how the Agent A
 | 📊 **UML Diagrams** | Class structures and relationships | `uml/two-agent-system-uml.md` |
 | 🗄️ **Database Schema** | Data models and relationships | `database/two-agent-system-database-schema.md` |
 | 📋 **Early Design Evolution** | Initial concepts and alternative approaches | `supplementary/early-design-diagrams.md` |
+| 🧩 **Multi-Agent (MVP)** | Sequence and C4 views for MVP | `../diagrams/multi_agent_sequence.mmd`, `../diagrams/multi_agent_c4_context.mmd`, `../diagrams/multi_agent_c4_container.mmd` |
+| 🧭 **C4 – System Overview** | Context view of the whole system | `../diagrams/c4_system_overview.mmd` |
+| 📦 **C4 – Ingestion Component** | Internals of ingestion subsystem | `../diagrams/c4_ingestion_component.mmd` |
+| 🧪 **C4 – LangFlow Container** | Prototype flow containers and IO | `../diagrams/c4_langflow_container.mmd` |
 
 ## Architecture Diagrams
 
