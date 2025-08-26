@@ -47,7 +47,7 @@ ignore_missing_imports = false
 mypy_path = ["src"]
 
 [[tool.mypy.overrides]]
-module = ["fitz"]
+module = ["fitz", "psycopg", "psycopg.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
