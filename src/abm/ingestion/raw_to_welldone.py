@@ -61,4 +61,3 @@ class RawToWellDone:
             if opts.dedupe_inline_spaces:
                 joined = "\n".join(re.sub(r" {2,}", " ", ln) for ln in joined.splitlines())
         return joined
-

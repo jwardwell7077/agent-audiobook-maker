@@ -120,25 +120,22 @@ def _build_meta_for_wd(wd_p: Path, blocks: list[str], ingest_meta_path: str | Pa
     }
 
 
-def main(argv: list[str] | None = None) -> int:
+if __name__ == "__main__":
     import argparse
     import sys
+
     parser = argparse.ArgumentParser(description="Well-done text → JSONL + meta")
     parser.add_argument("input", help="Path to well-done .txt")
     parser.add_argument("--out-dir", help="Output directory (defaults to input dir)")
-    args = parser.parse_args(argv)
+    args = parser.parse_args()
     try:
         written = WellDoneToJSONL().convert(Path(args.input), Path(args.out_dir) if args.out_dir else None)
         for k, p in written.items():
             print(f"wrote {k}: {p}")
-        return 0
+        sys.exit(0)
     except FileNotFoundError as exc:
         print(f"Error: {exc}", file=sys.stderr)
-        return 2
+        sys.exit(2)
     except Exception as exc:  # pragma: no cover
         print(f"Unexpected error: {exc}", file=sys.stderr)
-        return 1
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+        sys.exit(1)

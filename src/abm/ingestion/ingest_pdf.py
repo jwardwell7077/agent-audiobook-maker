@@ -163,6 +163,7 @@ def _default_out_dir(p: Path) -> Path:
 def main(argv: list[str] | None = None) -> int:
     import argparse
     import sys
+
     parser = argparse.ArgumentParser(description="Ingest PDF → (raw|well-done) text + meta")
     parser.add_argument("input", help="Path to input PDF")
     parser.add_argument("--out-dir", help="Output directory (defaults to data/clean/<book>/)")
