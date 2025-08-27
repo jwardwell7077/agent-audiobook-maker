@@ -8,4 +8,3 @@ These mimic the output of the well-done → JSONL converter used by the ingestio
 Files:
 
 - tiny_book.jsonl — minimal preface + TOC + two chapters + epilogue
-
