@@ -1,8 +1,8 @@
 {
-  "book": "tiny",
-  "source_well_done": "tests/data/jsonl/tiny_book.txt",
-  "block_count": 9,
-  "immutable": true,
-  "ingested_from": null,
-  "options": null
+    "book": "tiny",
+    "source_well_done": "tests/data/jsonl/tiny_book.txt",
+    "block_count": 9,
+    "immutable": true,
+    "ingested_from": null,
+    "options": null
 }
