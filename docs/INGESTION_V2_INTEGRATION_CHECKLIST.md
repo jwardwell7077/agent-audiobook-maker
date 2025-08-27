@@ -10,6 +10,7 @@ This checklist helps integrate the updated ingestion pipeline docs into the proj
 
 - Update `docs/README.md` (or the top-level `README.md`) to reference the new ingestion v2 document.
 - If there are older ingestion specs (e.g., `PDF_TO_TEXT_SPEC.md`, `TXT_TO_JSON_SPEC.md`), add deprecation notes and links to v2.
+- Ensure top-level `README.md` and `docs/README.md` link to `INGESTION_PIPELINE_V2.md`.
 
 ## CLI references
 
