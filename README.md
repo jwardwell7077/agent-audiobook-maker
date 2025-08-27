@@ -40,6 +40,8 @@ Source: [docs/diagrams/high_level_architecture.mmd](docs/diagrams/high_level_arc
 
 Full documentation index: [docs/README.md](docs/README.md)
 
+Ingestion Pipeline v2 overview: [docs/INGESTION_PIPELINE_V2.md](docs/INGESTION_PIPELINE_V2.md)
+
 **Two-Agent System**: The annotation pipeline now features a hybrid dialogue classifier (heuristic + AI fallback) and speaker attribution agent with PostgreSQL character database integration. See [Two-Agent System Documentation](docs/02-specifications/components/two-agent-dialogue-speaker-system.md) for complete specifications.
 
 ```mermaid
