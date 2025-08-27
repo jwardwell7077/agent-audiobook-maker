@@ -10,6 +10,6 @@ mdformat==0.7.17
 mdformat-gfm==0.3.6
 mdformat-frontmatter==2.0.8
 pymarkdownlnt==0.9.32
-langflow
+langflow>=1.5
 requests
 psycopg[binary]
