@@ -280,25 +280,25 @@ class ABMEnhancedChapterLoader(Component):
 ### **Step 2: Batch Processing Pipeline**
 
 ```
-ABMEnhancedChapterLoader → ChunkIterator → ABMDialogueClassifier → ABMSpeakerAttribution → ResultsAggregator → JSONLWriter
+ABMEnhancedChapterLoader → BlockIterator → ABMDialogueClassifier → ABMSpeakerAttribution → ResultsAggregator → JSONLWriter
 ```
 
-### **Step 3: Chunk Iterator Component**
+### **Step 3: Block Iterator Component**
 
 ```python
-class ABMChunkIterator(Component):
-    display_name = "ABM Chunk Iterator"
-    description = "Process chunks one by one through the two-agent pipeline"
+class ABMBlockIterator(Component):
+    display_name = "ABM Block Iterator"
+    description = "Process blocks one by one through the two-agent pipeline"
     
-    def process_chunks(self) -> Data:
-        """Iterate through chunks and prepare for agent processing"""
+    def process_blocks(self) -> Data:
+        """Iterate through blocks and prepare for agent processing"""
         
-        chunks_data = self.chunks_data.data
-        chunks = chunks_data.get("chunks", [])
+    chunks_data = self.chunks_data.data
+    chunks = chunks_data.get("chunks", [])
         
         processed_results = []
         
-        for chunk in chunks:
+    for chunk in chunks:
             # Prepare data for Agent 1 (Dialogue Classifier)
             utterance_data = {
                 "utterance_text": chunk["text"],
@@ -406,7 +406,7 @@ class ABMChunkIterator(Component):
 
 ### **Phase 2: Batch Processing (Week 2)**
 
-1. ✅ Implement chunk iterator for batch processing  
+1. ✅ Implement block iterator for batch processing  
 2. ✅ Add progress tracking and error handling
 3. ✅ Create results aggregation component
 4. ✅ Test full chapter processing

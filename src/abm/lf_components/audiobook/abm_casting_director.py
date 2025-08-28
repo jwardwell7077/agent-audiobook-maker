@@ -94,7 +94,7 @@ class ABMCastingDirector(Component):
         speaker_norm = (speaker or "").strip()
         # 1) Direct assignment map
         assignments = (bank.get("assignments") or {}) if isinstance(bank, dict) else {}
-        voices = (bank.get("voices") or []) if isinstance(bank, dict) else []
+        voices: list[dict[str, Any]] = (bank.get("voices") or []) if isinstance(bank, dict) else []
         voice_by_id = {v.get("id"): v for v in voices if isinstance(v, dict) and v.get("id")}
 
         # Exact speaker match

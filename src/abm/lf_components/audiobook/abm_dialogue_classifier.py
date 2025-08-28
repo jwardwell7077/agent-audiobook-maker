@@ -14,7 +14,7 @@ from typing import Any, cast
 
 import requests
 from langflow.custom import Component
-from langflow.io import DataInput, DropdownInput, FloatInput, IntInput, MessageTextInput, Output
+from langflow.io import BoolInput, DataInput, DropdownInput, FloatInput, IntInput, MessageTextInput, Output
 from langflow.schema import Data
 
 logger = logging.getLogger(__name__)
@@ -32,7 +32,7 @@ class ABMDialogueClassifier(Component):
             name="utterance_data",
             display_name="Utterance Data",
             info=(
-                "Full utterance payload (from ABMChunkIterator). If provided, this overrides individual "
+                "Full utterance payload (from ABMBlockIterator). If provided, this overrides individual "
                 "text/context/id fields. Expected keys: utterance_text, book_id, chapter_id, utterance_idx, "
                 "context_before, context_after."
             ),
@@ -81,6 +81,12 @@ class ABMDialogueClassifier(Component):
             options=["heuristic_only", "llm_enhanced", "hybrid"],
             value="hybrid",
         ),
+        BoolInput(
+            name="disable_llm",
+            display_name="Disable LLM Calls",
+            info="Force heuristic-only behavior regardless of method",
+            value=True,
+        ),
         FloatInput(
             name="confidence_threshold",
             display_name="Confidence Threshold",
@@ -93,8 +99,8 @@ class ABMDialogueClassifier(Component):
         Output(display_name="Classified Utterance", name="classified_utterance", method="classify_utterance"),
     ]
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
+        super().__init__(*args, **kwargs)
         # Load configuration from environment
         self.ollama_base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
         self.primary_model = os.getenv("OLLAMA_PRIMARY_MODEL", "llama3.2:3b")
@@ -377,7 +383,11 @@ Classification:"""
             )
 
             # Use LLM enhancement if confidence is low or method requires it
-            if method in ["llm_enhanced", "hybrid"] and confidence < threshold:
+            if (
+                not getattr(self, "disable_llm", True)
+                and method in ["llm_enhanced", "hybrid"]
+                and confidence < threshold
+            ):
                 llm_class, llm_conf, llm_method = self.llm_classification(text, context_before, context_after)
 
                 if method == "llm_enhanced":

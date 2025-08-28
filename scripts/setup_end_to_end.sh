@@ -17,7 +17,7 @@ echo "📁 Component Directory: $LANGFLOW_COMPONENTS_DIR"
 # List all new components
 echo "📝 Available Components:"
 echo "  ✅ ABMEnhancedChapterLoader - Smart chapter loading and chunking"
-echo "  ✅ ABMChunkIterator - Batch processing management" 
+echo "  ✅ ABMBlockIterator - Batch processing management" 
 echo "  ✅ ABMResultsAggregator - Results collection and validation"
 echo "  ✅ ABMDialogueClassifier - Agent 1 (existing)"
 echo "  ✅ ABMSpeakerAttribution - Agent 2 (existing)"

@@ -1,0 +1,71 @@
+flowchart LR
+	%% LangFlow Architecture for Audiobook Maker
+	%% Core entry points
+	start([User selects book/chapter])
+twoRunner["ABM Two-Agent Runner<br/>(ABMTwoAgentRunner)"]
+
+		%% Core processing components
+		subgraph CORE[Core Processing]
+			direction LR
+		chapterSel["ABM Chapter Selector<br/>(ABMChapterSelector)"]
+		loader["ABM Enhanced Chapter Loader<br/>(ABMEnhancedChapterLoader)"]
+		chunker["ABM Block Iterator<br/>(ABMBlockIterator)"]
+		classifier["ABM Dialogue Classifier<br/>(ABMDialogueClassifier)"]
+		attrib["ABM Speaker Attribution<br/>(ABMSpeakerAttribution)"]
+		aggregator["ABM Results Aggregator<br/>(ABMResultsAggregator)"]
+		norm["ABM Results → Utterances<br/>(ABMResultsToUtterances)"]
+		end
+
+		%% Optional classification path
+		subgraph ALT[Optional Segmentation/Classification]
+			direction TB
+		seg["ABM Segment Dialogue Narration"]
+		dncls["ABM Dialogue Narration Classifier<br/>(ABMDialogueNarrationClassifier)"]
+		end
+
+		%% Post-processing / output
+		subgraph OUTPUT[Outputs]
+			direction LR
+		jsonlAgg["ABM Aggregated JSONL Writer"]
+		jsonlAgg["ABM Aggregated JSONL Writer<br/>(ABMAggregatedJsonlWriter)"]
+		jsonlUtter["ABM Utterance JSONL Writer<br/>(ABMUtteranceJsonlWriter)"]
+		collect["Character Data Collector<br/>(ABMCharacterDataCollector)"]
+		cast["ABM Casting Director<br/>(ABMCastingDirector)"]
+		end
+
+		%% Data artifacts
+		chapters[("data/clean/<book>/classified/chapters.json")]
+		utterFile[("output/utterances.jsonl")]
+		metaFile[("output/utterances.jsonl.meta.json")]
+
+		%% Flow wiring (core)
+		start --> twoRunner
+		start -. manual wiring .-> chapterSel
+		chapterSel --> loader
+		chapters -. reads .-> loader
+		loader --> chunker
+		chunker --> classifier
+		classifier --> attrib
+		attrib --> aggregator
+		aggregator --> norm
+
+		%% Two-agent runner outputs aggregated results directly
+		twoRunner -->|Aggregated Results| aggregator
+
+		%% Optional alt path
+		loader -. optional .-> seg --> dncls --> attrib
+
+		%% Outputs
+		norm --> jsonlAgg --> utterFile
+		jsonlAgg --> metaFile
+		norm --> jsonlUtter
+		norm --> collect --> cast
+
+		%% Notes
+		classDef note fill:#eef,stroke:#99f,stroke-width:1px,color:#000
+		N1["Deterministic mode: set disable_llm=true on classifier for tests"]:::note
+		N2["0-based chapter_index, 1-based UI input"]:::note
+		N3["ABM Two-Agent Runner is a convenience wrapper for CORE path"]:::note
+		classifier --- N1
+		loader --- N2
+		twoRunner --- N3
