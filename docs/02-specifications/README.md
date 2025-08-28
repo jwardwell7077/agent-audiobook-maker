@@ -24,9 +24,9 @@ Detailed specifications for each system component
 
 **Ingestion Pipeline:**
 
-- [PDF to Text Spec](components/PDF_TO_TEXT_SPEC.md) - Text extraction from PDF files (Deprecated; see [INGESTION_PIPELINE_V2.md](../INGESTION_PIPELINE_V2.md))
+- [PDF to Text Spec](components/PDF_TO_TEXT_SPEC.md) - Text extraction from PDF files
 - PDF to Text CLI is deprecated; use the consolidated ingest_pdf CLI
-- [Text to JSON Spec](components/TXT_TO_JSON_SPEC.md) - Text structuring (Deprecated; see [INGESTION_PIPELINE_V2.md](../INGESTION_PIPELINE_V2.md))
+- [Text to JSON Spec](components/TXT_TO_JSON_SPEC.md) - Text structuring
 
 **Classification & Structuring:**
 

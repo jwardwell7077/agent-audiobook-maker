@@ -58,7 +58,7 @@ def _detect_and_parse_toc(blocks: list[str]) -> TOCDetection:
         raise ValueError("TOC heading not found")
 
     # Look ahead up to 5 blocks for TOC-like lines
-    look = blocks[idx + 1: idx + 6]
+    look = blocks[idx + 1 : idx + 6]
     score = 0
     collected_lines: list[str] = []
     for b in look:
@@ -69,47 +69,28 @@ def _detect_and_parse_toc(blocks: list[str]) -> TOCDetection:
     if score < 2:
         raise ValueError("TOC heading found but no TOC items ahead")
 
-    # Parse items from heading block forward until first body content is encountered.
-    # Heuristic: after the heading block (j > idx), a block belongs to the TOC only if
-    # every non-blank line in that block is a TOC-like item line. If a block mixes
-    # TOC-like lines with other content (e.g., a real chapter heading plus body text),
-    # we treat that as the end of the TOC and do not consume that block.
+    # Parse items from heading block forward until first body chapter heading is encountered
     items: list[dict[str, Any]] = []
     toc_end = idx
     for j in range(idx, min(len(blocks), idx + 1000)):
         toc_end = j
         lines = [ln.strip() for ln in blocks[j].splitlines() if ln.strip()]
-
-        # Identify TOC-like lines in this block
-        item_matches = [m for ln in lines if (m := _TOC_ITEM_RE.match(ln))]
-
-        if j == idx:
-            # In the heading block, collect any item lines present, even if mixed with the heading line.
-            for m in item_matches:
-                title = m.group("title").strip()
-                num = None
-                mnum = re.search(r"chapter\s+(\d+)", m.group(0), flags=re.IGNORECASE)
-                if mnum:
-                    num = int(mnum.group(1))
-                items.append({"ordinal": num, "title": title})
-            continue
-
-        # After the heading block: stop if there are no TOC items
-        if not item_matches:
-            break
-
-        # If this block mixes TOC-like lines with other content, treat it as body and stop before it
-        if len(item_matches) != len(lines):
-            break
-
-        # Otherwise, all lines are TOC items; collect them
-        for m in item_matches:
+        any_item = False
+        for ln in lines:
+            m = _TOC_ITEM_RE.match(ln)
+            if not m:
+                continue
+            any_item = True
             title = m.group("title").strip()
+            # Extract ordinal if present
             num = None
-            mnum = re.search(r"chapter\s+(\d+)", m.group(0), flags=re.IGNORECASE)
+            mnum = re.search(r"chapter\s+(\d+)", ln, flags=re.IGNORECASE)
             if mnum:
                 num = int(mnum.group(1))
             items.append({"ordinal": num, "title": title})
+        if not any_item and j > idx:
+            # Stop when a non-TOC block appears after initial items
+            break
     toc_end = max(idx, toc_end)
     if not items:
         raise ValueError("No TOC entries parsed")
@@ -221,7 +202,7 @@ def classify_sections(inputs: dict[str, Any]) -> dict[str, Any]:
                 "title": title,
                 "start_block": start_idx,
                 "end_block": end_idx,
-                "paragraphs": blocks[start_idx: end_idx + 1],
+                "paragraphs": blocks[start_idx : end_idx + 1],
             }
         )
 

@@ -14,10 +14,6 @@ This section contains all the technical diagrams that illustrate how the Agent A
 | 📊 **UML Diagrams** | Class structures and relationships | `uml/two-agent-system-uml.md` |
 | 🗄️ **Database Schema** | Data models and relationships | `database/two-agent-system-database-schema.md` |
 | 📋 **Early Design Evolution** | Initial concepts and alternative approaches | `supplementary/early-design-diagrams.md` |
-| 🧩 **Multi-Agent (MVP)** | Sequence and C4 views for MVP | `../diagrams/multi_agent_sequence.mmd`, `../diagrams/multi_agent_c4_context.mmd`, `../diagrams/multi_agent_c4_container.mmd` |
-| 🧭 **C4 – System Overview** | Context view of the whole system | `../diagrams/c4_system_overview.mmd` |
-| 📦 **C4 – Ingestion Component** | Internals of ingestion subsystem | `../diagrams/c4_ingestion_component.mmd` |
-| 🧪 **C4 – LangFlow Container** | Prototype flow containers and IO | `../diagrams/c4_langflow_container.mmd` |
 
 ## Architecture Diagrams
 
@@ -41,11 +37,11 @@ graph TB
     subgraph "Content Analysis"
         TextProcessor --> Classifier[Section Classifier]
         PdfToText --> Classifier
-        Classifier --> Annotator[Metadata Generation]
+        Classifier --> Chapterizer[Chapter Structure]
     end
     
     subgraph "Annotation Pipeline"  
-        Classifier --> Segmenter[Dialogue/Narration]
+        Chapterizer --> Segmenter[Dialogue/Narration]
         Segmenter --> Annotator[Metadata Generation]
     end
     
@@ -73,14 +69,13 @@ graph TB
 **Text file to structured annotation workflow**
 
 - **Process**: Text → Classification → Segmentation → Annotation
-- **Components**: Section classifier, chapterizer (deprecated), dialogue segmenter
+- **Components**: Section classifier, chapterizer, dialogue segmenter
 - **Quality control**: Validation at each stage
 - **Output**: Structured JSON with rich metadata
 
 ## Component State Machines
 
 ### 📚 [Chapterizer FSM](chapterizer_fsm.mmd)
-Note: The Chapterizer component is deprecated; chapter structure is derived from the Section Classifier outputs.
 
 **Finite state machine for chapter detection and structuring**
 
@@ -165,12 +160,14 @@ sequenceDiagram
     participant Input as Input Files
     participant Processor as Text Processor
     participant Classifier as Section Classifier  
+    participant Chapterizer as Chapter Structure
     participant Annotator as Annotation Engine
     participant Output as Structured Output
     
     Input->>Processor: Raw text/PDF
     Processor->>Classifier: Clean text
-    Classifier->>Annotator: Classified sections + chapter spans
+    Classifier->>Chapterizer: Classified sections
+    Chapterizer->>Annotator: Chapter structure  
     Annotator->>Output: Annotated JSONL
 ```text
 
