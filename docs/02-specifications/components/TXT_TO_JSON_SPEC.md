@@ -1,8 +1,6 @@
-# TXT → Structured JSON – Design Spec (Deprecated)
+# TXT → Structured JSON – Design Spec
 
 Last updated: 2025-08-25
-
-Deprecated: This specification has been superseded by the ingestion pipeline v2 which outputs canonical well-done text blocks and JSONL artifacts consumed downstream. See docs/INGESTION_PIPELINE_V2.md and src/abm/ingestion/welldone_to_json.py.
 
 Depends on: Simple TXT extracted from PDF and optionally the classified artifacts (chapters_section span) to scope per-chapter conversion.
 
@@ -36,8 +34,8 @@ Convert a plain-text chapter into a structured JSON representation that preserve
 1. Read text and normalize line endings to LF if normalize_eol=true.
 2. Split into lines.
 3. Group lines into paragraphs:
- - A blank line starts a new paragraph.
- - If preserve_lines=true, retain explicit blank lines by appending "\n\n" to the preceding paragraph.
+  - A blank line starts a new paragraph.
+  - If preserve_lines=true, retain explicit blank lines by appending "\n\n" to the preceding paragraph.
 4. Trim trailing whitespace; do not collapse internal whitespace.
 5. Compute stats and sha256.
 6. Emit JSON.

@@ -1,14 +1,12 @@
-# PDF → Text — Full Design Spec (Deprecated)
+# PDF → Text — Full Design Spec
 
-Status: Deprecated
+Status: Draft
 Owner: jon
 Last updated: 2025-08-21
 
 ## Overview
 
 Purpose: Extract clean UTF‑8 text from PDFs quickly and reproducibly for downstream segmentation and annotation using PyMuPDF (fitz) exclusively. Scope: local‑first, deterministic extraction from digital PDFs (non‑scanned). OCR is out of scope for this slice.
-
-Deprecated: This standalone component has been superseded by the unified ingestion pipeline v2, which handles extraction and artifact emission. See docs/INGESTION_PIPELINE_V2.md.
 
 Assumptions and constraints
 

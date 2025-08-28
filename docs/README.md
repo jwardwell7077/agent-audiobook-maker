@@ -15,8 +15,7 @@ Welcome to the documentation hub! This project transforms raw text into structur
 ### Need Something Specific?
 
 - 📋 **Specifications** → [02-specifications/](02-specifications/README.md)
-- � **Ingestion Pipeline v2** → [INGESTION_PIPELINE_V2.md](INGESTION_PIPELINE_V2.md)
-- �🛠️ **Implementation** → [03-implementation/](03-implementation/README.md)  
+- 🛠️ **Implementation** → [03-implementation/](03-implementation/README.md)  
 - 📊 **Diagrams** → [04-diagrams/](04-diagrams/README.md)
 - 🔍 **Troubleshooting** → [06-appendices/TROUBLESHOOTING.md](06-appendices/TROUBLESHOOTING.md)
 
