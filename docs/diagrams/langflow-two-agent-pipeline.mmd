@@ -1,0 +1,37 @@
+flowchart LR
+  %% Audio Book Maker - Two-Agent LangFlow Pipeline
+  %% Nodes
+  A["Enhanced Chapter Loader\n(ABMEnhancedChapterLoader)"]
+  B["Block Iterator\n(ABMBlockIterator)"]
+  C["Dialogue Classifier\n(ABMDialogueClassifier)\ndisable_llm=true by default"]
+  D["Speaker Attribution\n(ABMSpeakerAttribution)"]
+  E["Results Aggregator\n(ABMResultsAggregator)"]
+  F["Results to Utterances\n(ABMResultsToUtterances)\nnormalizes to v0.2 schema"]
+  G[("Aggregated JSONL Writer\n(ABMAggregatedJsonlWriter)\noutputs: utterances.jsonl + .meta.json")]
+
+  %% Data Artifacts
+  DA[("data/clean/<book>/classified/chapters.json\n(0-based chapter_index)")]
+  DB[("output/utterances.jsonl")]
+  DM["output/utterances.meta.json"]
+
+  %% Flow
+  DA -. reads .-> A
+  A -->|chunks| B
+  B -->|block| C
+  C -->|classified chunk| D
+  D -->|utterance with speaker| E
+  E -->|results| F
+  F -->|utterances v0.2| G
+  G -->|records| DB
+  G -->|sidecar| DM
+
+  %% Notes
+  N1["Run offline deterministically by keeping\ndisable_llm=true."]
+  N2["Wrappers under lf_components/abm expose\nsrc/abm/lf_components/audiobook to LangFlow."]
+  N3["Loader falls back to classified/chapters.json\nand supports 0-based chapter_index."]
+  N4["Normalization schema:\nbook_id, chapter_id, utterance_idx, role, text, speaker,\nspeaker_confidence, context_before/after"]
+
+  C --- N1
+  B --- N2
+  A --- N3
+  E --- N4

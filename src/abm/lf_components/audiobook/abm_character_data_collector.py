@@ -11,12 +11,11 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 from langflow.custom import Component
-from langflow.io import DataInput, StrInput, Output
+from langflow.io import DataInput, Output, StrInput
 from langflow.schema import Data
-
 
 logger = logging.getLogger(__name__)
 
@@ -96,7 +95,7 @@ class ABMCharacterDataCollector(Component):
             }
         )
 
-    def _build_character_registry(self, utterances: List[Dict], book_id: str) -> Dict[str, Any]:
+    def _build_character_registry(self, utterances: list[dict], book_id: str) -> dict[str, Any]:
         """Build character registry with basic statistics."""
         characters = {}
         chapters_seen = set()
@@ -104,7 +103,7 @@ class ABMCharacterDataCollector(Component):
         for utterance in utterances:
             speaker = utterance.get("speaker", "UNKNOWN")
             chapter_id = utterance.get("chapter_id", "unknown")
-            chapter_title = utterance.get("chapter_title", "Unknown Chapter")
+            # chapter_title available if needed later
             utterance_idx = utterance.get("utterance_idx", 0)
             role = utterance.get("role", "unknown")
             text = utterance.get("text", "")
@@ -151,7 +150,7 @@ class ABMCharacterDataCollector(Component):
 
         return registry
 
-    def _collect_dialogue(self, utterances: List[Dict], book_id: str) -> List[Dict[str, Any]]:
+    def _collect_dialogue(self, utterances: list[dict], book_id: str) -> list[dict[str, Any]]:
         """Collect all dialogue utterances by character."""
         dialogue_records = []
 
@@ -177,7 +176,7 @@ class ABMCharacterDataCollector(Component):
 
         return dialogue_records
 
-    def _collect_narration(self, utterances: List[Dict], book_id: str) -> List[Dict[str, Any]]:
+    def _collect_narration(self, utterances: list[dict], book_id: str) -> list[dict[str, Any]]:
         """Collect narration that mentions or describes characters."""
         narration_records = []
 
@@ -206,10 +205,10 @@ class ABMCharacterDataCollector(Component):
     def _write_data_files(
         self,
         output_path: Path,
-        character_registry: Dict[str, Any],
-        dialogue_records: List[Dict[str, Any]],
-        narration_records: List[Dict[str, Any]],
-    ) -> Dict[str, Any]:
+        character_registry: dict[str, Any],
+        dialogue_records: list[dict[str, Any]],
+        narration_records: list[dict[str, Any]],
+    ) -> dict[str, Any]:
         """Write collected data to files."""
 
         try:
@@ -258,7 +257,7 @@ class ABMCharacterDataCollector(Component):
 
         return normalized
 
-    def _get_context_before(self, utterances: List[Dict], current_utterance: Dict) -> str:
+    def _get_context_before(self, utterances: list[dict], current_utterance: dict) -> str:
         """Get context text before the current utterance."""
         current_idx = current_utterance.get("utterance_idx", 0)
 
@@ -270,7 +269,7 @@ class ABMCharacterDataCollector(Component):
 
         return ""
 
-    def _get_context_after(self, utterances: List[Dict], current_utterance: Dict) -> str:
+    def _get_context_after(self, utterances: list[dict], current_utterance: dict) -> str:
         """Get context text after the current utterance."""
         current_idx = current_utterance.get("utterance_idx", 0)
 

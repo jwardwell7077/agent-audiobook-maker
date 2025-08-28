@@ -1,7 +1,7 @@
 """ABM Dialogue Narration Classifier Component for LangFlow."""
 
 from langflow.custom import Component
-from langflow.io import DataInput, FloatInput, Output, StrInput
+from langflow.io import DataInput, DropdownInput, FloatInput, MessageTextInput, Output
 from langflow.schema import Data
 
 
@@ -18,7 +18,7 @@ class ABMDialogueNarrationClassifier(Component):
             info="Data containing chapters to classify",
             required=True,
         ),
-        StrInput(
+        DropdownInput(
             name="classification_method",
             display_name="Classification Method",
             info="Method to use: 'quotes', 'llm', 'hybrid'",
@@ -26,7 +26,7 @@ class ABMDialogueNarrationClassifier(Component):
             options=["quotes", "llm", "hybrid"],
             required=True,
         ),
-        StrInput(
+        MessageTextInput(
             name="llm_model",
             display_name="LLM Model",
             info="LLM model to use if method is 'llm' or 'hybrid'",

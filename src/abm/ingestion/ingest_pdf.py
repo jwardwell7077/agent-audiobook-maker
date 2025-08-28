@@ -5,8 +5,8 @@ This module composes:
 - raw_to_welldone.RawToWellDone for reflow and cleanup (paragraph-preserving).
 
 Modes:
-- dev: write only raw output (closest to the source), minimal processing.
-- both (default): write both raw and well-done outputs.
+- dev: write raw + well-done + meta + JSONL; stub DB insert logs to stdout.
+- prod: write nothing to disk; process in-memory and stub DB insert logs "in-memory".
 """
 
 from __future__ import annotations
@@ -17,7 +17,6 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Any
 
-from abm.ingestion.db_insert import PgInserter
 from abm.ingestion.pdf_to_raw_text import RawExtractOptions, RawPdfTextExtractor
 from abm.ingestion.raw_to_welldone import RawToWellDone, WellDoneOptions
 from abm.ingestion.welldone_to_json import WellDoneToJSONL
@@ -27,8 +26,8 @@ from abm.ingestion.welldone_to_json import WellDoneToJSONL
 class PipelineOptions:
     # write form-feed between pages in raw
     preserve_form_feeds: bool = False
-    # dev mode instructs pipeline to persist intermediate well-done text as a file
-    mode: str = "both"  # "dev" | "both"
+    # mode: "dev" writes artifacts; "prod" writes nothing to disk
+    mode: str = "dev"  # "dev" | "prod"
     # well-done options
     reflow_paragraphs: bool = True
     dehyphenate_wraps: bool = True
@@ -43,7 +42,9 @@ class PdfIngestPipeline:
         opts = opts or PipelineOptions()
         pdf_p = Path(pdf_path)
         out_d = Path(out_dir)
-        out_d.mkdir(parents=True, exist_ok=True)
+        # Only ensure output directory in dev where we write files
+        if opts.mode == "dev":
+            out_d.mkdir(parents=True, exist_ok=True)
 
         # Extract raw (in-memory)
         extractor = RawPdfTextExtractor()
@@ -61,9 +62,11 @@ class PdfIngestPipeline:
         )
 
         written: dict[str, Path] = {}
-        raw_path = out_d / (pdf_p.stem + "_raw.txt")
-        raw_path.write_text(raw_text, encoding="utf-8")
-        written["raw"] = raw_path
+        raw_path: Path | None = None
+        if opts.mode == "dev":
+            raw_path = out_d / (pdf_p.stem + "_raw.txt")
+            raw_path.write_text(raw_text, encoding="utf-8")
+            written["raw"] = raw_path
 
         # Always compute well-done in memory; in dev mode we also persist the intermediate file
         wd_path: Path | None = None
@@ -77,31 +80,33 @@ class PdfIngestPipeline:
                 strip_trailing_spaces=opts.strip_trailing_spaces,
             ),
         )
-        if opts.mode in ("dev", "both"):
+        if opts.mode == "dev":
             wd_path = out_d / (pdf_p.stem + "_well_done.txt")
             wd_path.write_text(well, encoding="utf-8")
             written["well_done"] = wd_path
 
-        # Write a sidecar meta JSON for downstream tools
-        meta = _build_meta(pdf_p, out_d, raw_path, wd_path, opts)
-        meta_path = out_d / (pdf_p.stem + "_ingest_meta.json")
-        meta_path.write_text(_json_dumps(meta) + "\n", encoding="utf-8")
-        written["meta"] = meta_path
+        # Meta handling depends on mode
+        if opts.mode == "dev":
+            assert raw_path is not None  # for type-checkers
+            meta = _build_meta(pdf_p, out_d, raw_path, wd_path, opts)
+            meta_path = out_d / (pdf_p.stem + "_ingest_meta.json")
+            meta_path.write_text(_json_dumps(meta) + "\n", encoding="utf-8")
+            written["meta"] = meta_path
+        else:  # prod
+            meta = _build_meta_ephemeral(pdf_p, out_d, opts)
+            meta_path = None
 
-        # Optional: convert well-done to JSONL and insert into Postgres
-        if opts.insert_to_pg:
-            base_name = f"{pdf_p.stem}_well_done"
+        # JSONL + DB insert (stubbed)
+        base_name = f"{pdf_p.stem}_well_done"
+        if opts.mode == "dev":
+            # Produce JSONL artifacts on disk
             conv = WellDoneToJSONL()
             out_paths = conv.convert_text(well, base_name=base_name, out_dir=out_d, ingest_meta_path=meta_path)
             written["jsonl"] = out_paths["jsonl"]
             written["jsonl_meta"] = out_paths["meta"]
-            inserter = PgInserter()
-            res = inserter.insert_from_jsonl(out_paths["jsonl"], out_paths["meta"])
-            # Best-effort: we don't fail the pipeline on DB issues; print a note
-            try:
-                print(f"pg_insert: {res.status}{' - ' + (res.reason or '') if res.reason else ''}")
-            except Exception:
-                pass
+            _stub_db_insert(mode="dev", base_name=base_name, jsonl_path=out_paths["jsonl"], meta_path=out_paths["meta"])
+        else:  # prod: no files, stub insert with in-memory payloads
+            _stub_db_insert(mode="prod", base_name=base_name, well_text=well, meta=meta)
 
         return written
 
@@ -167,13 +172,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Ingest PDF → (raw|well-done) text + meta")
     parser.add_argument("input", help="Path to input PDF")
     parser.add_argument("--out-dir", help="Output directory (defaults to data/clean/<book>/)")
-    parser.add_argument("--mode", choices=["dev", "both"], default="both")
+    parser.add_argument("--mode", choices=["dev", "prod"], default="dev")
     parser.add_argument("--preserve-form-feeds", action="store_true")
     parser.add_argument("--no-reflow", action="store_true")
     parser.add_argument("--no-dehyphenate", action="store_true")
     parser.add_argument("--no-dedupe-spaces", action="store_true")
     parser.add_argument("--no-strip-trailing", action="store_true")
-    parser.add_argument("--insert-pg", action="store_true", help="Generate JSONL and insert into Postgres if available")
+    # insert-pg is unused now; JSONL generation and DB insert are stubbed
+    parser.add_argument("--insert-pg", action="store_true", help="(no-op) legacy flag")
     args = parser.parse_args()
 
     pdf_p = Path(args.input)
@@ -186,7 +192,7 @@ if __name__ == "__main__":
         dehyphenate_wraps=not args.no_dehyphenate,
         dedupe_inline_spaces=not args.no_dedupe_spaces,
         strip_trailing_spaces=not args.no_strip_trailing,
-        insert_to_pg=args.insert_pg,
+        insert_to_pg=False,
     )
     try:
         written = PdfIngestPipeline().run(pdf_p, out_dir, opts)
@@ -202,3 +208,49 @@ if __name__ == "__main__":
     except Exception as exc:  # pragma: no cover
         print(f"Unexpected error: {exc}", file=sys.stderr)
         sys.exit(1)
+
+
+def _build_meta_ephemeral(pdf_p: Path, out_d: Path, opts: PipelineOptions) -> dict[str, Any]:
+    """Build a minimal meta object without requiring any written files.
+
+    Only includes fields safe to compute in memory. Used in prod mode.
+    """
+    parts = list(pdf_p.parts)
+    book = None
+    try:
+        idx = parts.index("books")
+        if idx + 1 < len(parts):
+            book = parts[idx + 1]
+    except ValueError:
+        book = None
+    return {
+        "book": book,
+        "source_pdf": str(pdf_p),
+        "out_dir": str(out_d),
+        "mode": opts.mode,
+        "options": asdict(opts),
+    }
+
+
+def _stub_db_insert(
+    *,
+    mode: str,
+    base_name: str,
+    jsonl_path: Path | None = None,
+    meta_path: Path | None = None,
+    well_text: str | None = None,
+    meta: dict[str, Any] | None = None,
+) -> None:
+    """Print a friendly DB stub message. Swallow print errors.
+
+    - In dev mode, expects jsonl_path/meta_path (written on disk).
+    - In prod mode, expects in-memory well_text/meta.
+    """
+    try:
+        if mode == "dev":
+            print(f"[DB STUB] Would insert JSONL '{base_name}' from {jsonl_path} with meta {meta_path}")
+        else:
+            print(f"[DB STUB] Would insert '{base_name}' from in-memory well-done text; meta=in-memory")
+    except Exception:
+        # Ensure tests confirm we swallow print exceptions
+        pass

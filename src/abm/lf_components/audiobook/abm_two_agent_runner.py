@@ -1,7 +1,7 @@
 """Two-Agent Pipeline Runner (CLI)
 
 Wires audiobook components for an end-to-end run:
-Loader -> Chunk Iterator -> Dialogue Classifier -> Speaker Attribution -> Aggregator
+Loader -> Block Iterator -> Dialogue Classifier -> Speaker Attribution -> Aggregator
 """
 
 from __future__ import annotations
@@ -12,7 +12,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from abm.lf_components.audiobook.abm_chunk_iterator import ABMChunkIterator
+from abm.lf_components.audiobook.abm_block_iterator import ABMBlockIterator
 from abm.lf_components.audiobook.abm_dialogue_classifier import ABMDialogueClassifier
 from abm.lf_components.audiobook.abm_enhanced_chapter_loader import ABMEnhancedChapterLoader
 from abm.lf_components.audiobook.abm_results_aggregator import ABMResultsAggregator
@@ -43,7 +43,7 @@ def run(
         raise RuntimeError(f"Loader error: {chunked_data.data['error']}")
 
     # 2) Create iterator
-    iterator = ABMChunkIterator(
+    iterator = ABMBlockIterator(
         chunked_data=chunked_data,
         batch_size=batch_size,
         start_chunk=start_chunk,
@@ -81,12 +81,12 @@ def run(
         classified = classifier.classify_utterance()  # Data
 
         # 3b) Attribute speaker
-    attribution = ABMSpeakerAttribution(classified_utterance=classified).attribute_speaker()  # Data
+        attribution = ABMSpeakerAttribution(classified_utterance=classified).attribute_speaker()  # Data
 
-    # 3c) Aggregate (accumulate per utterance)
-    aggregator.attribution_result = attribution
-    aggregator.aggregate_results()  # accumulate state inside
-    total += 1
+        # 3c) Aggregate (accumulate per utterance)
+        aggregator.attribution_result = attribution
+        aggregator.aggregate_results()  # accumulate state inside
+        total += 1
 
     assert results is not None
     results["runner_metadata"] = {

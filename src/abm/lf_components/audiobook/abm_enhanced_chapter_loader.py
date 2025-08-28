@@ -8,13 +8,13 @@ from pathlib import Path
 from typing import Any
 
 from langflow.custom import Component
-from langflow.io import BoolInput, IntInput, Output, StrInput
+from langflow.io import IntInput, Output, StrInput
 from langflow.schema import Data
 
 
 class ABMEnhancedChapterLoader(Component):
     display_name = "ABM Enhanced Chapter Loader"
-    description = "Load and intelligently chunk MVS chapters for two-agent processing"
+    description = "Load chapter and emit one chunk per paragraph (block) with sentence context"
     icon = "book-open"
     name = "ABMEnhancedChapterLoader"
 
@@ -34,31 +34,17 @@ class ABMEnhancedChapterLoader(Component):
             required=True,
         ),
         IntInput(
-            name="max_chunk_size",
-            display_name="Max Chunk Size (words)",
-            info="Maximum words per chunk for LLM processing",
-            value=300,
-            required=False,
-        ),
-        IntInput(
             name="context_sentences",
             display_name="Context Sentences",
             info="Number of sentences for context before/after",
             value=2,
             required=False,
         ),
-        BoolInput(
-            name="preserve_dialogue",
-            display_name="Preserve Dialogue Boundaries",
-            info="Don't split dialogue quotes across chunks",
-            value=True,
-            required=False,
-        ),
         StrInput(
             name="base_data_dir",
             display_name="Data Directory Path",
-            info="Absolute path to data directory",
-            value="/home/jon/repos/audio-book-maker-lg/data/clean",
+            info="Path to data directory (relative or absolute)",
+            value="data/clean",
             required=False,
         ),
         StrInput(
@@ -105,21 +91,31 @@ class ABMEnhancedChapterLoader(Component):
             # Prefer explicit override if provided
             if getattr(self, "chapters_file", ""):
                 chapters_path = Path(self.chapters_file)
+                candidates = [chapters_path]
             else:
-                chapters_path = Path(self.base_data_dir) / self.book_name / "chapters.json"
+                base = Path(self.base_data_dir) / self.book_name
+                candidates = [
+                    base / "chapters.json",
+                    base / "classified" / "chapters.json",
+                    base / "classified" / "ex_chapters.json",
+                ]
 
-            if not chapters_path.exists():
-                error_msg = f"Chapters file not found: {chapters_path}"
+            chapters_path = next((p for p in candidates if p.exists()), None)
+            if not chapters_path:
+                tried = ", ".join(str(p) for p in candidates)
+                error_msg = f"Chapters file not found. Tried: {tried}"
                 self.status = f"Error: {error_msg}"
                 return Data(data={"error": error_msg})
 
             with open(chapters_path, encoding="utf-8") as f:
                 chapters_data = json.load(f)
 
-            # Find target chapter
+            # Find target chapter, supporting both 1-based 'index' and 0-based 'chapter_index'
             target_chapter = None
             for chapter in chapters_data.get("chapters", []):
-                if chapter.get("index") == self.chapter_index:
+                idx = chapter.get("index")
+                cidx = chapter.get("chapter_index")
+                if idx == self.chapter_index or (isinstance(cidx, int) and cidx == self.chapter_index - 1):
                     target_chapter = chapter
                     break
 
@@ -134,11 +130,11 @@ class ABMEnhancedChapterLoader(Component):
                 error_msg = f"Chapter {self.chapter_index} is missing required paragraphs[] in {chapters_path}"
                 self.status = f"Error: {error_msg}"
                 return Data(data={"error": error_msg})
-            chapter_text = "\n\n".join(p for p in paragraphs if isinstance(p, str))
+            # paragraphs are authoritative; no need to join into chapter_text here
 
-            # Chunk the chapter text
-            chunks = self._chunk_chapter_text(
-                chapter_text, target_chapter.get("title", f"Chapter {self.chapter_index}")
+            # Paragraph/block-based chunking (only mode)
+            chunks = self._chunks_from_paragraphs(
+                paragraphs, target_chapter.get("title", f"Chapter {self.chapter_index}")
             )
 
             # Prepare output data
@@ -158,7 +154,9 @@ class ABMEnhancedChapterLoader(Component):
                 },
             }
 
-            self.status = f"Loaded and chunked {len(chunks)} segments from {target_chapter['title']}"
+            self.status = (
+                f"Loaded {len(paragraphs)} paragraphs and created {len(chunks)} chunks from {target_chapter['title']}"
+            )
             return Data(data=result_data)
 
         except Exception as e:
@@ -166,44 +164,39 @@ class ABMEnhancedChapterLoader(Component):
             self.status = f"Error: {error_msg}"
             return Data(data={"error": error_msg})
 
-    def _chunk_chapter_text(self, chapter_text: str, chapter_title: str) -> list[dict[str, Any]]:
-        """Chunk chapter text into optimal segments for LLM processing."""
-        if not chapter_text:
-            return []
+    def _chunks_from_paragraphs(self, paragraphs: list[str], chapter_title: str) -> list[dict[str, Any]]:
+        """Create one chunk per paragraph, with sentence-based context windows.
 
-        # Split into sentences with dialogue awareness
-        sentences = self._split_into_sentences(chapter_text)
+        - Uses the chapter's flattened sentence list to compute context_before/after
+          around each paragraph boundary.
+        - Preserves paragraph boundaries as chunk boundaries.
+        """
+        # Build sentence lists per paragraph and a flattened chapter sentence list
+        sentences_by_par: list[list[str]] = [self._split_into_sentences(p or "") for p in paragraphs]
+        all_sentences: list[str] = [s for plist in sentences_by_par for s in plist]
 
         chunks: list[dict[str, Any]] = []
-        current_chunk: list[str] = []
-        current_size = 0
         chunk_id = 1
 
-        for i, sentence in enumerate(sentences):
-            sentence_words = len(sentence.split())
+        # Track running sentence offset to locate paragraph position in chapter
+        offset = 0
+        for plist, paragraph_text in zip(sentences_by_par, paragraphs, strict=True):
+            # Current index is end of paragraph in flattened sentence list
+            current_index = offset + len(plist)
 
-            # Check if adding sentence exceeds max size
-            if current_size + sentence_words > self.max_chunk_size and current_chunk:
-                # Flush current chunk
-                chunk_text = " ".join(current_chunk).strip()
-                if chunk_text:
-                    chunks.append(self._create_chunk(chunk_text, chunk_id, sentences, i, current_chunk, chapter_title))
-                    chunk_id += 1
-
-                # Start new chunk
-                current_chunk = [sentence]
-                current_size = sentence_words
-            else:
-                current_chunk.append(sentence)
-                current_size += sentence_words
-
-        # Don't forget final chunk
-        if current_chunk:
-            chunk_text = " ".join(current_chunk).strip()
-            if chunk_text:
-                chunks.append(
-                    self._create_chunk(chunk_text, chunk_id, sentences, len(sentences), current_chunk, chapter_title)
-                )
+            # Reuse existing chunk builder to compute metadata and context
+            # Provide the paragraph's sentences as the current_chunk parameter
+            chunk = self._create_chunk(
+                (paragraph_text or "").strip(),
+                chunk_id,
+                all_sentences,
+                current_index,
+                plist,
+                chapter_title,
+            )
+            chunks.append(chunk)
+            chunk_id += 1
+            offset = current_index
 
         return chunks
 
