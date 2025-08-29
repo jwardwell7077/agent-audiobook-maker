@@ -51,10 +51,21 @@ COMPONENTS_PATH="${LANGFLOW_COMPONENTS_PATH:-$DEFAULT_COMPONENTS_PATH}"
 # Ensure LANGFLOW_COMPONENTS_PATH is exported for LangFlow's auto-discovery
 export LANGFLOW_COMPONENTS_PATH="$COMPONENTS_PATH"
 
+LOG_LEVEL_LOWER=$(echo "${LOG_LEVEL:-info}" | tr '[:upper:]' '[:lower:]')
+# If DEBUG_MODE is true, force debug logging
+if [[ "${DEBUG_MODE:-false}" == "true" ]]; then
+  LOG_LEVEL_LOWER="debug"
+fi
+
+# Log file path (default to repo root)
+LOG_FILE_PATH="${LANGFLOW_LOG_FILE:-${REPO_ROOT}/langflow.log}"
+
 echo "Launching LangFlow with components on http://${HOST}:${PORT}"
 echo " - Python path: ${PYTHONPATH}"
 echo " - Components path: ${COMPONENTS_PATH}"
 echo " - LANGFLOW_COMPONENTS_PATH: ${LANGFLOW_COMPONENTS_PATH}"
+echo " - Log level: ${LOG_LEVEL_LOWER}"
+echo " - Log file: ${LOG_FILE_PATH}"
 echo " - Import from 'abm.lf_components' or use auto-discovered custom components."
 
 # Show a quick inventory of custom components directory for debugging
@@ -64,10 +75,24 @@ if [[ -d "$COMPONENTS_PATH" ]]; then
 fi
 
 if [[ -d "$COMPONENTS_PATH" ]]; then
-  exec env LANGFLOW_COMPONENTS_PATH="$LANGFLOW_COMPONENTS_PATH" \
-    langflow run --host "$HOST" --port "$PORT" \
-    --components-path "$COMPONENTS_PATH"
+  if [[ "${DEBUG_MODE:-false}" == "true" ]]; then
+    exec env LANGFLOW_COMPONENTS_PATH="$LANGFLOW_COMPONENTS_PATH" \
+      langflow run --host "$HOST" --port "$PORT" \
+      --components-path "$COMPONENTS_PATH" \
+      --log-level "$LOG_LEVEL_LOWER" --log-file "$LOG_FILE_PATH" --dev
+  else
+    exec env LANGFLOW_COMPONENTS_PATH="$LANGFLOW_COMPONENTS_PATH" \
+      langflow run --host "$HOST" --port "$PORT" \
+      --components-path "$COMPONENTS_PATH" \
+      --log-level "$LOG_LEVEL_LOWER" --log-file "$LOG_FILE_PATH"
+  fi
 else
   echo "[run_langflow] Components path not found: $COMPONENTS_PATH (continuing without --components-path)" >&2
-  exec langflow run --host "$HOST" --port "$PORT"
+  if [[ "${DEBUG_MODE:-false}" == "true" ]]; then
+    exec langflow run --host "$HOST" --port "$PORT" \
+      --log-level "$LOG_LEVEL_LOWER" --log-file "$LOG_FILE_PATH" --dev
+  else
+    exec langflow run --host "$HOST" --port "$PORT" \
+      --log-level "$LOG_LEVEL_LOWER" --log-file "$LOG_FILE_PATH"
+  fi
 fi
