@@ -112,6 +112,22 @@ class ABMResultsAggregator(Component):
         # Get original classification info
         original_classification = attribution_data.get("original_classification", "unknown")
 
+        # Prefer dialogue text, but fall back to full/utterance text
+        text_value = (
+            attribution_data.get("dialogue_text")
+            or attribution_data.get("full_text")
+            or attribution_data.get("utterance_text", "")
+        )
+
+        full_text_value = (
+            attribution_data.get("full_text") or attribution_data.get("utterance_text") or dialogue_text or ""
+        )
+
+        # Sensible speaker fallback for narration
+        if (not character_name) and (original_classification or "").lower() == "narration":
+            character_name = "Narrator"
+            character_id = character_id or "narrator"
+
         # Create standardized result
         processed_result = {
             # Identification
@@ -119,8 +135,8 @@ class ABMResultsAggregator(Component):
             "chapter_id": attribution_data.get("chapter_id", ""),
             "utterance_idx": attribution_data.get("utterance_idx", 0),
             # Content
-            "text": attribution_data.get("dialogue_text", ""),
-            "full_text": attribution_data.get("full_text", dialogue_text),
+            "text": text_value,
+            "full_text": full_text_value,
             "classification": original_classification,
             # Speaker Attribution
             "character_id": character_id,
