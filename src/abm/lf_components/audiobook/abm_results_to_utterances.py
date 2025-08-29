@@ -37,20 +37,25 @@ class ABMResultsToUtterances(Component):
             return Data(data=data)
 
         results = data.get("results") or []
-        utterances = [
-            {
-                "book_id": r.get("book_id", ""),
-                "chapter_id": r.get("chapter_id", ""),
-                "utterance_idx": r.get("utterance_idx", 0),
-                "role": r.get("classification", "unknown"),
-                "text": r.get("text") or r.get("full_text", ""),
-                "speaker": r.get("character_name"),
-                "speaker_confidence": r.get("attribution_confidence"),
-                "context_before": r.get("context_before", ""),
-                "context_after": r.get("context_after", ""),
-            }
-            for r in results
-        ]
+        utterances = []
+        for r in results:
+            role_raw = (r.get("classification") or "unknown").lower()
+            role = "dialogue" if "dialogue" in role_raw else ("narration" if "narration" in role_raw else "unknown")
+            text_val = r.get("text") or r.get("full_text") or ""
+            speaker = r.get("character_name") or ("Narrator" if role == "narration" else "Unknown Speaker")
+            utterances.append(
+                {
+                    "book_id": r.get("book_id", ""),
+                    "chapter_id": r.get("chapter_id", ""),
+                    "utterance_idx": r.get("utterance_idx", 0),
+                    "role": role,
+                    "text": text_val,
+                    "speaker": speaker,
+                    "speaker_confidence": r.get("attribution_confidence"),
+                    "context_before": r.get("context_before", ""),
+                    "context_after": r.get("context_after", ""),
+                }
+            )
 
         payload = {
             "utterances": utterances,

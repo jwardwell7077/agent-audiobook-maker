@@ -146,8 +146,14 @@ class ABMSpeakerAttribution(Component):
         reasoning: str | None = None,
     ) -> dict[str, Any]:
         """Create standardized attribution result expected by the aggregator."""
-        character_name = speaker or "Unknown"
-        character_id = (speaker or "unknown").lower()
+        # Provide stable narrator fallback for non-dialogue
+        classification = (src.get("classification") or src.get("original_classification") or "").lower()
+        if not speaker and classification == "narration":
+            character_name = "Narrator"
+            character_id = "narrator"
+        else:
+            character_name = speaker or "Unknown"
+            character_id = (speaker or "unknown").lower()
 
         return {
             # Identification
