@@ -6,7 +6,16 @@ meta JSON describing the document.
 
 Contract:
 - Input: well-done text path; paragraphs are split on blank lines.
-- Output: <stem>_well_done.jsonl where each line is {index, text}.
+- Output: <stem>_well_done.jsonl where each line is a JSON object:
+    {
+        index: number,
+        text: string,
+        line_count: number,         # lines in this block
+        char_count: number,         # characters in this block
+        word_count: number,         # whitespace-delimited tokens in this block
+        start_line: number,         # 1-based start line in the original document
+        end_line: number            # 1-based end line (inclusive)
+    }
 - Meta: <stem>_well_done_meta.json with fields: book, source_well_done, block_count,
         created_at (UTC ISO), options (from ingest pipeline sidecar if present),
         ingested_from (ingest meta path if available), immutable: true.
@@ -41,17 +50,28 @@ class WellDoneToJSONL:
     ) -> dict[str, Path]:
         out_d = Path(out_dir)
         out_d.mkdir(parents=True, exist_ok=True)
-        blocks = _split_paragraphs(text)
+        blocks = _split_paragraphs_with_lines(text)
 
         jsonl_path = out_d / (base_name + ".jsonl")
         with jsonl_path.open("w", encoding="utf-8", newline="") as f:
             for i, blk in enumerate(blocks):
-                rec = {"index": i, "text": blk}
+                rec = {
+                    "index": i,
+                    "text": blk["text"],
+                    "line_count": blk["line_count"],
+                    "char_count": blk["char_count"],
+                    "word_count": blk["word_count"],
+                    "start_line": blk["start_line"],
+                    "end_line": blk["end_line"],
+                }
                 f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
         meta = _build_meta_for_wd(out_d / (base_name + ".txt"), blocks, ingest_meta_path=ingest_meta_path)
         meta_path = out_d / (base_name + "_meta.json")
-        meta_path.write_text(json.dumps(meta, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+        meta_path.write_text(
+            json.dumps(meta, ensure_ascii=False, separators=(",", ":")) + "\n",
+            encoding="utf-8",
+        )
 
         return {"jsonl": jsonl_path, "meta": meta_path}
 
@@ -70,12 +90,60 @@ class WellDoneToJSONL:
         return self.convert_text(text, wd_p.stem, out_d)
 
 
-def _split_paragraphs(text: str) -> list[str]:
-    parts = re.split(r"\n\s*\n+", text.replace("\r\n", "\n").replace("\r", "\n"))
-    return [p for p in parts if p and p.strip()]
+from typing import Any, List as _List, Dict as _Dict
 
 
-def _build_meta_for_wd(wd_p: Path, blocks: list[str], ingest_meta_path: str | Path | None = None) -> dict[str, Any]:
+def _split_paragraphs_with_lines(text: str) -> list[dict[str, Any]]:
+    """Split well-done text into paragraph blocks and record line spans.
+
+    Returns a list of dicts: {
+      text: str,
+      lines: list[str],
+      start_line: int,  # 1-based
+      end_line: int,    # inclusive
+    }
+    """
+    norm = text.replace("\r\n", "\n").replace("\r", "\n")
+    lines = norm.split("\n")
+    out: list[dict[str, Any]] = []
+    i = 0
+    L = len(lines)
+    line_no = 1  # 1-based numbering for original doc
+    while i < L:
+        # skip blank lines between paragraphs
+        while i < L and (lines[i].strip() == ""):
+            i += 1
+            line_no += 1
+        if i >= L:
+            break
+        start_ln = line_no
+        buf: list[str] = []
+        while i < L and (lines[i].strip() != ""):
+            buf.append(lines[i])
+            i += 1
+            line_no += 1
+        end_ln = line_no - 1
+        text_block = "\n".join(buf)
+        if text_block.strip():
+            out.append({
+                "text": text_block,
+                "lines": buf,
+                "start_line": start_ln,
+                "end_line": end_ln,
+                "line_count": len(buf),
+                "char_count": len(text_block),
+                "word_count": _word_count(text_block),
+            })
+        # loop continues; i points at a blank line or end; consume separator blanks in next iteration
+    return out
+
+
+def _word_count(s: str) -> int:
+    # Count non-whitespace token groups as words
+    return len(re.findall(r"\S+", s))
+
+
+def _build_meta_for_wd(wd_p: Path, blocks: list[Any], ingest_meta_path: str | Path | None = None) -> dict[str, Any]:
     # Attempt to find book name from directory structure if under data/clean/<book>/
     parts = list(wd_p.parts)
     book = None

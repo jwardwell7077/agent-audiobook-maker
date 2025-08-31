@@ -159,13 +159,13 @@ dev_mvs_txt:
 	@$(VENV_GUARD)
 	$(ACTIVATE) python -m abm.ingestion.ingest_pdf \
 		data/books/mvs/source_pdfs/MyVampireSystem_CH0001_0700.pdf \
-		--out-dir data/clean/mvs --mode dev --preserve-form-feeds
+		--out-dir data/clean/mvs --mode dev
 
-# Run the classifier CLI on local mvs text and write artifacts under data/clean/mvs/classified
+# Run the classifier CLI on local mvs JSONL and write artifacts under data/clean/mvs/classified
 dev_mvs_classify:
 	@$(VENV_GUARD)
 	$(ACTIVATE) python -m abm.classifier.classifier_cli \
-		data/clean/mvs/mvs.txt data/clean/mvs/classified
+		data/clean/mvs/mvs_ch_0001_0700_well_done.jsonl data/clean/mvs/classified
 
 # Run the chapterizer CLI on local mvs text and emit chapters.json and readable variants
 dev_mvs_chapterize:
@@ -183,6 +183,47 @@ test_quick:
 test_all_optional:
 	@$(VENV_GUARD)
 	ABM_E2E_MVS=$${ABM_E2E_MVS:-0} $(ACTIVATE) pytest -q
+
+
+######################
+# ARTIFACT CLEAN + GENERIC INGEST/CLASSIFY TASKS (no src edits)
+######################
+
+.PHONY: clean_artifacts clean_artifacts_apply ingest_pdf classify_well_done ingest_and_classify
+
+# Clean generated artifacts under data/clean/<book>
+# Usage: make clean_artifacts BOOK=mvs WHAT=all DRY_RUN=true
+BOOK?=mvs
+WHAT?=all             # classified | ingest | all
+DRY_RUN?=true         # true | false
+clean_artifacts:
+	bash scripts/clean_artifacts.sh $(BOOK) --what=$(WHAT) --dry-run=$(DRY_RUN)
+
+# Apply cleanup quickly
+clean_artifacts_apply:
+	bash scripts/clean_artifacts.sh $(BOOK) --what=$(WHAT) --dry-run=false
+
+# Ingest a PDF to raw/well_done + JSONL (wrapper around existing CLI)
+# Usage: make ingest_pdf PDF=path/to/book.pdf OUT_DIR=data/clean/<book> MODE=dev
+PDF?=data/books/mvs/source_pdfs/mvs_ch_0001_0700.pdf
+OUT_DIR?=data/clean/mvs
+MODE?=dev
+ingest_pdf:
+	@$(VENV_GUARD)
+	$(ACTIVATE) python scripts/ingest_nodb.py $(PDF) $(OUT_DIR)
+
+# Classify a well_done.jsonl into sections under classified/
+# Usage: make classify_well_done WELL_DONE=path/to/*_well_done.jsonl OUT_DIR=data/clean/<book>/classified
+# Classify a well_done.jsonl into sections under classified/
+# Usage: make classify_well_done WELL_DONE=path/to/*_well_done.jsonl OUT_DIR=data/clean/<book>/classified
+WELL_DONE?=$(OUT_DIR)/mvs_ch_0001_0700_well_done.jsonl
+CLASSIFIED_OUT?=$(OUT_DIR)/classified
+classify_well_done:
+	@$(VENV_GUARD)
+	$(ACTIVATE) python -m abm.classifier.classifier_cli $(WELL_DONE) $(CLASSIFIED_OUT)
+
+# Convenience combo: ingest then classify using variables above
+ingest_and_classify: ingest_pdf classify_well_done
 
 
 ######################

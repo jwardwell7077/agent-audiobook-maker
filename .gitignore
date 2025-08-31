@@ -223,6 +223,12 @@ data/books/LEGACY_PRIVATE_*/**
 # Ignore temp working directory (ephemeral artifacts)
 /temp/
 
+# Local scratch artifacts
+/tmp/
+
+# MVS artifacts (explicitly ignored even though data/** is ignored; guards against re-includes)
+data/clean/mvs/**
+
 # Added during sanitization
 logs/
 temp/LEGACY_PRIVATE_*
