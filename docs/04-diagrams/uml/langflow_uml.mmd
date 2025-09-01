@@ -308,8 +308,11 @@ classDiagram
     Component --> Output : defines
 
     %% Data Flow Dependencies (active minimal pipeline)
-    ABMChapterLoader --> ABMBlockIterator : blocks_data
-    ABMBlockIterator --> ABMDialogueClassifier : current_utterance
+    ABMChapterLoader --> ABMBlockSchemaValidator : blocks_data
+    ABMBlockSchemaValidator --> ABMMixedBlockResolver : validated_blocks
+    ABMMixedBlockResolver --> ABMSpanClassifier : spans
+    ABMSpanClassifier --> ABMSpanAttribution : spans_cls
+    ABMSpanAttribution --> ABMSpanIterator : spans_attr
     ABMDialogueClassifier --> ABMSpeakerAttribution : classified_utterance
     ABMSpeakerAttribution --> ABMResultsAggregator : attribution_result
     ABMResultsAggregator --> ABMResultsToUtterances : aggregated_results

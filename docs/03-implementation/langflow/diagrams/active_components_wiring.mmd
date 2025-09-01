@@ -1,41 +1,44 @@
 flowchart LR
-  %% Active two-agent wiring with unified Chapter Loader
+  %% Active components wiring (spans-first, pre-SSML)
 
   %% Style classes
   classDef core fill:#0d47a1,stroke:#0d47a1,color:#fff,stroke-width:2px
+  classDef art fill:#546e7a,stroke:#546e7a,color:#fff,stroke-width:2px
   classDef out fill:#1b5e20,stroke:#1b5e20,color:#fff,stroke-width:2px
-  classDef tap fill:#546e7a,stroke:#546e7a,color:#fff,stroke-width:2px
 
   %% Main pipeline nodes
   L[ABM Chapter Loader]
-  I[ABM Block Iterator]
-  C[ABM Dialogue Classifier]
-  S[ABM Speaker Attribution]
-  A[ABM Results Aggregator]
-  O[Chat Output]
-  U[ABM Results → Utterances]
-  JW[ABM Aggregated JSONL Writer]
-  CD[ABM Casting Director]
-  CDC[Character Data Collector]
+  V[ABM Block Schema Validator]
+  R[ABM Mixed-Block Resolver]
+  C[ABM Span Classifier]
+  A[ABM Span Attribution]
+  SP[ABM Style Planner]
+  IT[ABM Span Iterator]
+  CAST[ABM Span Casting]
+  WU[ABM Utterance JSONL Writer]
 
-  %% Main flow with labeled edges (port names)
-  L -- blocks_data: book_name chapter_index blocks[] --> I
-  I -- current_utterance: utterance_text context_before context_after book_id chapter_id utterance_idx hints --> C
-  C -- classified_utterance: classification confidence dialogue_text attribution_clues ids --> S
-  S -- attributed_utterance: character_name id confidence method reasoning context --> A
-  I -. completion_summary: processing_status=completed summary -.-> A
-  A -- aggregated_results: results[] statistics chapter_info --> O
-  A -- aggregated_results --> U
-  U -- utterances_data --> CD
-  U -- utterances_data --> JW
-  U -- utterances_data --> CDC
-  CD -- enriched_utterances --> O
+  %% Artifact taps
+  BJA[(blocks.jsonl)]
+  SJA[(spans.jsonl)]
+  SCA[(spans_cls.jsonl)]
+  SAT[(spans_attr.jsonl)]
+  SST[(spans_style.jsonl)]
 
-  %% Optional taps for inspection
-  L -. chapters_data .-> X1[(Inspect chapters_data)]
-  L -. chapter_data .-> X2[(Inspect chapter_data)]
+  %% Main flow
+  L -- blocks_data --> V -- validated_blocks --> R -- spans --> C -- spans_cls --> A -- spans_attr --> SP -- spans_style --> IT
+  A -. spans_attr .-> CAST
 
-  %% Class assignments
-  class L,I,C,S,A,U,CD,CDC core
-  class O,JW out
-  class X1,X2 tap
+  %% Writers
+  IT -- current_span --> WU
+
+  %% Artifact writes (optional)
+  V -. write .-> BJA
+  R -. write .-> SJA
+  C -. write .-> SCA
+  A -. write .-> SAT
+  SP -. write .-> SST
+
+  %% Classes
+  class L,V,R,C,A,SP,IT,CAST core
+  class BJA,SJA,SCA,SAT,SST art
+  class WU out

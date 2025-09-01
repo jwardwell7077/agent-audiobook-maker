@@ -11,7 +11,7 @@ This checklist ensures we have all the data needed to assemble effective SSML fo
 ## Core text and structure
 
 - [x] Utterance text (plain) — Done
-  - Source: ABMBlockIterator → `utterance_text`; Aggregator → `text`, `full_text`
+  - Source: ABMSpanIterator/Spans → `text_norm` (dialogue/narration); Aggregator/Normalizer → `text`, `full_text`
 - [x] Dialogue vs narration role — Done
   - Source: ABMDialogueClassifier → `classification`; Aggregator → `classification`
 - [x] Ordering/IDs for deterministic assembly — Done

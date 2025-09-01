@@ -2,6 +2,8 @@
 
 Note: Terminology updated. Previous references to "chunk(s)" are now "block(s)" in the codebase and flows.
 
+> Deprecation note (2025-09-01): The legacy component `ABMEnhancedChapterLoader` has been removed. Use the unified `ABMChapterLoader` which provides chapters_data, chapter_data, and blocks_data outputs with 0-based indices and normalized metadata.
+
 ## 📊 **Overview: Existing Data Structure**
 
 Your repository has rich structured data ready for LangFlow integration:
@@ -221,29 +223,33 @@ class EnhancedTextChunker:
 
 ## 🔗 **LangFlow Pipeline Integration**
 
-### **Step 1: Enhanced Chapter Loader**
+### **Step 1: Unified Chapter Loader (blocks)**
 
-Create an enhanced version of your existing loader:
+Use the unified chapter loader to obtain chapters and blocks:
 
 ```python
-class ABMEnhancedChapterLoader(Component):
-    display_name = "ABM Enhanced Chapter Loader"
-    description = "Load and intelligently chunk chapters for two-agent processing"
-    
-    inputs = [
-        StrInput(name="book_name", value="mvs"),
-        IntInput(name="chapter_index", value=1),
-        IntInput(name="max_chunk_size", value=500),
-        BoolInput(name="preserve_dialogue_boundaries", value=True),
-    ]
-    
-    def load_and_chunk_chapter(self) -> Data:
-        """Load chapter and return intelligently chunked segments"""
-        
-        # Load from your existing chapters.json
-        chapters_file = Path(f"data/clean/{self.book_name}/chapters.json")
-        with open(chapters_file) as f:
-            chapters_data = json.load(f)
+class ABMChapterLoader(Component):
+    display_name = "ABM Chapter Loader"
+    description = "Load chapters.json, select a chapter, and emit paragraph blocks"
+
+    # inputs include: book_name (str), base_data_dir (str), subdir (str),
+    # chapters_file (str), chapter_index (int, 0-based), context_sentences (int)
+
+    def load_and_blocks(self) -> Data:
+        ok, payload = self._read_chapters()
+        if not ok:
+            return Data(data=payload)
+        idx = int(getattr(self, "chapter_index", 0))
+        chapter = self._get_by_index(payload["chapters"], idx)
+        paragraphs = chapter.get("paragraphs") or []
+        blocks = self._blocks_from_paragraphs(paragraphs, chapter.get("title", f"Chapter {idx}"))
+        meta = {
+            "book_name": payload.get("book_name"),
+            "chapter_index": idx,
+            "chapter_title": chapter.get("title", ""),
+            "total_blocks": len(blocks),
+        }
+        return Data(data={"blocks": blocks, **meta})
         
         # Find target chapter
         target_chapter = None
@@ -281,14 +287,14 @@ class ABMEnhancedChapterLoader(Component):
 
 ### **Step 2: Batch Processing Pipeline**
 
-```
-ABMEnhancedChapterLoader → BlockIterator → ABMDialogueClassifier → ABMSpeakerAttribution → ResultsAggregator → JSONLWriter
+```text
+ABMChapterLoader (blocks_data) → ABMBlockSchemaValidator → ABMMixedBlockResolver → ABMSpanClassifier → ABMSpanAttribution → ABMSpanIterator (stream spans) → downstream writer/casting
 ```
 
 ### **Step 3: Block Iterator Component**
 
 ```python
-class ABMBlockIterator(Component):
+class ABMSpanIterator(Component):
     display_name = "ABM Block Iterator"
     description = "Process blocks one by one through the two-agent pipeline"
     
@@ -328,10 +334,10 @@ class ABMBlockIterator(Component):
 
 ### **Complete Real-Data Pipeline:**
 
-```
-1. ABMEnhancedChapterLoader (Load MVS Chapter 1)
+```text
+1. ABMChapterLoader (Load MVS Chapter 1; use blocks_data)
    ↓
-2. ChunkIterator (Break into processable chunks)  
+2. ABMSpanIterator (Iterate spans)
    ↓
 3. [FOR EACH CHUNK]
    ABMDialogueClassifier (Agent 1: Classify dialogue/narration)
@@ -357,10 +363,10 @@ class ABMBlockIterator(Component):
 
 #### **Component Settings:**
 
-1. **ABMEnhancedChapterLoader**:
-   - book_name: `mvs`
-   - chapter_index: `1` (Chapter 1: Just an old Book)
-   - max_chunk_size: `300` (optimal for LLM context)
+1. **ABMChapterLoader**:
+    - book_name: `mvs`
+    - chapter_index: `0` (0-based index)
+    - context_sentences: `2`
 
 2. **ABMDialogueClassifier**:
    - classification_method: `hybrid`

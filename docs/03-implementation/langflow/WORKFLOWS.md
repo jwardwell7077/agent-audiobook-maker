@@ -10,11 +10,11 @@ This document provides working examples of LangFlow workflows for different audi
 
 The MVP workflow demonstrates the complete audiobook processing pipeline using sample data.
 
-**Components**: ABMChapterLoader → ABMBlockIterator → ABMDialogueClassifier → ABMSpeakerAttribution → ABMResultsAggregator → ABM Results → Utterances → ABMAggregatedJsonlWriter
+**Components**: ABMChapterLoader → ABMBlockSchemaValidator → ABMMixedBlockResolver → ABMSpanClassifier → ABMSpanAttribution → (optional) ABMStylePlanner → ABMSpanIterator → ABM Results → Utterances → ABMAggregatedJsonlWriter
 
 ### Pre-built Flow
 
-**Location**: `examples/langflow/abm_full_pipeline.v15.json`
+**Location**: `examples/langflow/abm_spans_first_pipeline.v15.json`
 
 **Features**:
 
@@ -32,13 +32,14 @@ If building from scratch in LangFlow UI:
    - Set chapter_index: 1
    - Set base_data_dir: absolute path to `data/clean`
 
-2. **Add ABMBlockIterator**
+2. **Add ABMSpanIterator**
    - Connect Chapter Loader `blocks_data` → Iterator `blocks_data`
    - Use defaults for batch and priority
 
-3. **Add Classifier → Attribution → Aggregator**
+3. **Add Classifier → Attribution → (Optional) Style Planner → Aggregator**
    - Connect in series
    - Disable LLMs for deterministic offline tests (if available)
+   - If including Style Planner, connect `ABMStylePlanner.spans_style` to downstream nodes; enable its disk writes to produce `spans_style.jsonl`.
 
 4. **Add Results → Utterances → Aggregated JSONL Writer**
    - Set writer `output_path`

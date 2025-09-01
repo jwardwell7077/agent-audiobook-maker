@@ -1,43 +1,45 @@
 #!/bin/bash
-# Setup script for LangFlow end-to-end components (Unified)
+# Setup script for LangFlow end-to-end components (Spans-first upstream)
 
 set -e
 
-echo "🚀 Setting up LangFlow End-to-End Components..."
+echo "🚀 Setting up LangFlow End-to-End Components (spans-first)..."
 
-# Define paths
-REPO_ROOT="/home/jon/repos/agent-audiobook-maker"
+# Compute repo root relative to this script
+REPO_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 LANGFLOW_COMPONENTS_DIR="$REPO_ROOT/src/abm/lf_components/audiobook"
 
 # Ensure components directory exists
 mkdir -p "$LANGFLOW_COMPONENTS_DIR"
 echo "📁 Component Directory: $LANGFLOW_COMPONENTS_DIR"
 
-# List components
+# List key components (spans-first pipeline)
 echo "📝 Available Components:"
-echo "  ✅ ABMChapterLoader - Unified loader (chapters/chapter/blocks)"
-echo "  ✅ ABMBlockIterator - Batch processing management"
-echo "  ✅ ABMDialogueClassifier - Agent 1"
-echo "  ✅ ABMSpeakerAttribution - Agent 2"
-echo "  ✅ ABMResultsAggregator - Results collection and validation"
-echo "  ✅ ABM Results → Utterances - Normalizer"
-echo "  ✅ ABMAggregatedJsonlWriter - Aggregated JSONL output"
-echo "  ✅ ABMCastingDirector - Voice assignment"
-echo "  ✅ ABMCharacterDataCollector - Stats/collection"
+echo "  ✅ ABMChapterLoader            - Unified loader (chapters/chapter/blocks)"
+echo "  ✅ ABMBlockSchemaValidator     - Normalize blocks + block_uid; optional JSONL"
+echo "  ✅ ABMMixedBlockResolver       - Split mixed blocks → spans; optional JSONL"
+echo "  ✅ ABMSpanClassifier           - Label spans (dialogue/narration); optional JSONL"
+echo "  ✅ ABMSpanAttribution          - Heuristic speaker attribution; optional JSONL"
+echo "  ✅ ABMStylePlanner             - Vendor-neutral style plan; optional JSONL"
+echo "  ✅ ABMSpanIterator             - Iterate spans with filters/windowing"
+echo "  ✅ ABMSpanCasting              - Assign voices using voice_bank.json"
+echo "  ✅ ABMArtifactOrchestrator     - Convenience runner to emit artifacts"
+echo "  ✅ ABMDirectTTSAdapter         - Plan per-span renders (dry-run by default)"
 
 # Check component files
 echo ""
 echo "🔍 Checking Component Files:"
 components=(
     "abm_chapter_loader.py"
-    "abm_block_iterator.py"
-    "abm_dialogue_classifier.py"
-    "abm_speaker_attribution.py"
-    "abm_results_aggregator.py"
-    "abm_results_to_utterances.py"
-    "abm_aggregated_jsonl_writer.py"
-    "abm_casting_director.py"
-    "abm_character_data_collector.py"
+    "abm_block_schema_validator.py"
+    "abm_mixed_block_resolver.py"
+    "abm_span_classifier.py"
+    "abm_span_attribution.py"
+    "abm_style_planner.py"
+    "abm_span_iterator.py"
+    "abm_span_casting.py"
+    "abm_artifact_orchestrator.py"
+    "abm_direct_tts_adapter.py"
 )
 
 for component in "${components[@]}"; do
@@ -121,9 +123,10 @@ echo "    ln -s $REPO_ROOT/data ~/.langflow/audiobook_data"
 echo ""
 
 # Connection diagram reminder
-echo "📊 Connection Diagram:"
-echo "  View: docs/diagrams/langflow-two-agent-pipeline.mmd"
-echo "  Flow: ABM Chapter Loader → Iterator → Agent1 → Agent2 → Aggregator → Results→Utterances → Aggregated JSONL Writer"
+echo "📊 Flow & Examples:"
+echo "  Example flow: examples/langflow/abm_spans_first_pipeline.v15.json"
+echo "  Upstream seam: Style Planner (spans_style.jsonl)"
+echo "  Flow (upstream): Loader → Validator → Resolver → Classifier → Attribution → (Style) → Iterator/Casting"
 echo ""
 
 echo "🎉 Setup complete! Ready for end-to-end processing."
@@ -131,5 +134,5 @@ echo ""
 echo "🚀 Next Steps:"
 echo "  1. Start LangFlow: ./scripts/run_langflow.sh"
 echo "  2. Load components in LangFlow UI"
-echo "  3. Import flow examples/langflow/abm_full_pipeline.v15.json (optional)"
-echo "  4. Process Chapter 1 of MVS book"
+echo "  3. Import flow examples/langflow/abm_spans_first_pipeline.v15.json (optional)"
+echo "  4. Process Chapter 1 of MVS book (book_name=mvs, chapter_index=1)"
