@@ -3,17 +3,19 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from abm.lf_components import (
-    chapter_volume_loader,
-    segment_dialogue_narration,
-    utterance_jsonl_writer,
-)
+from typing import Any
+
+from abm.lf_components import chapter_volume_loader, segment_dialogue_narration, utterance_jsonl_writer
 
 
 def run(book: str, out_stem: str | None = None, base_dir: str | None = None) -> str:
     base = Path(base_dir) if base_dir else Path.cwd()
     loaded = chapter_volume_loader.run(book=book, base_dir=str(base))
-    segmented = segment_dialogue_narration.run(loaded)
+    if segment_dialogue_narration is None:
+        # If the optional component is unavailable, pass through with a compatible structure
+        segmented: dict[str, Any] = {"segmented_chapters": [], **loaded}
+    else:
+        segmented = segment_dialogue_narration.run(loaded)
     result = utterance_jsonl_writer.run(segmented, base_dir=str(base), stem=out_stem)
     return result["path"]
 

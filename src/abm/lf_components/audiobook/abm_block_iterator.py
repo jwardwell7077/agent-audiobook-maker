@@ -21,7 +21,14 @@ class ABMBlockIterator(Component):
             name="chunked_data",
             display_name="Chunked Chapter Data",
             info="Output from Enhanced Chapter Loader",
-            required=True,
+            required=False,
+        ),
+        # Back-compat alias for callers/tests using 'blocks_data'
+        DataInput(
+            name="blocks_data",
+            display_name="Blocks Data (alias)",
+            info="Alias input; equivalent to Chunked Chapter Data",
+            required=False,
         ),
         IntInput(
             name="batch_size",
@@ -37,10 +44,26 @@ class ABMBlockIterator(Component):
             value=0,
             required=False,
         ),
+        # Back-compat alias
+        IntInput(
+            name="start_block",
+            display_name="Start block (alias)",
+            info="Alias of start index for older flows/tests",
+            value=0,
+            required=False,
+        ),
         IntInput(
             name="max_chunks",
             display_name="Max Blocks to Process",
             info="Limit processing to this many blocks (0 = all)",
+            value=0,
+            required=False,
+        ),
+        # Back-compat alias
+        IntInput(
+            name="max_blocks",
+            display_name="Max Blocks (alias)",
+            info="Alias of max chunks for older flows/tests",
             value=0,
             required=False,
         ),
@@ -59,6 +82,26 @@ class ABMBlockIterator(Component):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        # Back-compat argument aliases
+        if hasattr(self, "blocks_data") and not hasattr(self, "chunked_data"):
+            self.chunked_data = self.blocks_data  # type: ignore[attr-defined]
+        if hasattr(self, "start_block") and not hasattr(self, "start_chunk"):
+            try:
+                self.start_chunk = int(self.start_block)  # type: ignore[attr-defined]
+            except Exception:
+                self.start_chunk = 0
+        if hasattr(self, "max_blocks") and not hasattr(self, "max_chunks"):
+            try:
+                self.max_chunks = int(self.max_blocks)  # type: ignore[attr-defined]
+            except Exception:
+                self.max_chunks = 0
+
+        # Defaults
+        if not hasattr(self, "batch_size"):
+            self.batch_size = 10
+        if not hasattr(self, "dialogue_priority"):
+            self.dialogue_priority = True
+
         self._current_chunk_index = 0
         self._processed_chunks: list[int] = []
         self._total_processed = 0
@@ -66,13 +109,22 @@ class ABMBlockIterator(Component):
     def get_next_utterance(self) -> Data:
         """Get the next block formatted for two-agent processing."""
         try:
-            input_data = self.chunked_data.data
+            # Prefer chunked_data; fall back to blocks_data
+            src = getattr(self, "chunked_data", None) or getattr(self, "blocks_data", None)
+            if src is None:
+                raise TypeError("chunked_data/blocks_data input is missing")
+            if hasattr(src, "data"):
+                input_data = src.data  # type: ignore[attr-defined]
+            elif isinstance(src, dict):
+                input_data = src
+            else:
+                raise TypeError("chunked_data/blocks_data must be a Data or dict payload")
 
             if "error" in input_data:
                 self.status = "Input contains error, passing through"
                 return Data(data=input_data)
 
-            chunks = input_data.get("chunks", [])
+            chunks = input_data.get("chunks") or input_data.get("blocks", [])
             if not chunks:
                 self.status = "No blocks to process"
                 return Data(data={"error": "No blocks available"})
@@ -93,13 +145,14 @@ class ABMBlockIterator(Component):
 
             # Update tracking
             self._current_chunk_index += 1
-            self._processed_chunks.append(current_chunk["chunk_id"])
+            cid = int(current_chunk.get("chunk_id") or current_chunk.get("block_id") or 0)
+            self._processed_chunks.append(cid)
             self._total_processed += 1
 
             # Update status
-            self.status = (
-                f"Processing block {current_chunk['chunk_id']}/{len(filtered_chunks)} - {current_chunk['type']}"
-            )
+            cur_id = current_chunk.get("chunk_id") or current_chunk.get("block_id")
+            cur_type = current_chunk.get("type", "unknown")
+            self.status = f"Processing block {cur_id}/{len(filtered_chunks)} - {cur_type}"
 
             return Data(data=utterance_data)
 
@@ -114,27 +167,45 @@ class ABMBlockIterator(Component):
         filtered_chunks = chunks.copy()
 
         # Filter by start block
-        if self.start_chunk > 1:
-            filtered_chunks = [c for c in filtered_chunks if c["chunk_id"] >= self.start_chunk]
+        start_at = int(getattr(self, "start_chunk", 0) or 0)
+        if start_at > 0:
+            def _cid(c: dict[str, Any]) -> int:
+                return int(c.get("chunk_id") or c.get("block_id") or 0)
+            filtered_chunks = [c for c in filtered_chunks if _cid(c) >= start_at]
 
         # Limit max blocks
-        if self.max_chunks > 0:
-            filtered_chunks = filtered_chunks[: self.max_chunks]
+        maxn = int(getattr(self, "max_chunks", 0) or 0)
+        if maxn > 0:
+            filtered_chunks = filtered_chunks[:maxn]
 
         # Sort by priority if enabled
-        if self.dialogue_priority:
+        if bool(getattr(self, "dialogue_priority", True)):
             # Sort dialogue first, then by chunk_id
+            def _cid(c: dict[str, Any]) -> int:
+                return int(c.get("chunk_id") or c.get("block_id") or 0)
+
             filtered_chunks.sort(
-                key=lambda x: (0 if x["type"] == "dialogue" else 1 if x["type"] == "mixed" else 2, x["chunk_id"])
+                key=lambda x: (
+                    0
+                    if x.get("type") == "dialogue"
+                    else 1 if x.get("type") == "mixed" else 2,
+                    _cid(x),
+                )
             )
         else:
             # Sort by chunk_id only
-            filtered_chunks.sort(key=lambda x: x["chunk_id"])
+            def _cid(c: dict[str, Any]) -> int:
+                return int(c.get("chunk_id") or c.get("block_id") or 0)
+            filtered_chunks.sort(key=_cid)
 
         return filtered_chunks
 
     def _prepare_utterance_for_agents(self, chunk: dict[str, Any], chapter_data: dict[str, Any]) -> dict[str, Any]:
         """Prepare block data for two-agent processing pipeline."""
+
+        # Normalize identifiers and totals
+        chunk_id = int(chunk.get("chunk_id") or chunk.get("block_id") or 0)
+        total = len(chapter_data.get("chunks", [])) or len(chapter_data.get("blocks", []))
 
         # Base utterance data for Agent 1 (ABMDialogueClassifier)
         utterance_data = {
@@ -143,9 +214,9 @@ class ABMBlockIterator(Component):
             "context_before": chunk.get("context_before", ""),
             "context_after": chunk.get("context_after", ""),
             # Identification data
-            "book_id": chapter_data["book_name"],
-            "chapter_id": f"chapter_{chapter_data['chapter_index']:02d}",
-            "utterance_idx": chunk["chunk_id"],
+            "book_id": chapter_data.get("book_name", chapter_data.get("book", "")),
+            "chapter_id": f"chapter_{int(chapter_data.get('chapter_index', 0)):02d}",
+            "utterance_idx": chunk_id,
             # Processing hints from iterator
             "processing_hints": chunk.get("processing_hints", {}),
             "expected_type": chunk["type"],
@@ -163,7 +234,7 @@ class ABMBlockIterator(Component):
             "pipeline_info": {
                 "source_component": "ABMBlockIterator",
                 "processing_batch": self._current_chunk_index // self.batch_size + 1,
-                "total_chunks_in_chapter": len(chapter_data.get("chunks", [])),
+                "total_chunks_in_chapter": total,
                 "current_chunk_index": self._current_chunk_index + 1,
             },
         }
