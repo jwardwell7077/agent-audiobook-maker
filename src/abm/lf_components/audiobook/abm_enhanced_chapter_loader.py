@@ -28,7 +28,7 @@ class ABMEnhancedChapterLoader(Component):
         ),
         IntInput(
             name="chapter_index",
-            display_name="Chapter Index",
+            display_name="Chapter Number (1-based)",
             info="Chapter number to load (1-based)",
             value=1,
             required=True,
@@ -110,12 +110,20 @@ class ABMEnhancedChapterLoader(Component):
             with open(chapters_path, encoding="utf-8") as f:
                 chapters_data = json.load(f)
 
-            # Find target chapter, supporting both 1-based 'index' and 0-based 'chapter_index'
+            # Find target chapter, supporting:
+            # - 1-based 'index' (legacy)
+            # - 0-based 'chapter_index'
+            # - 1-based 'chapter_number' (new)
             target_chapter = None
             for chapter in chapters_data.get("chapters", []):
                 idx = chapter.get("index")
                 cidx = chapter.get("chapter_index")
-                if idx == self.chapter_index or (isinstance(cidx, int) and cidx == self.chapter_index - 1):
+                cnum = chapter.get("chapter_number")
+                if (
+                    idx == self.chapter_index
+                    or (isinstance(cidx, int) and cidx == self.chapter_index - 1)
+                    or cnum == self.chapter_index
+                ):
                     target_chapter = chapter
                     break
 
@@ -140,7 +148,8 @@ class ABMEnhancedChapterLoader(Component):
             # Prepare output data
             result_data = {
                 "book_name": self.book_name,
-                "chapter_index": self.chapter_index,
+                "chapter_number": self.chapter_index,  # 1-based as provided by user
+                "chapter_index": self.chapter_index - 1,  # 0-based convenience
                 "chapter_title": target_chapter.get("title", ""),
                 "total_chunks": len(chunks),
                 "chunks": chunks,

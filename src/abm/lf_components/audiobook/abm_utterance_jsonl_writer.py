@@ -1,4 +1,8 @@
-"""ABM Utterance JSONL Writer Component for LangFlow."""
+"""ABM Utterance JSONL Writer Component for LangFlow.
+
+Writes utterances as records-only JSONL and a sidecar meta file, aligning with
+ABMAggregatedJsonlWriter for consistency.
+"""
 
 import json
 from datetime import UTC, datetime
@@ -11,7 +15,7 @@ from langflow.schema import Data
 
 class ABMUtteranceJsonlWriter(Component):
     display_name = "ABM Utterance JSONL Writer"
-    description = "Write segmented utterances to JSONL format"
+    description = "Write segmented utterances to JSONL with sidecar metadata"
     icon = "file-text"
     name = "ABMUtteranceJsonlWriter"
 
@@ -34,7 +38,7 @@ class ABMUtteranceJsonlWriter(Component):
     outputs = [Output(name="written_data", display_name="Written Data", method="write_utterances")]
 
     def write_utterances(self) -> Data:
-        """Write segmented utterances to JSONL file."""
+        """Write segmented utterances to JSONL file with sidecar meta."""
         try:
             input_data = self.segmented_data.data
 
@@ -44,49 +48,47 @@ class ABMUtteranceJsonlWriter(Component):
             output_path = Path(self.output_file)
             output_path.parent.mkdir(parents=True, exist_ok=True)
 
-            utterances_written = 0
+            # Flatten utterances from segmented chapters
+            utterances: list[dict] = [
+                {
+                    "role": segment.get("type", "unknown"),
+                    "text": segment.get("text", ""),
+                    "chapter_index": chapter.get("chapter_index"),
+                    "chapter_title": chapter.get("chapter_title", ""),
+                    "book": input_data.get("book"),
+                    "volume": input_data.get("volume"),
+                }
+                for chapter in segmented_chapters
+                for segment in chapter.get("segments", [])
+            ]
 
-            # Create JSONL with proper header
-            header = {
-                "version": "1.0",
+            # Write JSONL records (no header)
+            with output_path.open("w", encoding="utf-8") as f:
+                for u in utterances:
+                    f.write(json.dumps(u, ensure_ascii=False) + "\n")
+
+            # Sidecar meta file
+            meta = {
+                "version": "0.2",
                 "created_at": datetime.now(UTC).isoformat(),
                 "book": input_data.get("book"),
                 "volume": input_data.get("volume"),
-                "type": "utterances",
+                "chapters_processed": len(segmented_chapters),
+                "count": len(utterances),
             }
-
-            with open(output_path, "w", encoding="utf-8") as f:
-                # Write header first
-                header_line = json.dumps({"header": header}, ensure_ascii=False) + "\n"
-                f.write(header_line)
-
-                for chapter in segmented_chapters:
-                    chapter_idx = chapter.get("chapter_index")
-                    chapter_title = chapter.get("chapter_title", "")
-
-                    for _segment_idx, segment in enumerate(chapter.get("segments", [])):
-                        utterance = {
-                            "role": segment.get("type", "unknown"),
-                            "text": segment.get("text", ""),
-                            "chapter_index": chapter_idx,
-                            "chapter_title": chapter_title,
-                            "book": input_data.get("book"),
-                            "volume": input_data.get("volume"),
-                        }
-
-                        utterance_line = json.dumps(utterance, ensure_ascii=False) + "\n"
-                        f.write(utterance_line)
-                        utterances_written += 1
+            meta_path = output_path.with_suffix(output_path.suffix + ".meta.json")
+            meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
 
             result_data = {
                 "output_file": str(output_path),
-                "utterances_written": utterances_written,
+                "meta_file": str(meta_path),
+                "utterances_written": len(utterances),
                 "chapters_processed": len(segmented_chapters),
                 "book": input_data.get("book"),
                 "volume": input_data.get("volume"),
             }
 
-            self.status = f"Wrote {utterances_written} utterances to {output_path}"
+            self.status = f"Wrote {len(utterances)} utterances → {output_path} (meta: {meta_path.name})"
             return Data(data=result_data)
 
         except Exception as e:

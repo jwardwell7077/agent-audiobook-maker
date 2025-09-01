@@ -58,7 +58,7 @@ def _detect_and_parse_toc(blocks: list[str]) -> TOCDetection:
         raise ValueError("TOC heading not found")
 
     # Look ahead up to 5 blocks for TOC-like lines
-    look = blocks[idx + 1 : idx + 6]
+    look = blocks[idx + 1: idx + 6]
     score = 0
     collected_lines: list[str] = []
     for b in look:
@@ -198,18 +198,20 @@ def classify_sections(inputs: dict[str, Any]) -> dict[str, Any]:
             claimed[i] = True
         chapters.append(
             {
-                "chapter_index": ci,
+                "chapter_index": ci,  # 0-based
+                "chapter_number": ci + 1,  # 1-based
                 "title": title,
                 "start_block": start_idx,
                 "end_block": end_idx,
-                "paragraphs": blocks[start_idx : end_idx + 1],
+                "paragraphs": blocks[start_idx: end_idx + 1],
             }
         )
 
     # Build TOC entries based on chapters
     toc_entries = [
         {
-            "chapter_index": ch["chapter_index"],
+            "chapter_index": ch["chapter_index"],  # 0-based
+            "chapter_number": ch["chapter_number"],  # 1-based
             "title": ch["title"],
             "start_block": ch["start_block"],
             "end_block": ch["end_block"],

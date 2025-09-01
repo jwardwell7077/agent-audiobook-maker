@@ -32,9 +32,9 @@ class ABMBlockIterator(Component):
         ),
         IntInput(
             name="start_chunk",
-            display_name="Start Block ID",
-            info="Start processing from this block (for debugging)",
-            value=1,
+            display_name="Start index (0-based)",
+            info="Start processing at this 0-based block index",
+            value=0,
             required=False,
         ),
         IntInput(
