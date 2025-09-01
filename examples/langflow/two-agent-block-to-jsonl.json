@@ -86,13 +86,13 @@
                                 "type": "int",
                                 "value": 10
                             },
-                            "start_chunk": {
-                                "display_name": "Start Chunk",
+                            "start_block": {
+                                "display_name": "Start Block",
                                 "type": "int",
                                 "value": 1
                             },
-                            "max_chunks": {
-                                "display_name": "Max Chunks (0=all)",
+                            "max_blocks": {
+                                "display_name": "Max Blocks (0=all)",
                                 "type": "int",
                                 "value": 10
                             },

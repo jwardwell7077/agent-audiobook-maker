@@ -1,0 +1,206 @@
+{
+    "name": "ABM Two-Agent Pipeline (fixed from export)",
+    "description": "ABMChapterLoader → ABMBlockIterator → ABMDialogueClassifier → ABMSpeakerAttribution → ABMResultsAggregator → ABM Results → Utterances → (CastingDirector, CharacterDataCollector) → JSONL Writer",
+    "nodes": [
+        {
+            "id": "loader",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_chapter_loader",
+            "class_name": "ABMChapterLoader",
+            "data": {
+                "book_name": "mvs",
+                "base_data_dir": "data/clean",
+                "chapters_file": "",
+                "chapter_index": 1,
+                "context_sentences": 2
+            },
+            "position": {
+                "x": 40,
+                "y": 140
+            }
+        },
+        {
+            "id": "iterator",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_block_iterator",
+            "class_name": "ABMBlockIterator",
+            "data": {
+                "batch_size": 10,
+                "start_block": 1,
+                "max_blocks": 0,
+                "dialogue_priority": true
+            },
+            "position": {
+                "x": 360,
+                "y": 140
+            }
+        },
+        {
+            "id": "classifier",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_dialogue_classifier",
+            "class_name": "ABMDialogueClassifier",
+            "data": {
+                "classification_method": "hybrid",
+                "disable_llm": true,
+                "confidence_threshold": 0.8
+            },
+            "position": {
+                "x": 700,
+                "y": 140
+            }
+        },
+        {
+            "id": "attrib",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_speaker_attribution",
+            "class_name": "ABMSpeakerAttribution",
+            "data": {
+                "base_confidence": 0.75,
+                "unknown_confidence": 0.35
+            },
+            "position": {
+                "x": 1020,
+                "y": 140
+            }
+        },
+        {
+            "id": "agg",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_results_aggregator",
+            "class_name": "ABMResultsAggregator",
+            "data": {
+                "min_confidence_threshold": 0.3,
+                "include_metadata": true,
+                "validate_results": true
+            },
+            "position": {
+                "x": 1340,
+                "y": 140
+            }
+        },
+        {
+            "id": "to_utterances",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_results_to_utterances",
+            "class_name": "ABMResultsToUtterances",
+            "data": {},
+            "position": {
+                "x": 1660,
+                "y": 140
+            }
+        },
+        {
+            "id": "casting",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_casting_director",
+            "class_name": "ABMCastingDirector",
+            "data": {},
+            "position": {
+                "x": 1660,
+                "y": 340
+            }
+        },
+        {
+            "id": "collector",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_character_data_collector",
+            "class_name": "ABMCharacterDataCollector",
+            "data": {
+                "book_id": "mvs",
+                "output_directory": "data/characters"
+            },
+            "position": {
+                "x": 1980,
+                "y": 340
+            }
+        },
+        {
+            "id": "writer",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_aggregated_jsonl_writer",
+            "class_name": "ABMAggregatedJsonlWriter",
+            "data": {
+                "output_path": "output/utterances.jsonl"
+            },
+            "position": {
+                "x": 1980,
+                "y": 140
+            }
+        },
+        {
+            "id": "chat",
+            "type": "ChatOutput",
+            "data": {},
+            "position": {
+                "x": 1340,
+                "y": 340
+            }
+        }
+    ],
+    "edges": [
+        {
+            "id": "e_loader_iter",
+            "source": "loader",
+            "sourceHandle": "blocks_data",
+            "target": "iterator",
+            "targetHandle": "blocks_data"
+        },
+        {
+            "id": "e_iter_clf",
+            "source": "iterator",
+            "sourceHandle": "current_utterance",
+            "target": "classifier",
+            "targetHandle": "utterance_data"
+        },
+        {
+            "id": "e_clf_attr",
+            "source": "classifier",
+            "sourceHandle": "classified_utterance",
+            "target": "attrib",
+            "targetHandle": "classified_utterance"
+        },
+        {
+            "id": "e_attr_agg",
+            "source": "attrib",
+            "sourceHandle": "attributed_utterance",
+            "target": "agg",
+            "targetHandle": "attribution_result"
+        },
+        {
+            "id": "e_agg_norm",
+            "source": "agg",
+            "sourceHandle": "aggregated_results",
+            "target": "to_utterances",
+            "targetHandle": "aggregated_results"
+        },
+        {
+            "id": "e_norm_writer",
+            "source": "to_utterances",
+            "sourceHandle": "utterances_data",
+            "target": "writer",
+            "targetHandle": "utterances_data"
+        },
+        {
+            "id": "e_norm_cast",
+            "source": "to_utterances",
+            "sourceHandle": "utterances_data",
+            "target": "casting",
+            "targetHandle": "utterances_data"
+        },
+        {
+            "id": "e_cast_collect",
+            "source": "casting",
+            "sourceHandle": "casting_result",
+            "target": "collector",
+            "targetHandle": "utterances_data"
+        },
+        {
+            "id": "e_agg_chat",
+            "source": "agg",
+            "sourceHandle": "aggregated_results",
+            "target": "chat",
+            "targetHandle": "input"
+        }
+    ]
+}

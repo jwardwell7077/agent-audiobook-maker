@@ -56,7 +56,7 @@ Before cleanup, we systematically analyzed old broken files to extract valuable 
 
 We didn't just fix - we **enhanced** with superior algorithms:
 
-1. **ABMChapterVolumeLoader**: Enhanced data loading with validation
+1. **ABMChapterLoader**: Unified loader (volume/chapters/blocks)
 2. **ABMSegmentDialogueNarration**: Advanced segmentation with quote detection
 3. **ABMUtteranceJsonlWriter**: Professional JSONL with full metadata
 4. **ABMChapterSelector**: Robust chapter selection with error handling  

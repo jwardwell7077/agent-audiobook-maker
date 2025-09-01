@@ -1,4 +1,6 @@
-# LangFlow Data Integration & Text Chunking Guide
+# LangFlow Data Integration & Text Blocks Guide
+
+Note: Terminology updated. Previous references to "chunk(s)" are now "block(s)" in the codebase and flows.
 
 ## 📊 **Overview: Existing Data Structure**
 

@@ -18,9 +18,9 @@ class ABMBlockIterator(Component):
 
     inputs = [
         DataInput(
-            name="chunked_data",
-            display_name="Chunked Chapter Data",
-            info="Output from Enhanced Chapter Loader",
+            name="blocks_data",
+            display_name="Blocks Data",
+            info="Output from ABM Chapter Loader",
             required=True,
         ),
         IntInput(
@@ -31,14 +31,14 @@ class ABMBlockIterator(Component):
             required=False,
         ),
         IntInput(
-            name="start_chunk",
+            name="start_block",
             display_name="Start Block ID",
             info="Start processing from this block (for debugging)",
-            value=1,
+            value=0,
             required=False,
         ),
         IntInput(
-            name="max_chunks",
+            name="max_blocks",
             display_name="Max Blocks to Process",
             info="Limit processing to this many blocks (0 = all)",
             value=0,
@@ -59,46 +59,46 @@ class ABMBlockIterator(Component):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._current_chunk_index = 0
-        self._processed_chunks: list[int] = []
+        self._current_block_index = 0
+        self._processed_blocks: list[int] = []
         self._total_processed = 0
 
     def get_next_utterance(self) -> Data:
         """Get the next block formatted for two-agent processing."""
         try:
-            input_data = self.chunked_data.data
+            input_data = self.blocks_data.data
 
             if "error" in input_data:
                 self.status = "Input contains error, passing through"
                 return Data(data=input_data)
 
-            chunks = input_data.get("chunks", [])
-            if not chunks:
+            blocks = input_data.get("blocks", [])
+            if not blocks:
                 self.status = "No blocks to process"
                 return Data(data={"error": "No blocks available"})
 
-            # Filter chunks if needed
-            filtered_chunks = self._filter_and_sort_chunks(chunks)
+            # Filter blocks if needed
+            filtered_blocks = self._filter_and_sort_blocks(blocks)
 
-            # Check if we have chunks to process
-            if self._current_chunk_index >= len(filtered_chunks):
-                # All chunks processed
+            # Check if we have blocks to process
+            if self._current_block_index >= len(filtered_blocks):
+                # All blocks processed
                 return self._create_completion_summary(input_data)
 
-            # Get current chunk
-            current_chunk = filtered_chunks[self._current_chunk_index]
+            # Get current block
+            current_block = filtered_blocks[self._current_block_index]
 
             # Prepare utterance data for Agent 1 (Dialogue Classifier)
-            utterance_data = self._prepare_utterance_for_agents(current_chunk, input_data)
+            utterance_data = self._prepare_utterance_for_agents(current_block, input_data)
 
             # Update tracking
-            self._current_chunk_index += 1
-            self._processed_chunks.append(current_chunk["chunk_id"])
+            self._current_block_index += 1
+            self._processed_blocks.append(current_block["block_id"])
             self._total_processed += 1
 
             # Update status
             self.status = (
-                f"Processing block {current_chunk['chunk_id']}/{len(filtered_chunks)} - {current_chunk['type']}"
+                f"Processing block {current_block['block_id']}/{len(filtered_blocks)} - {current_block['type']}"
             )
 
             return Data(data=utterance_data)
@@ -109,62 +109,65 @@ class ABMBlockIterator(Component):
             logging.error(error_msg)
             return Data(data={"error": error_msg})
 
-    def _filter_and_sort_chunks(self, chunks: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    def _filter_and_sort_blocks(self, blocks: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Filter and sort blocks based on processing preferences."""
-        filtered_chunks = chunks.copy()
+        filtered_blocks = blocks.copy()
 
         # Filter by start block
-        if self.start_chunk > 1:
-            filtered_chunks = [c for c in filtered_chunks if c["chunk_id"] >= self.start_chunk]
+        if self.start_block > 0:
+            filtered_blocks = [c for c in filtered_blocks if c["block_id"] >= self.start_block]
 
         # Limit max blocks
-        if self.max_chunks > 0:
-            filtered_chunks = filtered_chunks[: self.max_chunks]
+        if self.max_blocks > 0:
+            filtered_blocks = filtered_blocks[: self.max_blocks]
 
         # Sort by priority if enabled
         if self.dialogue_priority:
-            # Sort dialogue first, then by chunk_id
-            filtered_chunks.sort(
-                key=lambda x: (0 if x["type"] == "dialogue" else 1 if x["type"] == "mixed" else 2, x["chunk_id"])
+            # Sort dialogue first, then by block_id
+            filtered_blocks.sort(
+                key=lambda x: (
+                    0 if x["type"] == "dialogue" else 1 if x["type"] == "mixed" else 2,
+                    x["block_id"],
+                )
             )
         else:
-            # Sort by chunk_id only
-            filtered_chunks.sort(key=lambda x: x["chunk_id"])
+            # Sort by block_id only
+            filtered_blocks.sort(key=lambda x: x["block_id"])
 
-        return filtered_chunks
+        return filtered_blocks
 
-    def _prepare_utterance_for_agents(self, chunk: dict[str, Any], chapter_data: dict[str, Any]) -> dict[str, Any]:
+    def _prepare_utterance_for_agents(self, block: dict[str, Any], chapter_data: dict[str, Any]) -> dict[str, Any]:
         """Prepare block data for two-agent processing pipeline."""
 
         # Base utterance data for Agent 1 (ABMDialogueClassifier)
         utterance_data = {
             # Core text data
-            "utterance_text": chunk["text"],
-            "context_before": chunk.get("context_before", ""),
-            "context_after": chunk.get("context_after", ""),
+            "utterance_text": block["text"],
+            "context_before": block.get("context_before", ""),
+            "context_after": block.get("context_after", ""),
             # Identification data
             "book_id": chapter_data["book_name"],
             "chapter_id": f"chapter_{chapter_data['chapter_index']:02d}",
-            "utterance_idx": chunk["chunk_id"],
+            "utterance_idx": block["block_id"],
             # Processing hints from iterator
-            "processing_hints": chunk.get("processing_hints", {}),
-            "expected_type": chunk["type"],
-            "dialogue_text": chunk.get("dialogue_text", ""),
-            "attribution_clues": chunk.get("attribution_clues", []),
+            "processing_hints": block.get("processing_hints", {}),
+            "expected_type": block["type"],
+            "dialogue_text": block.get("dialogue_text", ""),
+            "attribution_clues": block.get("attribution_clues", []),
             # Metadata for tracking
-            "chunk_metadata": {
-                "chapter_title": chunk.get("chapter_title", ""),
-                "word_count": chunk["word_count"],
-                "sentence_count": chunk.get("sentence_count", 1),
-                "complexity": chunk.get("processing_hints", {}).get("complexity", "medium"),
-                "priority": chunk.get("processing_hints", {}).get("priority", "medium"),
+            "block_metadata": {
+                "chapter_title": block.get("chapter_title", ""),
+                "word_count": block["word_count"],
+                "sentence_count": block.get("sentence_count", 1),
+                "complexity": block.get("processing_hints", {}).get("complexity", "medium"),
+                "priority": block.get("processing_hints", {}).get("priority", "medium"),
             },
             # Processing pipeline info
             "pipeline_info": {
                 "source_component": "ABMBlockIterator",
-                "processing_batch": self._current_chunk_index // self.batch_size + 1,
-                "total_chunks_in_chapter": len(chapter_data.get("chunks", [])),
-                "current_chunk_index": self._current_chunk_index + 1,
+                "processing_batch": self._current_block_index // self.batch_size + 1,
+                "total_blocks_in_chapter": len(chapter_data.get("blocks", [])),
+                "current_block_index": self._current_block_index + 1,
             },
         }
 
@@ -172,12 +175,11 @@ class ABMBlockIterator(Component):
 
     def _create_completion_summary(self, chapter_data: dict[str, Any]) -> Data:
         """Create summary when all blocks are processed."""
-
         summary_data = {
             "processing_status": "completed",
             "summary": {
-                "total_chunks_processed": self._total_processed,
-                "chunks_processed": self._processed_chunks,
+                "total_blocks_processed": self._total_processed,
+                "blocks_processed": self._processed_blocks,
                 "chapter_info": {
                     "book_name": chapter_data["book_name"],
                     "chapter_index": chapter_data["chapter_index"],
@@ -191,8 +193,8 @@ class ABMBlockIterator(Component):
         self.status = f"Completed processing {self._total_processed} blocks"
 
         # Reset for next run
-        self._current_chunk_index = 0
-        self._processed_chunks = []
+        self._current_block_index = 0
+        self._processed_blocks = []
         self._total_processed = 0
 
         return Data(data=summary_data)

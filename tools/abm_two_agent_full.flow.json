@@ -1,0 +1,167 @@
+{
+    "name": "ABM Two-Agent Full Pipeline",
+    "description": "ABMChapterLoader → ABMBlockIterator → ABMDialogueClassifier → ABMSpeakerAttribution → ABMResultsAggregator → ABM Results → Utterances → ABM JSONL Writer",
+    "nodes": [
+        {
+            "id": "loader_1",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_chapter_loader",
+            "class_name": "ABMChapterLoader",
+            "data": {
+                "book_name": "SAMPLE_BOOK",
+                "base_data_dir": "data/clean",
+                "chapters_file": "",
+                "chapter_index": 1,
+                "context_sentences": 2
+            },
+            "position": {
+                "x": 60,
+                "y": 220
+            }
+        },
+        {
+            "id": "iterator_1",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_block_iterator",
+            "class_name": "ABMBlockIterator",
+            "data": {
+                "batch_size": 10,
+                "start_block": 1,
+                "max_blocks": 0,
+                "dialogue_priority": true
+            },
+            "position": {
+                "x": 380,
+                "y": 220
+            }
+        },
+        {
+            "id": "classifier_1",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_dialogue_classifier",
+            "class_name": "ABMDialogueClassifier",
+            "data": {
+                "classification_method": "hybrid",
+                "disable_llm": true,
+                "confidence_threshold": 0.8
+            },
+            "position": {
+                "x": 720,
+                "y": 220
+            }
+        },
+        {
+            "id": "attrib_1",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_speaker_attribution",
+            "class_name": "ABMSpeakerAttribution",
+            "data": {
+                "base_confidence": 0.75,
+                "unknown_confidence": 0.35
+            },
+            "position": {
+                "x": 1040,
+                "y": 220
+            }
+        },
+        {
+            "id": "agg_1",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_results_aggregator",
+            "class_name": "ABMResultsAggregator",
+            "data": {
+                "min_confidence_threshold": 0.3,
+                "include_metadata": true,
+                "validate_results": true
+            },
+            "position": {
+                "x": 1360,
+                "y": 220
+            }
+        },
+        {
+            "id": "norm_1",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_results_to_utterances",
+            "class_name": "ABMResultsToUtterances",
+            "data": {},
+            "position": {
+                "x": 1680,
+                "y": 220
+            }
+        },
+        {
+            "id": "writer_1",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_aggregated_jsonl_writer",
+            "class_name": "ABMAggregatedJsonlWriter",
+            "data": {
+                "output_path": "output/utterances.jsonl"
+            },
+            "position": {
+                "x": 2000,
+                "y": 220
+            }
+        },
+        {
+            "id": "chat_1",
+            "type": "ChatOutput",
+            "data": {},
+            "position": {
+                "x": 1680,
+                "y": 360
+            }
+        }
+    ],
+    "edges": [
+        {
+            "id": "e1",
+            "source": "loader_1",
+            "sourceHandle": "blocks_data",
+            "target": "iterator_1",
+            "targetHandle": "blocks_data"
+        },
+        {
+            "id": "e2",
+            "source": "iterator_1",
+            "sourceHandle": "current_utterance",
+            "target": "classifier_1",
+            "targetHandle": "utterance_data"
+        },
+        {
+            "id": "e3",
+            "source": "classifier_1",
+            "sourceHandle": "classified_utterance",
+            "target": "attrib_1",
+            "targetHandle": "classified_utterance"
+        },
+        {
+            "id": "e4",
+            "source": "attrib_1",
+            "sourceHandle": "attributed_utterance",
+            "target": "agg_1",
+            "targetHandle": "attribution_result"
+        },
+        {
+            "id": "e5",
+            "source": "agg_1",
+            "sourceHandle": "aggregated_results",
+            "target": "norm_1",
+            "targetHandle": "aggregated_results"
+        },
+        {
+            "id": "e6",
+            "source": "norm_1",
+            "sourceHandle": "utterances_data",
+            "target": "writer_1",
+            "targetHandle": "utterances_data"
+        },
+        {
+            "id": "e7",
+            "source": "agg_1",
+            "sourceHandle": "aggregated_results",
+            "target": "chat_1",
+            "targetHandle": "input"
+        }
+    ]
+}

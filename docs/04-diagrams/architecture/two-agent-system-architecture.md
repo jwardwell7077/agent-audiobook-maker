@@ -393,29 +393,17 @@ graph TB
 
 ```mermaid
 graph LR
-    subgraph "Existing LangFlow Components"
-        A[ABMChapterVolumeLoader]
-        B[ABMChapterSelector]
-        C[ABMSegmentDialogueNarration]
-        D[ABMUtteranceFilter]
-        E[ABMUtteranceJsonlWriter]
+    subgraph "ABM Core Components"
+        A[ABMChapterLoader]
+        B[ABMBlockIterator]
+        C[ABMDialogueClassifier]
+        D[ABMSpeakerAttribution]
+        E[ABMResultsAggregator]
+        F[ABM Results → Utterances]
+        G[ABMAggregatedJsonlWriter]
     end
-    
-    subgraph "New Two-Agent Components"
-        F[ABMHybridDialogueClassifier]
-        G[ABMSpeakerAttributionAgent]
-        H[ABMCharacterDatabaseManager]
-        I[ABMCharacterProfileBuilder]
-    end
-    
-    A --> B
-    B --> C
-    C --> F
-    F --> G
-    G --> H
-    H --> I
-    I --> D
-    D --> E
+
+    A --> B --> C --> D --> E --> F --> G
 ```
 
 ### Hardware Optimization Architecture

@@ -1,0 +1,41 @@
+flowchart LR
+  %% Active two-agent wiring with unified Chapter Loader
+
+  %% Style classes
+  classDef core fill:#0d47a1,stroke:#0d47a1,color:#fff,stroke-width:2px
+  classDef out fill:#1b5e20,stroke:#1b5e20,color:#fff,stroke-width:2px
+  classDef tap fill:#546e7a,stroke:#546e7a,color:#fff,stroke-width:2px
+
+  %% Main pipeline nodes
+  L[ABM Chapter Loader]
+  I[ABM Block Iterator]
+  C[ABM Dialogue Classifier]
+  S[ABM Speaker Attribution]
+  A[ABM Results Aggregator]
+  O[Chat Output]
+  U[ABM Results → Utterances]
+  JW[ABM Aggregated JSONL Writer]
+  CD[ABM Casting Director]
+  CDC[Character Data Collector]
+
+  %% Main flow with labeled edges (port names)
+  L -- blocks_data: book_name chapter_index blocks[] --> I
+  I -- current_utterance: utterance_text context_before context_after book_id chapter_id utterance_idx hints --> C
+  C -- classified_utterance: classification confidence dialogue_text attribution_clues ids --> S
+  S -- attributed_utterance: character_name id confidence method reasoning context --> A
+  I -. completion_summary: processing_status=completed summary -.-> A
+  A -- aggregated_results: results[] statistics chapter_info --> O
+  A -- aggregated_results --> U
+  U -- utterances_data --> CD
+  U -- utterances_data --> JW
+  U -- utterances_data --> CDC
+  CD -- enriched_utterances --> O
+
+  %% Optional taps for inspection
+  L -. chapters_data .-> X1[(Inspect chapters_data)]
+  L -. chapter_data .-> X2[(Inspect chapter_data)]
+
+  %% Class assignments
+  class L,I,C,S,A,U,CD,CDC core
+  class O,JW out
+  class X1,X2 tap

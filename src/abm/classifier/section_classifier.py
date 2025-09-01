@@ -13,6 +13,14 @@ TITLE_CAPTURE = r"(?P<title>.+?)\s*$"
 TOC_ITEM_RE_STRICT = re.compile(fr"^\s*{BULLET}\s*{ORDINAL}{SEPARATOR}{TITLE_CAPTURE}", re.I)
 # Within the TOC span, accept lines with optional ordinal tokens followed by a title
 TOC_ITEM_RE_LOOSE = re.compile(fr"^\s*{BULLET}\s*(?:(?:{ORDINAL}{SEPARATOR})\s*)?{TITLE_CAPTURE}", re.I)
+# Fallback pattern: accept dotted leaders and optional trailing page numbers
+TOC_ITEM_RE_FALLBACK = re.compile(
+    r"^\s*[\u2022\-\*]?\s*(?:"  # optional bullet
+    r"(?:(?:Chapter\s+(?P<digits_fb>\d+))|Prologue|Epilogue)[:\s\.-]*)?"  # optional ordinal prefix
+    r"(?P<title_fb>.+?)\s*"  # title
+    r"(?:\.{2,}\s*\d+)?\s*$",  # optional dotted leaders + page number
+    re.I,
+)
 BODY_HEADING_RE = re.compile(
     r"^\s*(?:(?:Chapter\s+(?P<digits>\d+))|(?P<pro>Prologue)|(?P<epi>Epilogue))\s*(?::|\.|\-|\s)?\s*(?P<title>[^\n]*)\s*$",
     re.I,
@@ -92,10 +100,16 @@ def _parse_toc_items(blocks: List[Dict[str, Any]], start_idx: int, end_idx: Opti
         text = blk.get("text", "").strip()
         m = TOC_ITEM_RE_LOOSE.match(text)
         if not m:
-            i += 1
-            continue
-        title = (m.group("title") or "").strip()
-        digits = m.group("digits")
+            # Try fallback (handles dotted leaders with trailing page numbers)
+            m2 = TOC_ITEM_RE_FALLBACK.match(text)
+            if not m2:
+                i += 1
+                continue
+            title = (m2.group("title_fb") or "").strip()
+            digits = m2.group("digits_fb")
+        else:
+            title = (m.group("title") or "").strip()
+            digits = m.group("digits")
         ordinal = int(digits) if digits else None
         ctitle = canon_title(title)
         # Skip only immediate exact duplicate lines to avoid double-capture

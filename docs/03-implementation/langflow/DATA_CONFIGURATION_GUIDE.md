@@ -30,8 +30,8 @@ ABM_BOOKS_DIR=${ABM_DATA_ROOT}/books
 ABM_CLEAN_DIR=${ABM_DATA_ROOT}/clean
 ABM_ANNOTATIONS_DIR=${ABM_DATA_ROOT}/annotations
 
-# LangFlow component paths
-PYTHONPATH=${PYTHONPATH}:/path/to/audio-book-maker-lg/lf_components
+# LangFlow component paths (if needed)
+PYTHONPATH=${PYTHONPATH}:/home/jon/repos/agent-audiobook-maker/src
 ```
 
 ## ABMDataConfig Component Usage
@@ -61,12 +61,10 @@ When configured with `book_name="mvs"`, the component provides:
 
 A typical processing workflow follows this pattern:
 
-1. **ABMDataConfig** → Provides standardized paths
-2. **ABMChapterVolumeLoader** → Loads `chapters.json` or falls back to `.txt`
-3. **ABMChapterSelector** → Selects specific chapters for processing
-4. **ABMSegmentDialogueNarration** → Segments text into dialogue/narration
-5. **ABMUtteranceFilter** → Applies quality filters
-6. **ABMUtteranceJsonlWriter** → Outputs to annotation directory
+1. **ABMChapterLoader** → Loads `chapters.json` and emits `blocks_data`
+2. **ABMBlockIterator** → Streams blocks as utterance payloads
+3. **ABMDialogueClassifier → ABMSpeakerAttribution → ABMResultsAggregator**
+4. **ABM Results → Utterances → ABMAggregatedJsonlWriter** → Writes JSONL
 
 ## Working with Sample Data
 
@@ -85,7 +83,7 @@ Perfect for testing the complete pipeline with realistic data.
 ```python
 # In LangFlow workflow:
 # 1. Set ABMDataConfig book_name = "mvs"
-# 2. Connect to ABMChapterVolumeLoader
+# 2. Connect to ABMChapterLoader
 # 3. Component automatically loads /data/clean/mvs/chapters.json
 ```
 

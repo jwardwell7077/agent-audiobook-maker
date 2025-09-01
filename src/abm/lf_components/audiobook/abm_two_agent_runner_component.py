@@ -57,8 +57,8 @@ class ABMTwoAgentRunner(Component):
         IntInput(name="chapter", display_name="Chapter (1-based)", value=1),
         MessageTextInput(name="base_dir", display_name="Repo Root (optional)", value=""),
         IntInput(name="batch_size", display_name="Batch Size", value=10),
-        IntInput(name="start_chunk", display_name="Start Chunk", value=1),
-        IntInput(name="max_chunks", display_name="Max Chunks (0=all)", value=10),
+    IntInput(name="start_block", display_name="Start Block", value=1),
+    IntInput(name="max_blocks", display_name="Max Blocks (0=all)", value=10),
         BoolInput(name="dialogue_priority", display_name="Dialogue Priority", value=True),
     ]
 
@@ -75,8 +75,8 @@ class ABMTwoAgentRunner(Component):
             chapter=self.chapter,
             base_dir=base_dir,
             batch_size=self.batch_size,
-            start_chunk=self.start_chunk,
-            max_chunks=self.max_chunks,
+            start_block=self.start_block,
+            max_blocks=self.max_blocks,
             dialogue_priority=self.dialogue_priority,
         )
         return Data(data=results)
