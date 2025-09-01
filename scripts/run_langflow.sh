@@ -79,20 +79,24 @@ if [[ -d "$COMPONENTS_PATH" ]]; then
     exec env LANGFLOW_COMPONENTS_PATH="$LANGFLOW_COMPONENTS_PATH" \
       langflow run --host "$HOST" --port "$PORT" \
       --components-path "$COMPONENTS_PATH" \
-      --log-level "$LOG_LEVEL_LOWER" --log-file "$LOG_FILE_PATH" --dev
+      --log-level "$LOG_LEVEL_LOWER" --log-file "$LOG_FILE_PATH" \
+      --health-check-max-retries 50 --no-open-browser --dev
   else
     exec env LANGFLOW_COMPONENTS_PATH="$LANGFLOW_COMPONENTS_PATH" \
       langflow run --host "$HOST" --port "$PORT" \
       --components-path "$COMPONENTS_PATH" \
-      --log-level "$LOG_LEVEL_LOWER" --log-file "$LOG_FILE_PATH"
+      --log-level "$LOG_LEVEL_LOWER" --log-file "$LOG_FILE_PATH" \
+      --health-check-max-retries 50 --no-open-browser
   fi
 else
   echo "[run_langflow] Components path not found: $COMPONENTS_PATH (continuing without --components-path)" >&2
   if [[ "${DEBUG_MODE:-false}" == "true" ]]; then
     exec langflow run --host "$HOST" --port "$PORT" \
-      --log-level "$LOG_LEVEL_LOWER" --log-file "$LOG_FILE_PATH" --dev
+      --log-level "$LOG_LEVEL_LOWER" --log-file "$LOG_FILE_PATH" \
+      --health-check-max-retries 50 --no-open-browser --dev
   else
     exec langflow run --host "$HOST" --port "$PORT" \
-      --log-level "$LOG_LEVEL_LOWER" --log-file "$LOG_FILE_PATH"
+      --log-level "$LOG_LEVEL_LOWER" --log-file "$LOG_FILE_PATH" \
+      --health-check-max-retries 50 --no-open-browser
   fi
 fi

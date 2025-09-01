@@ -8,14 +8,20 @@
             "dataType": "Data",
             "fieldName": "aggregated_results",
             "id": "aggregated_results",
-            "output_types": ["Data"]
+            "output_types": [
+              "Data"
+            ]
           },
           "targetHandle": {
             "dataType": "Data",
             "fieldName": "aggregated_results",
             "id": "aggregated_results",
-            "input_types": ["Data"],
-            "output_types": ["Data"]
+            "input_types": [
+              "Data"
+            ],
+            "output_types": [
+              "Data"
+            ]
           }
         },
         "id": "edge-runner-to-normalizer",
@@ -33,14 +39,20 @@
             "dataType": "Data",
             "fieldName": "utterances_data",
             "id": "utterances_data",
-            "output_types": ["Data"]
+            "output_types": [
+              "Data"
+            ]
           },
           "targetHandle": {
             "dataType": "Data",
             "fieldName": "utterances_data",
             "id": "utterances_data",
-            "input_types": ["Data"],
-            "output_types": ["Data"]
+            "input_types": [
+              "Data"
+            ],
+            "output_types": [
+              "Data"
+            ]
           }
         },
         "id": "edge-normalizer-to-writer",
@@ -90,7 +102,9 @@
                 "name": "aggregated_results",
                 "selected": "Data",
                 "tool_mode": true,
-                "types": ["Data"],
+                "types": [
+                  "Data"
+                ],
                 "value": "__UNDEFINED__"
               }
             ],
@@ -223,8 +237,14 @@
           "type": "ABMTwoAgentRunner"
         },
         "id": "ABMTwoAgentRunner-NODE1",
-        "measured": { "height": 300, "width": 360 },
-        "position": { "x": 40, "y": 180 },
+        "measured": {
+          "height": 300,
+          "width": 360
+        },
+        "position": {
+          "x": 40,
+          "y": 180
+        },
         "selected": false,
         "type": "genericNode"
       },
@@ -240,7 +260,9 @@
             "display_name": "ABM Results → Utterances",
             "documentation": "Takes aggregated two-agent results and emits `utterances` list",
             "edited": false,
-            "field_order": ["aggregated_results"],
+            "field_order": [
+              "aggregated_results"
+            ],
             "frozen": false,
             "icon": "table",
             "legacy": false,
@@ -257,7 +279,9 @@
                 "name": "utterances_data",
                 "selected": "Data",
                 "tool_mode": true,
-                "types": ["Data"],
+                "types": [
+                  "Data"
+                ],
                 "value": "__UNDEFINED__"
               }
             ],
@@ -270,7 +294,9 @@
                 "display_name": "Aggregated Results",
                 "dynamic": false,
                 "info": "Output of ABM Two-Agent Runner",
-                "input_types": ["Data"],
+                "input_types": [
+                  "Data"
+                ],
                 "list": false,
                 "name": "aggregated_results",
                 "placeholder": "",
@@ -290,8 +316,14 @@
           "type": "ABMResultsToUtterances"
         },
         "id": "ABMResultsToUtterances-NODE2",
-        "measured": { "height": 200, "width": 320 },
-        "position": { "x": 460, "y": 190 },
+        "measured": {
+          "height": 200,
+          "width": 320
+        },
+        "position": {
+          "x": 460,
+          "y": 190
+        },
         "selected": false,
         "type": "genericNode"
       },
@@ -299,7 +331,9 @@
         "data": {
           "id": "ABMAggregatedJsonlWriter-NODE3",
           "node": {
-            "base_classes": ["Data"],
+            "base_classes": [
+              "Data"
+            ],
             "beta": false,
             "conditional_paths": [],
             "custom_fields": {},
@@ -307,7 +341,10 @@
             "display_name": "ABM Aggregated JSONL Writer",
             "documentation": "Writes to JSONL and a .meta.json file",
             "edited": false,
-            "field_order": ["utterances_data", "output_path"],
+            "field_order": [
+              "utterances_data",
+              "output_path"
+            ],
             "frozen": false,
             "icon": "file-output",
             "legacy": false,
@@ -324,7 +361,9 @@
                 "name": "write_result",
                 "selected": "Data",
                 "tool_mode": true,
-                "types": ["Data"],
+                "types": [
+                  "Data"
+                ],
                 "value": "__UNDEFINED__"
               }
             ],
@@ -355,7 +394,9 @@
                 "display_name": "Utterances Data",
                 "dynamic": false,
                 "info": "From Results → Utterances",
-                "input_types": ["Data"],
+                "input_types": [
+                  "Data"
+                ],
                 "list": false,
                 "name": "utterances_data",
                 "placeholder": "",
@@ -375,13 +416,23 @@
           "type": "ABMAggregatedJsonlWriter"
         },
         "id": "ABMAggregatedJsonlWriter-NODE3",
-        "measured": { "height": 262, "width": 320 },
-        "position": { "x": 840, "y": 190 },
+        "measured": {
+          "height": 262,
+          "width": 320
+        },
+        "position": {
+          "x": 840,
+          "y": 190
+        },
         "selected": false,
         "type": "genericNode"
       }
     ],
-    "viewport": { "x": 0, "y": 0, "zoom": 1 }
+    "viewport": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    }
   },
   "description": "Simple 3-component pipeline: Two-Agent Runner → Utterances → JSONL",
   "endpoint_name": null,
@@ -389,5 +440,8 @@
   "is_component": false,
   "last_tested_version": "1.5.0.post2",
   "name": "ABM Simple 3 Components (v1.5)",
-  "tags": ["abm", "jsonl"]
+  "tags": [
+    "abm",
+    "jsonl"
+  ]
 }
