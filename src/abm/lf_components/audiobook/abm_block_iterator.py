@@ -18,17 +18,10 @@ class ABMBlockIterator(Component):
 
     inputs = [
         DataInput(
-            name="chunked_data",
-            display_name="Chunked Chapter Data",
-            info="Output from Enhanced Chapter Loader",
-            required=False,
-        ),
-        # Back-compat alias for callers/tests using 'blocks_data'
-        DataInput(
             name="blocks_data",
-            display_name="Blocks Data (alias)",
-            info="Alias input; equivalent to Chunked Chapter Data",
-            required=False,
+            display_name="Blocks Data",
+            info="Output from Chapter Loader (blocks) or equivalent",
+            required=True,
         ),
         IntInput(
             name="batch_size",
@@ -38,32 +31,16 @@ class ABMBlockIterator(Component):
             required=False,
         ),
         IntInput(
-            name="start_chunk",
+            name="start_block",
             display_name="Start index (0-based)",
             info="Start processing at this 0-based block index",
             value=0,
             required=False,
         ),
-        # Back-compat alias
-        IntInput(
-            name="start_block",
-            display_name="Start block (alias)",
-            info="Alias of start index for older flows/tests",
-            value=0,
-            required=False,
-        ),
-        IntInput(
-            name="max_chunks",
-            display_name="Max Blocks to Process",
-            info="Limit processing to this many blocks (0 = all)",
-            value=0,
-            required=False,
-        ),
-        # Back-compat alias
         IntInput(
             name="max_blocks",
-            display_name="Max Blocks (alias)",
-            info="Alias of max chunks for older flows/tests",
+            display_name="Max Blocks to Process",
+            info="Limit processing to this many blocks (0 = all)",
             value=0,
             required=False,
         ),
@@ -85,16 +62,15 @@ class ABMBlockIterator(Component):
         # Back-compat argument aliases
         if hasattr(self, "blocks_data") and not hasattr(self, "chunked_data"):
             self.chunked_data = self.blocks_data  # type: ignore[attr-defined]
-        if hasattr(self, "start_block") and not hasattr(self, "start_chunk"):
-            try:
-                self.start_chunk = int(self.start_block)  # type: ignore[attr-defined]
-            except Exception:
-                self.start_chunk = 0
-        if hasattr(self, "max_blocks") and not hasattr(self, "max_chunks"):
-            try:
-                self.max_chunks = int(self.max_blocks)  # type: ignore[attr-defined]
-            except Exception:
-                self.max_chunks = 0
+        # Normalize numeric inputs
+        try:
+            self.start_block = int(getattr(self, "start_block", 0))
+        except Exception:
+            self.start_block = 0
+        try:
+            self.max_blocks = int(getattr(self, "max_blocks", 0))
+        except Exception:
+            self.max_blocks = 0
 
         # Defaults
         if not hasattr(self, "batch_size"):
@@ -109,28 +85,28 @@ class ABMBlockIterator(Component):
     def get_next_utterance(self) -> Data:
         """Get the next block formatted for two-agent processing."""
         try:
-            # Prefer chunked_data; fall back to blocks_data
-            src = getattr(self, "chunked_data", None) or getattr(self, "blocks_data", None)
+            # Use blocks_data only
+            src = getattr(self, "blocks_data", None)
             if src is None:
-                raise TypeError("chunked_data/blocks_data input is missing")
+                raise TypeError("blocks_data input is missing")
             if hasattr(src, "data"):
                 input_data = src.data  # type: ignore[attr-defined]
             elif isinstance(src, dict):
                 input_data = src
             else:
-                raise TypeError("chunked_data/blocks_data must be a Data or dict payload")
+                raise TypeError("blocks_data must be a Data or dict payload")
 
             if "error" in input_data:
                 self.status = "Input contains error, passing through"
                 return Data(data=input_data)
 
-            chunks = input_data.get("chunks") or input_data.get("blocks", [])
-            if not chunks:
+            blocks = input_data.get("blocks") or input_data.get("chunks", [])
+            if not blocks:
                 self.status = "No blocks to process"
                 return Data(data={"error": "No blocks available"})
 
             # Filter chunks if needed
-            filtered_chunks = self._filter_and_sort_chunks(chunks)
+            filtered_chunks = self._filter_and_sort_chunks(blocks)
 
             # Check if we have chunks to process
             if self._current_chunk_index >= len(filtered_chunks):
@@ -166,15 +142,16 @@ class ABMBlockIterator(Component):
         """Filter and sort blocks based on processing preferences."""
         filtered_chunks = chunks.copy()
 
-        # Filter by start block
-        start_at = int(getattr(self, "start_chunk", 0) or 0)
+    # Filter by start block
+        start_at = int(getattr(self, "start_block", 0) or 0)
         if start_at > 0:
             def _cid(c: dict[str, Any]) -> int:
-                return int(c.get("chunk_id") or c.get("block_id") or 0)
+                return int(c.get("block_id") or c.get("chunk_id") or 0)
+
             filtered_chunks = [c for c in filtered_chunks if _cid(c) >= start_at]
 
-        # Limit max blocks
-        maxn = int(getattr(self, "max_chunks", 0) or 0)
+    # Limit max blocks
+        maxn = int(getattr(self, "max_blocks", 0) or 0)
         if maxn > 0:
             filtered_chunks = filtered_chunks[:maxn]
 
@@ -182,7 +159,7 @@ class ABMBlockIterator(Component):
         if bool(getattr(self, "dialogue_priority", True)):
             # Sort dialogue first, then by chunk_id
             def _cid(c: dict[str, Any]) -> int:
-                return int(c.get("chunk_id") or c.get("block_id") or 0)
+                return int(c.get("block_id") or c.get("chunk_id") or 0)
 
             filtered_chunks.sort(
                 key=lambda x: (
@@ -195,7 +172,7 @@ class ABMBlockIterator(Component):
         else:
             # Sort by chunk_id only
             def _cid(c: dict[str, Any]) -> int:
-                return int(c.get("chunk_id") or c.get("block_id") or 0)
+                return int(c.get("block_id") or c.get("chunk_id") or 0)
             filtered_chunks.sort(key=_cid)
 
         return filtered_chunks
@@ -204,8 +181,8 @@ class ABMBlockIterator(Component):
         """Prepare block data for two-agent processing pipeline."""
 
         # Normalize identifiers and totals
-        chunk_id = int(chunk.get("chunk_id") or chunk.get("block_id") or 0)
-        total = len(chapter_data.get("chunks", [])) or len(chapter_data.get("blocks", []))
+        chunk_id = int(chunk.get("block_id") or chunk.get("chunk_id") or 0)
+        total = len(chapter_data.get("blocks", [])) or len(chapter_data.get("chunks", []))
 
         # Base utterance data for Agent 1 (ABMDialogueClassifier)
         utterance_data = {

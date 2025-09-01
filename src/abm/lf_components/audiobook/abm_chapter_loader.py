@@ -338,18 +338,7 @@ class ABMChapterLoader(Component):
 
 
 # --- Convenience runner for simple pipelines/tests ---
-def run(book: str, base_dir: str | None = None, chapters_file: str | None = None) -> dict:
-    """Load chapters for a book and return a minimal payload.
-
-    Returns a dict with at least keys: 'book', 'chapters'.
-    """
-    comp = ABMChapterLoader()
-    comp.book_name = book
-    if base_dir:
-        comp.base_data_dir = base_dir.rstrip("/")
-    if chapters_file:
-        comp.chapters_file = chapters_file
-    data = comp.load_chapters().data
-    chapters = data.get("chapters") or []
-    # Normalize structure similar to legacy caller expectations
-    return {"book": book, "chapters": chapters}
+def run(*args, **kwargs):  # pragma: no cover - intentional removal notice
+    raise NotImplementedError(
+        "Direct run() helper was removed. Use ABMChapterLoader via LangFlow components or call its methods explicitly."
+    )

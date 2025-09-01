@@ -5,18 +5,30 @@ from pathlib import Path
 
 from typing import Any
 
-from abm.lf_components import chapter_volume_loader, segment_dialogue_narration, utterance_jsonl_writer
+from abm.lf_components.audiobook import abm_chapter_loader
+from abm.lf_components.audiobook import abm_utterance_jsonl_writer
+try:
+    from abm.lf_components.audiobook import abm_segment_dialogue_narration
+except Exception:  # pragma: no cover - optional
+    abm_segment_dialogue_narration = None  # type: ignore
 
 
 def run(book: str, out_stem: str | None = None, base_dir: str | None = None) -> str:
     base = Path(base_dir) if base_dir else Path.cwd()
-    loaded = chapter_volume_loader.run(book=book, base_dir=str(base))
-    if segment_dialogue_narration is None:
+    # Load chapters
+    loader = abm_chapter_loader.ABMChapterLoader(book_name=book, base_data_dir=str(base))
+    loaded_data = loader.load_chapters().data
+    loaded = {"book": book, "chapters": loaded_data.get("chapters", [])}
+
+    # Optionally segment
+    if abm_segment_dialogue_narration is None:
         # If the optional component is unavailable, pass through with a compatible structure
         segmented: dict[str, Any] = {"segmented_chapters": [], **loaded}
     else:
-        segmented = segment_dialogue_narration.run(loaded)
-    result = utterance_jsonl_writer.run(segmented, base_dir=str(base), stem=out_stem)
+        segmented = abm_segment_dialogue_narration.run(loaded)
+
+    # Write JSONL
+    result = abm_utterance_jsonl_writer.run(segmented, base_dir=str(base), stem=out_stem)
     return result["path"]
 
 
