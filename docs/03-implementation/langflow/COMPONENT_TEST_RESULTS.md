@@ -6,41 +6,44 @@
 ## Component Import Test Results
 
 ```bash
-✓ All 5 enhanced components imported successfully!
-✓ Component 1: ABM Chapter Volume Loader
-✓ Component 2: ABM Segment Dialogue Narration  
-✓ Component 3: ABM Utterance JSONL Writer
-✓ Component 4: ABM Chapter Selector
-✓ Component 5: ABM Utterance Filter
-✓ ABMChapterVolumeLoader properly inherits from Component
-✓ ABMSegmentDialogueNarration properly inherits from Component
-✓ ABMUtteranceJsonlWriter properly inherits from Component
-✓ ABMChapterSelector properly inherits from Component
-✓ ABMUtteranceFilter properly inherits from Component
+✓ Unified loader and core components import successfully!
+✓ ABMChapterLoader properly inherits from Component
+✓ ABMBlockIterator properly inherits from Component
+✓ ABMDialogueClassifier properly inherits from Component
+✓ ABMSpeakerAttribution properly inherits from Component
+✓ ABMResultsAggregator properly inherits from Component
+✓ ABMResultsToUtterances properly inherits from Component
+✓ ABMAggregatedJsonlWriter properly inherits from Component
+✓ ABMCastingDirector properly inherits from Component
+✓ ABMCharacterDataCollector properly inherits from Component
 
-🎉 All components ready for LangFlow integration!
-```text
+🎉 Pipeline components ready for LangFlow integration!
+```
 
 ## LangFlow Server Discovery Results
 
 ```bash
 [run_langflow] Components directory tree (one level):
-  __init__.py
-  audiobook/__init__.py
-  audiobook/abm_chapter_selector.py
-  audiobook/abm_chapter_volume_loader.py
-  audiobook/abm_segment_dialogue_narration.py
-  audiobook/abm_utterance_filter.py
-  audiobook/abm_utterance_jsonl_writer.py
+   __init__.py
+   audiobook/__init__.py
+   audiobook/abm_chapter_loader.py
+   audiobook/abm_block_iterator.py
+   audiobook/abm_dialogue_classifier.py
+   audiobook/abm_speaker_attribution.py
+   audiobook/abm_results_aggregator.py
+   audiobook/abm_results_to_utterances.py
+   audiobook/abm_aggregated_jsonl_writer.py
+   audiobook/abm_casting_director.py
+   audiobook/abm_character_data_collector.py
 
 ✓ Launching Langflow...
 ✓ Checking Environment...
-✓ Starting Core Services (0.23s)
+✓ Starting Core Services
 ✓ Connecting Database...
 ✓ Loading Components...
 ✓ Adding Starter Projects...
 ■ Launching Langflow...
-```text
+```
 
 ## Engineering Discipline Results
 
@@ -62,13 +65,15 @@
 - **Directory**: Clean `/src/abm/lf_components/audiobook/` organization
 - **Code Quality**: Superior algorithms with comprehensive functionality
 
-### ✅ Enhanced Components Created
+### ✅ Unified Core Components
 
-1. **ABMChapterVolumeLoader**: Enhanced data loading with validation
-2. **ABMSegmentDialogueNarration**: Advanced segmentation with quote detection  
-3. **ABMUtteranceJsonlWriter**: Professional JSONL with full metadata
-4. **ABMChapterSelector**: Robust chapter selection with error handling
-5. **ABMUtteranceFilter**: Comprehensive multi-criteria filtering system
+1. **ABMChapterLoader**: Unified data loading and chunking
+2. **ABMBlockIterator**: Batch/block streaming for two-agent flow  
+3. **ABMDialogueClassifier**: Dialogue vs narration with extraction
+4. **ABMSpeakerAttribution**: Heuristic attribution with fallbacks
+5. **ABMResultsAggregator**: Aggregates per-block results into chapter output
+6. **ABM Results → Utterances**: Normalizes to utterances v0.2
+7. **ABMAggregatedJsonlWriter**: Writes utterances.jsonl + meta
 
 ## Project Tenets Successfully Established
 

@@ -14,25 +14,25 @@ from typing import Any, cast
 from abm.lf_components.audiobook.abm_aggregated_jsonl_writer import ABMAggregatedJsonlWriter
 from abm.lf_components.audiobook.abm_block_iterator import ABMBlockIterator
 from abm.lf_components.audiobook.abm_dialogue_classifier import ABMDialogueClassifier
-from abm.lf_components.audiobook.abm_enhanced_chapter_loader import ABMEnhancedChapterLoader
+from abm.lf_components.audiobook.abm_chapter_loader import ABMChapterLoader
 from abm.lf_components.audiobook.abm_results_aggregator import ABMResultsAggregator
 from abm.lf_components.audiobook.abm_results_to_utterances import ABMResultsToUtterances
 from abm.lf_components.audiobook.abm_speaker_attribution import ABMSpeakerAttribution
 
 
 def test_end_to_end_jsonl(tmp_path: Path) -> None:
-    # 1) Load & chunk
-    loader = ABMEnhancedChapterLoader(book_name="mvs", chapter_index=1, base_data_dir="data/clean")
-    chunked = loader.load_and_chunk_chapter()
-    data = chunked.data
+    # 1) Load & blocks
+    loader = ABMChapterLoader(book_name="mvs", chapter_index=1, base_data_dir="data/clean")
+    blocks = loader.load_and_blocks()
+    data = blocks.data
     assert "error" not in data
 
     # 2) Iterate a handful for speed
     iterator = cast(Any, ABMBlockIterator)(
-        chunked_data=chunked,
+        blocks_data=blocks,
         batch_size=5,
-        start_chunk=1,
-        max_chunks=5,
+        start_block=1,
+        max_blocks=5,
         dialogue_priority=True,
     )
 

@@ -14,7 +14,7 @@ from typing import Any
 
 from abm.lf_components.audiobook.abm_block_iterator import ABMBlockIterator
 from abm.lf_components.audiobook.abm_dialogue_classifier import ABMDialogueClassifier
-from abm.lf_components.audiobook.abm_enhanced_chapter_loader import ABMEnhancedChapterLoader
+from abm.lf_components.audiobook.abm_chapter_loader import ABMChapterLoader
 from abm.lf_components.audiobook.abm_results_aggregator import ABMResultsAggregator
 from abm.lf_components.audiobook.abm_speaker_attribution import ABMSpeakerAttribution
 
@@ -25,29 +25,29 @@ def run(
     chapter: int,
     base_dir: str | None = None,
     batch_size: int = 10,
-    start_chunk: int = 1,
-    max_chunks: int = 0,
+    start_block: int = 1,
+    max_blocks: int = 0,
     dialogue_priority: bool = True,
 ) -> dict[str, Any]:
     repo_root = Path(base_dir).resolve() if base_dir else Path(__file__).resolve().parents[4]
     data_clean = repo_root / "data" / "clean"
 
-    # 1) Load + chunk
-    loader = ABMEnhancedChapterLoader(
+    # 1) Load + blocks (unified loader)
+    loader = ABMChapterLoader(
         book_name=book,
         chapter_index=chapter,
         base_data_dir=str(data_clean),
     )
-    chunked_data = loader.load_and_chunk_chapter()  # Data
-    if "error" in chunked_data.data:
-        raise RuntimeError(f"Loader error: {chunked_data.data['error']}")
+    blocks_data = loader.load_and_blocks()  # Data
+    if "error" in blocks_data.data:
+        raise RuntimeError(f"Loader error: {blocks_data.data['error']}")
 
     # 2) Create iterator
     iterator = ABMBlockIterator(
-        chunked_data=chunked_data,
+        blocks_data=blocks_data,
         batch_size=batch_size,
-        start_chunk=start_chunk,
-        max_chunks=max_chunks,
+        start_block=start_block,
+        max_blocks=max_blocks,
         dialogue_priority=dialogue_priority,
     )
 
@@ -92,7 +92,7 @@ def run(
     results["runner_metadata"] = {
         "book": book,
         "chapter": chapter,
-        "processed_chunks": total,
+        "processed_blocks": total,
         "timestamp": datetime.utcnow().isoformat(),
     }
     return results
@@ -104,9 +104,9 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--chapter", type=int, default=1, help="Chapter index (1-based)")
     p.add_argument("--base-dir", default=None, help="Repo root directory (auto-detected if omitted)")
     p.add_argument("--batch-size", type=int, default=10)
-    p.add_argument("--start-chunk", type=int, default=1)
-    p.add_argument("--max-chunks", type=int, default=10, help="Limit number of chunks (0=all)")
-    p.add_argument("--no-dialogue-priority", action="store_true", help="Do not prioritize dialogue chunks")
+    p.add_argument("--start-block", type=int, default=1)
+    p.add_argument("--max-blocks", type=int, default=10, help="Limit number of blocks (0=all)")
+    p.add_argument("--no-dialogue-priority", action="store_true", help="Do not prioritize dialogue blocks")
     p.add_argument("--out", default=None, help="Path to write aggregated JSON (optional)")
     args = p.parse_args(argv)
 
@@ -115,8 +115,8 @@ def main(argv: list[str] | None = None) -> None:
         chapter=args.chapter,
         base_dir=args.base_dir,
         batch_size=args.batch_size,
-        start_chunk=args.start_chunk,
-        max_chunks=args.max_chunks,
+        start_block=args.start_block,
+        max_blocks=args.max_blocks,
         dialogue_priority=not args.no_dialogue_priority,
     )
 

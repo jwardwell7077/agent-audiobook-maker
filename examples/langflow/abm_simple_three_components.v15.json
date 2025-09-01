@@ -82,8 +82,8 @@
               "chapter",
               "base_dir",
               "batch_size",
-              "start_chunk",
-              "max_chunks",
+              "start_block",
+              "max_blocks",
               "dialogue_priority"
             ],
             "frozen": false,
@@ -196,14 +196,14 @@
                 "type": "bool",
                 "value": true
               },
-              "max_chunks": {
+              "max_blocks": {
                 "_input_type": "IntInput",
                 "advanced": false,
-                "display_name": "Max Chunks (0=all)",
+                "display_name": "Max Blocks (0=all)",
                 "dynamic": false,
                 "info": "Limit processed blocks",
                 "list": false,
-                "name": "max_chunks",
+                "name": "max_blocks",
                 "placeholder": "0",
                 "required": false,
                 "show": true,
@@ -213,14 +213,14 @@
                 "type": "int",
                 "value": 10
               },
-              "start_chunk": {
+              "start_block": {
                 "_input_type": "IntInput",
                 "advanced": false,
-                "display_name": "Start Chunk",
+                "display_name": "Start Block",
                 "dynamic": false,
                 "info": "First block id",
                 "list": false,
-                "name": "start_chunk",
+                "name": "start_block",
                 "placeholder": "1",
                 "required": false,
                 "show": true,
