@@ -1,7 +1,7 @@
 flowchart LR
   %% Audio Book Maker - Two-Agent LangFlow Pipeline
   %% Nodes
-  A["Enhanced Chapter Loader\n(ABMEnhancedChapterLoader)"]
+  A["ABM Chapter Loader\n(ABMChapterLoader)"]
   B["Block Iterator\n(ABMBlockIterator)"]
   C["Dialogue Classifier\n(ABMDialogueClassifier)\ndisable_llm=true by default"]
   D["Speaker Attribution\n(ABMSpeakerAttribution)"]
@@ -16,9 +16,9 @@ flowchart LR
 
   %% Flow
   DA -. reads .-> A
-  A -->|chunks| B
+  A -->|blocks| B
   B -->|block| C
-  C -->|classified chunk| D
+    C -->|classified block| D
   D -->|utterance with speaker| E
   E -->|results| F
   F -->|utterances v0.2| G
@@ -27,11 +27,9 @@ flowchart LR
 
   %% Notes
   N1["Run offline deterministically by keeping\ndisable_llm=true."]
-  N2["Wrappers under lf_components/abm expose\nsrc/abm/lf_components/audiobook to LangFlow."]
   N3["Loader falls back to classified/chapters.json\nand supports 0-based chapter_index."]
   N4["Normalization schema:\nbook_id, chapter_id, utterance_idx, role, text, speaker,\nspeaker_confidence, context_before/after"]
 
   C --- N1
-  B --- N2
   A --- N3
   E --- N4

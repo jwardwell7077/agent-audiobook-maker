@@ -1,0 +1,1856 @@
+{
+  "data": {
+    "edges": [
+      {
+        "animated": false,
+        "className": "",
+        "data": {
+          "nodes": [
+            {
+              "data": {
+                "id": "ABMChapterSelector-aU00C",
+                "node": {
+                  "base_classes": [
+                    "Data"
+                  ],
+                  "beta": false,
+                  "conditional_paths": [],
+                  "custom_fields": {},
+                  "description": "Select a single chapter and emit chunked data",
+                  "display_name": "ABM Chapter Selector",
+                  "documentation": "",
+                  "edited": false,
+                  "field_order": [
+                    "chapters_data",
+                    "chapter_index",
+                    "title_contains"
+                  ],
+                  "frozen": false,
+                  "icon": "filter",
+                  "legacy": false,
+                  "lf_version": "1.5.1",
+                  "metadata": {},
+                  "minimized": false,
+                  "output_types": [],
+                  "outputs": [
+                    {
+                      "allows_loop": false,
+                      "cache": true,
+                      "display_name": "Selected Chapter (Chunked)",
+                      "group_outputs": false,
+                      "method": "select_chapter",
+                      "name": "selected_chapter",
+                      "selected": "Data",
+                      "tool_mode": true,
+                      "types": [
+                        "Data"
+                      ],
+                      "value": "__UNDEFINED__"
+                    }
+                  ],
+                  "pinned": false,
+                  "template": {
+                    "_type": "Component",
+                    "chapters_data": {
+                      "_input_type": "DataInput",
+                      "advanced": false,
+                      "display_name": "Chapters Data",
+                      "dynamic": false,
+                      "info": "Data containing chapters to select from",
+                      "input_types": [
+                        "Data"
+                      ],
+                      "list": false,
+                      "list_add_label": "Add More",
+                      "name": "chapters_data",
+                      "placeholder": "",
+                      "required": true,
+                      "show": true,
+                      "title_case": false,
+                      "tool_mode": false,
+                      "trace_as_input": true,
+                      "trace_as_metadata": true,
+                      "type": "other",
+                      "value": ""
+                    },
+                    "chapter_index": {
+                      "_input_type": "IntInput",
+                      "advanced": false,
+                      "display_name": "Chapter Index (1-based)",
+                      "dynamic": false,
+                      "info": "Exact chapter index to select (optional)",
+                      "list": false,
+                      "list_add_label": "Add More",
+                      "name": "chapter_index",
+                      "placeholder": "",
+                      "required": false,
+                      "show": true,
+                      "title_case": false,
+                      "tool_mode": false,
+                      "trace_as_metadata": true,
+                      "type": "int",
+                      "value": 1
+                    },
+                    "title_contains": {
+                      "_input_type": "StrInput",
+                      "advanced": false,
+                      "display_name": "Title Contains",
+                      "dynamic": false,
+                      "info": "Select chapter if title contains this text (optional)",
+                      "list": false,
+                      "list_add_label": "Add More",
+                      "load_from_db": false,
+                      "name": "title_contains",
+                      "placeholder": "",
+                      "required": false,
+                      "show": true,
+                      "title_case": false,
+                      "tool_mode": false,
+                      "trace_as_metadata": true,
+                      "type": "str",
+                      "value": ""
+                    },
+                    "code": {
+                      "advanced": true,
+                      "dynamic": true,
+                      "fileTypes": [],
+                      "file_path": "",
+                      "info": "",
+                      "list": false,
+                      "load_from_db": false,
+                      "multiline": true,
+                      "name": "code",
+                      "password": false,
+                      "placeholder": "",
+                      "required": true,
+                      "show": true,
+                      "title_case": false,
+                      "type": "code",
+                      "value": "from langflow.custom import Component\nfrom langflow.io import DataInput, IntInput, Output, StrInput\nfrom langflow.schema import Data\n\n\nclass ABMChapterSelector(Component):\n    display_name = \"ABM Chapter Selector\"\n    description = \"Select a single chapter and emit chunked data\"\n    icon = \"filter\"\n    name = \"ABMChapterSelector\"\n\n    inputs = [\n        DataInput(name=\"chapters_data\", display_name=\"Chapters Data\", info=\"Data containing chapters to select from\", required=True),\n        IntInput(name=\"chapter_index\", display_name=\"Chapter Index (1-based)\", info=\"Exact chapter index to select (optional)\", required=False),\n        StrInput(name=\"title_contains\", display_name=\"Title Contains\", info=\"Select chapter if title contains this text (optional)\", required=False),\n    ]\n\n    outputs = [Output(name=\"selected_chapter\", display_name=\"Selected Chapter (Chunked)\", method=\"select_chapter\")]\n\n    def select_chapter(self) -> Data:\n        try:\n            input_data = self.chapters_data.data if hasattr(self, \"chapters_data\") else {}\n            if isinstance(input_data, dict) and \"error\" in input_data:\n                self.status = \"Input contains error, passing through\"\n                return Data(data=input_data)\n\n            chapters = list((input_data or {}).get(\"chapters\", []))\n            if not chapters:\n                err = \"No chapters provided in input data\"\n                self.status = f\"Error: {err}\"\n                return Data(data={\"error\": err})\n\n            selected = None\n            if getattr(self, \"chapter_index\", None):\n                try:\n                    want = int(self.chapter_index)\n                except Exception:\n                    want = None\n                if want is not None:\n                    for ch in chapters:\n                        idx0 = ch.get(\"index\")\n                        idx1 = ch.get(\"chapter_index\")\n                        if (isinstance(idx0, int) and idx0 == want) or (idx1 is not None and int(idx1) + 1 == want):\n                            selected = ch\n                            break\n            if selected is None and getattr(self, \"title_contains\", None):\n                needle = str(self.title_contains).lower()\n                for ch in chapters:\n                    if needle in str(ch.get(\"title\", \"\")).lower():\n                        selected = ch\n                        break\n            if selected is None:\n                selected = chapters[0]\n\n            paragraphs = selected.get(\"paragraphs\") or []\n            chunks = []\n            cid = 1\n            title = selected.get(\"title\", \"\")\n            for p in paragraphs:\n                text = (p or \"\").strip()\n                if not text:\n                    continue\n                chunks.append({\n                    \"chunk_id\": cid,\n                    \"text\": text,\n                    \"type\": \"mixed\",\n                    \"word_count\": len(text.split()),\n                    \"sentence_count\": 1,\n                    \"dialogue_text\": \"\",\n                    \"context_before\": \"\",\n                    \"context_after\": \"\",\n                    \"chapter_title\": title,\n                    \"processing_hints\": {\"complexity\": \"medium\", \"priority\": \"medium\"},\n                })\n                cid += 1\n\n            book_name = input_data.get(\"book\") or input_data.get(\"book_name\") or \"UNKNOWN_BOOK\"\n            ch_index = selected.get(\"index\") or (selected.get(\"chapter_index\") and int(selected.get(\"chapter_index\")) + 1) or 1\n            result = {\n                \"chunks\": chunks,\n                \"book_name\": book_name,\n                \"chapter_index\": int(ch_index),\n                \"chapter_title\": title,\n            }\n            self.status = f\"Selected chapter: {title} (chunks: {len(chunks)})\"\n            return Data(data=result)\n        except Exception as e:  # defensive\n            self.status = f\"Error: {e}\"\n            return Data(data={\"error\": str(e)})\n"
+                    }
+                  },
+                  "tool_mode": false
+                }
+              },
+              "dragging": false,
+              "id": "ABMChapterSelector-aU00C",
+              "measured": {
+                "height": 330,
+                "width": 320
+              },
+              "position": {
+                "x": -469.90732453609706,
+                "y": -521.9365396515022
+              },
+              "selected": false,
+              "type": "genericNode"
+            },
+            "id": "ABMResultsAggregator-UUBbK",
+            "name": "aggregated_results",
+            "output_types": [
+              "Data"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "aggregated_results",
+            "id": "ABMResultsToUtterances-YLLf7",
+            "inputTypes": [
+              "Data"
+            ],
+            "type": "other"
+          }
+        },
+        "id": "reactflow__edge-ABMResultsAggregator-UUBbK{œdataTypeœ:œABMResultsAggregatorœ,œidœ:œABMResultsAggregator-UUBbKœ,œnameœ:œaggregated_resultsœ,œoutput_typesœ:[œDataœ]}-ABMResultsToUtterances-YLLf7{œfieldNameœ:œaggregated_resultsœ,œidœ:œABMResultsToUtterances-YLLf7œ,œinputTypesœ:[œDataœ],œtypeœ:œotherœ}",
+        "selected": false,
+        "source": "ABMResultsAggregator-UUBbK",
+        "sourceHandle": "{œdataTypeœ:œABMResultsAggregatorœ,œidœ:œABMResultsAggregator-UUBbKœ,œnameœ:œaggregated_resultsœ,œoutput_typesœ:[œDataœ]}",
+        "target": "ABMResultsToUtterances-YLLf7",
+        "targetHandle": "{œfieldNameœ:œaggregated_resultsœ,œidœ:œABMResultsToUtterances-YLLf7œ,œinputTypesœ:[œDataœ],œtypeœ:œotherœ}"
+      },
+      {
+        "animated": false,
+        "className": "",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ABMResultsToUtterances",
+            "id": "ABMResultsToUtterances-YLLf7",
+            "name": "utterances_data",
+            "output_types": [
+              "Data"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "utterances_data",
+            "id": "abm_character_data_collector-qBvaO",
+            "inputTypes": [
+              "Data"
+            ],
+            "type": "other"
+          }
+        },
+        "id": "reactflow__edge-ABMResultsToUtterances-YLLf7{œdataTypeœ:œABMResultsToUtterancesœ,œidœ:œABMResultsToUtterances-YLLf7œ,œnameœ:œutterances_dataœ,œoutput_typesœ:[œDataœ]}-abm_character_data_collector-qBvaO{œfieldNameœ:œutterances_dataœ,œidœ:œabm_character_data_collector-qBvaOœ,œinputTypesœ:[œDataœ],œtypeœ:œotherœ}",
+        "selected": false,
+        "source": "ABMResultsToUtterances-YLLf7",
+        "sourceHandle": "{œdataTypeœ:œABMResultsToUtterancesœ,œidœ:œABMResultsToUtterances-YLLf7œ,œnameœ:œutterances_dataœ,œoutput_typesœ:[œDataœ]}",
+        "target": "abm_character_data_collector-qBvaO",
+        "targetHandle": "{œfieldNameœ:œutterances_dataœ,œidœ:œabm_character_data_collector-qBvaOœ,œinputTypesœ:[œDataœ],œtypeœ:œotherœ}"
+      },
+      {
+        "animated": false,
+        "className": "",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ABMResultsToUtterances",
+            "id": "ABMResultsToUtterances-YLLf7",
+            "name": "utterances_data",
+            "output_types": [
+              "Data"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "utterances_data",
+            "id": "ABMCastingDirector-0VMwi",
+            "inputTypes": [
+              "Data"
+            ],
+            "type": "other"
+          }
+        },
+        "id": "reactflow__edge-ABMResultsToUtterances-YLLf7{œdataTypeœ:œABMResultsToUtterancesœ,œidœ:œABMResultsToUtterances-YLLf7œ,œnameœ:œutterances_dataœ,œoutput_typesœ:[œDataœ]}-ABMCastingDirector-0VMwi{œfieldNameœ:œutterances_dataœ,œidœ:œABMCastingDirector-0VMwiœ,œinputTypesœ:[œDataœ],œtypeœ:œotherœ}",
+        "selected": false,
+        "source": "ABMResultsToUtterances-YLLf7",
+        "sourceHandle": "{œdataTypeœ:œABMResultsToUtterancesœ,œidœ:œABMResultsToUtterances-YLLf7œ,œnameœ:œutterances_dataœ,œoutput_typesœ:[œDataœ]}",
+        "target": "ABMCastingDirector-0VMwi",
+        "targetHandle": "{œfieldNameœ:œutterances_dataœ,œidœ:œABMCastingDirector-0VMwiœ,œinputTypesœ:[œDataœ],œtypeœ:œotherœ}"
+      },
+      {
+        "animated": false,
+        "className": "",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ABMResultsToUtterances",
+            "id": "ABMResultsToUtterances-YLLf7",
+            "name": "utterances_data",
+            "output_types": [
+              "Data"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "utterances_data",
+            "id": "ABMAggregatedJsonlWriter-nnuZr",
+            "inputTypes": [
+              "Data"
+            ],
+            "type": "other"
+          }
+        },
+        "id": "reactflow__edge-ABMResultsToUtterances-YLLf7{œdataTypeœ:œABMResultsToUtterancesœ,œidœ:œABMResultsToUtterances-YLLf7œ,œnameœ:œutterances_dataœ,œoutput_typesœ:[œDataœ]}-ABMAggregatedJsonlWriter-nnuZr{œfieldNameœ:œutterances_dataœ,œidœ:œABMAggregatedJsonlWriter-nnuZrœ,œinputTypesœ:[œDataœ],œtypeœ:œotherœ}",
+        "selected": false,
+        "source": "ABMResultsToUtterances-YLLf7",
+        "sourceHandle": "{œdataTypeœ:œABMResultsToUtterancesœ,œidœ:œABMResultsToUtterances-YLLf7œ,œnameœ:œutterances_dataœ,œoutput_typesœ:[œDataœ]}",
+        "target": "ABMAggregatedJsonlWriter-nnuZr",
+        "targetHandle": "{œfieldNameœ:œutterances_dataœ,œidœ:œABMAggregatedJsonlWriter-nnuZrœ,œinputTypesœ:[œDataœ],œtypeœ:œotherœ}"
+      }
+    ],
+    "nodes": [
+      {
+        "data": {
+          "id": "ABMChapterSelector-aU00C",
+          "code": {
+            "value": "\"\"\"ABM Chapter Selector Component for LangFlow (enhanced).\n\nSelects a chapter and emits a minimal chunked payload expected by legacy iterator nodes.\nThis keeps your existing flow wiring but provides the \"chunks\" array and metadata.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport re\nfrom typing import Any, List\n\nfrom langflow.custom import Component\nfrom langflow.io import DataInput, IntInput, Output, StrInput\nfrom langflow.schema import Data\n\n\nclass ABMChapterSelector(Component):\n    display_name = \"ABM Chapter Selector\"\n    description = \"Select a single chapter and emit chunked data for downstream processing\"\n    icon = \"filter\"\n    name = \"ABMChapterSelector\"\n\n    inputs = [\n        DataInput(\n            name=\"chapters_data\",\n            display_name=\"Chapters Data\",\n            info=\"Data containing chapters to select from\",\n            required=True,\n        ),\n        IntInput(\n            name=\"chapter_index\",\n            display_name=\"Chapter Index (1-based)\",\n            info=\"Exact chapter index to select (optional)\",\n            required=False,\n        ),\n        StrInput(\n            name=\"title_contains\",\n            display_name=\"Title Contains\",\n            info=\"Select chapter if title contains this text (optional)\",\n            required=False,\n        ),\n    ]\n\n    outputs = [\n        Output(name=\"selected_chapter\", display_name=\"Selected Chapter (Chunked)\", method=\"select_chapter\"),\n    ]\n\n    # ---------------- Internal helpers for chunking ----------------\n    def _split_into_sentences(self, text: str) -> List[str]:\n        sentences: List[str] = []\n        cur = \"\"\n        in_quote = False\n        q = None\n        for ch in text:\n            cur += ch\n            if ch in ['\\"',
+            "'\"] and not in_quote:\n                in_quote = True\n                q = ch\n            elif q and ch == q and in_quote:\n                in_quote = False\n                q = None\n            if ch in ".!?" and not in_quote:\n                if not re.search(r\\"\\b(Mr|Mrs|Dr|Prof|Inc|Ltd)\\.\\$\\", cur):\n                    sentences.append(cur.strip())\n                    cur = \"\"\n        if cur.strip():\n            sentences.append(cur.strip())\n        return [s for s in sentences if s]\n\n    def _classify_chunk_type(self, text: str) -> str:\n        has_quotes = bool(re.search(r'\\\"[^\\\"]*\\\"|\'[^\']*\'', text))\n        has_attrib = bool(re.search(r\\"\\b(\\w+)\\s+(said|asked|replied|whispered|shouted|exclaimed)\\b\\", text, re.I))\n        has_narr = bool(re.search(r\\"\\b(The|A|An|Meanwhile|However|Then|After|Before)\\b\\", text))\n        if has_quotes and (has_attrib or len(re.findall(r'\\\"[^\\\"]*\\\"', text)) > 0):\n            return \"dialogue\" if not has_narr else \"mixed\"\n        return \"narration\" if (has_narr and not has_quotes) else \"mixed\"\n\n    def _extract_dialogue(self, text: str) -> str:\n        quotes = re.findall(r'\\\"[^\\\"]*\\\"|\'[^\']*\'', text)\n        return \" \\".join(quotes)\n\n    # ---------------- Main ----------------\n    def select_chapter(self) -> Data:\n        \"\"\"Select a single chapter and emit chunked data with context.\"\"\"\n        try:\n            input_data = self.chapters_data.data\n            if \"error\" in input_data:\n                self.status = \"Input contains error, passing through\"\n                return Data(data=input_data)\n\n            chapters = input_data.get(\"chapters\", [])\n            if not chapters:\n                error_msg = \"No chapters provided in input data\"\n                self.status = f\"Error: {error_msg}\"\n                return Data(data={\"error\": error_msg})\n\n            # Resolve selection\n            selected = None\n            idx_in = self.chapter_index if getattr(self, \"chapter_index\", None) else None\n            if idx_in is not None:\n                # Support both 0-based and 1-based \"index\" fields in chapter\n                for ch in chapters:\n                    if int(ch.get(\"index\", -1)) == idx_in or int(ch.get(\"chapter_index\", -2)) + 1 == idx_in:\n                        selected = ch\n                        break\n            elif self.title_contains:\n                needle = self.title_contains.lower()\n                for ch in chapters:\n                    title = str(ch.get(\"title\", \"\"))\n                    if needle in title.lower():\n                        selected = ch\n                        break\n            else:\n                selected = chapters[0]\n\n            if selected is None:\n                error_msg = \"Chapter not found with given criteria\"\n                self.status = f\"Error: {error_msg}\"\n                return Data(data={\"error\": error_msg})\n\n            # Build chunks from paragraphs\n            paragraphs = selected.get(\"paragraphs\") or []\n            sents_by_par = [self._split_into_sentences(p or \"\") for p in paragraphs]\n            all_sents = [s for sl in sents_by_par for s in sl]\n\n            chunks = []\n            offset = 0\n            cid = 1\n            chapter_title = selected.get(\"title\", \"\")\n            for cur_sents, para_text in zip(sents_by_par, paragraphs):\n                cur_idx = offset + len(cur_sents)\n                text = (para_text or \"\").strip()\n                chunk_type = self._classify_chunk_type(text)\n                before = \" \".join(all_sents[max(0, cur_idx - 2):cur_idx])\n                after = \" \".join(all_sents[cur_idx:min(len(all_sents), cur_idx + 2)])\n                chunk = {\n                    \"chunk_id\": cid,\n                    \"text\": text,\n                    \"type\": chunk_type,\n                    \"word_count\": len(text.split()),\n                    \"sentence_count\": len(cur_sents) or 1,\n                    \"dialogue_text\": self._extract_dialogue(text) if chunk_type in (\"dialogue\", \"mixed\") else \"\",\n                    \"context_before\": before,\n                    \"context_after\": after,\n                    \"chapter_title\": chapter_title,\n                    \"processing_hints\": {\n                        \"complexity\": \"medium\",\n                        \"priority\": \"medium\",\n                    },\n                }\n                chunks.append(chunk)\n                cid += 1\n                offset = cur_idx\n\n            # Meta and payload compatible with iterator expecting chunked_data\n            book_name = input_data.get(\"book\") or input_data.get(\"book_name\") or \"UNKNOWN_BOOK\"\n            chapter_index = selected.get(\"index\") or (selected.get(\"chapter_index\") and int(selected.get(\"chapter_index\")) + 1) or 1\n\n            result_data = {\n                \"chunks\": chunks,\n                \"book_name\": book_name,\n                \"chapter_index\": int(chapter_index),\n                \"chapter_title\": chapter_title,\n            }\n\n            self.status = f\"Selected chapter: {chapter_title} (chunks: {len(chunks)})\"\n            return Data(data=result_data)\n\n        except Exception as e:\n            error_msg = f\"Failed to select chapter: {str(e)}\"\n            self.status = f\"Error: {error_msg}\"\n            return Data(data={\"error\": error_msg})\n"
+          },
+        ],
+        "beta": false,
+        "conditional_paths": [],
+        "custom_fields": {},
+        "description": "Select a single chapter by index or title match",
+        "display_name": "ABM Chapter Selector",
+        "documentation": "",
+        "edited": false,
+        "field_order": [
+          "chapters_data",
+          "chapter_index",
+          "title_contains"
+        ],
+        "frozen": false,
+        "icon": "filter",
+        "legacy": false,
+        "lf_version": "1.5.1",
+        "metadata": {},
+        "minimized": false,
+        "output_types": [],
+        "outputs": [
+          {
+            "allows_loop": false,
+            "cache": true,
+            "display_name": "Selected Chapter",
+            "group_outputs": false,
+            "method": "select_chapter",
+            "name": "selected_chapter",
+            "selected": "Data",
+            "tool_mode": true,
+            "types": [
+              "Data"
+            ],
+            "value": "__UNDEFINED__"
+          }
+        ],
+        "pinned": false,
+        "template": {
+          "_type": "Component",
+          "chapter_index": {
+            "_input_type": "IntInput",
+            "advanced": false,
+            "display_name": "Chapter Index",
+            "dynamic": false,
+            "info": "Exact chapter index to select (optional)",
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "chapter_index",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "int",
+            "value": 1
+          },
+          "chapters_data": {
+            "_input_type": "DataInput",
+            "advanced": false,
+            "display_name": "Chapters Data",
+            "dynamic": false,
+            "info": "Data containing chapters to select from",
+            "input_types": [
+              "Data"
+            ],
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "chapters_data",
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_input": true,
+            "trace_as_metadata": true,
+            "type": "other",
+            "value": ""
+          },
+          "code": {
+            "advanced": true,
+            "dynamic": true,
+            "fileTypes": [],
+            "file_path": "",
+            "info": "",
+            "list": false,
+            "load_from_db": false,
+            "multiline": true,
+            "name": "code",
+            "password": false,
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "type": "code",
+            "value": "\"\"\"ABM Chapter Selector Component for LangFlow.\"\"\"\n\nfrom langflow.custom import Component\nfrom langflow.io import DataInput, IntInput, Output, StrInput\nfrom langflow.schema import Data\n\n\nclass ABMChapterSelector(Component):\n    display_name = \"ABM Chapter Selector\"\n    description = \"Select a single chapter by index or title match\"\n    icon = \"filter\"\n    name = \"ABMChapterSelector\"\n\n    inputs = [\n        DataInput(\n            name=\"chapters_data\",\n            display_name=\"Chapters Data\",\n            info=\"Data containing chapters to select from\",\n            required=True,\n        ),\n        IntInput(\n            name=\"chapter_index\",\n            display_name=\"Chapter Index\",\n            info=\"Exact chapter index to select (optional)\",\n            required=False,\n        ),\n        StrInput(\n            name=\"title_contains\",\n            display_name=\"Title Contains\",\n            info=\"Select chapter if title contains this text (optional)\",\n            required=False,\n        ),\n    ]\n\n    outputs = [Output(name=\"selected_chapter\", display_name=\"Selected Chapter\", method=\"select_chapter\")]\n\n    def select_chapter(self) -> Data:\n        \"\"\"Select a single chapter from chapters data.\"\"\"\n        try:\n            input_data = self.chapters_data.data\n            if \"error\" in input_data:\n                self.status = \"Input contains error, passing through\"\n                return Data(data=input_data)\n            chapters = input_data.get(\"chapters\", [])\n            if not chapters:\n                error_msg = \"No chapters provided in input data\"\n                self.status = f\"Error: {error_msg}\"\n                return Data(data={\"error\": error_msg})\n            selected = None\n\n            # Try selection by index first\n            if self.chapter_index is not None:\n                for chapter in chapters:\n                    if int(chapter.get(\"index\", -1)) == self.chapter_index:\n                        selected = chapter\n                        break\n            # Try selection by title contains\n            elif self.title_contains:\n                needle = self.title_contains.lower()\n                for chapter in chapters:\n                    title = str(chapter.get(\"title\", \"\"))\n                    if needle in title.lower():\n                        selected = chapter\n                        break\n            else:\n                # Default to first chapter\n                selected = chapters[0]\n            if selected is None:\n                error_msg = \"Chapter not found with given criteria\"\n                self.status = f\"Error: {error_msg}\"\n                return Data(data={\"error\": error_msg})\n\n            result_data = {\n                \"chapters\": [selected],\n                \"book\": input_data.get(\"book\"),\n                \"volume\": input_data.get(\"volume\"),\n                \"total_chapters\": 1,\n            }\n\n            chapter_title = selected.get(\"title\", \"Unknown\")\n            self.status = f\"Selected chapter: {chapter_title}\"\n            return Data(data=result_data)\n\n        except Exception as e:\n            error_msg = f\"Failed to select chapter: {str(e)}\"\n            self.status = f\"Error: {error_msg}\"\n            return Data(data={\"error\": error_msg})\n"
+          },
+          "title_contains": {
+            "_input_type": "StrInput",
+            "advanced": false,
+            "display_name": "Title Contains",
+            "dynamic": false,
+            "info": "Select chapter if title contains this text (optional)",
+            "list": false,
+            "list_add_label": "Add More",
+            "load_from_db": false,
+            "name": "title_contains",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "str",
+            "value": ""
+          }
+        },
+        "tool_mode": false
+      },
+      "showNode": true,
+      "type": "ABMChapterSelector"
+    },
+    "dragging": false,
+    "id": "ABMChapterSelector-aU00C",
+    "measured": {
+      "height": 330,
+      "width": 320
+    },
+    "position": {
+      "x": -469.90732453609706,
+      "y": -521.9365396515022
+    },
+    "selected": false,
+    "type": "genericNode"
+  },
+  {
+    "data": {
+      "id": "ABMChapterVolumeLoader-tP78K",
+      "node": {
+        "base_classes": [
+          "Data"
+        ],
+        "beta": false,
+        "conditional_paths": [],
+        "custom_fields": {},
+        "description": "Load chapters from a book volume for audiobook processing",
+        "display_name": "ABM Chapter Volume Loader",
+        "documentation": "",
+        "edited": false,
+        "field_order": [
+          "book_name",
+          "volume_number",
+          "base_data_dir"
+        ],
+        "frozen": false,
+        "icon": "book-open",
+        "legacy": false,
+        "lf_version": "1.5.1",
+        "metadata": {},
+        "minimized": false,
+        "output_types": [],
+        "outputs": [
+          {
+            "allows_loop": false,
+            "cache": true,
+            "display_name": "Chapters Data",
+            "group_outputs": false,
+            "method": "load_chapters",
+            "name": "chapters_data",
+            "selected": "Data",
+            "tool_mode": true,
+            "types": [
+              "Data"
+            ],
+            "value": "__UNDEFINED__"
+          }
+        ],
+        "pinned": false,
+        "template": {
+          "_type": "Component",
+          "base_data_dir": {
+            "_input_type": "StrInput",
+            "advanced": false,
+            "display_name": "Base Data Directory",
+            "dynamic": false,
+            "info": "Base directory containing book data",
+            "list": false,
+            "list_add_label": "Add More",
+            "load_from_db": false,
+            "name": "base_data_dir",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "str",
+            "value": "/home/jon/repos/agent-audiobook-maker/data/clean"
+          },
+          "book_name": {
+            "_input_type": "StrInput",
+            "advanced": false,
+            "display_name": "Book Name",
+            "dynamic": false,
+            "info": "Name of the book to load chapters from",
+            "list": false,
+            "list_add_label": "Add More",
+            "load_from_db": false,
+            "name": "book_name",
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "str",
+            "value": "mvs"
+          },
+          "code": {
+            "advanced": true,
+            "dynamic": true,
+            "fileTypes": [],
+            "file_path": "",
+            "info": "",
+            "list": false,
+            "load_from_db": false,
+            "multiline": true,
+            "name": "code",
+            "password": false,
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "type": "code",
+            "value": "\"\"\"ABM Chapter Volume Loader Component for LangFlow.\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nfrom pathlib import Path\n\nfrom langflow.custom import Component\nfrom langflow.io import IntInput, Output, StrInput\nfrom langflow.schema import Data\n\n\nclass ABMChapterVolumeLoader(Component):\n    display_name = \"ABM Chapter Volume Loader\"\n    description = \"Load chapters from a book volume for audiobook processing\"\n    icon = \"book-open\"\n    name = \"ABMChapterVolumeLoader\"\n\n    inputs = [\n        StrInput(\n            name=\"book_name\",\n            display_name=\"Book Name\",\n            info=\"Name of the book to load chapters from\",\n            value=\"mvs\",\n            required=True,\n        ),\n        IntInput(\n            name=\"volume_number\",\n            display_name=\"Volume Number\",\n            info=\"Volume number to load (1-based)\",\n            value=1,\n            required=True,\n        ),\n        StrInput(\n            name=\"base_data_dir\",\n            display_name=\"Base Data Directory\",\n            info=\"Base directory containing book data\",\n            value=\"/home/jon/repos/audio-book-maker-lg/data/clean\",\n            required=False,\n        ),\n    ]\n\n    outputs = [Output(name=\"chapters_data\", display_name=\"Chapters Data\", method=\"load_chapters\")]\n\n    def load_chapters(self) -> Data:\n        \"\"\"Load chapters from the specified book and volume.\"\"\"\n        try:\n            base_dir = Path(self.base_data_dir)\n            chapters_file = base_dir / self.book_name / \"chapters.json\"\n\n            if not chapters_file.exists():\n                error_msg = f\"Chapters file not found: {chapters_file}\"\n                self.status = f\"Error: {error_msg}\"\n                return Data(data={\"error\": error_msg})\n\n            with open(chapters_file, encoding=\"utf-8\") as f:\n                all_chapters = json.load(f)\n            # Filter chapters for the specified volume\n            volume_chapters = [chapter for chapter in all_chapters if chapter.get(\"volume\", 1) == self.volume_number]\n\n            if not volume_chapters:\n                msg = f\"No chapters found for volume {self.volume_number}\"\n                self.status = f\"Warning: {msg}\"\n                return Data(data={\"chapters\": [], \"volume\": self.volume_number})\n\n            result_data = {\n                \"chapters\": volume_chapters,\n                \"volume\": self.volume_number,\n                \"book\": self.book_name,\n                \"total_chapters\": len(volume_chapters),\n            }\n\n            status_msg = f\"Loaded {len(volume_chapters)} chapters from {self.book_name} volume {self.volume_number}\"\n            self.status = status_msg\n            return Data(data=result_data)\n\n        except Exception as e:\n            error_msg = f\"Failed to load chapters: {str(e)}\"\n            self.status = f\"Error: {error_msg}\"\n            return Data(data={\"error\": error_msg})\n\n\ndef run(book: str, base_dir: str) -> dict:\n    \"\"\"Convenience wrapper used by abm.langflow_runner for CLI-style chaining.\"\"\"\n    comp = ABMChapterVolumeLoader()\n    comp.book_name = book\n    comp.volume_number = 1\n    # base_dir is expected to be the project root; chapters live under data/clean/<book>/chapters.json\n    comp.base_data_dir = str(Path(base_dir) / \"data\" / \"clean\")\n    data = comp.load_chapters().data\n    # Return a plain dict for downstream non-LangFlow callers\n    return data\n"
+          },
+          "volume_number": {
+            "_input_type": "IntInput",
+            "advanced": false,
+            "display_name": "Volume Number",
+            "dynamic": false,
+            "info": "Volume number to load (1-based)",
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "volume_number",
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "int",
+            "value": 1
+          }
+        },
+        "tool_mode": false
+      },
+      "showNode": true,
+      "type": "ABMChapterVolumeLoader"
+    },
+    "dragging": false,
+    "id": "ABMChapterVolumeLoader-tP78K",
+    "measured": {
+      "height": 384,
+      "width": 320
+    },
+    "position": {
+      "x": -875.0865626159919,
+      "y": -418.1406371123051
+    },
+    "selected": false,
+    "type": "genericNode"
+  },
+  {
+    "data": {
+      "id": "ABMBlockIterator-gRuke",
+      "node": {
+        "base_classes": [
+          "Data"
+        ],
+        "beta": false,
+        "conditional_paths": [],
+        "custom_fields": {},
+        "description": "Process blocks through two-agent pipeline with batch management",
+        "display_name": "ABM Block Iterator",
+        "documentation": "",
+        "edited": false,
+        "field_order": [
+          "chunked_data",
+          "batch_size",
+          "start_chunk",
+          "max_chunks",
+          "dialogue_priority"
+        ],
+        "frozen": false,
+        "icon": "repeat",
+        "legacy": false,
+        "lf_version": "1.5.1",
+        "metadata": {},
+        "minimized": false,
+        "output_types": [],
+        "outputs": [
+          {
+            "allows_loop": false,
+            "cache": true,
+            "display_name": "Current Utterance",
+            "group_outputs": false,
+            "method": "get_next_utterance",
+            "name": "current_utterance",
+            "selected": "Data",
+            "tool_mode": true,
+            "types": [
+              "Data"
+            ],
+            "value": "__UNDEFINED__"
+          }
+        ],
+        "pinned": false,
+        "template": {
+          "_type": "Component",
+          "batch_size": {
+            "_input_type": "IntInput",
+            "advanced": false,
+            "display_name": "Batch Size",
+            "dynamic": false,
+            "info": "Number of blocks to process per batch",
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "batch_size",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "int",
+            "value": 10
+          },
+          "chunked_data": {
+            "_input_type": "DataInput",
+            "advanced": false,
+            "display_name": "Chunked Chapter Data",
+            "dynamic": false,
+            "info": "Output from Enhanced Chapter Loader",
+            "input_types": [
+              "Data"
+            ],
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "chunked_data",
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_input": true,
+            "trace_as_metadata": true,
+            "type": "other",
+            "value": ""
+          },
+          "code": {
+            "advanced": true,
+            "dynamic": true,
+            "fileTypes": [],
+            "file_path": "",
+            "info": "",
+            "list": false,
+            "load_from_db": false,
+            "multiline": true,
+            "name": "code",
+            "password": false,
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "type": "code",
+            "value": "\"\"\"ABM Block Iterator for LangFlow Two-Agent Processing.\"\"\"\n\nfrom __future__ import annotations\n\nimport logging\nfrom typing import Any\n\nfrom langflow.custom import Component\nfrom langflow.io import BoolInput, DataInput, IntInput, Output\nfrom langflow.schema import Data\n\n\nclass ABMBlockIterator(Component):\n    display_name = \"ABM Block Iterator\"\n    description = \"Process blocks through two-agent pipeline with batch management\"\n    icon = \"repeat\"\n    name = \"ABMBlockIterator\"\n\n    inputs = [\n        DataInput(\n            name=\"chunked_data\",\n            display_name=\"Chunked Chapter Data\",\n            info=\"Output from Enhanced Chapter Loader\",\n            required=True,\n        ),\n        IntInput(\n            name=\"batch_size\",\n            display_name=\"Batch Size\",\n            info=\"Number of blocks to process per batch\",\n            value=10,\n            required=False,\n        ),\n        IntInput(\n            name=\"start_chunk\",\n            display_name=\"Start Block ID\",\n            info=\"Start processing from this block (for debugging)\",\n            value=1,\n            required=False,\n        ),\n        IntInput(\n            name=\"max_chunks\",\n            display_name=\"Max Blocks to Process\",\n            info=\"Limit processing to this many blocks (0 = all)\",\n            value=0,\n            required=False,\n        ),\n        BoolInput(\n            name=\"dialogue_priority\",\n            display_name=\"Prioritize Dialogue Blocks\",\n            info=\"Process dialogue blocks first\",\n            value=True,\n            required=False,\n        ),\n    ]\n\n    outputs = [\n        Output(display_name=\"Current Utterance\", name=\"current_utterance\", method=\"get_next_utterance\"),\n    ]\n\n    def __init__(self, **kwargs):\n        super().__init__(**kwargs)\n        self._current_chunk_index = 0\n        self._processed_chunks: list[int] = []\n        self._total_processed = 0\n\n    def get_next_utterance(self) -> Data:\n        \"\"\"Get the next block formatted for two-agent processing.\"\"\"\n        try:\n            input_data = self.chunked_data.data\n\n            if \"error\" in input_data:\n                self.status = \"Input contains error, passing through\"\n                return Data(data=input_data)\n\n            chunks = input_data.get(\"chunks\", [])\n            if not chunks:\n                self.status = \"No blocks to process\"\n                return Data(data={\"error\": \"No blocks available\"})\n\n            # Filter chunks if needed\n            filtered_chunks = self._filter_and_sort_chunks(chunks)\n\n            # Check if we have chunks to process\n            if self._current_chunk_index >= len(filtered_chunks):\n                # All chunks processed\n                return self._create_completion_summary(input_data)\n\n            # Get current chunk\n            current_chunk = filtered_chunks[self._current_chunk_index]\n\n            # Prepare utterance data for Agent 1 (Dialogue Classifier)\n            utterance_data = self._prepare_utterance_for_agents(current_chunk, input_data)\n\n            # Update tracking\n            self._current_chunk_index += 1\n            self._processed_chunks.append(current_chunk[\"chunk_id\"])\n            self._total_processed += 1\n\n            # Update status\n            self.status = (\n                f\"Processing block {current_chunk['chunk_id']}/{len(filtered_chunks)} - {current_chunk['type']}\"\n            )\n\n            return Data(data=utterance_data)\n\n        except Exception as e:  # noqa: BLE001\n            error_msg = f\"Failed to get next utterance: {str(e)}\"\n            self.status = f\"Error: {error_msg}\"\n            logging.error(error_msg)\n            return Data(data={\"error\": error_msg})\n\n    def _filter_and_sort_chunks(self, chunks: list[dict[str, Any]]) -> list[dict[str, Any]]:\n        \"\"\"Filter and sort blocks based on processing preferences.\"\"\"\n        filtered_chunks = chunks.copy()\n\n        # Filter by start block\n        if self.start_chunk > 1:\n            filtered_chunks = [c for c in filtered_chunks if c[\"chunk_id\"] >= self.start_chunk]\n\n        # Limit max blocks\n        if self.max_chunks > 0:\n            filtered_chunks = filtered_chunks[: self.max_chunks]\n\n        # Sort by priority if enabled\n        if self.dialogue_priority:\n            # Sort dialogue first, then by chunk_id\n            filtered_chunks.sort(\n                key=lambda x: (0 if x[\"type\"] == \"dialogue\" else 1 if x[\"type\"] == \"mixed\" else 2, x[\"chunk_id\"])\n            )\n        else:\n            # Sort by chunk_id only\n            filtered_chunks.sort(key=lambda x: x[\"chunk_id\"])\n\n        return filtered_chunks\n\n    def _prepare_utterance_for_agents(self, chunk: dict[str, Any], chapter_data: dict[str, Any]) -> dict[str, Any]:\n        \"\"\"Prepare block data for two-agent processing pipeline.\"\"\"\n\n        # Base utterance data for Agent 1 (ABMDialogueClassifier)\n        utterance_data = {\n            # Core text data\n            \"utterance_text\": chunk[\"text\"],\n            \"context_before\": chunk.get(\"context_before\", \"\"),\n            \"context_after\": chunk.get(\"context_after\", \"\"),\n            # Identification data\n            \"book_id\": chapter_data[\"book_name\"],\n            \"chapter_id\": f\"chapter_{chapter_data['chapter_index']:02d}\",\n            \"utterance_idx\": chunk[\"chunk_id\"],\n            # Processing hints from iterator\n            \"processing_hints\": chunk.get(\"processing_hints\", {}),\n            \"expected_type\": chunk[\"type\"],\n            \"dialogue_text\": chunk.get(\"dialogue_text\", \"\"),\n            \"attribution_clues\": chunk.get(\"attribution_clues\", []),\n            # Metadata for tracking\n            \"chunk_metadata\": {\n                \"chapter_title\": chunk.get(\"chapter_title\", \"\"),\n                \"word_count\": chunk[\"word_count\"],\n                \"sentence_count\": chunk.get(\"sentence_count\", 1),\n                \"complexity\": chunk.get(\"processing_hints\", {}).get(\"complexity\", \"medium\"),\n                \"priority\": chunk.get(\"processing_hints\", {}).get(\"priority\", \"medium\"),\n            },\n            # Processing pipeline info\n            \"pipeline_info\": {\n                \"source_component\": \"ABMBlockIterator\",\n                \"processing_batch\": self._current_chunk_index // self.batch_size + 1,\n                \"total_chunks_in_chapter\": len(chapter_data.get(\"chunks\", [])),\n                \"current_chunk_index\": self._current_chunk_index + 1,\n            },\n        }\n\n        return utterance_data\n\n    def _create_completion_summary(self, chapter_data: dict[str, Any]) -> Data:\n        \"\"\"Create summary when all blocks are processed.\"\"\"\n\n        summary_data = {\n            \"processing_status\": \"completed\",\n            \"summary\": {\n                \"total_chunks_processed\": self._total_processed,\n                \"chunks_processed\": self._processed_chunks,\n                \"chapter_info\": {\n                    \"book_name\": chapter_data[\"book_name\"],\n                    \"chapter_index\": chapter_data[\"chapter_index\"],\n                    \"chapter_title\": chapter_data.get(\"chapter_title\", \"\"),\n                },\n                \"processing_metadata\": chapter_data.get(\"processing_metadata\", {}),\n            },\n            \"next_action\": \"aggregate_results\",\n        }\n\n        self.status = f\"Completed processing {self._total_processed} blocks\"\n\n        # Reset for next run\n        self._current_chunk_index = 0\n        self._processed_chunks = []\n        self._total_processed = 0\n\n        return Data(data=summary_data)\n"
+          },
+          "dialogue_priority": {
+            "_input_type": "BoolInput",
+            "advanced": false,
+            "display_name": "Prioritize Dialogue Blocks",
+            "dynamic": false,
+            "info": "Process dialogue blocks first",
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "dialogue_priority",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "bool",
+            "value": true
+          },
+          "max_chunks": {
+            "_input_type": "IntInput",
+            "advanced": false,
+            "display_name": "Max Blocks to Process",
+            "dynamic": false,
+            "info": "Limit processing to this many blocks (0 = all)",
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "max_chunks",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "int",
+            "value": 0
+          },
+          "start_chunk": {
+            "_input_type": "IntInput",
+            "advanced": false,
+            "display_name": "Start Block ID",
+            "dynamic": false,
+            "info": "Start processing from this block (for debugging)",
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "start_chunk",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "int",
+            "value": 1
+          }
+        },
+        "tool_mode": false
+      },
+      "showNode": true,
+      "type": "ABMBlockIterator"
+    },
+    "dragging": false,
+    "id": "ABMBlockIterator-gRuke",
+    "measured": {
+      "height": 471,
+      "width": 320
+    },
+    "position": {
+      "x": -411.49623767520626,
+      "y": -31.818717239352004
+    },
+    "selected": false,
+    "type": "genericNode"
+  },
+  {
+    "data": {
+      "id": "ABMDialogueClassifier-Yl38Z",
+      "node": {
+        "base_classes": [
+          "Data"
+        ],
+        "beta": false,
+        "conditional_paths": [],
+        "custom_fields": {},
+        "description": "Agent 1: Classify utterances as dialogue vs. narration for character tracking",
+        "display_name": "ABM Dialogue Classifier",
+        "documentation": "",
+        "edited": false,
+        "field_order": [
+          "utterance_data",
+          "utterance_text",
+          "book_id",
+          "chapter_id",
+          "utterance_idx",
+          "context_before",
+          "context_after",
+          "classification_method",
+          "disable_llm",
+          "confidence_threshold"
+        ],
+        "frozen": false,
+        "icon": "🤖",
+        "legacy": false,
+        "lf_version": "1.5.1",
+        "metadata": {},
+        "minimized": false,
+        "output_types": [],
+        "outputs": [
+          {
+            "allows_loop": false,
+            "cache": true,
+            "display_name": "Classified Utterance",
+            "group_outputs": false,
+            "method": "classify_utterance",
+            "name": "classified_utterance",
+            "selected": "Data",
+            "tool_mode": true,
+            "types": [
+              "Data"
+            ],
+            "value": "__UNDEFINED__"
+          }
+        ],
+        "pinned": false,
+        "template": {
+          "_type": "Component",
+          "book_id": {
+            "_input_type": "MessageTextInput",
+            "advanced": false,
+            "display_name": "Book ID",
+            "dynamic": false,
+            "info": "Book identifier",
+            "input_types": [
+              "Message"
+            ],
+            "list": false,
+            "list_add_label": "Add More",
+            "load_from_db": false,
+            "name": "book_id",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_input": true,
+            "trace_as_metadata": true,
+            "type": "str",
+            "value": ""
+          },
+          "chapter_id": {
+            "_input_type": "MessageTextInput",
+            "advanced": false,
+            "display_name": "Chapter ID",
+            "dynamic": false,
+            "info": "Chapter identifier",
+            "input_types": [
+              "Message"
+            ],
+            "list": false,
+            "list_add_label": "Add More",
+            "load_from_db": false,
+            "name": "chapter_id",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_input": true,
+            "trace_as_metadata": true,
+            "type": "str",
+            "value": ""
+          },
+          "classification_method": {
+            "_input_type": "DropdownInput",
+            "advanced": false,
+            "combobox": false,
+            "dialog_inputs": {},
+            "display_name": "Classification Method",
+            "dynamic": false,
+            "info": "Primary classification approach",
+            "name": "classification_method",
+            "options": [
+              "heuristic_only",
+              "llm_enhanced",
+              "hybrid"
+            ],
+            "options_metadata": [],
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "toggle": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "str",
+            "value": "hybrid"
+          },
+          "code": {
+            "advanced": true,
+            "dynamic": true,
+            "fileTypes": [],
+            "file_path": "",
+            "info": "",
+            "list": false,
+            "load_from_db": false,
+            "multiline": true,
+            "name": "code",
+            "password": false,
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "type": "code",
+            "value": "\"\"\"\nABM Dialogue Classifier - Agent 1 for Two-Agent Character System\n\nThis component analyzes utterances and classifies them as dialogue vs. narration\nusing hybrid detection: heuristics (90%) + Ollama AI fallback (10%).\n\nPart of the two-agent character tracking system for voice casting profile building.\n\"\"\"\n\nimport logging\nimport os\nimport re\nfrom typing import Any, cast\n\nimport requests\nfrom langflow.custom import Component\nfrom langflow.io import BoolInput, DataInput, DropdownInput, FloatInput, IntInput, MessageTextInput, Output\nfrom langflow.schema import Data\n\nlogger = logging.getLogger(__name__)\n\n\nclass ABMDialogueClassifier(Component):\n    display_name = \"ABM Dialogue Classifier\"\n    description = \"Agent 1: Classify utterances as dialogue vs. narration for character tracking\"\n    icon = \"🤖\"\n    name = \"ABMDialogueClassifier\"\n\n    inputs = [\n        # New: Single-wire data input to avoid manual field mapping\n        DataInput(\n            name=\"utterance_data\",\n            display_name=\"Utterance Data\",\n            info=(\n                \"Full utterance payload (from ABMBlockIterator). If provided, this overrides individual \"\n                \"text/context/id fields. Expected keys: utterance_text, book_id, chapter_id, utterance_idx, \"\n                \"context_before, context_after.\"\n            ),\n            required=False,\n        ),\n        MessageTextInput(\n            name=\"utterance_text\",\n            display_name=\"Utterance Text\",\n            info=\"The text utterance to classify\",\n            required=False,  # optional when using utterance_data\n        ),\n        MessageTextInput(\n            name=\"book_id\",\n            display_name=\"Book ID\",\n            info=\"Book identifier\",\n            value=\"\",\n        ),\n        MessageTextInput(\n            name=\"chapter_id\",\n            display_name=\"Chapter ID\",\n            info=\"Chapter identifier\",\n            value=\"\",\n        ),\n        IntInput(\n            name=\"utterance_idx\",\n            display_name=\"Utterance Index\",\n            info=\"0-based index of utterance in chapter\",\n            value=0,\n        ),\n        MessageTextInput(\n            name=\"context_before\",\n            display_name=\"Context Before\",\n            info=\"Text preceding this utterance\",\n            value=\"\",\n        ),\n        MessageTextInput(\n            name=\"context_after\",\n            display_name=\"Context After\",\n            info=\"Text following this utterance\",\n            value=\"\",\n        ),\n        DropdownInput(\n            name=\"classification_method\",\n            display_name=\"Classification Method\",\n            info=\"Primary classification approach\",\n            options=[\"heuristic_only\", \"llm_enhanced\", \"hybrid\"],\n            value=\"hybrid\",\n        ),\n        BoolInput(\n            name=\"disable_llm\",\n            display_name=\"Disable LLM Calls\",\n            info=\"Force heuristic-only behavior regardless of method\",\n            value=True,\n        ),\n        FloatInput(\n            name=\"confidence_threshold\",\n            display_name=\"Confidence Threshold\",\n            info=\"Minimum confidence for heuristic classification (0.0-1.0)\",\n            value=0.8,\n        ),\n    ]\n\n    outputs = [\n        Output(display_name=\"Classified Utterance\", name=\"classified_utterance\", method=\"classify_utterance\"),\n    ]\n\n    def __init__(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003\n        super().__init__(*args, **kwargs)\n        # Load configuration from environment\n        self.ollama_base_url = os.getenv(\"OLLAMA_BASE_URL\", \"http://localhost:11434\")\n        self.primary_model = os.getenv(\"OLLAMA_PRIMARY_MODEL\", \"llama3.2:3b\")\n        self.ai_timeout = int(os.getenv(\"AI_CLASSIFICATION_TIMEOUT\", \"30\"))\n\n        self.dialogue_patterns = {\n            # Quote patterns with varying confidence\n            \"standard_quotes\": {\n                \"pattern\": r'\"[^\"]*\"',\n                \"confidence\": 0.9,\n            },\n            \"single_quotes\": {\n                \"pattern\": r\"'[^']*'\",\n                \"confidence\": 0.7,\n            },\n            \"smart_quotes\": {\n                \"pattern\": r'\"[^\"]*\"',\n                \"confidence\": 0.9,\n            },\n            \"em_dash_dialogue\": {\n                \"pattern\": r\"—[^—\\n]*\",\n                \"confidence\": 0.6,\n            },\n        }\n\n        self.dialogue_tags = [\n            \"said\",\n            \"replied\",\n            \"answered\",\n            \"asked\",\n            \"whispered\",\n            \"shouted\",\n            \"exclaimed\",\n            \"muttered\",\n            \"declared\",\n            \"announced\",\n            \"continued\",\n            \"added\",\n            \"interrupted\",\n            \"agreed\",\n            \"disagreed\",\n            \"protested\",\n            \"insisted\",\n            \"demanded\",\n            \"pleaded\",\n            \"wondered\",\n            \"thought\",\n        ]\n\n        self.narration_indicators = [\n            \"he walked\",\n            \"she walked\",\n            \"they walked\",\n            \"he looked\",\n            \"she looked\",\n            \"they looked\",\n            \"he turned\",\n            \"she turned\",\n            \"they turned\",\n            \"meanwhile\",\n            \"later\",\n            \"earlier\",\n            \"suddenly\",\n            \"the room\",\n            \"the door\",\n            \"the window\",\n        ]\n\n        self.attribution_patterns = {\n            \"speaker_name\": r\"\\b[A-Z][a-z]+ [A-Z][a-z]+\\b\",  # Full names\n            \"pronoun_said\": r\"\\b(he|she|they|it)\\s+(said|asked|replied|answered)\\b\",\n            \"said_pronoun\": r\"\\bsaid\\s+(he|she|they|it)\\b\",\n            \"character_titles\": r\"\\b(Mr|Mrs|Ms|Dr|Professor|Captain|Sir|Lady)\\s+[A-Z][a-z]+\\b\",\n        }\n\n    def extract_dialogue_text(self, text: str) -> str | None:\n        \"\"\"Extract the actual dialogue text from quotes.\"\"\"\n        # Try different quote patterns\n        patterns = [\n            r'\"([^\"]*)\"',  # Standard double quotes\n            r'\"([^\"]*)\"',  # Smart quotes\n            r\"'([^']*)'\",  # Single quotes\n            r\"—([^—\\n]*)\",  # Em dash dialogue\n        ]\n\n        for pattern in patterns:\n            match = re.search(pattern, text)\n            if match:\n                return match.group(1).strip()\n        return None\n\n    def find_attribution_clues(self, text: str) -> list[str]:\n        \"\"\"Find speaker attribution clues using pattern matching.\"\"\"\n        clues: list[str] = []\n\n        for tag, pattern in self.attribution_patterns.items():\n            matches = re.findall(pattern, text, re.IGNORECASE)\n            # Normalize matches: can be str or tuple depending on groups\n            normalized = []\n            for m in matches:\n                if isinstance(m, tuple):\n                    normalized.append(f\"{tag} {' '.join(m)}\")\n                else:\n                    normalized.append(f\"{tag} {m}\")\n            clues.extend(normalized)\n\n        return clues\n\n    def heuristic_classification(self, text: str) -> tuple[str, float, str, str | None, list[str]]:\n        \"\"\"\n        Classify using heuristic rules.\n        Returns: (classification, confidence, method, dialogue_text, attribution_clues)\n        \"\"\"\n        text_lower = text.lower()\n\n        # Check for dialogue patterns\n        best_confidence: float = 0.0\n        best_method = \"heuristic_unknown\"\n        dialogue_text = None\n\n        for pattern_name, pattern_info in self.dialogue_patterns.items():\n            pinfo = cast(dict[str, Any], pattern_info)\n            pattern_str: str = str(pinfo.get(\"pattern\", \"\"))\n            if re.search(pattern_str, text):\n                conf_raw: Any = pinfo.get(\"confidence\", 0.0)\n                try:\n                    conf_val: float = float(conf_raw) if conf_raw is not None else 0.0\n                except (TypeError, ValueError):\n                    conf_val = 0.0\n                if conf_val > best_confidence:\n                    best_confidence = conf_val\n                    best_method = f\"heuristic_{pattern_name}\"\n                    dialogue_text = self.extract_dialogue_text(text)\n\n        # Look for dialogue tags to boost confidence\n        attribution_clues = self.find_attribution_clues(text)\n        if attribution_clues and best_confidence > 0:\n            best_confidence = min(0.95, best_confidence + 0.1)\n\n        # Check for strong narration indicators\n        narration_score = 0\n        for indicator in self.narration_indicators:\n            if indicator in text_lower:\n                narration_score += 1\n\n        # Make final classification\n        if best_confidence > 0.5:\n            if narration_score > 2:\n                # Mixed content, lower confidence\n                return \"dialogue\", best_confidence * 0.7, best_method, dialogue_text, attribution_clues\n            else:\n                return \"dialogue\", best_confidence, best_method, dialogue_text, attribution_clues\n        elif narration_score > 0:\n            return \"narration\", 0.7, \"heuristic_narration_indicators\", None, []\n        else:\n            return \"unknown\", 0.3, \"heuristic_uncertain\", None, []\n\n    def llm_classification(self, text: str, context_before: str, context_after: str) -> tuple[str, float, str]:\n        \"\"\"\n        Use Ollama AI for classification when heuristics are insufficient.\n        Returns: (classification, confidence, method)\n        \"\"\"\n        try:\n            # Construct the AI prompt with context\n            prompt = f\"\"\"Analyze this text and determine if it's dialogue or narration.\n\nCONTEXT BEFORE: {context_before[:200]}...\n\nTEXT TO ANALYZE: {text}\n\nCONTEXT AFTER: {context_after[:200]}...\n\nINSTRUCTIONS:\n- Reply ONLY with \"dialogue\" or \"narration\"\n- Dialogue includes: spoken words, thoughts, internal monologue\n- Narration includes: descriptions, actions, scene-setting\n\nClassification:\"\"\"\n\n            # Make request to Ollama\n            response = requests.post(\n                f\"{self.ollama_base_url}/api/generate\",\n                json={\n                    \"model\": self.primary_model,\n                    \"prompt\": prompt,\n                    \"stream\": False,\n                    \"options\": {\n                        \"temperature\": 0.1,  # Low temperature for consistent results\n                        \"top_p\": 0.1,\n                        \"num_predict\": 10,  # Short response expected\n                    },\n                },\n                timeout=self.ai_timeout,\n            )\n\n            if response.status_code == 200:\n                result = response.json()\n                classification = result.get(\"response\", \"\").strip().lower()\n\n                # Validate and normalize the response\n                if \"dialogue\" in classification:\n                    return (\"dialogue\", 0.85, \"ai_classification\")\n                elif \"narration\" in classification:\n                    return (\"narration\", 0.85, \"ai_classification\")\n                else:\n                    # Fallback if AI response is unclear\n                    return (\"narration\", 0.6, \"ai_fallback_default\")\n            else:\n                logging.warning(f\"Ollama request failed: {response.status_code}\")\n                return (\"narration\", 0.5, \"ai_error_default\")\n\n        except requests.exceptions.Timeout:\n            logging.warning(\"Ollama request timed out\")\n            return (\"narration\", 0.5, \"ai_timeout_default\")\n        except requests.exceptions.RequestException as e:\n            logging.warning(f\"Ollama request error: {e}\")\n            return (\"narration\", 0.5, \"ai_error_default\")\n        except Exception as e:\n            logging.error(f\"Unexpected error in AI classification: {e}\")\n            return (\"narration\", 0.5, \"ai_error_default\")\n\n    def classify_utterance(self) -> Data:\n        \"\"\"Main classification method.\"\"\"\n        try:\n            # Prefer single-wire Data input when available\n            payload: dict[str, Any] | None = None\n            try:\n                if hasattr(self, \"utterance_data\") and self.utterance_data:\n                    if isinstance(self.utterance_data, Data):\n                        # unwrap Data\n                        if isinstance(self.utterance_data.data, dict):\n                            payload = self.utterance_data.data\n                    elif isinstance(self.utterance_data, dict):\n                        payload = self.utterance_data\n            except Exception:\n                payload = None\n\n            # Helper to pull value from payload with fallbacks\n            def _get(key: str, default: Any = None) -> Any:\n                if payload and isinstance(payload, dict):\n                    # support alternative field names\n                    if key in payload:\n                        return payload.get(key, default)\n                    # common alternates\n                    alt_map = {\n                        \"utterance_text\": [\"text\", \"content\", \"chunk_text\"],\n                        \"chapter_id\": [\"chapter\", \"chapterId\"],\n                        \"book_id\": [\"book\", \"bookId\"],\n                        \"utterance_idx\": [\"chunk_id\", \"index\", \"id\"],\n                        \"context_before\": [\"prev\", \"before\"],\n                        \"context_after\": [\"next\", \"after\"],\n                    }\n                    for alt in alt_map.get(key, []):\n                        if alt in payload:\n                            return payload.get(alt, default)\n                return default\n\n            # Resolve inputs, preferring payload values\n            text_val = _get(\"utterance_text\", self.utterance_text)\n            text = str(text_val) if text_val is not None else \"\"\n            book_id_val = _get(\"book_id\", self.book_id)\n            book_id = str(book_id_val) if book_id_val else \"UNKNOWN_BOOK\"\n            chapter_id_val = _get(\"chapter_id\", self.chapter_id)\n            chapter_id = str(chapter_id_val) if chapter_id_val else \"UNKNOWN_CHAPTER\"\n            utterance_idx_val = _get(\"utterance_idx\", self.utterance_idx)\n            try:\n                utterance_idx = int(utterance_idx_val) if utterance_idx_val is not None else 0\n            except (TypeError, ValueError):\n                utterance_idx = 0\n            cb = _get(\"context_before\", self.context_before)\n            context_before = str(cb) if cb is not None else \"\"\n            ca = _get(\"context_after\", self.context_after)\n            context_after = str(ca) if ca is not None else \"\"\n            method = self.classification_method\n            threshold = self.confidence_threshold\n\n            # Perform heuristic classification first\n            classification, confidence, detection_method, dialogue_text, attribution_clues = (\n                self.heuristic_classification(text)\n            )\n\n            # Use LLM enhancement if confidence is low or method requires it\n            if (\n                not getattr(self, \"disable_llm\", True)\n                and method in [\"llm_enhanced\", \"hybrid\"]\n                and confidence < threshold\n            ):\n                llm_class, llm_conf, llm_method = self.llm_classification(text, context_before, context_after)\n\n                if method == \"llm_enhanced\":\n                    classification = llm_class\n                    confidence = llm_conf\n                    detection_method = llm_method\n                elif method == \"hybrid\":\n                    # Combine heuristic and LLM results\n                    if llm_conf > confidence:\n                        classification = llm_class\n                        confidence = (confidence + llm_conf) / 2\n                        detection_method = f\"{detection_method}+{llm_method}\"\n\n            # Build output data\n            result = {\n                \"book_id\": book_id,\n                \"chapter_id\": chapter_id,\n                \"utterance_idx\": utterance_idx,\n                \"text\": text,\n                \"classification\": classification,\n                \"confidence\": confidence,\n                \"method\": detection_method,\n                \"dialogue_text\": dialogue_text,\n                \"attribution_clues\": attribution_clues,\n                \"context_before\": context_before,\n                \"context_after\": context_after,\n                \"timestamp\": self._get_timestamp(),\n            }\n\n            # Add metadata\n            result[\"metadata\"] = {\n                \"classification_method\": method,\n                \"confidence_threshold\": threshold,\n                \"agent\": \"dialogue_classifier\",\n                \"version\": \"1.0.0\",\n            }\n\n            logger.info(f\"Classified utterance {utterance_idx} as {classification} (confidence: {confidence:.2f})\")\n\n            return Data(data=result)\n\n        except Exception as e:\n            logger.error(f\"Error in dialogue classification: {str(e)}\")\n            # Return error result\n            error_result: dict[str, object] = {\n                \"book_id\": getattr(self, \"book_id\", \"UNKNOWN\"),\n                \"chapter_id\": getattr(self, \"chapter_id\", \"UNKNOWN\"),\n                \"utterance_idx\": getattr(self, \"utterance_idx\", -1),\n                \"text\": getattr(self, \"utterance_text\", \"\"),\n                \"classification\": \"error\",\n                \"confidence\": 0.0,\n                \"method\": \"error\",\n                \"dialogue_text\": None,\n                \"attribution_clues\": [],\n                \"error\": str(e),\n                \"timestamp\": self._get_timestamp(),\n            }\n            return Data(data=error_result)\n\n    def _get_timestamp(self) -> str:\n        \"\"\"Get current ISO timestamp.\"\"\"\n        from datetime import datetime\n\n        return datetime.now().isoformat()\n"
+          },
+          "confidence_threshold": {
+            "_input_type": "FloatInput",
+            "advanced": false,
+            "display_name": "Confidence Threshold",
+            "dynamic": false,
+            "info": "Minimum confidence for heuristic classification (0.0-1.0)",
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "confidence_threshold",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "float",
+            "value": 0.8
+          },
+          "context_after": {
+            "_input_type": "MessageTextInput",
+            "advanced": false,
+            "display_name": "Context After",
+            "dynamic": false,
+            "info": "Text following this utterance",
+            "input_types": [
+              "Message"
+            ],
+            "list": false,
+            "list_add_label": "Add More",
+            "load_from_db": false,
+            "name": "context_after",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_input": true,
+            "trace_as_metadata": true,
+            "type": "str",
+            "value": ""
+          },
+          "context_before": {
+            "_input_type": "MessageTextInput",
+            "advanced": false,
+            "display_name": "Context Before",
+            "dynamic": false,
+            "info": "Text preceding this utterance",
+            "input_types": [
+              "Message"
+            ],
+            "list": false,
+            "list_add_label": "Add More",
+            "load_from_db": false,
+            "name": "context_before",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_input": true,
+            "trace_as_metadata": true,
+            "type": "str",
+            "value": ""
+          },
+          "disable_llm": {
+            "_input_type": "BoolInput",
+            "advanced": false,
+            "display_name": "Disable LLM Calls",
+            "dynamic": false,
+            "info": "Force heuristic-only behavior regardless of method",
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "disable_llm",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "bool",
+            "value": true
+          },
+          "utterance_data": {
+            "_input_type": "DataInput",
+            "advanced": false,
+            "display_name": "Utterance Data",
+            "dynamic": false,
+            "info": "Full utterance payload (from ABMBlockIterator). If provided, this overrides individual text/context/id fields. Expected keys: utterance_text, book_id, chapter_id, utterance_idx, context_before, context_after.",
+            "input_types": [
+              "Data"
+            ],
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "utterance_data",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_input": true,
+            "trace_as_metadata": true,
+            "type": "other",
+            "value": ""
+          },
+          "utterance_idx": {
+            "_input_type": "IntInput",
+            "advanced": false,
+            "display_name": "Utterance Index",
+            "dynamic": false,
+            "info": "0-based index of utterance in chapter",
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "utterance_idx",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "int",
+            "value": 0
+          },
+          "utterance_text": {
+            "_input_type": "MessageTextInput",
+            "advanced": false,
+            "display_name": "Utterance Text",
+            "dynamic": false,
+            "info": "The text utterance to classify",
+            "input_types": [
+              "Message"
+            ],
+            "list": false,
+            "list_add_label": "Add More",
+            "load_from_db": false,
+            "name": "utterance_text",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_input": true,
+            "trace_as_metadata": true,
+            "type": "str",
+            "value": ""
+          }
+        },
+        "tool_mode": false
+      },
+      "showNode": true,
+      "type": "ABMDialogueClassifier"
+    },
+    "dragging": false,
+    "id": "ABMDialogueClassifier-Yl38Z",
+    "measured": {
+      "height": 891,
+      "width": 320
+    },
+    "position": {
+      "x": 27.7675841488809,
+      "y": -517.5771976234483
+    },
+    "selected": false,
+    "type": "genericNode"
+  },
+  {
+    "data": {
+      "id": "ABMSpeakerAttribution-suHGU",
+      "node": {
+        "base_classes": [
+          "Data"
+        ],
+        "beta": false,
+        "conditional_paths": [],
+        "custom_fields": {},
+        "description": "Agent 2: Attribute dialogue to likely speaker using heuristics",
+        "display_name": "ABM Speaker Attribution",
+        "documentation": "",
+        "edited": false,
+        "field_order": [
+          "classified_utterance",
+          "base_confidence",
+          "unknown_confidence"
+        ],
+        "frozen": false,
+        "icon": "user",
+        "legacy": false,
+        "lf_version": "1.5.1",
+        "metadata": {},
+        "minimized": false,
+        "output_types": [],
+        "outputs": [
+          {
+            "allows_loop": false,
+            "cache": true,
+            "display_name": "Attributed Utterance",
+            "group_outputs": false,
+            "method": "attribute_speaker",
+            "name": "attributed_utterance",
+            "selected": "Data",
+            "tool_mode": true,
+            "types": [
+              "Data"
+            ],
+            "value": "__UNDEFINED__"
+          }
+        ],
+        "pinned": false,
+        "template": {
+          "_type": "Component",
+          "base_confidence": {
+            "_input_type": "FloatInput",
+            "advanced": false,
+            "display_name": "Base Confidence",
+            "dynamic": false,
+            "info": "Baseline confidence when a speaker is found via tags",
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "base_confidence",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "float",
+            "value": 0.75
+          },
+          "classified_utterance": {
+            "_input_type": "DataInput",
+            "advanced": false,
+            "display_name": "Classified Utterance",
+            "dynamic": false,
+            "info": "Output from Agent 1 (Dialogue Classifier)",
+            "input_types": [
+              "Data"
+            ],
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "classified_utterance",
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_input": true,
+            "trace_as_metadata": true,
+            "type": "other",
+            "value": ""
+          },
+          "code": {
+            "advanced": true,
+            "dynamic": true,
+            "fileTypes": [],
+            "file_path": "",
+            "info": "",
+            "list": false,
+            "load_from_db": false,
+            "multiline": true,
+            "name": "code",
+            "password": false,
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "type": "code",
+            "value": "\"\"\"ABM Speaker Attribution - Agent 2 for Two-Agent Character System.\n\nHeuristic speaker attribution using local context and dialogue tags. Designed as a\nlightweight, dependency-free fallback that works without LLMs. It consumes the\noutput of ABMDialogueClassifier and enriches it with a best-effort speaker guess\nplus a confidence score and reasoning string.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport re\nfrom typing import Any\n\nfrom langflow.custom import Component\nfrom langflow.io import DataInput, FloatInput, Output\nfrom langflow.schema import Data\n\n\nclass ABMSpeakerAttribution(Component):\n    display_name = \"ABM Speaker Attribution\"\n    description = \"Agent 2: Attribute dialogue to likely speaker using heuristics\"\n    icon = \"user\"\n    name = \"ABMSpeakerAttribution\"\n\n    inputs = [\n        DataInput(\n            name=\"classified_utterance\",\n            display_name=\"Classified Utterance\",\n            info=\"Output from Agent 1 (Dialogue Classifier)\",\n            required=True,\n        ),\n        FloatInput(\n            name=\"base_confidence\",\n            display_name=\"Base Confidence\",\n            info=\"Baseline confidence when a speaker is found via tags\",\n            value=0.75,\n            required=False,\n        ),\n        FloatInput(\n            name=\"unknown_confidence\",\n            display_name=\"Unknown Confidence\",\n            info=\"Confidence to use when no clear speaker found\",\n            value=0.35,\n            required=False,\n        ),\n    ]\n\n    outputs = [\n        Output(\n            display_name=\"Attributed Utterance\",\n            name=\"attributed_utterance\",\n            method=\"attribute_speaker\",\n        ),\n    ]\n\n    def attribute_speaker(self) -> Data:\n        \"\"\"Attribute speaker for a single classified utterance using heuristics.\"\"\"\n        try:\n            payload = self.classified_utterance.data\n\n            # Pass-through errors\n            if \"error\" in payload:\n                self.status = \"Input contains error, passing through\"\n                return Data(data=payload)\n\n            classification = (payload.get(\"classification\") or \"\").lower()\n\n            # If not dialogue, return with unknown speaker\n            if classification != \"dialogue\":\n                result = self._build_result(payload, None, self.unknown_confidence, method=\"heuristic_non_dialogue\")\n                self.status = \"Non-dialogue: attribution skipped\"\n                return Data(data=result)\n\n            # Try multiple sources for attribution: dialogue_text first, then full text + context\n            dialogue_text = payload.get(\"dialogue_text\") or payload.get(\"text\") or \"\"\n            context_before = payload.get(\"context_before\", \"\")\n            context_after = payload.get(\"context_after\", \"\")\n\n            # 1) Look for explicit tags in the same utterance (e.g., \"...\", Quinn said)\n            speaker = self._extract_speaker_from_tags(dialogue_text)\n            method = \"heuristic_dialogue_tag\"\n\n            # 2) If not found, search in combined context\n            if not speaker:\n                combined = f\"{dialogue_text} {context_after} {context_before}\"\n                speaker = self._extract_speaker_from_tags(combined)\n                method = \"heuristic_context_tag\" if speaker else method\n\n            # 3) If still not found, try simple proper-noun proximity before/after quotes\n            if not speaker:\n                speaker = self._extract_near_quotes(payload.get(\"text\", \"\"))\n                method = \"heuristic_quote_proximity\" if speaker else method\n\n            # Confidence and reasoning\n            if speaker:\n                confidence = float(self.base_confidence)\n                reasoning = \"Speaker inferred from dialogue tags / nearby context\"\n            else:\n                confidence = float(self.unknown_confidence)\n                reasoning = \"No reliable dialogue tags found; defaulting to unknown\"\n\n            result = self._build_result(payload, speaker, confidence, method=method, reasoning=reasoning)\n            self.status = f\"Attributed speaker: {speaker or 'Unknown'} (conf {confidence:.2f})\"\n            return Data(data=result)\n\n        except Exception as e:  # pragma: no cover - defensive\n            self.status = f\"Error: {e}\"\n            return Data(data={\"error\": str(e)})\n\n    # --- Heuristics -----------------------------------------------------\n    _TAG_PATTERNS = [\n        # \"...\", Quinn said / Quinn replied / Quinn asked\n        r'\"[^\\\"]*\"\\s*,?\\s*([A-Z][a-z]+)\\s+(?:said|asked|replied|whispered|shouted|exclaimed)\\b',\n        # said Quinn / asked Quinn\n        r\"(?:said|asked|replied|whispered|shouted|exclaimed)\\s+([A-Z][a-z]+)\\b\",\n        # Quinn said / Quinn asked (without preceding quotes)\n        r\"\\b([A-Z][a-z]+)\\s+(?:said|asked|replied|whispered|shouted|exclaimed)\\b\",\n    ]\n\n    def _extract_speaker_from_tags(self, text: str) -> str | None:\n        for pat in self._TAG_PATTERNS:\n            m = re.search(pat, text)\n            if m:\n                return m.group(1)\n        return None\n\n    def _extract_near_quotes(self, text: str) -> str | None:\n        \"\"\"Look for a Proper Noun near quotes within a small window.\"\"\"\n        # Find quotes spans\n        for q in re.finditer(r'\"[^\\\"]*\"', text):\n            span_start, span_end = q.span()\n            window = text[max(0, span_start - 60) : min(len(text), span_end + 60)]\n            m = re.search(r\"\\b([A-Z][a-z]{2,})\\b\", window)\n            if m:\n                return m.group(1)\n        return None\n\n    # --- Result shaping -------------------------------------------------\n    def _build_result(\n        self,\n        src: dict[str, Any],\n        speaker: str | None,\n        confidence: float,\n        *,\n        method: str,\n        reasoning: str | None = None,\n    ) -> dict[str, Any]:\n        \"\"\"Create standardized attribution result expected by the aggregator.\"\"\"\n        # Provide stable narrator fallback for non-dialogue\n        classification = (src.get(\"classification\") or src.get(\"original_classification\") or \"\").lower()\n        if not speaker and classification == \"narration\":\n            character_name = \"Narrator\"\n            character_id = \"narrator\"\n        else:\n            character_name = speaker or \"Unknown\"\n            character_id = (speaker or \"unknown\").lower()\n\n        return {\n            # Identification\n            \"book_id\": src.get(\"book_id\", \"\"),\n            \"chapter_id\": src.get(\"chapter_id\", \"\"),\n            \"utterance_idx\": src.get(\"utterance_idx\", 0),\n            # Content\n            \"dialogue_text\": src.get(\"dialogue_text\") or src.get(\"utterance_text\", \"\"),\n            \"full_text\": src.get(\"utterance_text\", \"\"),\n            \"original_classification\": src.get(\"classification\", \"unknown\"),\n            # Speaker\n            \"character_id\": character_id if speaker else None,\n            \"character_name\": character_name,\n            \"speaker_attribution\": {\n                \"confidence\": float(confidence),\n                \"method\": method,\n                \"reasoning\": reasoning or \"\",\n            },\n            # Context\n            \"context_before\": src.get(\"context_before\", \"\"),\n            \"context_after\": src.get(\"context_after\", \"\"),\n            # Optional extras (placeholders for downstream tools)\n            \"speech_patterns\": {},\n            \"processing_info\": {\n                \"source_component\": \"ABMSpeakerAttribution\",\n                \"pipeline_agent\": 2,\n            },\n        }\n"
+          },
+          "unknown_confidence": {
+            "_input_type": "FloatInput",
+            "advanced": false,
+            "display_name": "Unknown Confidence",
+            "dynamic": false,
+            "info": "Confidence to use when no clear speaker found",
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "unknown_confidence",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "float",
+            "value": 0.35
+          }
+        },
+        "tool_mode": false
+      },
+      "showNode": true,
+      "type": "ABMSpeakerAttribution"
+    },
+    "dragging": false,
+    "id": "ABMSpeakerAttribution-suHGU",
+    "measured": {
+      "height": 346,
+      "width": 320
+    },
+    "position": {
+      "x": 520.1681586129787,
+      "y": -363.4806149674178
+    },
+    "selected": false,
+    "type": "genericNode"
+  },
+  {
+    "data": {
+      "id": "ABMResultsAggregator-UUBbK",
+      "node": {
+        "base_classes": [
+          "Data"
+        ],
+        "beta": false,
+        "conditional_paths": [],
+        "custom_fields": {},
+        "description": "Aggregate and validate two-agent processing results",
+        "display_name": "ABM Results Aggregator",
+        "documentation": "",
+        "edited": false,
+        "field_order": [
+          "attribution_result",
+          "min_confidence_threshold",
+          "include_metadata",
+          "validate_results"
+        ],
+        "frozen": false,
+        "icon": "database",
+        "legacy": false,
+        "lf_version": "1.5.1",
+        "metadata": {},
+        "minimized": false,
+        "output_types": [],
+        "outputs": [
+          {
+            "allows_loop": false,
+            "cache": true,
+            "display_name": "Aggregated Results",
+            "group_outputs": false,
+            "method": "aggregate_results",
+            "name": "aggregated_results",
+            "selected": "Data",
+            "tool_mode": true,
+            "types": [
+              "Data"
+            ],
+            "value": "__UNDEFINED__"
+          }
+        ],
+        "pinned": false,
+        "template": {
+          "_type": "Component",
+          "attribution_result": {
+            "_input_type": "DataInput",
+            "advanced": false,
+            "display_name": "Attribution Result",
+            "dynamic": false,
+            "info": "Output from Agent 2 (Speaker Attribution)",
+            "input_types": [
+              "Data"
+            ],
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "attribution_result",
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_input": true,
+            "trace_as_metadata": true,
+            "type": "other",
+            "value": ""
+          },
+          "code": {
+            "advanced": true,
+            "dynamic": true,
+            "fileTypes": [],
+            "file_path": "",
+            "info": "",
+            "list": false,
+            "load_from_db": false,
+            "multiline": true,
+            "name": "code",
+            "password": false,
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "type": "code",
+            "value": "\"\"\"ABM Results Aggregator for Two-Agent Pipeline Output.\"\"\"\n\nfrom __future__ import annotations\n\nfrom dataclasses import asdict, dataclass\nfrom datetime import datetime\nfrom typing import Any\n\nfrom langflow.custom import Component\nfrom langflow.io import BoolInput, DataInput, FloatInput, Output\nfrom langflow.schema import Data\n\n\nclass ABMResultsAggregator(Component):\n    display_name = \"ABM Results Aggregator\"\n    description = \"Aggregate and validate two-agent processing results\"\n    icon = \"database\"\n    name = \"ABMResultsAggregator\"\n\n    inputs = [\n        DataInput(\n            name=\"attribution_result\",\n            display_name=\"Attribution Result\",\n            info=\"Output from Agent 2 (Speaker Attribution)\",\n            required=True,\n        ),\n        FloatInput(\n            name=\"min_confidence_threshold\",\n            display_name=\"Minimum Confidence Threshold\",\n            info=\"Filter results below this confidence\",\n            value=0.3,\n            required=False,\n        ),\n        BoolInput(\n            name=\"include_metadata\",\n            display_name=\"Include Processing Metadata\",\n            info=\"Add detailed processing information to output\",\n            value=True,\n            required=False,\n        ),\n        BoolInput(\n            name=\"validate_results\",\n            display_name=\"Validate Results\",\n            info=\"Run quality validation on aggregated results\",\n            value=True,\n            required=False,\n        ),\n    ]\n\n    outputs = [\n        Output(display_name=\"Aggregated Results\", name=\"aggregated_results\", method=\"aggregate_results\"),\n    ]\n\n    def __init__(self, *args: Any, **kwargs: Any) -> None:  # noqa: ANN002, ANN003\n        super().__init__(*args, **kwargs)\n        self._accumulated_results: list[dict[str, Any]] = []\n        self._processing_stats = _Stats()\n\n    def aggregate_results(self) -> Data:\n        \"\"\"Aggregate results from two-agent processing pipeline.\"\"\"\n        try:\n            input_data = self.attribution_result.data\n\n            # Handle completion summary (when all chunks processed)\n            if input_data.get(\"processing_status\") == \"completed\":\n                return self._finalize_aggregation(input_data)\n\n            # Handle errors\n            if \"error\" in input_data:\n                self.status = f\"Input error: {input_data['error']}\"\n                return Data(data=input_data)\n\n            # Process attribution result\n            processed_result = self._process_attribution_result(input_data)\n\n            # Add to accumulated results\n            self._accumulated_results.append(processed_result)\n            self._update_stats(processed_result)\n\n            # Update status\n            self.status = f\"Aggregated {len(self._accumulated_results)} results\"\n\n            # Return current result (for debugging/monitoring)\n            return Data(\n                data={\n                    \"current_result\": processed_result,\n                    \"aggregation_status\": \"accumulating\",\n                    \"total_accumulated\": len(self._accumulated_results),\n                    \"current_stats\": asdict(self._processing_stats),\n                }\n            )\n\n        except Exception as e:\n            error_msg = f\"Failed to aggregate results: {str(e)}\"\n            self.status = f\"Error: {error_msg}\"\n            return Data(data={\"error\": error_msg})\n\n    def _process_attribution_result(self, attribution_data: dict[str, Any]) -> dict[str, Any]:\n        \"\"\"Process and standardize attribution result.\"\"\"\n\n        # Extract core attribution data\n        character_id = attribution_data.get(\"character_id\")\n        character_name = attribution_data.get(\"character_name\")\n        dialogue_text = attribution_data.get(\"dialogue_text\", \"\")\n\n        # Get speaker attribution details\n        speaker_attribution = attribution_data.get(\"speaker_attribution\", {})\n        confidence = speaker_attribution.get(\"confidence\", 0.0)\n        method = speaker_attribution.get(\"method\", \"unknown\")\n        reasoning = speaker_attribution.get(\"reasoning\", \"\")\n\n        # Get original classification info\n        original_classification = attribution_data.get(\"original_classification\", \"unknown\")\n\n        # Prefer dialogue text, but fall back to full/utterance text\n        text_value = (\n            attribution_data.get(\"dialogue_text\")\n            or attribution_data.get(\"full_text\")\n            or attribution_data.get(\"utterance_text\", \"\")\n        )\n\n        full_text_value = (\n            attribution_data.get(\"full_text\") or attribution_data.get(\"utterance_text\") or dialogue_text or \"\"\n        )\n\n        # Sensible speaker fallback for narration\n        if (not character_name) and (original_classification or \"\").lower() == \"narration\":\n            character_name = \"Narrator\"\n            character_id = character_id or \"narrator\"\n\n        # Create standardized result\n        processed_result = {\n            # Identification\n            \"book_id\": attribution_data.get(\"book_id\", \"\"),\n            \"chapter_id\": attribution_data.get(\"chapter_id\", \"\"),\n            \"utterance_idx\": attribution_data.get(\"utterance_idx\", 0),\n            # Content\n            \"text\": text_value,\n            \"full_text\": full_text_value,\n            \"classification\": original_classification,\n            # Speaker Attribution\n            \"character_id\": character_id,\n            \"character_name\": character_name or \"Unknown Speaker\",\n            \"attribution_confidence\": confidence,\n            \"attribution_method\": method,\n            \"attribution_reasoning\": reasoning,\n            # Quality Metrics\n            \"confidence_level\": self._categorize_confidence(confidence),\n            \"processing_quality\": self._assess_processing_quality(attribution_data),\n            # Context\n            \"context_before\": attribution_data.get(\"context_before\", \"\"),\n            \"context_after\": attribution_data.get(\"context_after\", \"\"),\n            # Speech Analysis\n            \"speech_patterns\": attribution_data.get(\"speech_patterns\", {}),\n            # Metadata\n            \"processing_metadata\": attribution_data.get(\"processing_info\", {}) if self.include_metadata else {},\n            \"aggregated_at\": datetime.utcnow().isoformat(),\n        }\n\n        return processed_result\n\n    def _update_stats(self, result: dict[str, Any]) -> None:\n        \"\"\"Update processing statistics.\"\"\"\n        self._processing_stats.total_processed += 1\n\n        # Count by classification\n        classification = result.get(\"classification\", \"\").lower()\n        if \"dialogue\" in classification:\n            self._processing_stats.dialogue_count += 1\n        elif \"narration\" in classification:\n            self._processing_stats.narration_count += 1\n\n        # Count attributed speakers\n        if result.get(\"character_id\"):\n            self._processing_stats.attributed_speakers += 1\n            character_name = result.get(\"character_name\", \"\")\n            if character_name and character_name != \"Unknown Speaker\":\n                self._processing_stats.characters_identified.add(character_name)\n\n        # Count by confidence\n        confidence = float(result.get(\"attribution_confidence\", 0.0))\n        if confidence >= 0.7:\n            self._processing_stats.high_confidence_count += 1\n        elif confidence < self.min_confidence_threshold:\n            self._processing_stats.low_confidence_count += 1\n\n    def _categorize_confidence(self, confidence: float) -> str:\n        \"\"\"Categorize confidence level.\"\"\"\n        if confidence >= 0.9:\n            return \"very_high\"\n        elif confidence >= 0.7:\n            return \"high\"\n        elif confidence >= 0.5:\n            return \"medium\"\n        elif confidence >= 0.3:\n            return \"low\"\n        else:\n            return \"very_low\"\n\n    def _assess_processing_quality(self, attribution_data: dict[str, Any]) -> dict[str, Any]:\n        \"\"\"Assess the quality of processing for this utterance.\"\"\"\n        quality_metrics = {\n            \"has_character_attribution\": bool(attribution_data.get(\"character_id\")),\n            \"has_dialogue_text\": bool(attribution_data.get(\"dialogue_text\", \"\").strip()),\n            \"has_context\": bool(\n                attribution_data.get(\"context_before\", \"\") or attribution_data.get(\"context_after\", \"\")\n            ),\n            \"confidence_acceptable\": attribution_data.get(\"speaker_attribution\", {}).get(\"confidence\", 0)\n            >= self.min_confidence_threshold,\n        }\n\n        # Calculate overall quality score\n        quality_score = sum(quality_metrics.values()) / len(quality_metrics)\n        quality_metrics[\"overall_score\"] = quality_score\n        quality_metrics[\"quality_level\"] = (\n            \"high\" if quality_score >= 0.8 else \"medium\" if quality_score >= 0.6 else \"low\"\n        )\n\n        return quality_metrics\n\n    def _finalize_aggregation(self, completion_data: dict[str, Any]) -> Data:\n        \"\"\"Create final aggregated results.\"\"\"\n        # Filter results by confidence if needed\n        filtered_results: list[dict[str, Any]] = (\n            [\n                result\n                for result in self._accumulated_results\n                if result.get(\"attribution_confidence\", 0) >= self.min_confidence_threshold\n            ]\n            if self.min_confidence_threshold > 0\n            else self._accumulated_results\n        )\n\n        # Run validation if enabled\n        validation_results = self._validate_results(filtered_results) if self.validate_results else {}\n\n        # Create final statistics\n        final_stats = asdict(self._processing_stats)\n        final_stats[\"characters_identified\"] = list(final_stats[\"characters_identified\"])\n        final_stats[\"filtered_results_count\"] = len(filtered_results)\n        final_stats[\"processing_completion_time\"] = datetime.utcnow().isoformat()\n\n        # Create final aggregated data\n        aggregated_data = {\n            \"processing_status\": \"completed\",\n            \"total_results\": len(self._accumulated_results),\n            \"filtered_results\": len(filtered_results),\n            \"results\": filtered_results,\n            \"statistics\": final_stats,\n            \"validation\": validation_results,\n            \"chapter_info\": completion_data.get(\"summary\", {}).get(\"chapter_info\", {}),\n            \"aggregation_metadata\": {\n                \"min_confidence_threshold\": self.min_confidence_threshold,\n                \"include_metadata\": self.include_metadata,\n                \"validation_enabled\": self.validate_results,\n                \"aggregated_at\": datetime.utcnow().isoformat(),\n            },\n        }\n\n        self.status = f\"Aggregation completed: {len(filtered_results)} results ready\"\n\n        # Reset for next chapter\n        self._reset_aggregator()\n\n        return Data(data=aggregated_data)\n\n    def _validate_results(self, results: list[dict[str, Any]]) -> dict[str, Any]:\n        \"\"\"Run quality validation on aggregated results.\"\"\"\n        if not results:\n            return {\"status\": \"no_results_to_validate\"}\n\n        validation: dict[str, Any] = {\n            \"total_validated\": len(results),\n            \"dialogue_attribution_rate\": 0.0,\n            \"high_confidence_rate\": 0.0,\n            \"character_consistency\": [],\n            \"quality_issues\": [],\n        }\n\n        # Calculate dialogue attribution rate\n        dialogue_results = [r for r in results if \"dialogue\" in r.get(\"classification\", \"\").lower()]\n        attributed_dialogue = [r for r in dialogue_results if r.get(\"character_id\")]\n        validation[\"dialogue_attribution_rate\"] = (\n            len(attributed_dialogue) / len(dialogue_results) if dialogue_results else 0.0\n        )\n\n        # Calculate high confidence rate\n        high_confidence_results = [r for r in results if r.get(\"attribution_confidence\", 0) >= 0.7]\n        validation[\"high_confidence_rate\"] = len(high_confidence_results) / len(results)\n\n        # Check character consistency\n        character_names: dict[str, set[str]] = {}\n        for result in results:\n            char_name = result.get(\"character_name\", \"\")\n            char_id = result.get(\"character_id\", \"\")\n            if char_name and char_id:\n                if char_name not in character_names:\n                    character_names[char_name] = set()\n                character_names[char_name].add(char_id)\n\n        validation[\"character_consistency\"] = [\n            {\"character\": name, \"character_ids\": list(ids), \"consistent\": len(ids) == 1}\n            for name, ids in character_names.items()\n        ]\n\n        # Identify quality issues\n        if validation[\"dialogue_attribution_rate\"] < 0.7:\n            validation[\"quality_issues\"].append(\"Low dialogue attribution rate\")\n        if validation[\"high_confidence_rate\"] < 0.6:\n            validation[\"quality_issues\"].append(\"Low high-confidence attribution rate\")\n\n        validation[\"status\"] = \"passed\" if not validation[\"quality_issues\"] else \"issues_detected\"\n\n        return validation\n\n    def _reset_aggregator(self) -> None:\n        \"\"\"Reset aggregator state for next processing batch.\"\"\"\n        self._accumulated_results = []\n        self._processing_stats = _Stats()\n\n\n@dataclass\nclass _Stats:\n    total_processed: int = 0\n    dialogue_count: int = 0\n    narration_count: int = 0\n    attributed_speakers: int = 0\n    high_confidence_count: int = 0\n    low_confidence_count: int = 0\n    characters_identified: set[str] = None  # type: ignore[assignment]\n\n    def __post_init__(self) -> None:\n        if self.characters_identified is None:\n            self.characters_identified = set()\n"
+          },
+          "include_metadata": {
+            "_input_type": "BoolInput",
+            "advanced": false,
+            "display_name": "Include Processing Metadata",
+            "dynamic": false,
+            "info": "Add detailed processing information to output",
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "include_metadata",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "bool",
+            "value": true
+          },
+          "min_confidence_threshold": {
+            "_input_type": "FloatInput",
+            "advanced": false,
+            "display_name": "Minimum Confidence Threshold",
+            "dynamic": false,
+            "info": "Filter results below this confidence",
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "min_confidence_threshold",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "float",
+            "value": 0.3
+          },
+          "validate_results": {
+            "_input_type": "BoolInput",
+            "advanced": false,
+            "display_name": "Validate Results",
+            "dynamic": false,
+            "info": "Run quality validation on aggregated results",
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "validate_results",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "bool",
+            "value": true
+          }
+        },
+        "tool_mode": false
+      },
+      "showNode": true,
+      "type": "ABMResultsAggregator"
+    },
+    "dragging": false,
+    "id": "ABMResultsAggregator-UUBbK",
+    "measured": {
+      "height": 348,
+      "width": 320
+    },
+    "position": {
+      "x": 761.2761737170266,
+      "y": 159.47359226468603
+    },
+    "selected": false,
+    "type": "genericNode"
+  },
+  {
+    "data": {
+      "id": "abm_character_data_collector-qBvaO",
+      "node": {
+        "base_classes": [
+          "Data"
+        ],
+        "beta": false,
+        "conditional_paths": [],
+        "custom_fields": {},
+        "description": "Mines character data from speaker-attributed utterances for voice casting preparation",
+        "display_name": "Character Data Collector",
+        "documentation": "",
+        "edited": false,
+        "field_order": [
+          "utterances_data",
+          "book_id",
+          "output_directory"
+        ],
+        "frozen": false,
+        "icon": "MaterialSymbolsPersonSearch",
+        "legacy": false,
+        "metadata": {},
+        "minimized": false,
+        "output_types": [],
+        "outputs": [
+          {
+            "allows_loop": false,
+            "cache": true,
+            "display_name": "Collection Stats",
+            "group_outputs": false,
+            "method": "collect_character_data",
+            "name": "collection_stats",
+            "selected": "Data",
+            "tool_mode": true,
+            "types": [
+              "Data"
+            ],
+            "value": "__UNDEFINED__"
+          }
+        ],
+        "pinned": false,
+        "template": {
+          "_type": "Component",
+          "book_id": {
+            "_input_type": "StrInput",
+            "advanced": false,
+            "display_name": "Book ID",
+            "dynamic": false,
+            "info": "Book identifier for file organization",
+            "list": false,
+            "list_add_label": "Add More",
+            "load_from_db": false,
+            "name": "book_id",
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "str",
+            "value": ""
+          },
+          "code": {
+            "advanced": true,
+            "dynamic": true,
+            "fileTypes": [],
+            "file_path": "",
+            "info": "",
+            "list": false,
+            "load_from_db": false,
+            "multiline": true,
+            "name": "code",
+            "password": false,
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "type": "code",
+            "value": "\"\"\"\nCharacter Data Collection Agent - LangFlow Component\n\nCollects character dialogue and narration context for voice casting analysis.\nThis component focuses on data mining and storage rather than sophisticated analysis.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nimport logging\nfrom datetime import datetime\nfrom pathlib import Path\nfrom typing import Any\n\nfrom langflow.custom import Component\nfrom langflow.io import DataInput, Output, StrInput\nfrom langflow.schema import Data\n\nlogger = logging.getLogger(__name__)\n\n\nclass ABMCharacterDataCollector(Component):\n    \"\"\"Collect character dialogue and narration data for voice casting analysis.\"\"\"\n\n    display_name = \"Character Data Collector\"\n    description = \"Mines character data from speaker-attributed utterances for voice casting preparation\"\n    icon = \"MaterialSymbolsPersonSearch\"\n    name = \"abm_character_data_collector\"\n\n    inputs = [\n        DataInput(\n            name=\"utterances_data\",\n            display_name=\"Utterances Data\",\n            info=\"Speaker-attributed utterances from previous agent\",\n            required=True,\n        ),\n        StrInput(\n            name=\"book_id\",\n            display_name=\"Book ID\",\n            info=\"Book identifier for file organization\",\n            value=\"\",\n            required=True,\n        ),\n        StrInput(\n            name=\"output_directory\",\n            display_name=\"Output Directory\",\n            info=\"Base directory for character data files\",\n            value=\"data/characters\",\n            required=False,\n        ),\n    ]\n\n    outputs = [Output(display_name=\"Collection Stats\", name=\"collection_stats\", method=\"collect_character_data\")]\n\n    def collect_character_data(\n        self, utterances_data: Data, book_id: str, output_directory: str = \"data/characters\"\n    ) -> Data:\n        \"\"\"Main processing method for character data collection.\"\"\"\n\n        if not book_id:\n            raise ValueError(\"book_id is required for file organization\")\n\n        data = utterances_data.data if isinstance(utterances_data, Data) else utterances_data\n\n        if not isinstance(data, dict) or \"utterances\" not in data:\n            raise ValueError(\"Input must contain 'utterances' field\")\n\n        utterances = data[\"utterances\"]\n        if not isinstance(utterances, list):\n            raise ValueError(\"Utterances must be a list\")\n\n        # Setup output directory\n        output_path = Path(output_directory) / book_id\n        output_path.mkdir(parents=True, exist_ok=True)\n\n        # Process utterances and collect character data\n        character_registry = self._build_character_registry(utterances, book_id)\n        dialogue_records = self._collect_dialogue(utterances, book_id)\n        narration_records = self._collect_narration(utterances, book_id)\n\n        # Write data files\n        stats = self._write_data_files(output_path, character_registry, dialogue_records, narration_records)\n\n        # Return processing statistics\n        self.status = (\n            f\"Collected data for {stats['characters_found']} characters, {stats['dialogue_count']} dialogue utterances\"\n        )\n\n        return Data(\n            data={\n                \"collection_stats\": stats,\n                \"output_directory\": str(output_path),\n                \"files_written\": [\"character_registry.json\", \"dialogue_collection.jsonl\", \"narration_context.jsonl\"],\n            }\n        )\n\n    def _build_character_registry(self, utterances: list[dict], book_id: str) -> dict[str, Any]:\n        \"\"\"Build character registry with basic statistics.\"\"\"\n        characters = {}\n        chapters_seen = set()\n\n        for utterance in utterances:\n            speaker = utterance.get(\"speaker\", \"UNKNOWN\")\n            chapter_id = utterance.get(\"chapter_id\", \"unknown\")\n            # chapter_title available if needed later\n            utterance_idx = utterance.get(\"utterance_idx\", 0)\n            role = utterance.get(\"role\", \"unknown\")\n            text = utterance.get(\"text\", \"\")\n\n            chapters_seen.add(chapter_id)\n\n            # Initialize character record if not seen\n            if speaker not in characters:\n                characters[speaker] = {\n                    \"character_id\": self._normalize_character_id(speaker),\n                    \"canonical_name\": speaker,\n                    \"aliases\": [speaker],  # Start with just the canonical name\n                    \"first_seen\": {\"chapter_id\": chapter_id, \"utterance_idx\": utterance_idx},\n                    \"stats\": {\"dialogue_count\": 0, \"narration_count\": 0, \"chapters_appeared\": set(), \"total_words\": 0},\n                }\n\n            # Update character statistics\n            char_data = characters[speaker]\n            char_data[\"stats\"][\"chapters_appeared\"].add(chapter_id)\n            char_data[\"stats\"][\"total_words\"] += len(text.split())\n\n            if role == \"dialogue\":\n                char_data[\"stats\"][\"dialogue_count\"] += 1\n            elif role == \"narration\":\n                char_data[\"stats\"][\"narration_count\"] += 1\n\n        # Convert sets to lists for JSON serialization\n        for char_data in characters.values():\n            char_data[\"stats\"][\"chapters_appeared\"] = list(char_data[\"stats\"][\"chapters_appeared\"])\n\n        # Build final registry structure\n        registry = {\n            \"schema_version\": \"1.0\",\n            \"book_id\": book_id,\n            \"created_at\": datetime.utcnow().isoformat() + \"Z\",\n            \"last_updated\": datetime.utcnow().isoformat() + \"Z\",\n            \"processing_stats\": {\n                \"chapters_processed\": len(chapters_seen),\n                \"total_utterances\": len(utterances),\n                \"characters_found\": len(characters),\n            },\n            \"characters\": list(characters.values()),\n        }\n\n        return registry\n\n    def _collect_dialogue(self, utterances: list[dict], book_id: str) -> list[dict[str, Any]]:\n        \"\"\"Collect all dialogue utterances by character.\"\"\"\n        dialogue_records = []\n\n        for utterance in utterances:\n            if utterance.get(\"role\") != \"dialogue\":\n                continue\n\n            record = {\n                \"character_id\": self._normalize_character_id(utterance.get(\"speaker\", \"UNKNOWN\")),\n                \"book_id\": book_id,\n                \"chapter_id\": utterance.get(\"chapter_id\", \"unknown\"),\n                \"chapter_title\": utterance.get(\"chapter_title\", \"Unknown Chapter\"),\n                \"utterance_idx\": utterance.get(\"utterance_idx\", 0),\n                \"text\": utterance.get(\"text\", \"\"),\n                \"word_count\": len(utterance.get(\"text\", \"\").split()),\n                \"context_before\": self._get_context_before(utterances, utterance),\n                \"context_after\": self._get_context_after(utterances, utterance),\n                \"attribution_confidence\": utterance.get(\"speaker_confidence\", 0.0),\n                \"collected_at\": datetime.utcnow().isoformat() + \"Z\",\n            }\n\n            dialogue_records.append(record)\n\n        return dialogue_records\n\n    def _collect_narration(self, utterances: list[dict], book_id: str) -> list[dict[str, Any]]:\n        \"\"\"Collect narration that mentions or describes characters.\"\"\"\n        narration_records = []\n\n        for utterance in utterances:\n            if utterance.get(\"role\") != \"narration\":\n                continue\n\n            # For now, collect all narration - later we can filter for character mentions\n            record = {\n                \"character_focus\": self._detect_character_focus(utterance.get(\"text\", \"\")),\n                \"book_id\": book_id,\n                \"chapter_id\": utterance.get(\"chapter_id\", \"unknown\"),\n                \"chapter_title\": utterance.get(\"chapter_title\", \"Unknown Chapter\"),\n                \"utterance_idx\": utterance.get(\"utterance_idx\", 0),\n                \"text\": utterance.get(\"text\", \"\"),\n                \"word_count\": len(utterance.get(\"text\", \"\").split()),\n                \"narration_type\": \"general\",  # Placeholder for future classification\n                \"character_mentioned\": self._has_character_mention(utterance.get(\"text\", \"\")),\n                \"collected_at\": datetime.utcnow().isoformat() + \"Z\",\n            }\n\n            narration_records.append(record)\n\n        return narration_records\n\n    def _write_data_files(\n        self,\n        output_path: Path,\n        character_registry: dict[str, Any],\n        dialogue_records: list[dict[str, Any]],\n        narration_records: list[dict[str, Any]],\n    ) -> dict[str, Any]:\n        \"\"\"Write collected data to files.\"\"\"\n\n        try:\n            # Write character registry\n            registry_file = output_path / \"character_registry.json\"\n            with open(registry_file, \"w\", encoding=\"utf-8\") as f:\n                json.dump(character_registry, f, indent=2, ensure_ascii=False)\n\n            # Write dialogue collection\n            dialogue_file = output_path / \"dialogue_collection.jsonl\"\n            with open(dialogue_file, \"w\", encoding=\"utf-8\") as f:\n                for record in dialogue_records:\n                    f.write(json.dumps(record, ensure_ascii=False) + \"\\n\")\n\n            # Write narration context\n            narration_file = output_path / \"narration_context.jsonl\"\n            with open(narration_file, \"w\", encoding=\"utf-8\") as f:\n                for record in narration_records:\n                    f.write(json.dumps(record, ensure_ascii=False) + \"\\n\")\n\n            # Return statistics\n            stats = {\n                \"characters_found\": character_registry[\"processing_stats\"][\"characters_found\"],\n                \"dialogue_count\": len(dialogue_records),\n                \"narration_count\": len(narration_records),\n                \"total_utterances\": character_registry[\"processing_stats\"][\"total_utterances\"],\n                \"files_written\": 3,\n                \"output_path\": str(output_path),\n            }\n\n            logger.info(f\"Character data collection complete: {stats}\")\n            return stats\n\n        except Exception as e:\n            logger.error(f\"Failed to write character data files: {e}\")\n            raise\n\n    def _normalize_character_id(self, speaker: str) -> str:\n        \"\"\"Convert speaker name to normalized character ID.\"\"\"\n        if not speaker or speaker in [\"UNKNOWN\", \"NARRATOR\"]:\n            return speaker.lower()\n\n        # Simple normalization - remove special chars, lowercase, replace spaces\n        normalized = \"\".join(c.lower() if c.isalnum() else \"_\" for c in speaker)\n        normalized = \"_\".join(part for part in normalized.split(\"_\") if part)\n\n        return normalized\n\n    def _get_context_before(self, utterances: list[dict], current_utterance: dict) -> str:\n        \"\"\"Get context text before the current utterance.\"\"\"\n        current_idx = current_utterance.get(\"utterance_idx\", 0)\n\n        # Find previous utterance\n        for utterance in utterances:\n            if utterance.get(\"utterance_idx\") == current_idx - 1:\n                text = utterance.get(\"text\", \"\")\n                return text[-50:] if len(text) > 50 else text\n\n        return \"\"\n\n    def _get_context_after(self, utterances: list[dict], current_utterance: dict) -> str:\n        \"\"\"Get context text after the current utterance.\"\"\"\n        current_idx = current_utterance.get(\"utterance_idx\", 0)\n\n        # Find next utterance\n        for utterance in utterances:\n            if utterance.get(\"utterance_idx\") == current_idx + 1:\n                text = utterance.get(\"text\", \"\")\n                return text[:50] if len(text) > 50 else text\n\n        return \"\"\n\n    def _detect_character_focus(self, text: str) -> str:\n        \"\"\"Detect which character the narration is focused on (simple heuristic).\"\"\"\n        # Simple keyword detection - could be enhanced later\n        text_lower = text.lower()\n\n        # Common character indicators\n        if \"quinn\" in text_lower:\n            return \"quinn_talen\"\n        elif any(word in text_lower for word in [\"he\", \"his\", \"him\"]):\n            return \"male_character\"  # Placeholder\n        elif any(word in text_lower for word in [\"she\", \"her\", \"hers\"]):\n            return \"female_character\"  # Placeholder\n\n        return \"unknown\"\n\n    def _has_character_mention(self, text: str) -> bool:\n        \"\"\"Check if narration mentions any character.\"\"\"\n        text_lower = text.lower()\n\n        # Simple character mention detection\n        character_indicators = [\n            \"quinn\",\n            \"he\",\n            \"she\",\n            \"his\",\n            \"her\",\n            \"him\",\n            \"they\",\n            \"their\",\n            \"boy\",\n            \"girl\",\n            \"man\",\n            \"woman\",\n            \"student\",\n            \"character\",\n        ]\n\n        return any(indicator in text_lower for indicator in character_indicators)\n"
+          },
+          "output_directory": {
+            "_input_type": "StrInput",
+            "advanced": false,
+            "display_name": "Output Directory",
+            "dynamic": false,
+            "info": "Base directory for character data files",
+            "list": false,
+            "list_add_label": "Add More",
+            "load_from_db": false,
+            "name": "output_directory",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "str",
+            "value": "data/characters"
+          },
+          "utterances_data": {
+            "_input_type": "DataInput",
+            "advanced": false,
+            "display_name": "Utterances Data",
+            "dynamic": false,
+            "info": "Speaker-attributed utterances from previous agent",
+            "input_types": [
+              "Data"
+            ],
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "utterances_data",
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_input": true,
+            "trace_as_metadata": true,
+            "type": "other",
+            "value": ""
+          }
+        },
+        "tool_mode": false
+      },
+      "showNode": true,
+      "type": "abm_character_data_collector"
+    },
+    "dragging": false,
+    "id": "abm_character_data_collector-qBvaO",
+    "measured": {
+      "height": 347,
+      "width": 320
+    },
+    "position": {
+      "x": 1464.4525336531665,
+      "y": 403.9026544087345
+    },
+    "selected": false,
+    "type": "genericNode"
+  },
+  {
+    "data": {
+      "id": "ABMResultsToUtterances-YLLf7",
+      "node": {
+        "base_classes": [
+          "Data"
+        ],
+        "beta": false,
+        "conditional_paths": [],
+        "custom_fields": {},
+        "description": "Normalize aggregated results into standard utterances schema",
+        "display_name": "ABM Results → Utterances",
+        "documentation": "",
+        "edited": false,
+        "field_order": [
+          "aggregated_results"
+        ],
+        "frozen": false,
+        "icon": "table",
+        "legacy": false,
+        "lf_version": "1.5.1",
+        "metadata": {},
+        "minimized": false,
+        "output_types": [],
+        "outputs": [
+          {
+            "allows_loop": false,
+            "cache": true,
+            "display_name": "Utterances Data",
+            "group_outputs": false,
+            "method": "to_utterances",
+            "name": "utterances_data",
+            "selected": "Data",
+            "tool_mode": true,
+            "types": [
+              "Data"
+            ],
+            "value": "__UNDEFINED__"
+          }
+        ],
+        "pinned": false,
+        "template": {
+          "_type": "Component",
+          "aggregated_results": {
+            "_input_type": "DataInput",
+            "advanced": false,
+            "display_name": "Aggregated Results",
+            "dynamic": false,
+            "info": "Output from ABMResultsAggregator (processing_status=completed)",
+            "input_types": [
+              "Data"
+            ],
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "aggregated_results",
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_input": true,
+            "trace_as_metadata": true,
+            "type": "other",
+            "value": ""
+          },
+          "code": {
+            "advanced": true,
+            "dynamic": true,
+            "fileTypes": [],
+            "file_path": "",
+            "info": "",
+            "list": false,
+            "load_from_db": false,
+            "multiline": true,
+            "name": "code",
+            "password": false,
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "type": "code",
+            "value": "\"\"\"ABM Results → Utterances normalizer for LangFlow.\n\nTakes aggregated two-agent results and emits a normalized `utterances` list with\nv0.2 fields used by writers and the Character Data Collector.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom langflow.custom import Component\nfrom langflow.io import DataInput, Output\nfrom langflow.schema import Data\n\n\nclass ABMResultsToUtterances(Component):\n    display_name = \"ABM Results → Utterances\"\n    description = \"Normalize aggregated results into standard utterances schema\"\n    icon = \"table\"\n    name = \"ABMResultsToUtterances\"\n\n    inputs = [\n        DataInput(\n            name=\"aggregated_results\",\n            display_name=\"Aggregated Results\",\n            info=\"Output from ABMResultsAggregator (processing_status=completed)\",\n            required=True,\n        )\n    ]\n\n    outputs = [\n        Output(display_name=\"Utterances Data\", name=\"utterances_data\", method=\"to_utterances\"),\n    ]\n\n    def to_utterances(self) -> Data:\n        data = self.aggregated_results.data\n        if \"error\" in data:\n            self.status = \"Input contains error, passing through\"\n            return Data(data=data)\n\n        results = data.get(\"results\") or []\n        utterances = []\n        for r in results:\n            role_raw = (r.get(\"classification\") or \"unknown\").lower()\n            role = \"dialogue\" if \"dialogue\" in role_raw else (\"narration\" if \"narration\" in role_raw else \"unknown\")\n            text_val = r.get(\"text\") or r.get(\"full_text\") or \"\"\n            speaker = r.get(\"character_name\") or (\"Narrator\" if role == \"narration\" else \"Unknown Speaker\")\n            utterances.append(\n                {\n                    \"book_id\": r.get(\"book_id\", \"\"),\n                    \"chapter_id\": r.get(\"chapter_id\", \"\"),\n                    \"utterance_idx\": r.get(\"utterance_idx\", 0),\n                    \"role\": role,\n                    \"text\": text_val,\n                    \"speaker\": speaker,\n                    \"speaker_confidence\": r.get(\"attribution_confidence\"),\n                    \"context_before\": r.get(\"context_before\", \"\"),\n                    \"context_after\": r.get(\"context_after\", \"\"),\n                }\n            )\n\n        payload = {\n            \"utterances\": utterances,\n            \"count\": len(utterances),\n            \"chapter_info\": data.get(\"chapter_info\", {}),\n        }\n\n        self.status = f\"Normalized {len(utterances)} utterances\"\n        return Data(data=payload)\n"
+          }
+        },
+        "tool_mode": false
+      },
+      "showNode": true,
+      "type": "ABMResultsToUtterances"
+    },
+    "dragging": false,
+    "id": "ABMResultsToUtterances-YLLf7",
+    "measured": {
+      "height": 181,
+      "width": 320
+    },
+    "position": {
+      "x": 1110.2075160530958,
+      "y": -15.87769144734872
+    },
+    "selected": false,
+    "type": "genericNode"
+  },
+  {
+    "data": {
+      "id": "ABMCastingDirector-0VMwi",
+      "node": {
+        "base_classes": [
+          "Data"
+        ],
+        "beta": false,
+        "conditional_paths": [],
+        "custom_fields": {},
+        "description": "Assign TTS voices to utterances using a voice bank or fallback palette",
+        "display_name": "ABM Casting Director",
+        "documentation": "",
+        "edited": false,
+        "field_order": [
+          "utterances_data",
+          "voice_bank_path",
+          "default_voice_id",
+          "strict_mode"
+        ],
+        "frozen": false,
+        "icon": "user-voice",
+        "legacy": false,
+        "lf_version": "1.5.1",
+        "metadata": {},
+        "minimized": false,
+        "output_types": [],
+        "outputs": [
+          {
+            "allows_loop": false,
+            "cache": true,
+            "display_name": "Enriched Utterances",
+            "group_outputs": false,
+            "method": "assign_voices",
+            "name": "enriched_utterances",
+            "selected": "Data",
+            "tool_mode": true,
+            "types": [
+              "Data"
+            ],
+            "value": "__UNDEFINED__"
+          }
+        ],
+        "pinned": false,
+        "template": {
+          "_type": "Component",
+          "code": {
+            "advanced": true,
+            "dynamic": true,
+            "fileTypes": [],
+            "file_path": "",
+            "info": "",
+            "list": false,
+            "load_from_db": false,
+            "multiline": true,
+            "name": "code",
+            "password": false,
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "type": "code",
+            "value": "\"\"\"ABM Casting Director for LangFlow.\n\nAssigns a TTS voice to each utterance based on a voice bank file and/or a\ndeterministic fallback palette. Outputs enriched utterances including\n`voice` metadata and simple summaries of assignments.\n\nWorks directly with the normalized payload from ABM Results → Utterances.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport hashlib\nimport json\nfrom pathlib import Path\nfrom typing import Any\n\nfrom langflow.custom import Component\nfrom langflow.io import BoolInput, DataInput, Output, StrInput\nfrom langflow.schema import Data\n\n\nclass ABMCastingDirector(Component):\n    display_name = \"ABM Casting Director\"\n    description = \"Assign TTS voices to utterances using a voice bank or fallback palette\"\n    icon = \"user-voice\"\n    name = \"ABMCastingDirector\"\n\n    inputs = [\n        DataInput(\n            name=\"utterances_data\",\n            display_name=\"Utterances Data\",\n            info=\"Normalized utterances from ABM Results → Utterances\",\n            required=True,\n        ),\n        StrInput(\n            name=\"voice_bank_path\",\n            display_name=\"Voice Bank Path\",\n            info=\"JSON file with voice definitions and optional speaker assignments\",\n            value=\"data/casting/voice_bank.json\",\n            required=False,\n        ),\n        StrInput(\n            name=\"default_voice_id\",\n            display_name=\"Default Voice ID\",\n            info=\"Used for unknown/empty speakers if not found in bank\",\n            value=\"builtin:narrator_1\",\n            required=False,\n        ),\n        BoolInput(\n            name=\"strict_mode\",\n            display_name=\"Strict Mode\",\n            info=\"If true, unknown speakers raise an error instead of using fallback\",\n            value=False,\n            required=False,\n        ),\n    ]\n\n    outputs = [\n        Output(display_name=\"Enriched Utterances\", name=\"enriched_utterances\", method=\"assign_voices\"),\n    ]\n\n    # Built-in fallback palette (vendor-agnostic IDs)\n    _PALETTE: list[dict[str, Any]] = [\n        {\"id\": \"builtin:narrator_1\", \"vendor\": \"builtin\", \"model\": \"neutral\", \"style\": \"narration\"},\n        {\"id\": \"builtin:voice_m1\", \"vendor\": \"builtin\", \"model\": \"neutral\", \"style\": \"male\"},\n        {\"id\": \"builtin:voice_f1\", \"vendor\": \"builtin\", \"model\": \"neutral\", \"style\": \"female\"},\n        {\"id\": \"builtin:voice_m2\", \"vendor\": \"builtin\", \"model\": \"neutral\", \"style\": \"male\"},\n        {\"id\": \"builtin:voice_f2\", \"vendor\": \"builtin\", \"model\": \"neutral\", \"style\": \"female\"},\n    ]\n\n    def _load_voice_bank(self, path: str | None) -> dict[str, Any]:\n        if not path:\n            return {}\n        p = Path(path)\n        if not p.exists() or p.is_dir():\n            return {}\n        try:\n            text = p.read_text(encoding=\"utf-8\").strip()\n            if not text:\n                return {}\n            return json.loads(text)\n        except Exception:\n            return {}\n\n    def _hash_index(self, key: str, modulo: int) -> int:\n        h = hashlib.md5(key.encode(\"utf-8\")).hexdigest()\n        return int(h, 16) % max(1, modulo)\n\n    def _palette_pick(self, speaker: str) -> dict[str, Any]:\n        idx = self._hash_index(speaker or \"unknown\", len(self._PALETTE))\n        return self._PALETTE[idx]\n\n    def _resolve_voice_for_speaker(self, speaker: str, bank: dict[str, Any], default_voice_id: str) -> dict[str, Any]:\n        speaker_norm = (speaker or \"\").strip()\n        # 1) Direct assignment map\n        assignments = (bank.get(\"assignments\") or {}) if isinstance(bank, dict) else {}\n        voices: list[dict[str, Any]] = (bank.get(\"voices\") or []) if isinstance(bank, dict) else []\n        voice_by_id = {v.get(\"id\"): v for v in voices if isinstance(v, dict) and v.get(\"id\")}\n\n        # Exact speaker match\n        assigned_id = assignments.get(speaker_norm)\n        if assigned_id and assigned_id in voice_by_id:\n            return voice_by_id[assigned_id]\n\n        # Label match (aliases)\n        for v in voices:\n            labels = [str(x).strip().lower() for x in (v.get(\"labels\") or [])]\n            if speaker_norm.lower() in labels:\n                return v\n\n        # Defaults in bank\n        defaults = bank.get(\"defaults\") or {}\n        default_id = defaults.get(\"unknown\") or default_voice_id\n        if default_id in voice_by_id:\n            return voice_by_id[default_id]\n\n        # Fallback to palette (deterministic by name)\n        return self._palette_pick(speaker_norm or \"unknown\")\n\n    def assign_voices(self) -> Data:\n        payload = self.utterances_data.data\n        if \"error\" in payload:\n            self.status = \"Input contains error, passing through\"\n            return Data(data=payload)\n\n        utterances: list[dict[str, Any]] = list(payload.get(\"utterances\") or [])\n        if not isinstance(utterances, list):\n            error = \"Invalid utterances payload\"\n            self.status = f\"Error: {error}\"\n            return Data(data={\"error\": error})\n\n        bank = self._load_voice_bank(self.voice_bank_path)\n\n        speakers_to_voices: dict[str, dict[str, Any]] = {}\n        voices_used_counter: dict[str, int] = {}\n\n        enriched: list[dict[str, Any]] = []\n        for u in utterances:\n            speaker = (u.get(\"speaker\") or \"\").strip()\n            if not speaker:\n                if self.strict_mode:\n                    error = \"Empty speaker in utterance and strict_mode is enabled\"\n                    self.status = f\"Error: {error}\"\n                    return Data(data={\"error\": error, \"utterance\": u})\n                voice = self._resolve_voice_for_speaker(\"unknown\", bank, self.default_voice_id)\n            else:\n                if speaker not in speakers_to_voices:\n                    speakers_to_voices[speaker] = self._resolve_voice_for_speaker(speaker, bank, self.default_voice_id)\n                voice = speakers_to_voices[speaker]\n\n            voice_id = voice.get(\"id\", \"unknown\")\n            voices_used_counter[voice_id] = voices_used_counter.get(voice_id, 0) + 1\n\n            enriched.append({**u, \"voice\": voice})\n\n        result = {\n            \"utterances\": enriched,\n            \"speakers_to_voices\": {k: v.get(\"id\") for k, v in speakers_to_voices.items()},\n            \"voices_used\": voices_used_counter,\n            \"voice_bank_path\": self.voice_bank_path,\n        }\n\n        self.status = f\"Assigned voices to {len(enriched)} utterances (speakers: {len(speakers_to_voices)})\"\n        return Data(data=result)\n"
+          },
+          "default_voice_id": {
+            "_input_type": "StrInput",
+            "advanced": false,
+            "display_name": "Default Voice ID",
+            "dynamic": false,
+            "info": "Used for unknown/empty speakers if not found in bank",
+            "list": false,
+            "list_add_label": "Add More",
+            "load_from_db": false,
+            "name": "default_voice_id",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "str",
+            "value": "builtin:narrator_1"
+          },
+          "strict_mode": {
+            "_input_type": "BoolInput",
+            "advanced": false,
+            "display_name": "Strict Mode",
+            "dynamic": false,
+            "info": "If true, unknown speakers raise an error instead of using fallback",
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "strict_mode",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "bool",
+            "value": false
+          },
+          "utterances_data": {
+            "_input_type": "DataInput",
+            "advanced": false,
+            "display_name": "Utterances Data",
+            "dynamic": false,
+            "info": "Normalized utterances from ABM Results → Utterances",
+            "input_types": [
+              "Data"
+            ],
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "utterances_data",
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_input": true,
+            "trace_as_metadata": true,
+            "type": "other",
+            "value": ""
+          },
+          "voice_bank_path": {
+            "_input_type": "StrInput",
+            "advanced": false,
+            "display_name": "Voice Bank Path",
+            "dynamic": false,
+            "info": "JSON file with voice definitions and optional speaker assignments",
+            "list": false,
+            "list_add_label": "Add More",
+            "load_from_db": false,
+            "name": "voice_bank_path",
+            "placeholder": "",
+            "required": false,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "str",
+            "value": "data/casting/voice_bank.json"
+          }
+        },
+        "tool_mode": false
+      },
+      "showNode": true,
+      "type": "ABMCastingDirector"
+    },
+    "id": "ABMCastingDirector-0VMwi",
+    "measured": {
+      "height": 389,
+      "width": 320
+    },
+    "position": {
+      "x": 2018.8459861972765,
+      "y": -297.76818041865477
+    },
+    "selected": false,
+    "type": "genericNode"
+  },
+  {
+    "data": {
+      "id": "ABMAggregatedJsonlWriter-nnuZr",
+      "node": {
+        "base_classes": [
+          "Data"
+        ],
+        "beta": false,
+        "conditional_paths": [],
+        "custom_fields": {},
+        "description": "Write normalized utterances to JSONL with sidecar metadata",
+        "display_name": "ABM Aggregated JSONL Writer",
+        "documentation": "",
+        "edited": false,
+        "field_order": [
+          "utterances_data",
+          "output_path"
+        ],
+        "frozen": false,
+        "icon": "file-output",
+        "legacy": false,
+        "metadata": {},
+        "minimized": false,
+        "output_types": [],
+        "outputs": [
+          {
+            "allows_loop": false,
+            "cache": true,
+            "display_name": "Write Result",
+            "group_outputs": false,
+            "method": "write",
+            "name": "write_result",
+            "selected": "Data",
+            "tool_mode": true,
+            "types": [
+              "Data"
+            ],
+            "value": "__UNDEFINED__"
+          }
+        ],
+        "pinned": false,
+        "template": {
+          "_type": "Component",
+          "code": {
+            "advanced": true,
+            "dynamic": true,
+            "fileTypes": [],
+            "file_path": "",
+            "info": "",
+            "list": false,
+            "load_from_db": false,
+            "multiline": true,
+            "name": "code",
+            "password": false,
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "type": "code",
+            "value": "\"\"\"ABM Aggregated JSONL Writer for LangFlow.\n\nWrites normalized utterances (from Results→Utterances) to a JSONL file.\nSeparately writes a .meta.json next to the JSONL to avoid header-in-JSONL.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nfrom datetime import UTC, datetime\nfrom pathlib import Path\n\nfrom langflow.custom import Component\nfrom langflow.io import DataInput, Output, StrInput\nfrom langflow.schema import Data\n\n\nclass ABMAggregatedJsonlWriter(Component):\n    display_name = \"ABM Aggregated JSONL Writer\"\n    description = \"Write normalized utterances to JSONL with sidecar metadata\"\n    icon = \"file-output\"\n    name = \"ABMAggregatedJsonlWriter\"\n\n    inputs = [\n        DataInput(\n            name=\"utterances_data\",\n            display_name=\"Utterances Data\",\n            info=\"Normalized utterances from ABM Results → Utterances\",\n            required=True,\n        ),\n        StrInput(\n            name=\"output_path\",\n            display_name=\"Output Path\",\n            info=\"Destination JSONL file, e.g., data/annotations/<book>/chapter_01.jsonl\",\n            value=\"output/utterances.jsonl\",\n            required=True,\n        ),\n    ]\n\n    outputs = [Output(display_name=\"Write Result\", name=\"write_result\", method=\"write\")]\n\n    def write(self) -> Data:\n        payload = self.utterances_data.data\n        if \"error\" in payload:\n            self.status = \"Input contains error, passing through\"\n            return Data(data=payload)\n\n        utterances = payload.get(\"utterances\") or []\n        chapter_info = payload.get(\"chapter_info\") or {}\n\n        out_path = Path(self.output_path)\n        out_path.parent.mkdir(parents=True, exist_ok=True)\n\n        # Sidecar metadata\n        meta = {\n            \"version\": \"0.2\",\n            \"created_at\": datetime.now(UTC).isoformat(),\n            \"chapter_info\": chapter_info,\n            \"count\": len(utterances),\n        }\n        meta_path = out_path.with_suffix(out_path.suffix + \".meta.json\")\n\n        # Write JSONL (records only)\n        with out_path.open(\"w\", encoding=\"utf-8\") as f:\n            for u in utterances:\n                f.write(json.dumps(u, ensure_ascii=False) + \"\\n\")\n\n        meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding=\"utf-8\")\n\n        self.status = f\"Wrote {len(utterances)} utterances → {out_path} (meta: {meta_path.name})\"\n        return Data(\n            data={\n                \"output_file\": str(out_path),\n                \"meta_file\": str(meta_path),\n                \"utterances_written\": len(utterances),\n            }\n        )\n"
+          },
+          "output_path": {
+            "_input_type": "StrInput",
+            "advanced": false,
+            "display_name": "Output Path",
+            "dynamic": false,
+            "info": "Destination JSONL file, e.g., data/annotations/<book>/chapter_01.jsonl",
+            "list": false,
+            "list_add_label": "Add More",
+            "load_from_db": false,
+            "name": "output_path",
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_metadata": true,
+            "type": "str",
+            "value": "output/utterances.jsonl"
+          },
+          "utterances_data": {
+            "_input_type": "DataInput",
+            "advanced": false,
+            "display_name": "Utterances Data",
+            "dynamic": false,
+            "info": "Normalized utterances from ABM Results → Utterances",
+            "input_types": [
+              "Data"
+            ],
+            "list": false,
+            "list_add_label": "Add More",
+            "name": "utterances_data",
+            "placeholder": "",
+            "required": true,
+            "show": true,
+            "title_case": false,
+            "tool_mode": false,
+            "trace_as_input": true,
+            "trace_as_metadata": true,
+            "type": "other",
+            "value": ""
+          }
+        },
+        "tool_mode": false
+      },
+      "showNode": true,
+      "type": "ABMAggregatedJsonlWriter"
+    },
+    "dragging": false,
+    "id": "ABMAggregatedJsonlWriter-nnuZr",
+    "measured": {
+      "height": 264,
+      "width": 320
+    },
+    "position": {
+      "x": 1855.893278101244,
+      "y": 187.5474936934416
+    },
+    "selected": false,
+    "type": "genericNode"
+  }
+],
+"viewport": {
+  "x": 367.9426969388229,
+  "y": 282.8209721919476,
+  "zoom": 0.3553279300841827
+}
+},
+"description": "Nurture NLP Nodes Here.",
+"endpoint_name": null,
+"id": "6fee3e79-95b3-4729-b9c1-8c7450650c47",
+"is_component": false,
+"last_tested_version": "1.5.1",
+"name": "ABM Full FLow",
+"tags": []
+}

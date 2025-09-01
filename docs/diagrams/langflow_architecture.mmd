@@ -7,8 +7,7 @@ twoRunner["ABM Two-Agent Runner<br/>(ABMTwoAgentRunner)"]
 		%% Core processing components
 		subgraph CORE[Core Processing]
 			direction LR
-		chapterSel["ABM Chapter Selector<br/>(ABMChapterSelector)"]
-		loader["ABM Enhanced Chapter Loader<br/>(ABMEnhancedChapterLoader)"]
+		loader["ABM Chapter Loader<br/>(ABMChapterLoader)"]
 		chunker["ABM Block Iterator<br/>(ABMBlockIterator)"]
 		classifier["ABM Dialogue Classifier<br/>(ABMDialogueClassifier)"]
 		attrib["ABM Speaker Attribution<br/>(ABMSpeakerAttribution)"]
@@ -26,9 +25,7 @@ twoRunner["ABM Two-Agent Runner<br/>(ABMTwoAgentRunner)"]
 		%% Post-processing / output
 		subgraph OUTPUT[Outputs]
 			direction LR
-		jsonlAgg["ABM Aggregated JSONL Writer"]
 		jsonlAgg["ABM Aggregated JSONL Writer<br/>(ABMAggregatedJsonlWriter)"]
-		jsonlUtter["ABM Utterance JSONL Writer<br/>(ABMUtteranceJsonlWriter)"]
 		collect["Character Data Collector<br/>(ABMCharacterDataCollector)"]
 		cast["ABM Casting Director<br/>(ABMCastingDirector)"]
 		end
@@ -40,8 +37,7 @@ twoRunner["ABM Two-Agent Runner<br/>(ABMTwoAgentRunner)"]
 
 		%% Flow wiring (core)
 		start --> twoRunner
-		start -. manual wiring .-> chapterSel
-		chapterSel --> loader
+		start -. manual wiring .-> loader
 		chapters -. reads .-> loader
 		loader --> chunker
 		chunker --> classifier

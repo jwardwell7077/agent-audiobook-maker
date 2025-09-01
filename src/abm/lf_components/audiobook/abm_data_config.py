@@ -21,7 +21,7 @@ class ABMDataConfig(Component):
             name="data_root",
             display_name="Data Root Directory",
             info="Root directory containing all audiobook data",
-            value=os.getenv("ABM_DATA_ROOT", "/home/jon/repos/audio-book-maker-lg/data"),
+            value=os.getenv("ABM_DATA_ROOT", str(Path.cwd() / "data")),
             required=True,
         ),
         StrInput(
@@ -43,7 +43,7 @@ class ABMDataConfig(Component):
         Output(name="config_data", display_name="Configuration Data", method="build_config")
     ]
 
-    def build_config(self) -> Data:
+    def build_config(self):
         """Build data configuration for audiobook processing."""
         try:
             data_root = Path(self.data_root)

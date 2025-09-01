@@ -18,7 +18,7 @@ This document outlines the strategy for leveraging LangFlow's built-in component
 
 All components in `src/abm/lf_components/audiobook/` are production-ready (Updated August 2025):
 
-1. `ABMChapterVolumeLoader` - **✅ Production Ready** (📚 3 inputs, 1 output)
+1. `ABMChapterLoader` - **✅ Production Ready** (📚 5 inputs, 3 outputs)
 2. `ABMChapterSelector` - **✅ Production Ready** (🎯 3 inputs, 1 output)
 3. `ABMSegmentDialogueNarration` - **✅ Production Ready** (✂️ 1 input, 1 output)
 4. `ABMUtteranceFilter` - **✅ Production Ready** (🔍 5 inputs, 1 output)
@@ -77,7 +77,7 @@ All components in `src/abm/lf_components/audiobook/` are production-ready (Updat
 
 ### **Phase 1: Core Pipeline (COMPLETED ✅ August 2025)**
 
-#### **1. ABMChapterVolumeLoader** ✅ **PRODUCTION**
+#### **1. ABMChapterLoader** ✅ **PRODUCTION**
 
 - **Display Name**: 📚 Chapter Volume Loader
 - **Purpose**: Loads structured chapter data with volume metadata
@@ -248,7 +248,7 @@ All components in `src/abm/lf_components/audiobook/` are production-ready (Updat
 
 ```mermaid
 flowchart LR
-    A[Built-in File Loader] --> B[ABMChapterVolumeLoader]
+  A[Built-in File Loader] --> B[ABMChapterLoader]
     B --> C[ABMChapterSelector] 
     C --> D[ABMSegmentDialogueNarration]
     D --> E[ABMUtteranceFilter]
@@ -277,7 +277,7 @@ flowchart LR
 ### **Sprint 1: Foundation Rebuild** ✅ **COMPLETED August 2025**
 
 - **Weeks 1-2**: ✅ **COMPLETED** - Core Phase 1 components successfully redesigned and rebuilt
-  - ✅ ABMChapterVolumeLoader (production ready - 📚 3 inputs, 1 output)
+  - ✅ ABMChapterLoader (production ready - 📚 5 inputs, 3 outputs)
   - ✅ ABMChapterSelector (production ready - 🎯 3 inputs, 1 output)
   - ✅ ABMSegmentDialogueNarration (production ready - ✂️ 1 input, 1 output)
   - ✅ ABMUtteranceFilter (production ready - 🔍 5 inputs, 1 output)

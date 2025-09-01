@@ -82,8 +82,8 @@
                             "chapter",
                             "base_dir",
                             "batch_size",
-                            "start_chunk",
-                            "max_chunks",
+                            "start_block",
+                            "max_blocks",
                             "dialogue_priority"
                         ],
                         "frozen": false,
@@ -102,343 +102,343 @@
                                 "name": "aggregated_results",
                                 "selected": "Data",
                                 "tool_mode": true,
-                                "types": [
-                                    "Data"
-                                ],
-                                "value": "__UNDEFINED__"
-                            }
-                        ],
-                        "pinned": false,
-                        "template": {
-                            "_type": "Component",
-                            "base_dir": {
-                                "_input_type": "MessageTextInput",
-                                "advanced": false,
-                                "display_name": "Repo Root (optional)",
-                                "dynamic": false,
-                                "info": "Leave empty to auto-detect repo root",
-                                "list": false,
-                                "name": "base_dir",
-                                "placeholder": "",
-                                "required": false,
-                                "show": true,
-                                "title_case": false,
-                                "tool_mode": false,
-                                "trace_as_metadata": true,
-                                "type": "str",
-                                "value": ""
+                                "max_blocks": {
+                                    "display_name": "Max Blocks (0=all)",
+                                    "dynamic": false,
+                                    "info": "Limit processed blocks",
+                                    "list": false,
+                                    "name": "max_blocks",
+                                    "pinned": false,
+                                    "template": {
+                                        "_type": "Component",
+                                        "base_dir": {
+                                            "_input_type": "MessageTextInput",
+                                            "advanced": false,
+                                            "display_name": "Repo Root (optional)",
+                                            "dynamic": false,
+                                            "info": "Leave empty to auto-detect repo root",
+                                            "start_block": {
+                                                "display_name": "Start Block",
+                                                "dynamic": false,
+                                                "info": "First block id",
+                                                "list": false,
+                                                "name": "start_block",
+                                                "tool_mode": false,
+                                                "trace_as_metadata": true,
+                                                "type": "str",
+                                                "value": ""
+                                            },
+                                            "batch_size": {
+                                                "_input_type": "IntInput",
+                                                "advanced": false,
+                                                "display_name": "Batch Size",
+                                                "dynamic": false,
+                                                "info": "Blocks per batch",
+                                                "list": false,
+                                                "name": "batch_size",
+                                                "placeholder": "",
+                                                "required": false,
+                                                "show": true,
+                                                "title_case": false,
+                                                "tool_mode": false,
+                                                "trace_as_metadata": true,
+                                                "type": "int",
+                                                "value": 10
+                                            },
+                                            "book": {
+                                                "_input_type": "MessageTextInput",
+                                                "advanced": false,
+                                                "display_name": "Book Key",
+                                                "dynamic": false,
+                                                "info": "Book folder under data/clean",
+                                                "list": false,
+                                                "name": "book",
+                                                "placeholder": "mvs",
+                                                "required": true,
+                                                "show": true,
+                                                "title_case": false,
+                                                "tool_mode": false,
+                                                "trace_as_metadata": true,
+                                                "type": "str",
+                                                "value": "mvs"
+                                            },
+                                            "chapter": {
+                                                "_input_type": "IntInput",
+                                                "advanced": false,
+                                                "display_name": "Chapter (1-based)",
+                                                "dynamic": false,
+                                                "info": "Chapter index",
+                                                "list": false,
+                                                "name": "chapter",
+                                                "placeholder": "1",
+                                                "required": true,
+                                                "show": true,
+                                                "title_case": false,
+                                                "tool_mode": false,
+                                                "trace_as_metadata": true,
+                                                "type": "int",
+                                                "value": 1
+                                            },
+                                            "dialogue_priority": {
+                                                "_input_type": "BoolInput",
+                                                "advanced": false,
+                                                "display_name": "Dialogue Priority",
+                                                "dynamic": false,
+                                                "info": "Process dialogue-first",
+                                                "list": false,
+                                                "name": "dialogue_priority",
+                                                "placeholder": "",
+                                                "required": false,
+                                                "show": true,
+                                                "title_case": false,
+                                                "tool_mode": false,
+                                                "trace_as_metadata": true,
+                                                "type": "bool",
+                                                "value": true
+                                            },
+                                            "max_chunks": {
+                                                "_input_type": "IntInput",
+                                                "advanced": false,
+                                                "display_name": "Max Chunks (0=all)",
+                                                "dynamic": false,
+                                                "info": "Limit processed blocks",
+                                                "list": false,
+                                                "name": "max_chunks",
+                                                "placeholder": "0",
+                                                "required": false,
+                                                "show": true,
+                                                "title_case": false,
+                                                "tool_mode": false,
+                                                "trace_as_metadata": true,
+                                                "type": "int",
+                                                "value": 10
+                                            },
+                                            "start_chunk": {
+                                                "_input_type": "IntInput",
+                                                "advanced": false,
+                                                "display_name": "Start Chunk",
+                                                "dynamic": false,
+                                                "info": "First block id",
+                                                "list": false,
+                                                "name": "start_chunk",
+                                                "placeholder": "1",
+                                                "required": false,
+                                                "show": true,
+                                                "title_case": false,
+                                                "tool_mode": false,
+                                                "trace_as_metadata": true,
+                                                "type": "int",
+                                                "value": 1
+                                            }
+                                        },
+                                        "tool_mode": false
+                                    },
+                                    "showNode": true,
+                                    "type": "ABMTwoAgentRunner"
+                                },
+                                "id": "ABMTwoAgentRunner-AB12C",
+                                "measured": {
+                                    "height": 300,
+                                    "width": 360
+                                },
+                                "position": {
+                                    "x": 60,
+                                    "y": 220
+                                },
+                                "selected": false,
+                                "type": "genericNode"
                             },
-                            "batch_size": {
-                                "_input_type": "IntInput",
-                                "advanced": false,
-                                "display_name": "Batch Size",
-                                "dynamic": false,
-                                "info": "Blocks per batch",
-                                "list": false,
-                                "name": "batch_size",
-                                "placeholder": "",
-                                "required": false,
-                                "show": true,
-                                "title_case": false,
-                                "tool_mode": false,
-                                "trace_as_metadata": true,
-                                "type": "int",
-                                "value": 10
-                            },
-                            "book": {
-                                "_input_type": "MessageTextInput",
-                                "advanced": false,
-                                "display_name": "Book Key",
-                                "dynamic": false,
-                                "info": "Book folder under data/clean",
-                                "list": false,
-                                "name": "book",
-                                "placeholder": "mvs",
-                                "required": true,
-                                "show": true,
-                                "title_case": false,
-                                "tool_mode": false,
-                                "trace_as_metadata": true,
-                                "type": "str",
-                                "value": "mvs"
-                            },
-                            "chapter": {
-                                "_input_type": "IntInput",
-                                "advanced": false,
-                                "display_name": "Chapter (1-based)",
-                                "dynamic": false,
-                                "info": "Chapter index",
-                                "list": false,
-                                "name": "chapter",
-                                "placeholder": "1",
-                                "required": true,
-                                "show": true,
-                                "title_case": false,
-                                "tool_mode": false,
-                                "trace_as_metadata": true,
-                                "type": "int",
-                                "value": 1
-                            },
-                            "dialogue_priority": {
-                                "_input_type": "BoolInput",
-                                "advanced": false,
-                                "display_name": "Dialogue Priority",
-                                "dynamic": false,
-                                "info": "Process dialogue-first",
-                                "list": false,
-                                "name": "dialogue_priority",
-                                "placeholder": "",
-                                "required": false,
-                                "show": true,
-                                "title_case": false,
-                                "tool_mode": false,
-                                "trace_as_metadata": true,
-                                "type": "bool",
-                                "value": true
-                            },
-                            "max_chunks": {
-                                "_input_type": "IntInput",
-                                "advanced": false,
-                                "display_name": "Max Chunks (0=all)",
-                                "dynamic": false,
-                                "info": "Limit processed blocks",
-                                "list": false,
-                                "name": "max_chunks",
-                                "placeholder": "0",
-                                "required": false,
-                                "show": true,
-                                "title_case": false,
-                                "tool_mode": false,
-                                "trace_as_metadata": true,
-                                "type": "int",
-                                "value": 10
-                            },
-                            "start_chunk": {
-                                "_input_type": "IntInput",
-                                "advanced": false,
-                                "display_name": "Start Chunk",
-                                "dynamic": false,
-                                "info": "First block id",
-                                "list": false,
-                                "name": "start_chunk",
-                                "placeholder": "1",
-                                "required": false,
-                                "show": true,
-                                "title_case": false,
-                                "tool_mode": false,
-                                "trace_as_metadata": true,
-                                "type": "int",
-                                "value": 1
-                            }
-                        },
-                        "tool_mode": false
-                    },
-                    "showNode": true,
-                    "type": "ABMTwoAgentRunner"
-                },
-                "id": "ABMTwoAgentRunner-AB12C",
-                "measured": {
-                    "height": 300,
-                    "width": 360
-                },
-                "position": {
-                    "x": 60,
-                    "y": 220
-                },
-                "selected": false,
-                "type": "genericNode"
-            },
-            {
-                "data": {
-                    "id": "ABMResultsToUtterances-RS22D",
-                    "node": {
-                        "base_classes": [],
-                        "beta": false,
-                        "conditional_paths": [],
-                        "custom_fields": {},
-                        "description": "Normalize aggregated results into standard utterances schema",
-                        "display_name": "ABM Results → Utterances",
-                        "documentation": "Takes aggregated two-agent results and emits `utterances` list",
-                        "edited": false,
-                        "field_order": [
-                            "aggregated_results"
-                        ],
-                        "frozen": false,
-                        "icon": "table",
-                        "legacy": false,
-                        "metadata": {},
-                        "minimized": false,
-                        "output_types": [],
-                        "outputs": [
                             {
-                                "allows_loop": false,
-                                "cache": true,
-                                "display_name": "Utterances Data",
-                                "group_outputs": false,
-                                "method": "to_utterances",
-                                "name": "utterances_data",
-                                "selected": "Data",
-                                "tool_mode": true,
-                                "types": [
-                                    "Data"
-                                ],
-                                "value": "__UNDEFINED__"
-                            }
-                        ],
-                        "pinned": false,
-                        "template": {
-                            "_type": "Component",
-                            "aggregated_results": {
-                                "_input_type": "DataInput",
-                                "advanced": false,
-                                "display_name": "Aggregated Results",
-                                "dynamic": false,
-                                "info": "Output of ABM Two-Agent Runner",
-                                "input_types": [
-                                    "Data"
-                                ],
-                                "list": false,
-                                "name": "aggregated_results",
-                                "placeholder": "",
-                                "required": true,
-                                "show": true,
-                                "title_case": false,
-                                "tool_mode": false,
-                                "trace_as_input": true,
-                                "trace_as_metadata": true,
-                                "type": "other",
-                                "value": ""
-                            }
-                        },
-                        "tool_mode": false
-                    },
-                    "showNode": true,
-                    "type": "ABMResultsToUtterances"
-                },
-                "id": "ABMResultsToUtterances-RS22D",
-                "measured": {
-                    "height": 200,
-                    "width": 320
-                },
-                "position": {
-                    "x": 460,
-                    "y": 220
-                },
-                "selected": false,
-                "type": "genericNode"
-            },
-            {
-                "data": {
-                    "id": "ABMAggregatedJsonlWriter-WR33E",
-                    "node": {
-                        "base_classes": [
-                            "Data"
-                        ],
-                        "beta": false,
-                        "conditional_paths": [],
-                        "custom_fields": {},
-                        "description": "Write normalized utterances to JSONL with sidecar metadata",
-                        "display_name": "ABM Aggregated JSONL Writer",
-                        "documentation": "Writes to JSONL and a .meta.json file",
-                        "edited": false,
-                        "field_order": [
-                            "utterances_data",
-                            "output_path"
-                        ],
-                        "frozen": false,
-                        "icon": "file-output",
-                        "legacy": false,
-                        "metadata": {},
-                        "minimized": false,
-                        "output_types": [],
-                        "outputs": [
-                            {
-                                "allows_loop": false,
-                                "cache": true,
-                                "display_name": "Write Result",
-                                "group_outputs": false,
-                                "method": "write",
-                                "name": "write_result",
-                                "selected": "Data",
-                                "tool_mode": true,
-                                "types": [
-                                    "Data"
-                                ],
-                                "value": "__UNDEFINED__"
-                            }
-                        ],
-                        "pinned": false,
-                        "template": {
-                            "_type": "Component",
-                            "output_path": {
-                                "_input_type": "StrInput",
-                                "advanced": false,
-                                "display_name": "Output Path",
-                                "dynamic": false,
-                                "info": "e.g., output/utterances.jsonl",
-                                "list": false,
-                                "load_from_db": false,
-                                "name": "output_path",
-                                "placeholder": "output/utterances.jsonl",
-                                "required": true,
-                                "show": true,
-                                "title_case": false,
-                                "tool_mode": false,
-                                "trace_as_metadata": true,
-                                "type": "str",
-                                "value": "output/utterances.jsonl"
+                                "data": {
+                                    "id": "ABMResultsToUtterances-RS22D",
+                                    "node": {
+                                        "base_classes": [],
+                                        "beta": false,
+                                        "conditional_paths": [],
+                                        "custom_fields": {},
+                                        "description": "Normalize aggregated results into standard utterances schema",
+                                        "display_name": "ABM Results → Utterances",
+                                        "documentation": "Takes aggregated two-agent results and emits `utterances` list",
+                                        "edited": false,
+                                        "field_order": [
+                                            "aggregated_results"
+                                        ],
+                                        "frozen": false,
+                                        "icon": "table",
+                                        "legacy": false,
+                                        "metadata": {},
+                                        "minimized": false,
+                                        "output_types": [],
+                                        "outputs": [
+                                            {
+                                                "allows_loop": false,
+                                                "cache": true,
+                                                "display_name": "Utterances Data",
+                                                "group_outputs": false,
+                                                "method": "to_utterances",
+                                                "name": "utterances_data",
+                                                "selected": "Data",
+                                                "tool_mode": true,
+                                                "types": [
+                                                    "Data"
+                                                ],
+                                                "value": "__UNDEFINED__"
+                                            }
+                                        ],
+                                        "pinned": false,
+                                        "template": {
+                                            "_type": "Component",
+                                            "aggregated_results": {
+                                                "_input_type": "DataInput",
+                                                "advanced": false,
+                                                "display_name": "Aggregated Results",
+                                                "dynamic": false,
+                                                "info": "Output of ABM Two-Agent Runner",
+                                                "input_types": [
+                                                    "Data"
+                                                ],
+                                                "list": false,
+                                                "name": "aggregated_results",
+                                                "placeholder": "",
+                                                "required": true,
+                                                "show": true,
+                                                "title_case": false,
+                                                "tool_mode": false,
+                                                "trace_as_input": true,
+                                                "trace_as_metadata": true,
+                                                "type": "other",
+                                                "value": ""
+                                            }
+                                        },
+                                        "tool_mode": false
+                                    },
+                                    "showNode": true,
+                                    "type": "ABMResultsToUtterances"
+                                },
+                                "id": "ABMResultsToUtterances-RS22D",
+                                "measured": {
+                                    "height": 200,
+                                    "width": 320
+                                },
+                                "position": {
+                                    "x": 460,
+                                    "y": 220
+                                },
+                                "selected": false,
+                                "type": "genericNode"
                             },
-                            "utterances_data": {
-                                "_input_type": "DataInput",
-                                "advanced": false,
-                                "display_name": "Utterances Data",
-                                "dynamic": false,
-                                "info": "From Results → Utterances",
-                                "input_types": [
-                                    "Data"
-                                ],
-                                "list": false,
-                                "name": "utterances_data",
-                                "placeholder": "",
-                                "required": true,
-                                "show": true,
-                                "title_case": false,
-                                "tool_mode": false,
-                                "trace_as_input": true,
-                                "trace_as_metadata": true,
-                                "type": "other",
-                                "value": ""
+                            {
+                                "data": {
+                                    "id": "ABMAggregatedJsonlWriter-WR33E",
+                                    "node": {
+                                        "base_classes": [
+                                            "Data"
+                                        ],
+                                        "beta": false,
+                                        "conditional_paths": [],
+                                        "custom_fields": {},
+                                        "description": "Write normalized utterances to JSONL with sidecar metadata",
+                                        "display_name": "ABM Aggregated JSONL Writer",
+                                        "documentation": "Writes to JSONL and a .meta.json file",
+                                        "edited": false,
+                                        "field_order": [
+                                            "utterances_data",
+                                            "output_path"
+                                        ],
+                                        "frozen": false,
+                                        "icon": "file-output",
+                                        "legacy": false,
+                                        "metadata": {},
+                                        "minimized": false,
+                                        "output_types": [],
+                                        "outputs": [
+                                            {
+                                                "allows_loop": false,
+                                                "cache": true,
+                                                "display_name": "Write Result",
+                                                "group_outputs": false,
+                                                "method": "write",
+                                                "name": "write_result",
+                                                "selected": "Data",
+                                                "tool_mode": true,
+                                                "types": [
+                                                    "Data"
+                                                ],
+                                                "value": "__UNDEFINED__"
+                                            }
+                                        ],
+                                        "pinned": false,
+                                        "template": {
+                                            "_type": "Component",
+                                            "output_path": {
+                                                "_input_type": "StrInput",
+                                                "advanced": false,
+                                                "display_name": "Output Path",
+                                                "dynamic": false,
+                                                "info": "e.g., output/utterances.jsonl",
+                                                "list": false,
+                                                "load_from_db": false,
+                                                "name": "output_path",
+                                                "placeholder": "output/utterances.jsonl",
+                                                "required": true,
+                                                "show": true,
+                                                "title_case": false,
+                                                "tool_mode": false,
+                                                "trace_as_metadata": true,
+                                                "type": "str",
+                                                "value": "output/utterances.jsonl"
+                                            },
+                                            "utterances_data": {
+                                                "_input_type": "DataInput",
+                                                "advanced": false,
+                                                "display_name": "Utterances Data",
+                                                "dynamic": false,
+                                                "info": "From Results → Utterances",
+                                                "input_types": [
+                                                    "Data"
+                                                ],
+                                                "list": false,
+                                                "name": "utterances_data",
+                                                "placeholder": "",
+                                                "required": true,
+                                                "show": true,
+                                                "title_case": false,
+                                                "tool_mode": false,
+                                                "trace_as_input": true,
+                                                "trace_as_metadata": true,
+                                                "type": "other",
+                                                "value": ""
+                                            }
+                                        },
+                                        "tool_mode": false
+                                    },
+                                    "showNode": true,
+                                    "type": "ABMAggregatedJsonlWriter"
+                                },
+                                "id": "ABMAggregatedJsonlWriter-WR33E",
+                                "measured": {
+                                    "height": 262,
+                                    "width": 320
+                                },
+                                "position": {
+                                    "x": 820,
+                                    "y": 220
+                                },
+                                "selected": false,
+                                "type": "genericNode"
                             }
-                        },
-                        "tool_mode": false
+                        ],
+                        "viewport": {
+                            "x": 0,
+                            "y": 0,
+                            "zoom": 1
+                        }
                     },
-                    "showNode": true,
-                    "type": "ABMAggregatedJsonlWriter"
-                },
-                "id": "ABMAggregatedJsonlWriter-WR33E",
-                "measured": {
-                    "height": 262,
-                    "width": 320
-                },
-                "position": {
-                    "x": 820,
-                    "y": 220
-                },
-                "selected": false,
-                "type": "genericNode"
-            }
-        ],
-        "viewport": {
-            "x": 0,
-            "y": 0,
-            "zoom": 1
-        }
-    },
-    "description": "ABM Two-Agent → JSONL (schema aligned with LangFlow 1.5.x)",
-    "endpoint_name": null,
-    "id": "abm_two_agent_jsonl_v15",
-    "is_component": false,
-    "last_tested_version": "1.5.0.post2",
-    "name": "ABM Two-Agent JSONL (v1.5)",
-    "tags": []
-}
+                    "description": "ABM Two-Agent → JSONL (schema aligned with LangFlow 1.5.x)",
+                    "endpoint_name": null,
+                    "id": "abm_two_agent_jsonl_v15",
+                    "is_component": false,
+                    "last_tested_version": "1.5.0.post2",
+                    "name": "ABM Two-Agent JSONL (v1.5)",
+                    "tags": []
+                }

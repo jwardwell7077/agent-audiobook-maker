@@ -61,7 +61,7 @@ class ABMResultsAggregator(Component):
         try:
             input_data = self.attribution_result.data
 
-            # Handle completion summary (when all chunks processed)
+            # Handle completion summary (when all blocks processed)
             if input_data.get("processing_status") == "completed":
                 return self._finalize_aggregation(input_data)
 
@@ -240,12 +240,18 @@ class ABMResultsAggregator(Component):
         final_stats["filtered_results_count"] = len(filtered_results)
         final_stats["processing_completion_time"] = datetime.utcnow().isoformat()
 
+        # Restore deterministic order (by chapter_id, then utterance_idx)
+        sorted_results = sorted(
+            filtered_results,
+            key=lambda r: (str(r.get("chapter_id", "")), int(r.get("utterance_idx", 0))),
+        )
+
         # Create final aggregated data
         aggregated_data = {
             "processing_status": "completed",
             "total_results": len(self._accumulated_results),
-            "filtered_results": len(filtered_results),
-            "results": filtered_results,
+            "filtered_results": len(sorted_results),
+            "results": sorted_results,
             "statistics": final_stats,
             "validation": validation_results,
             "chapter_info": completion_data.get("summary", {}).get("chapter_info", {}),

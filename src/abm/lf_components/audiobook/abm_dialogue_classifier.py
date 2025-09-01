@@ -14,7 +14,7 @@ from typing import Any, cast
 
 import requests
 from langflow.custom import Component
-from langflow.io import BoolInput, DataInput, DropdownInput, FloatInput, IntInput, MessageTextInput, Output
+from langflow.io import BoolInput, DataInput, DropdownInput, FloatInput, IntInput, MessageTextInput, Output, StrInput
 from langflow.schema import Data
 
 logger = logging.getLogger(__name__)
@@ -93,6 +93,31 @@ class ABMDialogueClassifier(Component):
             info="Minimum confidence for heuristic classification (0.0-1.0)",
             value=0.8,
         ),
+        DropdownInput(
+            name="llm_provider",
+            display_name="LLM Provider",
+            info="Backend for LLM classification",
+            options=["none", "ollama", "openai", "generic_http"],
+            value="none",
+        ),
+        StrInput(
+            name="openai_api_key",
+            display_name="OpenAI API Key",
+            info="Used when provider=openai (env OPENAI_API_KEY is also read)",
+            value="",
+        ),
+        StrInput(
+            name="openai_model",
+            display_name="OpenAI Model",
+            info="Model name for OpenAI provider",
+            value="gpt-4o-mini",
+        ),
+        StrInput(
+            name="generic_url",
+            display_name="Generic HTTP URL",
+            info="POST endpoint receiving {prompt} and returning {classification|text}",
+            value="",
+        ),
     ]
 
     outputs = [
@@ -105,6 +130,8 @@ class ABMDialogueClassifier(Component):
         self.ollama_base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
         self.primary_model = os.getenv("OLLAMA_PRIMARY_MODEL", "llama3.2:3b")
         self.ai_timeout = int(os.getenv("AI_CLASSIFICATION_TIMEOUT", "30"))
+        # Online providers
+        self._openai_api_key_env = os.getenv("OPENAI_API_KEY", "")
 
         self.dialogue_patterns = {
             # Quote patterns with varying confidence
@@ -259,13 +286,8 @@ class ABMDialogueClassifier(Component):
             return "unknown", 0.3, "heuristic_uncertain", None, []
 
     def llm_classification(self, text: str, context_before: str, context_after: str) -> tuple[str, float, str]:
-        """
-        Use Ollama AI for classification when heuristics are insufficient.
-        Returns: (classification, confidence, method)
-        """
-        try:
-            # Construct the AI prompt with context
-            prompt = f"""Analyze this text and determine if it's dialogue or narration.
+        """LLM-backed classification via provider switch: ollama, openai, or generic_http."""
+        prompt = f"""Analyze this text and determine if it's dialogue or narration.
 
 CONTEXT BEFORE: {context_before[:200]}...
 
@@ -279,48 +301,66 @@ INSTRUCTIONS:
 - Narration includes: descriptions, actions, scene-setting
 
 Classification:"""
+        provider = getattr(self, "llm_provider", "none")
+        method_used = f"llm_{provider}"
+        result_text: str | None = None
 
-            # Make request to Ollama
-            response = requests.post(
-                f"{self.ollama_base_url}/api/generate",
-                json={
-                    "model": self.primary_model,
-                    "prompt": prompt,
-                    "stream": False,
-                    "options": {
-                        "temperature": 0.1,  # Low temperature for consistent results
-                        "top_p": 0.1,
-                        "num_predict": 10,  # Short response expected
+        try:
+            if provider == "ollama":
+                response = requests.post(
+                    f"{self.ollama_base_url}/api/generate",
+                    json={
+                        "model": self.primary_model,
+                        "prompt": prompt,
+                        "stream": False,
+                        "options": {"temperature": 0.1, "top_p": 0.1, "num_predict": 10},
                     },
-                },
-                timeout=self.ai_timeout,
-            )
+                    timeout=self.ai_timeout,
+                )
+                if response.status_code == 200:
+                    data = response.json()
+                    result_text = (data.get("response") or "").strip()
 
-            if response.status_code == 200:
-                result = response.json()
-                classification = result.get("response", "").strip().lower()
+            elif provider == "openai":
+                api_key = getattr(self, "openai_api_key", "") or self._openai_api_key_env
+                model = getattr(self, "openai_model", "gpt-4o-mini")
+                if api_key:
+                    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+                    body = {
+                        "model": model,
+                        "messages": [
+                            {"role": "system", "content": "Reply ONLY with dialogue or narration."},
+                            {"role": "user", "content": prompt},
+                        ],
+                        "temperature": 0.1,
+                        "max_tokens": 5,
+                    }
+                    response = requests.post(
+                        "https://api.openai.com/v1/chat/completions",
+                        json=body,
+                        headers=headers,
+                        timeout=self.ai_timeout,
+                    )
+                    if response.status_code == 200:
+                        data = response.json()
+                        result_text = data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
 
-                # Validate and normalize the response
-                if "dialogue" in classification:
-                    return ("dialogue", 0.85, "ai_classification")
-                elif "narration" in classification:
-                    return ("narration", 0.85, "ai_classification")
-                else:
-                    # Fallback if AI response is unclear
-                    return ("narration", 0.6, "ai_fallback_default")
-            else:
-                logging.warning(f"Ollama request failed: {response.status_code}")
-                return ("narration", 0.5, "ai_error_default")
+            elif provider == "generic_http":
+                url = getattr(self, "generic_url", "")
+                if url:
+                    response = requests.post(url, json={"prompt": prompt}, timeout=self.ai_timeout)
+                    if response.status_code == 200:
+                        data = response.json()
+                        result_text = (data.get("classification") or data.get("text") or "").strip()
+        except Exception as e:  # noqa: BLE001
+            logger.warning(f"LLM provider error: {e}")
 
-        except requests.exceptions.Timeout:
-            logging.warning("Ollama request timed out")
-            return ("narration", 0.5, "ai_timeout_default")
-        except requests.exceptions.RequestException as e:
-            logging.warning(f"Ollama request error: {e}")
-            return ("narration", 0.5, "ai_error_default")
-        except Exception as e:
-            logging.error(f"Unexpected error in AI classification: {e}")
-            return ("narration", 0.5, "ai_error_default")
+        if result_text:
+            label = result_text.lower()
+            label = "dialogue" if "dialogue" in label else ("narration" if "narration" in label else "unknown")
+            return label, 0.65, method_used
+
+        return "unknown", 0.5, method_used + "_uncertain"
 
     def classify_utterance(self) -> Data:
         """Main classification method."""
@@ -364,7 +404,7 @@ Classification:"""
             book_id_val = _get("book_id", self.book_id)
             book_id = str(book_id_val) if book_id_val else "UNKNOWN_BOOK"
             chapter_id_val = _get("chapter_id", self.chapter_id)
-            chapter_id = str(chapter_id_val) if chapter_id_val else "UNKNOWN_CHAPTER"
+            chapter_id = str(chapter_id_val) if chapter_id_val else "chapter_00"
             utterance_idx_val = _get("utterance_idx", self.utterance_idx)
             try:
                 utterance_idx = int(utterance_idx_val) if utterance_idx_val is not None else 0

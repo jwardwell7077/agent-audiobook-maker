@@ -4,15 +4,15 @@ This guide explains how to import and use pre-built LangFlow workflows for audio
 
 ## Available Workflows
 
-### MVP Processing Flow
+### Two-Agent Processing Flow (Unified)
 
-The MVP (Minimum Viable Product) flow demonstrates the complete audiobook annotation pipeline:
+The unified flow demonstrates the audiobook annotation pipeline using a single loader and the two-agent core:
 
-**Components**: DataConfig → VolumeLoader → ChapterSelector → SegmentDialogueNarration → UtteranceFilter → JSONLWriter
+**Components**: ABMChapterLoader → ABMBlockIterator → ABMDialogueClassifier → ABMSpeakerAttribution → ABMResultsAggregator → ABM Results → Utterances → ABMAggregatedJsonlWriter
 
-**Purpose**: Process sample chapters from raw text to annotated utterances
+**Purpose**: Process a chapter into normalized utterances (v0.2 schema), ready for casting or export
 
-**File**: `mvp_audiobook_processing_flow.json` (when available)
+**File**: `abm_full_pipeline.v15.json` (updated to use ABMChapterLoader)
 
 ## Import Process
 
@@ -41,44 +41,36 @@ Wait for LangFlow to start and open your browser to `http://localhost:7860`
 
 ### Step 3: Component Configuration
 
-The imported workflow includes default configuration, but you may need to adjust:
+The imported workflow includes defaults; adjust these as needed:
 
-#### ABMDataConfig Settings
+#### ABMChapterLoader
 
-- **Book Name**: `mvs` (sample data) or your book identifier
-- **Validate Paths**: `true` (ensures data files exist)
-- **Custom Data Root**: Leave empty to use environment variables
+- book_name: e.g., `mvs` (sample data)
+- chapter_index: e.g., `1` (0-based index supported by loader)
+- base_data_dir: repo `data/clean` absolute path
+- context_sentences: `1` or `2` (for surrounding context in blocks)
 
-#### ABMChapterVolumeLoader Settings
+Outputs available for taps: chapters_data, chapter_data, blocks_data.
 
-- **Chapters File**: Auto-populated from ABMDataConfig
-- **Load Full Content**: `true` (includes complete text)
-- **Max Chapters**: `3` (limit for testing)
+#### ABMBlockIterator
 
-#### ABMChapterSelector Settings
+- batch_size: `10`
+- start_block: `1`
+- max_blocks: `0` (all)
+- dialogue_priority: `true`
 
-- **Selection Mode**: `range` (select multiple chapters)
-- **Chapter Range**: `1-3` (process chapters 1-3)
-- Alternative: `single` mode for individual chapters
+#### ABMDialogueClassifier / ABMSpeakerAttribution
 
-#### ABMSegmentDialogueNarration Settings
+- disable LLMs if you want deterministic offline runs
+- set confidence thresholds per your needs
 
-- **Min Segment Length**: `100` characters
-- **Dialogue Markers**: `"\"\"''"` (various quotation marks)
-- **Include Metadata**: `true` (adds processing info)
+#### ABM Results → Utterances
 
-#### ABMUtteranceFilter Settings
+- normalizes aggregated results to utterances v0.2
 
-- **Min Length**: `50` characters (filter very short utterances)
-- **Max Length**: `5000` characters (filter very long ones)
-- **Filter Empty**: `true` (remove empty segments)
-- **Preserve Dialogue**: `true` (keep dialogue even if short)
+#### ABMAggregatedJsonlWriter
 
-#### ABMUtteranceJsonlWriter Settings
-
-- **Output File**: Set your desired output path
-- **Include Metadata**: `true` (adds chapter/book info)
-- **Overwrite Existing**: `false` (safety setting)
+- output_path: absolute path to `output/utterances.jsonl`
 
 ## Running Workflows
 
@@ -91,12 +83,10 @@ The imported workflow includes default configuration, but you may need to adjust
 
 ### Component-by-Component Testing
 
-1. **Test Data Config**: Run ABMDataConfig first to verify paths
-2. **Test Loading**: Run VolumeLoader to confirm data loading
-3. **Test Selection**: Run ChapterSelector to verify chapter filtering
-4. **Test Segmentation**: Run Segmenter to check dialogue detection
-5. **Test Filtering**: Run Filter to verify quality criteria
-6. **Test Output**: Run Writer to create final output
+1. Run ABMChapterLoader → verify `blocks_data` has `blocks`
+2. Run ABMBlockIterator → verify it emits one `current_utterance` per block
+3. Run Dialogue → Attribution → Aggregator → verify completion summary
+4. Run Results → Utterances → Writer → verify JSONL is written
 
 ### Debugging Failed Runs
 
@@ -127,11 +117,12 @@ The imported workflow includes default configuration, but you may need to adjust
 
 **Valid Connections**:
 
-- ABMDataConfig → ABMChapterVolumeLoader (paths)
-- ABMChapterVolumeLoader → ABMChapterSelector (chapters)
-- ABMChapterSelector → ABMSegmentDialogueNarration (chapter)
-- ABMSegmentDialogueNarration → ABMUtteranceFilter (utterances)
-- ABMUtteranceFilter → ABMUtteranceJsonlWriter (utterances)
+- ABMChapterLoader(blocks_data) → ABMBlockIterator(blocks_data)
+- ABMBlockIterator(current_utterance) → ABMDialogueClassifier(utterance_data)
+- ABMDialogueClassifier(classified_utterance) → ABMSpeakerAttribution(classified_utterance)
+- ABMSpeakerAttribution(attribution_result) → ABMResultsAggregator(attribution_result)
+- ABMResultsAggregator(aggregated_results) → ABM Results → Utterances(aggregated_results)
+- ABM Results → Utterances(utterances_data) → ABMAggregatedJsonlWriter(utterances_data)
 
 **Data Flow Validation**:
 
@@ -177,12 +168,12 @@ Each component expects specific data formats. Check output schemas match input r
 
 **Cannot Find Data Files**:
 
-1. Verify environment variables are set correctly
-2. Check file permissions on data directories
-3. Confirm book identifier matches directory structure
+1. Use absolute `base_data_dir` for the loader
+2. Confirm `data/clean/<book>/chapters.json` exists
+3. Check file permissions on data directories
 
 ## Related Documentation
 
 - [Setup Guide](SETUP_GUIDE.md) - Environment configuration
-- [Data Configuration Guide](DATA_CONFIGURATION_GUIDE.md) - Working with data paths
 - [Workflows Guide](WORKFLOWS.md) - Usage patterns and examples
+- Deprecated: older flows using VolumeLoader/Selector/Segmenter/Filter have been removed in favor of ABMChapterLoader
