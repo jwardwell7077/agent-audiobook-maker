@@ -1,132 +1,97 @@
-"""Command-line interface for the Section Classifier (JSON/JSONL only).
-
-Reads structured input and runs the block-based classifier, then writes four
-JSON artifacts to an output directory. This CLI intentionally rejects raw .txt
-inputs to enforce a structured boundary.
-
-Accepted inputs:
-- .jsonl: One record per line, each an object with a "text" field.
-- .json: An object with a top-level key "blocks" containing list[str].
-
-Usage (programmatic):
-    from abm.classifier import classifier_cli
-    exit_code = classifier_cli.main(["input.jsonl", "out_dir"])  # type: ignore[arg-type]
-
-This mirrors the style of ``pdf_to_text_cli`` but with a strict JSON/JSONL contract.
-"""
-
 from __future__ import annotations
 
+import argparse
 import json
-import sys
+import os
+import tempfile
 from pathlib import Path
+from typing import Iterable
 
-from abm.classifier.section_classifier import classify_sections
-
-
-def _read_blocks_from_jsonl(path: Path) -> list[str]:
-    blocks: list[str] = []
-    with path.open("r", encoding="utf-8") as f:
-        for i, line in enumerate(f, start=1):
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                obj = json.loads(line)
-            except json.JSONDecodeError as exc:  # pragma: no cover - rare
-                raise ValueError(f"Invalid JSONL on line {i}: {exc}") from exc
-            if not isinstance(obj, dict) or "text" not in obj or not isinstance(obj["text"], str):
-                raise ValueError(f"JSONL line {i} must be an object with a string 'text' field")
-            blocks.append(obj["text"])
-    return blocks
+from .section_classifier import classify_blocks
 
 
-def _read_blocks_from_json(path: Path) -> list[str]:
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        raise ValueError(f"Invalid JSON in {path.name}: {exc}") from exc
-    if not isinstance(data, dict) or "blocks" not in data:
-        raise ValueError("JSON input must be an object with top-level 'blocks': list[str]")
-    blocks = data["blocks"]
-    if not isinstance(blocks, list) or not all(isinstance(b, str) for b in blocks):
-        raise ValueError("'blocks' must be list[str]")
+def _iter_blocks_from_text(text: str) -> list[dict]:
+    """Convert plain text into enriched JSONL-like blocks (one block per line).
+
+    We deliberately emit one block per non-empty line so that TOC headings and
+    TOC item lines are independently detectable by the classifier.
+    """
+    blocks: list[dict] = []
+    line_cursor = 1
+    idx = 0
+    for raw_line in text.splitlines():
+        line = raw_line.rstrip("\r")
+        # Always advance line counter even if we skip empty lines
+        if line.strip():
+            blocks.append(
+                {
+                    "index": idx,
+                    "text": line,
+                    "line_count": 1,
+                    "word_count": len(line.split()),
+                    "char_count": len(line),
+                    "start_line": line_cursor,
+                    "end_line": line_cursor,
+                }
+            )
+            idx += 1
+        line_cursor += 1
     return blocks
 
 
 def _write_json(path: Path, data: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(data, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Run the classifier CLI.
+    p = argparse.ArgumentParser(description="Section classifier CLI (text or JSONL)")
+    p.add_argument("input_path", help="Input .txt (paragraphs) or .jsonl (blocks)")
+    p.add_argument("output_dir", help="Output directory for artifacts")
+    args = p.parse_args(argv)
 
-    Args:
-        argv: Command-line arguments, expected ``[input.json|input.jsonl, output_dir]``.
-            If None, ``sys.argv[1:]`` is used.
-    Returns:
-        Process exit code (0 on success, non-zero on error).
-    """
+    in_path = Path(args.input_path)
+    out_dir = Path(args.output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
 
-    args = list(sys.argv[1:] if argv is None else argv)
-    if len(args) != 2:
-        sys.stderr.write("Usage: classifier_cli <input.json|input.jsonl> <output_dir>\n")
-        return 2
-
-    in_path = Path(args[0])
-    out_dir = Path(args[1])
-    if not in_path.exists() or not in_path.is_file():
-        sys.stderr.write(f"Input not found: {in_path}\n")
-        return 3
-
-    suffix = in_path.suffix.lower()
-    if suffix == ".txt":
-        sys.stderr.write("Error: .txt input is not supported. Provide .json or .jsonl with paragraph blocks.\n")
-        return 4
-
+    tmp_jsonl: Path | None = None
     try:
-        if suffix == ".jsonl":
-            blocks = _read_blocks_from_jsonl(in_path)
-        elif suffix == ".json":
-            blocks = _read_blocks_from_json(in_path)
+        if in_path.suffix.lower() == ".jsonl":
+            jsonl_path = in_path
         else:
-            sys.stderr.write("Unsupported input type. Use .json or .jsonl.\n")
-            return 4
+            # Treat any non-.jsonl as plain text input
+            text = in_path.read_text(encoding="utf-8")
+            blocks = _iter_blocks_from_text(text)
+            # Persist to a temp JSONL file alongside outputs
+            fd, tmp_name = tempfile.mkstemp(prefix="blocks_", suffix=".jsonl", dir=str(out_dir))
+            os.close(fd)
+            tmp_jsonl = Path(tmp_name)
+            with tmp_jsonl.open("w", encoding="utf-8") as f:
+                for obj in blocks:
+                    f.write(json.dumps(obj, ensure_ascii=False) + "\n")
+            jsonl_path = tmp_jsonl
+
+        result = classify_blocks(str(jsonl_path))
+
+        _write_json(out_dir / "toc.json", result["toc"])  # type: ignore[index]
+        _write_json(out_dir / "chapters.json", result["chapters"])  # type: ignore[index]
+        _write_json(out_dir / "front_matter.json", result["front_matter"])  # type: ignore[index]
+        _write_json(out_dir / "back_matter.json", result["back_matter"])  # type: ignore[index]
+
+        # Tiny summary for interactive usage
+        print(f"Wrote artifacts to {out_dir}")
+        return 0
     except Exception as exc:
-        sys.stderr.write(f"Failed to parse input: {exc}\n")
-        return 4
-
-    outputs = classify_sections({"blocks": blocks})
-
-    try:
-        _write_json(
-            out_dir / "front_matter.json",
-            outputs["front_matter"],  # type: ignore[index]
-        )
-        _write_json(
-            out_dir / "toc.json",
-            outputs["toc"],  # type: ignore[index]
-        )
-        _write_json(
-            out_dir / "chapters.json",
-            outputs["chapters"],  # type: ignore[index]
-        )
-        _write_json(
-            out_dir / "back_matter.json",
-            outputs["back_matter"],  # type: ignore[index]
-        )
-    except Exception as exc:
-        sys.stderr.write(f"Failed to write outputs: {exc}\n")
-        return 5
-
-    # print a tiny summary to stdout for interactive usage
-    sys.stdout.write("Wrote classifier artifacts to " + str(out_dir) + "\n")
-    return 0
+        print(f"Error: {exc}")
+        return 2
+    finally:
+        if tmp_jsonl and tmp_jsonl.exists():
+            try:
+                tmp_jsonl.unlink()
+            except Exception:
+                # Non-fatal cleanup failure
+                pass
 
 
-if __name__ == "__main__":  # pragma: no cover - manual execution
+if __name__ == "__main__":
     raise SystemExit(main())

@@ -37,30 +37,6 @@ class PipelineOptions:
     insert_to_pg: bool = False
 
 
-def _stub_db_insert(
-    *,
-    mode: str,
-    base_name: str,
-    jsonl_path: Path | None = None,
-    meta_path: Path | None = None,
-    well_text: str | None = None,
-    meta: dict[str, Any] | None = None,
-) -> None:
-    """Print a friendly DB stub message. Swallow print errors.
-
-    - In dev mode, expects jsonl_path/meta_path (written on disk).
-    - In prod mode, expects in-memory well_text/meta.
-    """
-    try:
-        if mode == "dev":
-            print(f"[DB STUB] Would insert JSONL '{base_name}' from {jsonl_path} with meta {meta_path}")
-        else:
-            print(f"[DB STUB] Would insert '{base_name}' from in-memory well-done text; meta=in-memory")
-    except Exception:
-        # Ensure tests confirm we swallow print exceptions
-        pass
-
-
 class PdfIngestPipeline:
     def run(self, pdf_path: str | Path, out_dir: str | Path, opts: PipelineOptions | None = None) -> dict[str, Path]:
         opts = opts or PipelineOptions()
@@ -189,28 +165,6 @@ def _default_out_dir(p: Path) -> Path:
     return Path(p).parent / "clean"
 
 
-def _build_meta_ephemeral(pdf_p: Path, out_d: Path, opts: PipelineOptions) -> dict[str, Any]:
-    """Build a minimal meta object without requiring any written files.
-
-    Only includes fields safe to compute in memory. Used in prod mode.
-    """
-    parts = list(pdf_p.parts)
-    book = None
-    try:
-        idx = parts.index("books")
-        if idx + 1 < len(parts):
-            book = parts[idx + 1]
-    except ValueError:
-        book = None
-    return {
-        "book": book,
-        "source_pdf": str(pdf_p),
-        "out_dir": str(out_d),
-        "mode": opts.mode,
-        "options": asdict(opts),
-    }
-
-
 if __name__ == "__main__":
     import argparse
     import sys
@@ -254,3 +208,49 @@ if __name__ == "__main__":
     except Exception as exc:  # pragma: no cover
         print(f"Unexpected error: {exc}", file=sys.stderr)
         sys.exit(1)
+
+
+def _build_meta_ephemeral(pdf_p: Path, out_d: Path, opts: PipelineOptions) -> dict[str, Any]:
+    """Build a minimal meta object without requiring any written files.
+
+    Only includes fields safe to compute in memory. Used in prod mode.
+    """
+    parts = list(pdf_p.parts)
+    book = None
+    try:
+        idx = parts.index("books")
+        if idx + 1 < len(parts):
+            book = parts[idx + 1]
+    except ValueError:
+        book = None
+    return {
+        "book": book,
+        "source_pdf": str(pdf_p),
+        "out_dir": str(out_d),
+        "mode": opts.mode,
+        "options": asdict(opts),
+    }
+
+
+def _stub_db_insert(
+    *,
+    mode: str,
+    base_name: str,
+    jsonl_path: Path | None = None,
+    meta_path: Path | None = None,
+    well_text: str | None = None,
+    meta: dict[str, Any] | None = None,
+) -> None:
+    """Print a friendly DB stub message. Swallow print errors.
+
+    - In dev mode, expects jsonl_path/meta_path (written on disk).
+    - In prod mode, expects in-memory well_text/meta.
+    """
+    try:
+        if mode == "dev":
+            print(f"[DB STUB] Would insert JSONL '{base_name}' from {jsonl_path} with meta {meta_path}")
+        else:
+            print(f"[DB STUB] Would insert '{base_name}' from in-memory well-done text; meta=in-memory")
+    except Exception:
+        # Ensure tests confirm we swallow print exceptions
+        pass

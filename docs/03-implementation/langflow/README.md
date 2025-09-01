@@ -69,6 +69,13 @@ Major milestones in LangFlow implementation:
 
 *Use this to understand the implementation journey.*
 
+## Span Casting wiring notes
+
+- For batch casting and artifact writing, wire ABMSpanAttribution.spans_attr (or ABMSpanClassifier.spans_cls) directly into ABMSpanCasting and enable "Write JSONL + meta to disk" on the Casting node. This creates `output/{book_id}/ch{chapter_number:02d}/spans_cast.jsonl` and `spans_cast.meta.json`.
+- ABMSpanCasting also accepts a single-span payload from ABMSpanIterator: if the incoming payload contains `{ "span": { ... } }`, it will cast that one span. This is useful for auditioning voices while stepping with the iterator.
+- Defaults: when `output_dir` is not set on Casting, the component infers a chapter folder from the first span (book_id and chapter_number/index) using `output/{book_id}/ch{chapter_number:02d}`.
+- Tip: keep `strict_mode` disabled until your `data/casting/voice_bank.json` covers your speakers; otherwise, Unknown speakers may error in strict mode.
+
 ## Current Components
 
 ### Chapter Volume Loader
