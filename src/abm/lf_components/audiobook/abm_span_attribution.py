@@ -19,6 +19,10 @@ from langflow.custom import Component
 from langflow.io import BoolInput, DataInput, FloatInput, Output, StrInput
 from langflow.schema import Data
 
+from abm.lf_components.audiobook.deterministic_confidence import (
+    DeterministicConfidenceScorer,
+)
+
 _PROPER_NOUN_RE = re.compile(r"\b([A-Z][a-z]{3,})\b")
 _TAG_PATTERNS = [
     # "...", Quinn said / Quinn replied / Quinn asked
@@ -63,18 +67,14 @@ class ABMSpanAttribution(Component):
             value=0.35,
             required=False,
         ),
-        FloatInput(
-            name="system_confidence",
-            display_name="System Confidence",
-            info="Confidence assigned to detected system/meta lines",
-            value=0.95,
-            required=False,
-        ),
-        StrInput(
-            name="system_name",
-            display_name="System Speaker Name",
-            info="Character name to use for system/meta lines",
-            value="System",
+        BoolInput(
+            name="use_deterministic_confidence",
+            display_name="Use Deterministic Confidence",
+            info=(
+                "If true, compute dialogue confidence via deterministic_v1 scorer; "
+                "otherwise use base/unknown constants"
+            ),
+            value=True,
             required=False,
         ),
         BoolInput(
@@ -103,9 +103,10 @@ class ABMSpanAttribution(Component):
         Output(display_name="Attribution Meta", name="spans_attr_meta", method="get_meta"),
     ]
 
-    def __init__(self, **kwargs: Any):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._last: _AttrResult | None = None
+        self._scorer = DeterministicConfidenceScorer()
 
     def attribute_spans(self) -> Data:
         res = self._ensure_attributed()
@@ -126,7 +127,7 @@ class ABMSpanAttribution(Component):
         if src is None:
             raise TypeError("spans_cls input is required")
         if hasattr(src, "data"):
-            payload = src.data
+            payload = src.data  # type: ignore[attr-defined]
         elif isinstance(src, dict):
             payload = src
         else:
@@ -148,28 +149,15 @@ class ABMSpanAttribution(Component):
         c_dialogue = 0
         c_narration = 0
         c_unknown = 0
-        c_system = 0
         errors: list[str] = []
 
         for key, seq in groups.items():
+            prev_dialogue_speaker: str | None = None
             for idx, s in enumerate(seq):
                 try:
                     label = (s.get("type") or s.get("role") or "").lower()
                     text = s.get("text_norm") or s.get("text_raw") or ""
                     book_id, chapter_index, block_id = key
-
-                    if label == "system":
-                        # Map system to a dedicated speaker
-                        c_system += 1
-                        result = self._record(
-                            s,
-                            speaker=str(getattr(self, "system_name", "System")),
-                            confidence=float(getattr(self, "system_confidence", 0.95)),
-                            method="system_detected",
-                            evidence={"hint": "type==system"},
-                        )
-                        out.append(result)
-                        continue
 
                     if label != "dialogue":
                         # Narration: keep as Narrator, not counted as unknown
@@ -188,18 +176,34 @@ class ABMSpanAttribution(Component):
                     before = seq[idx - 1] if idx - 1 >= 0 else None
                     after = seq[idx + 1] if idx + 1 < len(seq) else None
 
-                    speaker, evidence, method = self._infer_speaker(text, before, after)
+                    speaker, det_evidence, method = self._infer_speaker(text, before, after)
+                    use_det = bool(getattr(self, "use_deterministic_confidence", True))
                     if speaker:
-                        conf = float(getattr(self, "base_confidence", 0.75))
+                        if use_det:
+                            before_text = str(before.get("text_norm") or before.get("text_raw")) if before else None
+                            after_text = str(after.get("text_norm") or after.get("text_raw")) if after else None
+                            conf, conf_ev, conf_method = self._scorer.score(
+                                dialogue_text=str(text),
+                                before_text=before_text,
+                                after_text=after_text,
+                                detected_method=method,
+                                detected_speaker=speaker,
+                                prev_dialogue_speaker=prev_dialogue_speaker,
+                            )
+                            merged_evidence = {"detection": det_evidence or {}, "confidence": conf_ev}
+                        else:
+                            conf = float(getattr(self, "base_confidence", 0.75))
+                            merged_evidence = det_evidence or {}
                         c_dialogue += 1
+                        prev_dialogue_speaker = speaker
                     else:
                         conf = float(getattr(self, "unknown_confidence", 0.35))
                         c_unknown += 1
                         speaker = None
                         method = method or "unknown"
-                        evidence = evidence or {}
+                        merged_evidence = det_evidence or {}
 
-                    result = self._record(s, speaker, conf, method=method or "unknown", evidence=evidence)
+                    result = self._record(s, speaker, conf, method=method or "unknown", evidence=merged_evidence)
                     out.append(result)
                 except Exception as e:  # noqa: BLE001
                     errors.append(f"block={key[2]} seg=? error={e}")
@@ -210,7 +214,6 @@ class ABMSpanAttribution(Component):
             "dialogue_attributed": c_dialogue,
             "narration": c_narration,
             "unknown_dialogue": c_unknown,
-            "system": c_system,
             "total": len(out),
             "errors": errors,
             "valid": len(errors) == 0,
