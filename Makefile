@@ -241,8 +241,7 @@ langflow-import-segments:
 
 .PHONY: segment
 segment:
-	@$(VENV_GUARD)
-	$(ACTIVATE) python -m src.abm.langflow_runner mvs --stem segments_dev
+	@echo "segment target deprecated: langflow_runner removed. Use LangFlow UI or tools/run_flow.py."
 
 
 ######################

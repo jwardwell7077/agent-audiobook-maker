@@ -232,3 +232,6 @@ data/clean/mvs/**
 # Added during sanitization
 logs/
 temp/LEGACY_PRIVATE_*
+
+# Generated pipeline artifacts (JSONL/meta/audio) — do not commit
+/output/

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -68,7 +69,7 @@ class ABMSpanClassifier(Component):
         Output(display_name="Classifier Meta", name="spans_cls_meta", method="get_meta"),
     ]
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any):
         super().__init__(**kwargs)
         self._last: _ClsResult | None = None
 
@@ -86,11 +87,12 @@ class ABMSpanClassifier(Component):
     def _ensure_classified(self) -> _ClsResult:
         if self._last is not None:
             return self._last
+
         src = getattr(self, "spans", None)
         if src is None:
             raise TypeError("spans input is required")
         if hasattr(src, "data"):
-            payload = src.data  # type: ignore[attr-defined]
+            payload = src.data
         elif isinstance(src, dict):
             payload = src
         else:
@@ -106,23 +108,42 @@ class ABMSpanClassifier(Component):
         c_dialogue = 0
         c_narration = 0
         c_mixed = 0
+        c_system = 0
+        c_author_note = 0
+
+        # Patterns for system and author notes
+        angle_bracket_line = re.compile(r"^\s*<[^\n>]{1,200}>\s*$")
+        author_note_kw = re.compile(
+            (
+                r"mass\s+release|"
+                r"stones?\s*=|"
+                r"remember\s+to\s+vote|"
+                r"two\s+chapters\s+today|"
+                r"end\s+of\s+mass\s+release|"
+                r"we\s+hit\s+\d+\s+stones"
+            ),
+            re.IGNORECASE,
+        )
 
         for i, s in enumerate(spans):
             try:
-                text = s.get("text_norm") or s.get("text_raw") or ""
+                text = str(s.get("text_norm") or s.get("text_raw") or "")
                 role_hint = s.get("role")
-                # Simple deterministic rules
-                if use_hint and role_hint in {"dialogue", "narration"}:
-                    label = role_hint
+
+                if use_hint and role_hint in {"dialogue", "narration", "system", "author_note"}:
+                    label = str(role_hint)
                 else:
-                    # Fallback: quote-wrapped string -> dialogue; else narration
-                    t = str(text)
-                    label = "dialogue" if (t.startswith('"') and t.endswith('"')) else "narration"
+                    if angle_bracket_line.match(text):
+                        label = "system"
+                    elif author_note_kw.search(text):
+                        label = "author_note"
+                    else:
+                        label = "dialogue" if (text.startswith('"') and text.endswith('"')) else "narration"
 
                 features = {
                     "len_chars": len(text),
-                    "len_words": len(str(text).split()),
-                    "has_quotes": str(text).count('"') >= 2,
+                    "len_words": len(text.split()),
+                    "has_quotes": text.count('"') >= 2,
                 }
 
                 out = {
@@ -137,15 +158,20 @@ class ABMSpanClassifier(Component):
                     "segment_id": s.get("segment_id"),
                     "features": features,
                     "provenance": {
-                        "rules": "role_hint_if_available_else_quote_wrapped",
+                        "rules": "role_hint_if_available_else_quote_wrapped_with_system_author_note",
                         "version": getattr(self, "version", "1.0"),
                     },
                 }
                 spans_out.append(out)
+
                 if label == "dialogue":
                     c_dialogue += 1
                 elif label == "narration":
                     c_narration += 1
+                elif label == "system":
+                    c_system += 1
+                elif label == "author_note":
+                    c_author_note += 1
                 else:
                     c_mixed += 1
             except Exception as e:  # noqa: BLE001
@@ -157,6 +183,8 @@ class ABMSpanClassifier(Component):
             "dialogue": c_dialogue,
             "narration": c_narration,
             "mixed": c_mixed,
+            "system": c_system,
+            "author_note": c_author_note,
             "total": len(spans_out),
             "errors": errors,
             "valid": len(errors) == 0,

@@ -3,16 +3,16 @@ from __future__ import annotations
 import json
 import re
 import unicodedata
-from typing import List, Dict, Any, Optional, Tuple
+from typing import Any
 
 TOC_HEADING_RE = re.compile(r"^\s*(table of contents|contents)\b", re.I)
 BULLET = r"[\u2022\-\*]?"  # • - * optional
 ORDINAL = r"(?:chapter\s+(?P<digits>\d+)|prologue|epilogue)"
 SEPARATOR = r"[\s:\.-]*"
 TITLE_CAPTURE = r"(?P<title>.+?)\s*$"
-TOC_ITEM_RE_STRICT = re.compile(fr"^\s*{BULLET}\s*{ORDINAL}{SEPARATOR}{TITLE_CAPTURE}", re.I)
+TOC_ITEM_RE_STRICT = re.compile(rf"^\s*{BULLET}\s*{ORDINAL}{SEPARATOR}{TITLE_CAPTURE}", re.I)
 # Within the TOC span, accept lines with optional ordinal tokens followed by a title
-TOC_ITEM_RE_LOOSE = re.compile(fr"^\s*{BULLET}\s*(?:(?:{ORDINAL}{SEPARATOR})\s*)?{TITLE_CAPTURE}", re.I)
+TOC_ITEM_RE_LOOSE = re.compile(rf"^\s*{BULLET}\s*(?:(?:{ORDINAL}{SEPARATOR})\s*)?{TITLE_CAPTURE}", re.I)
 # Fallback pattern: accept dotted leaders and optional trailing page numbers
 TOC_ITEM_RE_FALLBACK = re.compile(
     r"^\s*[\u2022\-\*]?\s*(?:"  # optional bullet
@@ -40,11 +40,11 @@ def canon_title(s: str) -> str:
     return collapsed
 
 
-def _load_jsonl_blocks(path: str) -> List[Dict[str, Any]]:
+def _load_jsonl_blocks(path: str) -> list[dict[str, Any]]:
     if not path.endswith(".jsonl"):
         raise ValueError("Input must be a .jsonl file")
-    blocks: List[Dict[str, Any]] = []
-    with open(path, "r", encoding="utf-8") as f:
+    blocks: list[dict[str, Any]] = []
+    with open(path, encoding="utf-8") as f:
         for ln, line in enumerate(f, 1):
             line = line.strip("\n")
             if not line:
@@ -63,7 +63,7 @@ def _load_jsonl_blocks(path: str) -> List[Dict[str, Any]]:
     return blocks
 
 
-def _find_toc_heading(blocks: List[Dict[str, Any]]) -> int:
+def _find_toc_heading(blocks: list[dict[str, Any]]) -> int:
     for i, b in enumerate(blocks):
         if TOC_HEADING_RE.search(b["text"]):
             ahead = blocks[i + 1 : i + 6]
@@ -76,12 +76,14 @@ def _find_toc_heading(blocks: List[Dict[str, Any]]) -> int:
     raise ValueError("TOC heading not found or insufficient TOC-like lines in lookahead")
 
 
-def _parse_toc_items(blocks: List[Dict[str, Any]], start_idx: int, end_idx: Optional[int] = None) -> Tuple[List[Dict[str, Any]], int, List[str]]:
-    entries: List[Dict[str, Any]] = []
-    warnings: List[str] = []
+def _parse_toc_items(
+    blocks: list[dict[str, Any]], start_idx: int, end_idx: int | None = None
+) -> tuple[list[dict[str, Any]], int, list[str]]:
+    entries: list[dict[str, Any]] = []
+    warnings: list[str] = []
     # We no longer dedupe by canonical title; duplicates can be legitimate
-    last_text: Optional[str] = None
-    seen_ord: Dict[int, str] = {}
+    last_text: str | None = None
+    seen_ord: dict[int, str] = {}
     last_item_block = start_idx
     i = start_idx + 1
     # Heuristics to avoid picking non-TOC lines in the TOC span
@@ -94,7 +96,11 @@ def _parse_toc_items(blocks: List[Dict[str, Any]], start_idx: int, end_idx: Opti
         lc = blk.get("line_count")
         wc = blk.get("word_count")
         cc = blk.get("char_count")
-        if (isinstance(lc, int) and lc > 2) or (isinstance(wc, int) and wc > MAX_TOC_WORDS) or (isinstance(cc, int) and cc > MAX_TOC_CHARS):
+        if (
+            (isinstance(lc, int) and lc > 2)
+            or (isinstance(wc, int) and wc > MAX_TOC_WORDS)
+            or (isinstance(cc, int) and cc > MAX_TOC_CHARS)
+        ):
             i += 1
             continue
         text = blk.get("text", "").strip()
@@ -119,9 +125,7 @@ def _parse_toc_items(blocks: List[Dict[str, Any]], start_idx: int, end_idx: Opti
             continue
         if ordinal is not None:
             if ordinal in seen_ord and seen_ord[ordinal] != ctitle:
-                warnings.append(
-                    f"ordinal conflict in TOC at block {i}: chapter {ordinal} titles differ; keeping first"
-                )
+                warnings.append(f"ordinal conflict in TOC at block {i}: chapter {ordinal} titles differ; keeping first")
                 # Keep the first mapping, skip this conflicting line
             else:
                 seen_ord[ordinal] = ctitle
@@ -143,7 +147,7 @@ def _parse_toc_items(blocks: List[Dict[str, Any]], start_idx: int, end_idx: Opti
     return entries, last_item_block, warnings
 
 
-def _is_body_heading_block(block: Dict[str, Any]) -> Optional[re.Match]:
+def _is_body_heading_block(block: dict[str, Any]) -> re.Match | None:
     """Return regex match if this block is a plausible standalone heading.
 
     Uses enriched fields when available: require 1 line, and short word/char counts.
@@ -161,8 +165,10 @@ def _is_body_heading_block(block: Dict[str, Any]) -> Optional[re.Match]:
     return BODY_HEADING_RE.match(text)
 
 
-def _match_chapters(blocks: List[Dict[str, Any]], toc_entries: List[Dict[str, Any]], start_search: int) -> Tuple[List[Dict[str, Any]], List[str]]:
-    warnings: List[str] = []
+def _match_chapters(
+    blocks: list[dict[str, Any]], toc_entries: list[dict[str, Any]], start_search: int
+) -> tuple[list[dict[str, Any]], list[str]]:
+    warnings: list[str] = []
     claimed_heading_indices: set[int] = set()
     search_pos = max(start_search, 0)
     # Track minimum allowed start_line to enforce forward progression by original document lines
@@ -176,7 +182,7 @@ def _match_chapters(blocks: List[Dict[str, Any]], toc_entries: List[Dict[str, An
         title = entry["title"]
         ctitle = canon_title(title)
         ordinal = entry.get("ordinal")
-        found_idx: Optional[int] = None
+        found_idx: int | None = None
         mode = ""
         i = search_pos
         while i < len(blocks):
@@ -215,9 +221,7 @@ def _match_chapters(blocks: List[Dict[str, Any]], toc_entries: List[Dict[str, An
         if isinstance(next_min_sl, int):
             min_start_line = max(min_start_line, next_min_sl)
         if mode == "normalized":
-            warnings.append(
-                f"title normalized match used for TOC entry '{title}' matched at block {found_idx}"
-            )
+            warnings.append(f"title normalized match used for TOC entry '{title}' matched at block {found_idx}")
         elif mode == "ordinal":
             warnings.append(
                 f"ordinal fallback used for TOC entry '{title}' (chapter {ordinal}) matched at block {found_idx}"
@@ -231,7 +235,7 @@ def _match_chapters(blocks: List[Dict[str, Any]], toc_entries: List[Dict[str, An
     return toc_entries, warnings
 
 
-def classify_blocks(jsonl_path: str) -> Dict[str, Any]:
+def classify_blocks(jsonl_path: str) -> dict[str, Any]:
     blocks = _load_jsonl_blocks(jsonl_path)
     toc_start = _find_toc_heading(blocks)
     # Find the first body heading to bound TOC parsing window
@@ -240,10 +244,8 @@ def classify_blocks(jsonl_path: str) -> Dict[str, Any]:
         if _is_body_heading_block(blocks[i]):
             first_body_heading_idx = i
             break
-    toc_entries, toc_end, toc_warnings = _parse_toc_items(
-        blocks, toc_start, first_body_heading_idx
-    )
-    start_search = (first_body_heading_idx or toc_end + 1)
+    toc_entries, toc_end, toc_warnings = _parse_toc_items(blocks, toc_start, first_body_heading_idx)
+    start_search = first_body_heading_idx or toc_end + 1
     matched_entries, match_warnings = _match_chapters(blocks, toc_entries, start_search)
     toc_all_warnings = toc_warnings + match_warnings
     claimed = [False] * len(blocks)
@@ -266,17 +268,17 @@ def classify_blocks(jsonl_path: str) -> Dict[str, Any]:
         )
     first_ch_start = matched_entries[0]["start_block"]
     front_span = [-1, -1]
-    front_paras: List[str] = []
-    front_warn: List[str] = []
+    front_paras: list[str] = []
+    front_warn: list[str] = []
     if toc_start > 0:
-        unclaimed_pre = [i for i in range(0, first_ch_start) if not claimed[i]]
+        unclaimed_pre = [i for i in range(first_ch_start) if not claimed[i]]
         if unclaimed_pre:
             front_span = [unclaimed_pre[0], unclaimed_pre[-1]]
             front_paras = [blocks[i]["text"] for i in unclaimed_pre]
             front_warn = [f"unclaimed blocks: {unclaimed_pre}"]
     last_ch_end = matched_entries[-1]["end_block"]
     back_span = [-1, -1]
-    back_paras: List[str] = []
+    back_paras: list[str] = []
     if last_ch_end < len(blocks) - 1:
         unclaimed_post = [i for i in range(last_ch_end + 1, len(blocks)) if not claimed[i]]
         if unclaimed_post:
@@ -304,4 +306,3 @@ def classify_blocks(jsonl_path: str) -> Dict[str, Any]:
         "front_matter": front_json,
         "back_matter": back_json,
     }
-

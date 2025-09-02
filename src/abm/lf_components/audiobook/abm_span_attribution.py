@@ -63,6 +63,20 @@ class ABMSpanAttribution(Component):
             value=0.35,
             required=False,
         ),
+        FloatInput(
+            name="system_confidence",
+            display_name="System Confidence",
+            info="Confidence assigned to detected system/meta lines",
+            value=0.95,
+            required=False,
+        ),
+        StrInput(
+            name="system_name",
+            display_name="System Speaker Name",
+            info="Character name to use for system/meta lines",
+            value="System",
+            required=False,
+        ),
         BoolInput(
             name="write_to_disk",
             display_name="Write JSONL + meta to disk",
@@ -89,7 +103,7 @@ class ABMSpanAttribution(Component):
         Output(display_name="Attribution Meta", name="spans_attr_meta", method="get_meta"),
     ]
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any):
         super().__init__(**kwargs)
         self._last: _AttrResult | None = None
 
@@ -112,7 +126,7 @@ class ABMSpanAttribution(Component):
         if src is None:
             raise TypeError("spans_cls input is required")
         if hasattr(src, "data"):
-            payload = src.data  # type: ignore[attr-defined]
+            payload = src.data
         elif isinstance(src, dict):
             payload = src
         else:
@@ -134,6 +148,7 @@ class ABMSpanAttribution(Component):
         c_dialogue = 0
         c_narration = 0
         c_unknown = 0
+        c_system = 0
         errors: list[str] = []
 
         for key, seq in groups.items():
@@ -142,6 +157,19 @@ class ABMSpanAttribution(Component):
                     label = (s.get("type") or s.get("role") or "").lower()
                     text = s.get("text_norm") or s.get("text_raw") or ""
                     book_id, chapter_index, block_id = key
+
+                    if label == "system":
+                        # Map system to a dedicated speaker
+                        c_system += 1
+                        result = self._record(
+                            s,
+                            speaker=str(getattr(self, "system_name", "System")),
+                            confidence=float(getattr(self, "system_confidence", 0.95)),
+                            method="system_detected",
+                            evidence={"hint": "type==system"},
+                        )
+                        out.append(result)
+                        continue
 
                     if label != "dialogue":
                         # Narration: keep as Narrator, not counted as unknown
@@ -182,6 +210,7 @@ class ABMSpanAttribution(Component):
             "dialogue_attributed": c_dialogue,
             "narration": c_narration,
             "unknown_dialogue": c_unknown,
+            "system": c_system,
             "total": len(out),
             "errors": errors,
             "valid": len(errors) == 0,
