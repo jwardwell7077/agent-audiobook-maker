@@ -9,6 +9,7 @@ Welcome to the documentation hub! This project transforms raw text into structur
 ### New to the Project?
 
 - 📖 **[Getting Started Guide](GETTING_STARTED.md)** - Essential onboarding for new contributors
+- 🐧 **[Linux Setup (no WSL)](GETTING_STARTED_LINUX.md)** - Native Linux developer setup
 - 🎯 **[Project Overview](01-project-overview/README.md)** - Understand the vision and architecture
 - 🔧 **[Development Setup](05-development/README.md)** - Get your environment ready
 

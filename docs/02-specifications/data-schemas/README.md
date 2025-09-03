@@ -69,6 +69,10 @@ graph LR
 
 ## Schema Design Principles
 
+### Contracts
+
+- Spans Attribution Contract: [SPANS_ATTR_CONTRACT.md](SPANS_ATTR_CONTRACT.md)
+
 ### Versioning Strategy
 
 - **Semantic versioning** for breaking changes (major.minor.patch)

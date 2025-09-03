@@ -200,11 +200,12 @@ class ABMSpanAttribution(Component):
         for k in groups:
             groups[k].sort(key=lambda r: int(r.get("segment_id") or 0))
 
-        out: list[dict[str, Any]] = []
-        c_dialogue = 0
-        c_narration = 0
-        c_unknown = 0
-        errors: list[str] = []
+    out: list[dict[str, Any]] = []
+    c_dialogue = 0
+    c_narration = 0
+    c_unknown = 0
+    errors: list[str] = []
+    method_counts: dict[str, int] = defaultdict(int)
 
         for key, seq in groups.items():
             prev_dialogue_speaker: str | None = None
@@ -254,6 +255,7 @@ class ABMSpanAttribution(Component):
                                 method="narration_rule",
                                 evidence={},
                             )
+                        method_counts[result["attribution"]["method"]] += 1
                         out.append(result)
                         continue
 
@@ -332,7 +334,9 @@ class ABMSpanAttribution(Component):
                             method = method or "unknown"
                             merged_evidence = det_evidence or {}
 
-                    result = self._record(s, speaker, conf, method=method or "unknown", evidence=merged_evidence)
+                    mname = (method or "unknown")
+                    result = self._record(s, speaker, conf, method=mname, evidence=merged_evidence)
+                    method_counts[mname] += 1
                     out.append(result)
                 except Exception as e:  # noqa: BLE001
                     errors.append(f"block={key[2]} seg=? error={e}")
@@ -345,6 +349,7 @@ class ABMSpanAttribution(Component):
             "unknown_dialogue": c_unknown,
             "total": len(out),
             "errors": errors,
+            "method_counts": dict(method_counts),
             "valid": len(errors) == 0,
         }
         self._last = _AttrResult(spans_attr=out, meta=meta)
