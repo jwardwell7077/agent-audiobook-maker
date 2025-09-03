@@ -50,6 +50,23 @@ This note documents the current deterministic speaker attribution behavior and t
 
 It also supports downstream filtering (e.g., `min_confidence_pct`) when used with span iteration/output stages.
 
+Continuity (opt-in) is forwarded as well:
+
+- enable_continuity_prev: bool (default false)
+- continuity_max_distance_spans: number (default 2)
+
+Usage example (one-touch):
+
+```python
+ABMArtifactOrchestrator(
+  blocks_data=...,
+  use_deterministic_confidence=True,
+  search_radius_spans=4,
+  enable_continuity_prev=True,
+  continuity_max_distance_spans=2,
+)
+```
+
 ## Outputs
 
 - `spans_attr.jsonl`: Dialogue/narration spans with `character_name`, `attribution.confidence`, and `attribution.evidence` (when enabled).
@@ -61,8 +78,8 @@ It also supports downstream filtering (e.g., `min_confidence_pct`) when used wit
 - One-touch: Use `ABMArtifactOrchestrator` and adjust the same knobs at the orchestrator level; it forwards to attribution.
 - Optional viewer filtering: Set `min_confidence_pct` on the iterator/orchestrator UI to hide low-confidence dialogue during inspection.
 
-## Planned (not yet enabled): Conservative continuity_prev
+## Conservative continuity_prev (available, opt-in)
 
-- Opt-in fallback to attribute Unknown dialogue to the most recent speaker within a small, gated window.
-- Draft parameters: enable_continuity_prev=false (default), continuity_max_distance_spans=2, continuity_allow_cross_block=false, base≈0.60 with decay and clamp.
-- Goal: Improve continuity without drifting across blocks or long gaps. Will remain disabled by default.
+- When no speaker is detected from narration context, attributes to the previous dialogue speaker if within a small window (`continuity_max_distance_spans`) and within the same block.
+- Default is disabled; enable via `enable_continuity_prev=true` and tune the span window.
+- Deterministic confidence integrates continuity distance into scoring when enabled.

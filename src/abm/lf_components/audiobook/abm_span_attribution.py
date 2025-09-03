@@ -133,6 +133,24 @@ class ABMSpanAttribution(Component):
             value="1.0",
             required=False,
         ),
+        # Optional continuity fallback (conservative, opt-in)
+        BoolInput(
+            name="enable_continuity_prev",
+            display_name="Enable continuity_prev (opt-in)",
+            info=(
+                "If true, when no speaker is detected from narration, attribute to the previous "
+                "dialogue speaker within a small span window"
+            ),
+            value=False,
+            required=False,
+        ),
+        FloatInput(
+            name="continuity_max_distance_spans",
+            display_name="continuity_prev max distance (spans)",
+            info="Max span distance to previous dialogue to allow continuity_prev fallback (same block only)",
+            value=2.0,
+            required=False,
+        ),
     ]
 
     outputs = [
@@ -190,6 +208,7 @@ class ABMSpanAttribution(Component):
 
         for key, seq in groups.items():
             prev_dialogue_speaker: str | None = None
+            prev_dialogue_idx: int | None = None
             for idx, s in enumerate(seq):
                 try:
                     label = (s.get("type") or s.get("role") or "").lower()
@@ -244,6 +263,9 @@ class ABMSpanAttribution(Component):
                     radius = int(float(getattr(self, "search_radius_spans", 0.0) or 0.0))
                     speaker, det_evidence, method, distance = self._infer_speaker_window(seq, idx, radius)
                     use_det = bool(getattr(self, "use_deterministic_confidence", True))
+                    # Defaults in case no detection applies; will be overridden when detection or continuity applies
+                    conf = float(getattr(self, "unknown_confidence", 0.35))
+                    merged_evidence = det_evidence or {}
                     if speaker:
                         if use_det:
                             before_text = str(before.get("text_norm") or before.get("text_raw")) if before else None
@@ -263,12 +285,52 @@ class ABMSpanAttribution(Component):
                             merged_evidence = det_evidence or {}
                         c_dialogue += 1
                         prev_dialogue_speaker = speaker
+                        prev_dialogue_idx = idx
                     else:
-                        conf = float(getattr(self, "unknown_confidence", 0.35))
-                        c_unknown += 1
-                        speaker = None
-                        method = method or "unknown"
-                        merged_evidence = det_evidence or {}
+                        # No detection from narration context; optionally apply conservative continuity_prev
+                        applied_continuity = False
+                        if bool(getattr(self, "enable_continuity_prev", False)) and prev_dialogue_speaker:
+                            try:
+                                max_d = int(float(getattr(self, "continuity_max_distance_spans", 2.0) or 2.0))
+                            except Exception:
+                                max_d = 2
+                            d_spans = (idx - prev_dialogue_idx) if prev_dialogue_idx is not None else None
+                            if d_spans is not None and d_spans <= max_d:
+                                # Attribute to previous speaker conservatively
+                                speaker = prev_dialogue_speaker
+                                method = "continuity_prev"
+                                if use_det:
+                                    before_text = (
+                                        str(before.get("text_norm") or before.get("text_raw")) if before else None
+                                    )
+                                    after_text = (
+                                        str(after.get("text_norm") or after.get("text_raw")) if after else None
+                                    )
+                                    conf, conf_ev, conf_method = self._scorer.score(
+                                        dialogue_text=str(text),
+                                        before_text=before_text,
+                                        after_text=after_text,
+                                        detected_method=None,
+                                        detected_speaker=speaker,
+                                        prev_dialogue_speaker=prev_dialogue_speaker,
+                                        detection_distance=d_spans,
+                                    )
+                                    merged_evidence = {
+                                        "detection": {"method": "continuity_prev", "distance": d_spans},
+                                        "confidence": conf_ev,
+                                    }
+                                else:
+                                    conf = float(getattr(self, "base_confidence", 0.75))
+                                    merged_evidence = {"method": "continuity_prev", "distance": d_spans}
+                                c_dialogue += 1
+                                # prev_dialogue_speaker remains the same; prev_dialogue_idx unchanged
+                                applied_continuity = True
+                        if not applied_continuity:
+                            conf = float(getattr(self, "unknown_confidence", 0.35))
+                            c_unknown += 1
+                            speaker = None
+                            method = method or "unknown"
+                            merged_evidence = det_evidence or {}
 
                     result = self._record(s, speaker, conf, method=method or "unknown", evidence=merged_evidence)
                     out.append(result)

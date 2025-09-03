@@ -60,6 +60,19 @@ class ABMArtifactOrchestrator(Component):
             value=False,
             required=False,
         ),
+        # Continuity (forwarded to attribution)
+        BoolInput(
+            name="enable_continuity_prev",
+            display_name="Enable continuity_prev (opt-in)",
+            value=False,
+            required=False,
+        ),
+        FloatInput(
+            name="continuity_max_distance_spans",
+            display_name="continuity_prev max distance (spans)",
+            value=2.0,
+            required=False,
+        ),
         BoolInput(
             name="write_to_disk",
             display_name="Write Artifacts to Disk",
@@ -141,6 +154,8 @@ class ABMArtifactOrchestrator(Component):
             search_radius_spans=float(getattr(self, "search_radius_spans", 4.0) or 0.0),
             narration_confidence=float(getattr(self, "narration_confidence", 0.95) or 0.95),
             use_narration_confidence_evidence=bool(getattr(self, "use_narration_confidence_evidence", False)),
+            enable_continuity_prev=bool(getattr(self, "enable_continuity_prev", False)),
+            continuity_max_distance_spans=float(getattr(self, "continuity_max_distance_spans", 2.0) or 2.0),
         )
         spans_attr = a.attribute_spans().data
         ameta = a.get_meta().data
