@@ -2,7 +2,6 @@
 
 This guide lets you spin up the repo on a fresh Linux machine and continue development without WSL2.
 
-
 ## Prerequisites
 
 - OS: Ubuntu/Debian (or similar)
@@ -54,6 +53,7 @@ Run the scoped tests used during active development:
 ```bash
 pytest -q -k "not ingest and not classifier"
 ```
+
 Targeted tests:
 
 ```bash
@@ -76,13 +76,11 @@ Background helpers:
 ./scripts/langflow_stop.sh
 ```
 
-
 Two-agent example flows live under `examples/langflow/*.v15.json`. You can import them in the UI or try the orchestrator sample:
 
 ```bash
 python scripts/demo_confidence_orchestrator.py
 ```
-
 
 ## Optional: Docker services
 
