@@ -200,12 +200,12 @@ class ABMSpanAttribution(Component):
         for k in groups:
             groups[k].sort(key=lambda r: int(r.get("segment_id") or 0))
 
-    out: list[dict[str, Any]] = []
-    c_dialogue = 0
-    c_narration = 0
-    c_unknown = 0
-    errors: list[str] = []
-    method_counts: dict[str, int] = defaultdict(int)
+        out: list[dict[str, Any]] = []
+        c_dialogue = 0
+        c_narration = 0
+        c_unknown = 0
+        errors: list[str] = []
+        method_counts: dict[str, int] = defaultdict(int)
 
         for key, seq in groups.items():
             prev_dialogue_speaker: str | None = None
@@ -305,9 +305,7 @@ class ABMSpanAttribution(Component):
                                     before_text = (
                                         str(before.get("text_norm") or before.get("text_raw")) if before else None
                                     )
-                                    after_text = (
-                                        str(after.get("text_norm") or after.get("text_raw")) if after else None
-                                    )
+                                    after_text = str(after.get("text_norm") or after.get("text_raw")) if after else None
                                     conf, conf_ev, conf_method = self._scorer.score(
                                         dialogue_text=str(text),
                                         before_text=before_text,
@@ -334,7 +332,7 @@ class ABMSpanAttribution(Component):
                             method = method or "unknown"
                             merged_evidence = det_evidence or {}
 
-                    mname = (method or "unknown")
+                    mname = method or "unknown"
                     result = self._record(s, speaker, conf, method=mname, evidence=merged_evidence)
                     method_counts[mname] += 1
                     out.append(result)
