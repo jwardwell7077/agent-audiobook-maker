@@ -12,7 +12,7 @@ from __future__ import annotations
 import os
 
 from langflow.custom import Component
-from langflow.io import BoolInput, DataInput, Output, StrInput
+from langflow.io import BoolInput, DataInput, FloatInput, Output, StrInput
 from langflow.schema import Data
 
 from abm.lf_components.audiobook.abm_block_schema_validator import ABMBlockSchemaValidator
@@ -34,6 +34,31 @@ class ABMArtifactOrchestrator(Component):
             display_name="Blocks Data",
             info="From ABMChapterLoader.blocks_data",
             required=True,
+        ),
+        # Attribution knobs (forwarded)
+        BoolInput(
+            name="use_deterministic_confidence",
+            display_name="Use Deterministic Confidence",
+            value=True,
+            required=False,
+        ),
+        FloatInput(
+            name="search_radius_spans",
+            display_name="Search Radius (spans)",
+            value=4.0,
+            required=False,
+        ),
+        FloatInput(
+            name="narration_confidence",
+            display_name="Narration Confidence",
+            value=0.95,
+            required=False,
+        ),
+        BoolInput(
+            name="use_narration_confidence_evidence",
+            display_name="Use Evidence for Narration Confidence",
+            value=False,
+            required=False,
         ),
         BoolInput(
             name="write_to_disk",
@@ -108,7 +133,15 @@ class ABMArtifactOrchestrator(Component):
         cmeta = c.get_meta().data
 
         # 4) Attribute speakers
-        a = ABMSpanAttribution(spans_cls=spans_cls, write_to_disk=write, output_dir=outdir)
+        a = ABMSpanAttribution(
+            spans_cls=spans_cls,
+            write_to_disk=write,
+            output_dir=outdir,
+            use_deterministic_confidence=bool(getattr(self, "use_deterministic_confidence", True)),
+            search_radius_spans=float(getattr(self, "search_radius_spans", 4.0) or 0.0),
+            narration_confidence=float(getattr(self, "narration_confidence", 0.95) or 0.95),
+            use_narration_confidence_evidence=bool(getattr(self, "use_narration_confidence_evidence", False)),
+        )
         spans_attr = a.attribute_spans().data
         ameta = a.get_meta().data
 
@@ -126,7 +159,7 @@ class ABMArtifactOrchestrator(Component):
                 for s in items:
                     role = (s.get("role") or s.get("type") or "").lower()
                     if role == "dialogue":
-                        c = ((s.get("attribution") or {}).get("confidence"))
+                        c = (s.get("attribution") or {}).get("confidence")
                         try:
                             if c is not None and float(c) >= thr:
                                 filtered.append(s)

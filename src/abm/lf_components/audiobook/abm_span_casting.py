@@ -136,25 +136,12 @@ class ABMSpanCasting(Component):
     def assign_voices(self) -> Data:
         # Input payload shape: {"spans_attr": [...]} or {"spans_cls": [...]} or {"spans": [...]}
         src = getattr(self, "spans_in", None)
-        if src is None:
-            err = "spans_in is required"
-            self.status = f"Error: {err}"
-            return Data(data={"error": err})
-
         payload = src.data if hasattr(src, "data") else src
-        if not isinstance(payload, dict):
-            payload = {}
-
-        spans = payload.get("spans_attr") or payload.get("spans_cls") or payload.get("spans") or []
-        # Also accept a single-span payload from ABMSpanIterator (key: 'span')
-        if (not spans) and payload.get("span"):
-            spans = [payload.get("span")]
+        spans = (payload.get("spans_attr") or payload.get("spans_cls") or payload.get("spans") or []) if payload else []
         if not isinstance(spans, list):
             err = "Invalid spans payload"
             self.status = f"Error: {err}"
             return Data(data={"error": err})
-        # Ensure list of dicts
-        spans = [s for s in spans if isinstance(s, dict)]
 
         bank = self._load_voice_bank(getattr(self, "voice_bank_path", None))
         strict = bool(getattr(self, "strict_mode", False))

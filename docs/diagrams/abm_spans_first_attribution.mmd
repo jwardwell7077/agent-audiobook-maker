@@ -1,0 +1,32 @@
+%% ABM Spans-first Attribution with Deterministic Scoring
+flowchart TD
+  subgraph Ingestion
+    A[Loader: MVS Book/Chapter] --> B[Validator]
+    B --> C[Resolver]
+    C --> D[Classifier]
+  end
+
+  subgraph Attribution
+    D --> E{Span Type?}
+    E -->|Dialogue| F[Windowed Speaker Inference]
+    F --> G[DeterministicConfidenceScorer.score]
+    E -->|Narration| H[Base vs Evidence Scoring]
+    H -->|evidence on| I[score_narration]
+    H -->|evidence off| J[Use narration_confidence]
+  end
+
+  subgraph Orchestrator
+    G --> K{Conf% >= min?}
+    I --> K
+    J --> K
+    K -->|Yes| L[Emit attribution + evidence]
+    K -->|No| M[Filter out]
+  end
+
+  L --> N[(spans_attr.jsonl)]
+  L --> O[(spans_attr.meta.json)]
+
+  %% Styling
+  style Ingestion fill:#eef,stroke:#447
+  style Attribution fill:#efe,stroke:#474
+  style Orchestrator fill:#ffe,stroke:#774

@@ -90,9 +90,6 @@ class WellDoneToJSONL:
         return self.convert_text(text, wd_p.stem, out_d)
 
 
-from typing import Any, List as _List, Dict as _Dict
-
-
 def _split_paragraphs_with_lines(text: str) -> list[dict[str, Any]]:
     """Split well-done text into paragraph blocks and record line spans.
 
@@ -125,15 +122,17 @@ def _split_paragraphs_with_lines(text: str) -> list[dict[str, Any]]:
         end_ln = line_no - 1
         text_block = "\n".join(buf)
         if text_block.strip():
-            out.append({
-                "text": text_block,
-                "lines": buf,
-                "start_line": start_ln,
-                "end_line": end_ln,
-                "line_count": len(buf),
-                "char_count": len(text_block),
-                "word_count": _word_count(text_block),
-            })
+            out.append(
+                {
+                    "text": text_block,
+                    "lines": buf,
+                    "start_line": start_ln,
+                    "end_line": end_ln,
+                    "line_count": len(buf),
+                    "char_count": len(text_block),
+                    "word_count": _word_count(text_block),
+                }
+            )
         # loop continues; i points at a blank line or end; consume separator blanks in next iteration
     return out
 

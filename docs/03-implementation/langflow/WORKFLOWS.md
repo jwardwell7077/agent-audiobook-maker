@@ -136,6 +136,7 @@ Batch processing multiple books:
 - [Setup Guide](SETUP_GUIDE.md) - Component installation and configuration
 - [Component Specifications](../../02-specifications/components/README.md) - Detailed component requirements
 - [Data Schemas](../../02-specifications/data-schemas/README.md) - Data structure definitions
+- [Deterministic Speaker Attribution](SPEAKER_ATTRIBUTION_DETERMINISTIC.md) - Attribution knobs, pronoun blocklist, and orchestrator wiring
 
 ---
 

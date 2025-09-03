@@ -234,6 +234,15 @@ ingest_and_classify: ingest_pdf classify_well_done
 langflow:
 	@$(VENV_GUARD)
 	./scripts/run_langflow.sh
+
+.PHONY: langflow_start_bg
+langflow_start_bg:
+	@$(VENV_GUARD)
+	chmod +x scripts/langflow_start_bg.sh; ./scripts/langflow_start_bg.sh
+
+.PHONY: langflow_stop
+langflow_stop:
+	chmod +x scripts/langflow_stop.sh; ./scripts/langflow_stop.sh
 	
 .PHONY: langflow-import-segments
 langflow-import-segments:

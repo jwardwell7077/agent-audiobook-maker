@@ -235,3 +235,6 @@ temp/LEGACY_PRIVATE_*
 
 # Generated pipeline artifacts (JSONL/meta/audio) — do not commit
 /output/
+
+# Runtime PIDs/state files
+.langflow.pid

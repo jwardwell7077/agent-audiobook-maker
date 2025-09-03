@@ -19,9 +19,7 @@ from langflow.custom import Component
 from langflow.io import BoolInput, DataInput, FloatInput, Output, StrInput
 from langflow.schema import Data
 
-from abm.lf_components.audiobook.deterministic_confidence import (
-    DeterministicConfidenceScorer,
-)
+from abm.helpers.deterministic_confidence import DeterministicConfidenceScorer
 
 _PROPER_NOUN_RE = re.compile(r"\b([A-Z][a-z]{3,})\b")
 _TAG_PATTERNS = [
@@ -32,6 +30,22 @@ _TAG_PATTERNS = [
     # Quinn said / Quinn asked (without preceding quotes)
     r"\b([A-Z][a-z]+)\s+(?:said|asked|replied|whispered|shouted|exclaimed)\b",
 ]
+
+# Words that must never be treated as speaker names when captured by patterns
+_PRONOUN_BLOCKLIST = {
+    "He",
+    "She",
+    "They",
+    "We",
+    "I",
+    "You",
+    "It",
+    "Him",
+    "Her",
+    "Them",
+    "Us",
+    "Me",
+}
 
 
 @dataclass
@@ -67,6 +81,20 @@ class ABMSpanAttribution(Component):
             value=0.35,
             required=False,
         ),
+        FloatInput(
+            name="search_radius_spans",
+            display_name="Search Radius (spans)",
+            info=("How many narration spans before/after to scan for tags/proper nouns. 0 = only immediate neighbors"),
+            value=4.0,
+            required=False,
+        ),
+        FloatInput(
+            name="narration_confidence",
+            display_name="Narration Confidence",
+            info="Confidence assigned to non-dialogue (Narrator) spans",
+            value=0.95,
+            required=False,
+        ),
         BoolInput(
             name="use_deterministic_confidence",
             display_name="Use Deterministic Confidence",
@@ -79,6 +107,16 @@ class ABMSpanAttribution(Component):
         BoolInput(
             name="write_to_disk",
             display_name="Write JSONL + meta to disk",
+            value=False,
+            required=False,
+        ),
+        BoolInput(
+            name="use_narration_confidence_evidence",
+            display_name="Use Evidence for Narration Confidence",
+            info=(
+                "If true, compute narration confidence via deterministic_narration_v1; "
+                "otherwise use narration_confidence"
+            ),
             value=False,
             required=False,
         ),
@@ -158,24 +196,53 @@ class ABMSpanAttribution(Component):
                     text = s.get("text_norm") or s.get("text_raw") or ""
                     book_id, chapter_index, block_id = key
 
+                    # Look around once so both dialogue and narration can use context
+                    before = seq[idx - 1] if idx - 1 >= 0 else None
+                    after = seq[idx + 1] if idx + 1 < len(seq) else None
+
                     if label != "dialogue":
-                        # Narration: keep as Narrator, not counted as unknown
+                        # Narration: either evidence-based scoring or fixed knob
                         c_narration += 1
-                        result = self._record(
-                            s,
-                            speaker=None,
-                            confidence=float(getattr(self, "unknown_confidence", 0.35)),
-                            method="non_dialogue",
-                            evidence={},
-                        )
+                        use_ev = bool(getattr(self, "use_narration_confidence_evidence", False))
+                        if use_ev:
+                            btxt = str(before.get("text_norm") or before.get("text_raw")) if before else None
+                            atxt = str(after.get("text_norm") or after.get("text_raw")) if after else None
+                            b_is_dial = (
+                                (before or {}).get("type") or (before or {}).get("role") or ""
+                            ).lower() == "dialogue"
+                            a_is_dial = (
+                                (after or {}).get("type") or (after or {}).get("role") or ""
+                            ).lower() == "dialogue"
+                            conf, conf_ev, conf_method = self._scorer.score_narration(
+                                narration_text=str(text),
+                                before_text=btxt,
+                                after_text=atxt,
+                                before_is_dialogue=b_is_dial,
+                                after_is_dialogue=a_is_dial,
+                            )
+                            result = self._record(
+                                s,
+                                speaker=None,
+                                confidence=conf,
+                                method=conf_method,
+                                evidence=conf_ev,
+                            )
+                        else:
+                            result = self._record(
+                                s,
+                                speaker=None,
+                                confidence=float(getattr(self, "narration_confidence", 0.95)),
+                                method="narration_rule",
+                                evidence={},
+                            )
                         out.append(result)
                         continue
 
                     # Look around for speaker tags in adjacent narration spans
-                    before = seq[idx - 1] if idx - 1 >= 0 else None
-                    after = seq[idx + 1] if idx + 1 < len(seq) else None
 
-                    speaker, det_evidence, method = self._infer_speaker(text, before, after)
+                    # Find likely speaker scanning up to N narration spans around
+                    radius = int(float(getattr(self, "search_radius_spans", 0.0) or 0.0))
+                    speaker, det_evidence, method, distance = self._infer_speaker_window(seq, idx, radius)
                     use_det = bool(getattr(self, "use_deterministic_confidence", True))
                     if speaker:
                         if use_det:
@@ -188,6 +255,7 @@ class ABMSpanAttribution(Component):
                                 detected_method=method,
                                 detected_speaker=speaker,
                                 prev_dialogue_speaker=prev_dialogue_speaker,
+                                detection_distance=distance,
                             )
                             merged_evidence = {"detection": det_evidence or {}, "confidence": conf_ev}
                         else:
@@ -220,39 +288,71 @@ class ABMSpanAttribution(Component):
         self._last = _AttrResult(spans_attr=out, meta=meta)
         return self._last
 
-    def _infer_speaker(
+    def _infer_speaker_window(
         self,
-        dialogue_text: str,
-        before: dict[str, Any] | None,
-        after: dict[str, Any] | None,
-    ) -> tuple[str | None, dict[str, Any] | None, str | None]:
-        """Infer speaker name using tags in nearby narration spans or proximity.
+        seq: list[dict[str, Any]],
+        idx: int,
+        radius: int,
+    ) -> tuple[str | None, dict[str, Any] | None, str | None, int | None]:
+        """Infer speaker using a window of narration spans around the dialogue index.
 
-        Returns (speaker_name_or_None, evidence_dict_or_None, method_str_or_None)
+        Searches up to `radius` narration spans before and after. Priority order by distance:
+        1) dialogue tag match, 2) proper-noun proximity. Returns (speaker, evidence, method, distance).
+        distance = 1 means immediate neighbor.
         """
-        # 1) Explicit tag patterns in adjacent narration spans
-        for loc, span in (("before", before), ("after", after)):
-            if span and (span.get("type") == "narration" or span.get("role") == "narration"):
-                text = str(span.get("text_norm") or span.get("text_raw") or "")
-                for pat in _TAG_PATTERNS:
-                    m = re.search(pat, text)
+        n = len(seq)
+
+        # Helper to check if record is narration
+        def is_narr(s: dict[str, Any]) -> bool:
+            lab = (s.get("type") or s.get("role") or "").lower()
+            return lab == "narration"
+
+        # Scan ring by increasing distance
+        for d in range(1, max(1, radius) + 1):
+            candidates: list[tuple[str, dict[str, Any]]] = []
+            if idx - d >= 0:
+                candidates.append(("before", seq[idx - d]))
+            if idx + d < n:
+                candidates.append(("after", seq[idx + d]))
+            # First pass: dialogue tag pattern
+            for loc, span in candidates:
+                if is_narr(span):
+                    t = str(span.get("text_norm") or span.get("text_raw") or "")
+                    for pat in _TAG_PATTERNS:
+                        m = re.search(pat, t)
+                        if m:
+                            name = m.group(1)
+                            # Skip pronouns and generic non-names
+                            if name in _PRONOUN_BLOCKLIST:
+                                continue
+                            return (
+                                name,
+                                {"location": loc, "pattern": pat, "excerpt": t[:120], "distance": d},
+                                "dialogue_tag",
+                                d,
+                            )
+            # Second pass: proper noun proximity
+            for loc, span in candidates:
+                if is_narr(span):
+                    t = str(span.get("text_norm") or span.get("text_raw") or "")
+                    m = _PROPER_NOUN_RE.search(t)
                     if m:
                         name = m.group(1)
-                        return name, {"location": loc, "pattern": pat, "excerpt": text[:120]}, "dialogue_tag"
+                        if name in _PRONOUN_BLOCKLIST:
+                            continue
+                        return (
+                            name,
+                            {
+                                "location": loc,
+                                "method": "proper_noun_proximity",
+                                "excerpt": t[:120],
+                                "distance": d,
+                            },
+                            "proper_noun_proximity",
+                            d,
+                        )
 
-        # 2) Proper noun proximity: choose first proper noun in adjacent narration
-        for loc, span in (("before", before), ("after", after)):
-            if span and (span.get("type") == "narration" or span.get("role") == "narration"):
-                text = str(span.get("text_norm") or span.get("text_raw") or "")
-                m = _PROPER_NOUN_RE.search(text)
-                if m:
-                    return (
-                        m.group(1),
-                        {"location": loc, "method": "proper_noun_proximity", "excerpt": text[:120]},
-                        "proper_noun_proximity",
-                    )
-
-        return None, None, None
+        return None, None, None, None
 
     def _record(
         self,
