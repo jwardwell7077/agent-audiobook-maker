@@ -53,6 +53,13 @@ class ABMSpanIterator(Component):
             value=False,
             required=False,
         ),
+        IntInput(
+            name="min_confidence_pct",
+            display_name="Min confidence % (dialogue)",
+            info="If set (>0), filter dialogue spans with attribution.confidence below this percentage",
+            value=0,
+            required=False,
+        ),
     ]
 
     outputs = [
@@ -109,8 +116,29 @@ class ABMSpanIterator(Component):
                     spans.append(json.loads(line))
 
         # Filter dialogue only if requested
-        if bool(getattr(self, "dialogue_only", False)):
+        dialogue_only = bool(getattr(self, "dialogue_only", False))
+        if dialogue_only:
             spans = [s for s in spans if (s.get("role") == "dialogue" or s.get("type") == "dialogue")]
+
+        # Optional confidence threshold for dialogue
+        try:
+            min_pct = int(getattr(self, "min_confidence_pct", 0) or 0)
+        except Exception:
+            min_pct = 0
+        if min_pct > 0:
+            thr = float(min_pct) / 100.0
+
+            def _passes_conf(s: dict[str, Any]) -> bool:
+                if s.get("role") == "dialogue" or s.get("type") == "dialogue":
+                    attr = s.get("attribution") or {}
+                    c = attr.get("confidence")
+                    try:
+                        return c is not None and float(c) >= thr
+                    except Exception:
+                        return False  # drop if malformed
+                return True  # non-dialogue unaffected
+
+            spans = [s for s in spans if _passes_conf(s)]
 
         # Apply start and max
         start = max(0, int(getattr(self, "start_span", 0) or 0))

@@ -54,6 +54,13 @@ class ABMArtifactOrchestrator(Component):
             value="",
             required=False,
         ),
+        StrInput(
+            name="min_confidence_pct",
+            display_name="Min confidence % (dialogue)",
+            info="If set (>0), filter dialogue spans_attr whose attribution.confidence is below this percentage",
+            value="0",
+            required=False,
+        ),
     ]
 
     outputs = [
@@ -104,6 +111,30 @@ class ABMArtifactOrchestrator(Component):
         a = ABMSpanAttribution(spans_cls=spans_cls, write_to_disk=write, output_dir=outdir)
         spans_attr = a.attribute_spans().data
         ameta = a.get_meta().data
+
+        # Optional confidence threshold filtering for dialogue
+        try:
+            min_pct_str = (getattr(self, "min_confidence_pct", "0") or "0").strip()
+            min_pct = int(min_pct_str)
+        except Exception:
+            min_pct = 0
+        if min_pct > 0 and isinstance(spans_attr, dict):
+            thr = float(min_pct) / 100.0
+            items = spans_attr.get("spans_attr") or []
+            if isinstance(items, list):
+                filtered: list[dict] = []
+                for s in items:
+                    role = (s.get("role") or s.get("type") or "").lower()
+                    if role == "dialogue":
+                        c = ((s.get("attribution") or {}).get("confidence"))
+                        try:
+                            if c is not None and float(c) >= thr:
+                                filtered.append(s)
+                        except Exception:
+                            pass
+                    else:
+                        filtered.append(s)
+                spans_attr = {"spans_attr": filtered}
 
         # 5) (Optional) Style Planner
         spans_style = None

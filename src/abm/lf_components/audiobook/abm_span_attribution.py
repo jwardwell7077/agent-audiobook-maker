@@ -71,8 +71,7 @@ class ABMSpanAttribution(Component):
             name="use_deterministic_confidence",
             display_name="Use Deterministic Confidence",
             info=(
-                "If true, compute dialogue confidence via deterministic_v1 scorer; "
-                "otherwise use base/unknown constants"
+                "If true, compute dialogue confidence via deterministic_v1 scorer; otherwise use base/unknown constants"
             ),
             value=True,
             required=False,

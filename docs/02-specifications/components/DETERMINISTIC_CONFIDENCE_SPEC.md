@@ -156,3 +156,7 @@ Future: allow override from component inputs or YAML config; persist chosen conf
 - Should we expose a UI threshold to hide low-confidence dialogue by default?
 - Add tie-break rules when multiple candidate names appear in adjacent narration?
 - Persist config parameters into chapter-level meta?
+
+## 13. Downstream Consumption (Filtering)
+
+While scoring is upstream and deterministic, consumers may choose to filter dialogue by confidence. The LangFlow `ABMSpanIterator` supports an optional `min_confidence_pct` input (0–100). When set (>0), dialogue spans with `attribution.confidence` below the threshold are filtered out; non-dialogue spans are unaffected. This enables simple preview modes (e.g., show only ≥75% confident dialogue) without changing the artifacts.
