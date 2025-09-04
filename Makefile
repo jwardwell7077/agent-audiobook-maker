@@ -165,7 +165,7 @@ dev_mvs_txt:
 dev_mvs_classify:
 	@$(VENV_GUARD)
 	$(ACTIVATE) python -m abm.classifier.classifier_cli \
-		data/clean/mvs/mvs_ch_0001_0700_well_done.jsonl data/clean/mvs/classified
+		data/clean/mvs/MyVampireSystem_CH0001_0700_well_done.jsonl data/clean/mvs/classified
 
 
 # One-shot: pdf->text --dev, classifier --dev
@@ -213,7 +213,7 @@ ingest_pdf:
 # Usage: make classify_well_done WELL_DONE=path/to/*_well_done.jsonl OUT_DIR=data/clean/<book>/classified
 # Classify a well_done.jsonl into sections under classified/
 # Usage: make classify_well_done WELL_DONE=path/to/*_well_done.jsonl OUT_DIR=data/clean/<book>/classified
-WELL_DONE?=$(OUT_DIR)/mvs_ch_0001_0700_well_done.jsonl
+WELL_DONE?=$(OUT_DIR)/MyVampireSystem_CH0001_0700_well_done.jsonl
 CLASSIFIED_OUT?=$(OUT_DIR)/classified
 classify_well_done:
 	@$(VENV_GUARD)

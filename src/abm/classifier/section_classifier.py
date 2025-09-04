@@ -129,6 +129,16 @@ def _parse_toc_items(
         # Clean up TOC title: drop dotted leaders and trailing page numbers if present
         if title:
             title = re.sub(r"\.{2,}\s*\d+\s*$", "", title).strip()
+        # Filter out lines that look like numeric-only sequences (e.g., '1..2..3..4..5')
+        canon_no_space = re.sub(r"\s+", "", canon_title(title))
+        digits_only_pattern = re.compile(r"^(?:\d+[\.]*)+$")
+        has_letters = bool(re.search(r"[A-Za-z]", title))
+        if not has_letters and (digits is None):
+            i += 1
+            continue
+        if canon_no_space and digits_only_pattern.match(canon_no_space):
+            i += 1
+            continue
         ordinal = int(digits) if digits else None
         ctitle = canon_title(title)
         # Skip only immediate exact duplicate lines to avoid double-capture
