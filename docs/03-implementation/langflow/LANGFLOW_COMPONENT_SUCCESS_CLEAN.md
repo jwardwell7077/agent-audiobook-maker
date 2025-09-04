@@ -68,7 +68,7 @@ We didn't just fix - we unified and simplified:
    - chapter_data (one chapter for taps/debug)
    - blocks_data (paragraph blocks with context/dialogue_text)
 1. Removed deprecated components from the active path (Volume Loader, Chapter Selector, Segmenter, Utterance Filter, legacy Writer).
-1. Kept the two-agent core stable: BlockIterator → DialogueClassifier → SpeakerAttribution → ResultsAggregator.
+1. Kept the two-stage core stable: BlockIterator → DialogueClassifier → SpeakerAttribution → ResultsAggregator.
 1. Added downstream utilities: Results→Utterances normalizer, Aggregated JSONL Writer, Casting Director, Character Data Collector.
 
 ## Engineering Discipline Principles Applied

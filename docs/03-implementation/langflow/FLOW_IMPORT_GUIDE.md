@@ -4,9 +4,9 @@ This guide explains how to import and use pre-built LangFlow workflows for audio
 
 ## Available Workflows
 
-### Two-Agent Processing Flow (Unified)
+### Two-Stage Processing Flow (Unified)
 
-The unified flow demonstrates the audiobook annotation pipeline using a single loader and the two-agent core:
+The unified flow demonstrates the audiobook annotation pipeline using a single loader and the two-stage core:
 
 **Components**: ABMChapterLoader → ABMBlockIterator → ABMDialogueClassifier → ABMSpeakerAttribution → ABMResultsAggregator → ABM Results → Utterances → ABMAggregatedJsonlWriter
 

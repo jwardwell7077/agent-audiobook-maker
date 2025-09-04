@@ -68,7 +68,7 @@
 ### ✅ Unified Core Components
 
 1. **ABMChapterLoader**: Unified data loading and chunking
-1. **ABMBlockIterator**: Batch/block streaming for two-agent flow
+1. **ABMBlockIterator**: Batch/block streaming for two-stage flow
 1. **ABMDialogueClassifier**: Dialogue vs narration with extraction
 1. **ABMSpeakerAttribution**: Heuristic attribution with fallbacks
 1. **ABMResultsAggregator**: Aggregates per-block results into chapter output

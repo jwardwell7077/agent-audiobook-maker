@@ -4,7 +4,7 @@
 
 This document provides working examples of LangFlow workflows for different audiobook processing scenarios.
 
-## Two-Agent Processing Workflow (Unified)
+## Two-Stage Processing Workflow (Unified)
 
 ### Overview
 

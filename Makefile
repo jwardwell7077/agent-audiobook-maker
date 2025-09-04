@@ -256,7 +256,7 @@ segment:
 
 help:
 	@echo '----'
-	@echo 'dev_setup                   - create .venv and install minimal dev tools'
+	@echo 'dev_setup                    - create .venv and install minimal dev tools'
 	@echo 'venv                         - create virtual environment (.venv)'
 	@echo 'install                      - install base package editable'
 	@echo 'install_dev                  - install dev extras'
@@ -267,29 +267,13 @@ help:
 	@echo 'tests                        - run unit tests'
 	@echo 'test TEST_FILE=<test_file>   - run all tests in file'
 	@echo 'test_watch                   - run unit tests in watch mode'
-	@echo 'make install                 - install base + test deps (uv or pip)'
-	@echo 'make lint                    - ruff checks'
-	@echo 'make type                    - mypy checks'
-	@echo 'make itest                   - run LangFlow REST flow via tools/run_flow.py'
+	@echo 'type                         - mypy checks'
+	@echo 'itest                        - run LangFlow REST flow via tools/run_flow.py'
 	@echo 'docs_link_check              - scan docs/ for broken local links'
 	@echo 'docs_lint                    - run mdformat --check and pymarkdown scan on docs/'
 
 
-# Lightweight helpers for the components/ tooling pack
-.PHONY: install lint type itest
-install:
-	uv pip install -e . || pip install -e .
-	uv pip install pytest ruff mypy requests || pip install pytest ruff mypy requests
-
-lint:
-	ruff check .
-	ruff format --check .
-
-type:
-	mypy .
-
-itest:
-	python tools/run_flow.py
+# Lightweight helpers for the components/ tooling pack (removed duplicate alt install/lint/type/itest)
 
 
 # Minimal KISS dev setup

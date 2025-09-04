@@ -296,7 +296,7 @@ ABMChapterLoader (blocks_data) → ABMBlockSchemaValidator → ABMMixedBlockReso
 ```python
 class ABMSpanIterator(Component):
     display_name = "ABM Block Iterator"
-    description = "Process blocks one by one through the two-agent pipeline"
+    description = "Process blocks one by one through the two-stage pipeline"
     
     def process_blocks(self) -> Data:
         """Iterate through blocks and prepare for agent processing"""
@@ -318,7 +318,7 @@ class ABMSpanIterator(Component):
                 "processing_hints": chunk["processing_hints"]
             }
             
-            # This would connect to your two-agent pipeline
+            # This would connect to your two-stage pipeline
             processed_results.append(utterance_data)
         
         return Data(data={
@@ -486,6 +486,6 @@ ______________________________________________________________________
 - **Mixed chunks**: 100-250 words to maintain flow
 - **Context overlap**: 1-2 sentences to preserve continuity
 
-This guide gives you everything needed to process your real MVS book data through the two-agent LangFlow pipeline! 🚀
+This guide gives you everything needed to process your real MVS book data through the current two-stage LangFlow pipeline! 🚀
 
 Ready to implement the enhanced chapter loader and start processing Chapter 1?
