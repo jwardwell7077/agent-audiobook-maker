@@ -76,7 +76,7 @@ Background helpers:
 ./scripts/langflow_stop.sh
 ```
 
-Two-agent example flows live under `examples/langflow/*.v15.json`. You can import them in the UI or try the orchestrator sample:
+Spans-first example flows live under `examples/langflow/*.v15.json`. You can import them in the UI or try the orchestrator sample:
 
 ```bash
 python scripts/demo_confidence_orchestrator.py

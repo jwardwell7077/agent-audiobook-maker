@@ -6,7 +6,7 @@ Scope: Upstream (Blocks → Spans → Spans_Cls → Spans_Attr → Spans_Cast; o
 ## Snapshot summary
 
 - Good: JSONL writers exist (blocks.jsonl, spans.jsonl, spans_cls.jsonl, spans_cast.jsonl). 0‑based indexing is referenced. Legacy two‑agent files are marked removed.
-- Drift: Some legacy files still present (as stubs). Orchestrator mentions spans_attr.jsonl but attribution path may still be mixed between `abm_span_attribution.py` and `abm_speaker_attribution.py`.
+- Drift: Some legacy files still present (as stubs). Orchestrator is standardized on `abm_span_attribution.py`; `abm_speaker_attribution.py` remains as a deprecated breadcrumb.
 - Docs: Roadmap/P0 plan files exist but are empty. Tickets for “middle_matter” and special‑character detection are ready.
 
 ## Component alignment matrix
@@ -14,7 +14,7 @@ Scope: Upstream (Blocks → Spans → Spans_Cls → Spans_Attr → Spans_Cast; o
 - Block Schema Validator — Present (`abm_block_schema_validator.py`), writes blocks.jsonl → Aligned
 - Mixed‑Block Resolver — Present (`abm_mixed_block_resolver.py`), writes spans.jsonl → Aligned
 - Span Classifier — Present (`abm_span_classifier.py`) → Aligned (verify label/feature schema)
-- Speaker Attribution — Present (`abm_span_attribution.py`); legacy `abm_speaker_attribution.py` is stubbed → Minor cleanup
+- Speaker Attribution — Present (`abm_span_attribution.py`); legacy `abm_speaker_attribution.py` is stubbed (deprecated) → No action until legacy flows are archived
 - Casting — Present (`abm_span_casting.py`) → Aligned (voice mapping via voice_bank.json)
 - Style Planner — Present (`abm_style_planner.py`) → Optional in P0
 - Orchestrator — Present (`abm_artifact_orchestrator.py`) → Verify stage names/paths (mentions spans_attr.jsonl)
@@ -27,7 +27,7 @@ Scope: Upstream (Blocks → Spans → Spans_Cls → Spans_Attr → Spans_Cast; o
   - Ensure deterministic hashing is consistent across stages (NFC, lower, collapse WS)
 
 - Attribution path
-  - Standardize on `abm_span_attribution.py`; remove/retire `abm_speaker_attribution.py`
+  - Standardize on `abm_span_attribution.py`; keep `abm_speaker_attribution.py` only as deprecated placeholder until legacy flows are archived
   - Confirm output path name (spans_attr.jsonl) and orchestrator wiring
 
 - Legacy cleanup
@@ -40,21 +40,10 @@ Scope: Upstream (Blocks → Spans → Spans_Cls → Spans_Attr → Spans_Cast; o
 ## Risks
 
 - Mixed naming (spans_attr vs spans_cls additions) → clarify single source of truth
-- Hidden 1‑based indices in old code → add asserts
-
-## Risks
-
-- Mixed naming (spans_attr vs spans_cls additions) → clarify single source of truth
-- Hidden 1‑based indices in old code → add asserts
+- Hidden 1-based indices in old code → add asserts
 
 ## Acceptance (P0)
 
-- End‑to‑end upstream run produces: blocks.jsonl → spans.jsonl → spans_cls.jsonl → spans_attr.jsonl → spans_cast.jsonl (optionally spans_style.jsonl)
+- End-to-end upstream run produces: blocks.jsonl → spans.jsonl → spans_cls.jsonl → spans_attr.jsonl → spans_cast.jsonl (optionally spans_style.jsonl)
 - Deterministic IDs/indexing; CI tests cover each stage
-- Middle_matter and ai‑system detection wired without expanding scope
-
-## Acceptance (P0)
-
-- End‑to‑end upstream run produces: blocks.jsonl → spans.jsonl → spans_cls.jsonl → spans_attr.jsonl → spans_cast.jsonl (optionally spans_style.jsonl)
-- Deterministic IDs/indexing; CI tests cover each stage
-- Middle_matter and ai‑system detection wired without expanding scope
+- Middle_matter and ai-system detection wired without expanding scope

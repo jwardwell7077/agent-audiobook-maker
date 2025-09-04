@@ -8,11 +8,11 @@ This section contains all the technical diagrams that illustrate how the Agent A
 
 | Diagram Type | Purpose | Files |
 |-------------|---------|-------|
-| 🏗️ **Architecture** | System overview and component relationships | `architecture/two-agent-system-architecture.md` |
-| 🔄 **Data Flow** | Processing pipelines and data movement | `data-flow/two-agent-system-data-flow.md` |
-| 🤖 **State Machines** | Component behavior and state transitions | `fsm/two-agent-system-fsm.md` |
-| 📊 **UML Diagrams** | Class structures and relationships | `uml/two-agent-system-uml.md` |
-| 🗄️ **Database Schema** | Data models and relationships | `database/two-agent-system-database-schema.md` |
+| 🏗️ **Architecture** | System overview and component relationships | `architecture/two-agent-system-architecture.md` (legacy naming) |
+| 🔄 **Data Flow** | Processing pipelines and data movement | `data-flow/two-agent-system-data-flow.md` (legacy naming) |
+| 🤖 **State Machines** | Component behavior and state transitions | `fsm/two-agent-system-fsm.md` (legacy naming) |
+| 📊 **UML Diagrams** | Class structures and relationships | `uml/two-agent-system-uml.md` (legacy naming) |
+| 🗄️ **Database Schema** | Data models and relationships | `database/two-agent-system-database-schema.md` (legacy naming) |
 | 📋 **Early Design Evolution** | Initial concepts and alternative approaches | `supplementary/early-design-diagrams.md` |
 
 ## Architecture Diagrams

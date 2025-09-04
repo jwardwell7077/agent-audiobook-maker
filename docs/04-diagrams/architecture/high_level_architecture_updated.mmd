@@ -1,13 +1,13 @@
 ```mermaid
 flowchart LR
-  subgraph Dev["Local-first (KISS today + Two-Agent System)"]
+  subgraph Dev["Local-first (KISS today + spans-first two-stage)"]
     CLI["CLI (ingest, annotate)"]
     PDF[("PDF")]
     TXT[("Simple TXT")]
     JSONRaw[("JSON (per-chapter raw)")]
       JSONStruct(("Structured JSON (manifest + chapters)"))
     
-    subgraph TwoAgent["Two-Agent Annotation System"]
+  subgraph Anno["Spans-first two-stage Annotation"]
       DialogueAgent["Dialogue Classifier<br/>(Hybrid: Heuristic + AI)"]
       SpeakerAgent["Speaker Attribution<br/>(Character Database)"]
       CharDB[("Character DB<br/>(PostgreSQL)")]
@@ -17,7 +17,7 @@ flowchart LR
     Annos[("data/annotations/<book>/<chapter>.jsonl")]
   end
 
-    CLI --> PDF --> TXT --> SectionClassifier --> Classified --> Chapterizer --> TxtStructured --> JSONStruct --> Artifacts
+  CLI --> PDF --> TXT --> SectionClassifier --> Classified --> TxtStructured --> JSONStruct --> Artifacts
   Artifacts --> DialogueAgent
   DialogueAgent --> SpeakerAgent
   SpeakerAgent <--> CharDB
@@ -37,7 +37,7 @@ flowchart LR
   CharDB -.integrates.-> DB
   Annos -.-> Casting -.-> SSML -.-> TTS --> Stems --> Renders --> Master
   Orchestrator -.controls.-> JSONStruct
-  Orchestrator -.controls.-> TwoAgent
+  Orchestrator -.controls.-> Anno
   Orchestrator -.controls.-> TTS
 
   Artifacts -.sync.-> DB
@@ -46,6 +46,5 @@ flowchart LR
       %% Upstream structuring stages (added)
       SectionClassifier["Section Classifier"]
       Classified(("classified/front_matter.json | toc.json |\nchapters_section.json | back_matter.json"))
-      Chapterizer["Chapterizer"]
-      TxtStructured["TXT→Structured (paragraphs[])"]
+  TxtStructured["TXT→Structured (paragraphs[])"]
 ```

@@ -1,10 +1,10 @@
 # LangFlow Implementation
 
-> **Purpose**: Visual workflow prototyping for the Agent Audiobook Maker annotation pipeline using LangFlow, evolving toward a comprehensive two-agent system.
+> **Purpose**: Visual workflow prototyping for the Agent Audiobook Maker annotation pipeline using LangFlow, evolving toward a spans-first two-stage system.
 
-This is our current implementation approach for Phase 1 - using LangFlow's visual interface to rapidly prototype and validate the annotation pipeline. The system is transitioning from basic segmentation to a sophisticated two-agent architecture featuring dialogue classification and speaker attribution before moving to a production multi-agent system.
+This is our current implementation approach for Phase 1 - using LangFlow's visual interface to rapidly prototype and validate the annotation pipeline. The system is transitioning from basic segmentation to a spans-first two-stage architecture featuring dialogue classification and deterministic speaker attribution before moving to a production multi-agent system.
 
-**Two-Agent System Integration**: The pipeline now incorporates hybrid dialogue classification (heuristic + AI fallback) and speaker attribution agents with PostgreSQL character database integration. See [Two-Agent System Specification](../../02-specifications/components/two-agent-dialogue-speaker-system.md) for complete architecture details.
+Annotation system integration: The pipeline now incorporates hybrid dialogue classification (heuristic + AI fallback) and deterministic speaker attribution with optional PostgreSQL character database integration. For historical details, see the legacy [Two-Agent System Specification](../../02-specifications/components/two-agent-dialogue-speaker-system.md).
 
 ## Quick Navigation
 
@@ -83,7 +83,7 @@ Loads book chapters from structured JSON or fallback text files
 
 ### Segment Dialogue/Narration  
 
-**Legacy Component** (being upgraded to two-agent system)
+**Legacy Component** (being upgraded to spans-first two-stage)
 
 Splits chapter text into dialogue and narration utterances
 
@@ -160,7 +160,7 @@ graph LR
 
 This flow loads a book volume, selects a specific chapter, segments it into dialogue/narration utterances, and writes the results to a JSONL file.
 
-### Two-Agent System Flow (New Architecture)
+### Two-stage Annotation Flow (New Architecture)
 
 ```mermaid
 graph LR
@@ -172,7 +172,7 @@ graph LR
     F --> G[File Output]
 ```
 
-The enhanced flow incorporates the two-agent system with database-driven character tracking and speaker attribution.
+The enhanced flow incorporates the two-stage system with database-driven character tracking and deterministic speaker attribution.
 
 ### Filtered Processing Flow
 
@@ -190,11 +190,11 @@ This flow adds filtering capabilities after speaker attribution to remove unwant
 
 ## Development Status
 
-- **Phase**: Transitioning from rapid prototyping to two-agent architecture
+- **Phase**: Transitioning from rapid prototyping to spans-first two-stage architecture
 - **Legacy Components**: 7 custom components available and working
-- **New Components**: 2-agent system (dialogue classifier + speaker attribution) designed
+- **New Components**: Two-stage system (dialogue classifier + speaker attribution) designed
 - **Database Integration**: PostgreSQL schema complete for character management  
-- **Status**: Legacy system ready for workflow testing, two-agent system architecture complete
+- **Status**: Legacy system ready for workflow testing, two-stage system architecture complete
 - **Next Steps**: Implementation of hybrid dialogue classifier and speaker attribution agents
 
 ## Architecture Evolution
@@ -205,7 +205,7 @@ This flow adds filtering capabilities after speaker attribution to remove unwant
 - File-based processing and output
 - Limited character awareness
 
-### Target State (Two-Agent System)
+### Target State (Two-stage System)
 
 - Hybrid dialogue classification (heuristic + AI fallback)
 - Database-driven character tracking and speaker attribution

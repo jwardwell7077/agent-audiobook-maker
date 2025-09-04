@@ -1,14 +1,14 @@
 # High-Level Architecture
 
-KISS today: local CLI + deterministic ingestion transitioning to a sophisticated two-agent annotation system. The new architecture features hybrid dialogue classification and speaker attribution with PostgreSQL character database integration. Later: multi-agent enrichment, orchestration, TTS, and optional DB.
+KISS today: local CLI + deterministic ingestion transitioning to a spans-first two-stage annotation system. The architecture features hybrid dialogue classification and deterministic speaker attribution with optional PostgreSQL character database integration. Later: multi-agent enrichment, orchestration, TTS, and optional DB.
 
 Source: See diagrams index: [04-diagrams/README.md](../04-diagrams/README.md)
 
-**Two-Agent System Integration**: The annotation pipeline now incorporates a two-agent system for advanced dialogue processing and character tracking. See [Two-Agent System Specification](../02-specifications/components/two-agent-dialogue-speaker-system.md) for complete details.
+Annotation integration: The annotation pipeline incorporates a two-stage flow (dialogue classification → speaker attribution). For historical context, see the legacy [Two-Agent System Specification](../02-specifications/components/two-agent-dialogue-speaker-system.md).
 
 ```mermaid
 flowchart LR
-  subgraph Dev["Local-first (KISS today + Two-Agent System)"]
+  subgraph Dev["Local-first (KISS today + spans-first two-stage)"]
     CLI["CLI (ingest, annotate)"]
     PDF(("PDF"))
     TXT(("Simple TXT"))
@@ -21,7 +21,7 @@ flowchart LR
 
     JSONStruct(("Structured JSON (manifest + chapters)"))
     
-    subgraph TwoAgent["Two-Agent Annotation System"]
+  subgraph Anno["Spans-first two-stage Annotation"]
       DialogueAgent["Dialogue Classifier<br/>(Hybrid: Heuristic + AI)"]
       SpeakerAgent["Speaker Attribution<br/>(Character Database)"]
       CharDB(("Character DB<br/>(PostgreSQL)"))
@@ -34,7 +34,7 @@ flowchart LR
   %% Ingest and structuring pipeline
   CLI --> PDF --> TXT --> SectionClassifier --> Classified --> ChapterStructure --> TxtStructured --> JSONStruct --> Artifacts
 
-  %% Two-agent consumption
+  %% Two-stage consumption
   Artifacts --> DialogueAgent
   DialogueAgent --> SpeakerAgent
   SpeakerAgent <--> CharDB
@@ -54,7 +54,7 @@ flowchart LR
   CharDB -.integrates.-> DB
   Annos -.-> Casting -.-> SSML -.-> TTS --> Stems --> Renders --> Master
   Orchestrator -.controls.-> JSONStruct
-  Orchestrator -.controls.-> TwoAgent
+  Orchestrator -.controls.-> Anno
   Orchestrator -.controls.-> TTS
 
   Artifacts -.sync.-> DB
@@ -69,4 +69,4 @@ Legend
 
 Notes
 
-- Upstream source of truth for the two-agent system is the chapters_section.json produced by Section Classifier; chapter structure is derived directly from this span (legacy Chapterizer removed); TXT→Structured preserves paragraphs and blank lines for downstream fidelity.
+- Upstream source of truth for the annotation system is the chapters_section.json produced by Section Classifier; chapter structure is derived directly from this span (legacy Chapterizer removed); TXT→Structured preserves paragraphs and blank lines for downstream fidelity.
