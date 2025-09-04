@@ -37,11 +37,11 @@ graph TB
     subgraph "Content Analysis"
         TextProcessor --> Classifier[Section Classifier]
         PdfToText --> Classifier
-        Classifier --> Chapterizer[Chapter Structure]
+    Classifier --> ChapterStructure[Chapter Structure (derived)]
     end
     
     subgraph "Annotation Pipeline"  
-        Chapterizer --> Segmenter[Dialogue/Narration]
+    ChapterStructure --> Segmenter[Dialogue/Narration]
         Segmenter --> Annotator[Metadata Generation]
     end
     
@@ -69,15 +69,15 @@ graph TB
 **Text file to structured annotation workflow**
 
 - **Process**: Text → Classification → Segmentation → Annotation
-- **Components**: Section classifier, chapterizer, dialogue segmenter
+- **Components**: Section classifier, chapter structure (derived), dialogue segmenter
 - **Quality control**: Validation at each stage
 - **Output**: Structured JSON with rich metadata
 
 ## Component State Machines
 
-### 📚 [Chapterizer FSM](state-machines/chapterizer_fsm.mmd)
+### 📚 [Chapterizer FSM](state-machines/chapterizer_fsm.mmd) (Legacy)
 
-**Finite state machine for chapter detection and structuring**
+**Historical FSM for chapter detection and structuring (component removed)**
 
 **States:**
 
@@ -160,14 +160,14 @@ sequenceDiagram
     participant Input as Input Files
     participant Processor as Text Processor
     participant Classifier as Section Classifier  
-    participant Chapterizer as Chapter Structure
+    participant ChapterStructure as Chapter Structure
     participant Annotator as Annotation Engine
     participant Output as Structured Output
     
     Input->>Processor: Raw text/PDF
     Processor->>Classifier: Clean text
-    Classifier->>Chapterizer: Classified sections
-    Chapterizer->>Annotator: Chapter structure  
+    Classifier->>ChapterStructure: Classified sections
+    ChapterStructure->>Annotator: Chapter structure  
     Annotator->>Output: Annotated JSONL
 ```text
 

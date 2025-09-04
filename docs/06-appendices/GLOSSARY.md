@@ -22,9 +22,9 @@ The process of converting written text into spoken audio content, typically invo
 
 The process of identifying and extracting individual chapters from book content, including chapter boundaries, titles, and content classification.
 
-### Chapterizer
+### Chapterizer (Legacy)
 
-A component responsible for detecting chapter boundaries and structuring book content into discrete chapter units with metadata.
+Historical component previously responsible for detecting chapter boundaries and structuring book content. The redesign derives chapter structure directly from the Section Classifier outputs (`chapters_section.json`).
 
 ### Dialogue Detection
 

@@ -171,7 +171,7 @@ pytest -q
 If you have the MyVampireSystem PDF at `data/books/mvs/source_pdfs/MyVampireSystem_CH0001_0700.pdf`, you can run the whole pipeline locally and generate readable artifacts:
 
 ```bash
-# Create mvs.txt (+ mvs_nopp.txt), classify, and chapterize with dev-readable outputs
+# Create mvs.txt (+ mvs_nopp.txt) and classify with dev-readable outputs
 make dev_mvs_all
 
 # Run unit tests only
