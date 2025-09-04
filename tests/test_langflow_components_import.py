@@ -37,4 +37,5 @@ def test_component_classes_exist():
         ABMBlockSchemaValidator,
         ABMArtifactOrchestrator,
     ]:
-    assert cls.__name__.startswith("ABM")
+        assert cls.__name__.startswith("ABM")
+
