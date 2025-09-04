@@ -165,51 +165,6 @@ def _default_out_dir(p: Path) -> Path:
     return Path(p).parent / "clean"
 
 
-if __name__ == "__main__":
-    import argparse
-    import sys
-
-    parser = argparse.ArgumentParser(description="Ingest PDF → (raw|well-done) text + meta")
-    parser.add_argument("input", help="Path to input PDF")
-    parser.add_argument("--out-dir", help="Output directory (defaults to data/clean/<book>/)")
-    parser.add_argument("--mode", choices=["dev", "prod"], default="dev")
-    parser.add_argument("--preserve-form-feeds", action="store_true")
-    parser.add_argument("--no-reflow", action="store_true")
-    parser.add_argument("--no-dehyphenate", action="store_true")
-    parser.add_argument("--no-dedupe-spaces", action="store_true")
-    parser.add_argument("--no-strip-trailing", action="store_true")
-    # insert-pg is unused now; JSONL generation and DB insert are stubbed
-    parser.add_argument("--insert-pg", action="store_true", help="(no-op) legacy flag")
-    args = parser.parse_args()
-
-    pdf_p = Path(args.input)
-    out_dir = Path(args.out_dir) if args.out_dir else _default_out_dir(pdf_p)
-
-    opts = PipelineOptions(
-        preserve_form_feeds=args.preserve_form_feeds,
-        mode=args.mode,
-        reflow_paragraphs=not args.no_reflow,
-        dehyphenate_wraps=not args.no_dehyphenate,
-        dedupe_inline_spaces=not args.no_dedupe_spaces,
-        strip_trailing_spaces=not args.no_strip_trailing,
-        insert_to_pg=False,
-    )
-    try:
-        written = PdfIngestPipeline().run(pdf_p, out_dir, opts)
-        for k, p in written.items():
-            print(f"wrote {k}: {p}")
-        sys.exit(0)
-    except FileNotFoundError as exc:
-        print(f"Error: {exc}", file=sys.stderr)
-        sys.exit(2)
-    except ValueError as exc:
-        print(f"Error: {exc}", file=sys.stderr)
-        sys.exit(3)
-    except Exception as exc:  # pragma: no cover
-        print(f"Unexpected error: {exc}", file=sys.stderr)
-        sys.exit(1)
-
-
 def _build_meta_ephemeral(pdf_p: Path, out_d: Path, opts: PipelineOptions) -> dict[str, Any]:
     """Build a minimal meta object without requiring any written files.
 
@@ -254,3 +209,48 @@ def _stub_db_insert(
     except Exception:
         # Ensure tests confirm we swallow print exceptions
         pass
+
+
+if __name__ == "__main__":
+    import argparse
+    import sys
+
+    parser = argparse.ArgumentParser(description="Ingest PDF → (raw|well-done) text + meta")
+    parser.add_argument("input", help="Path to input PDF")
+    parser.add_argument("--out-dir", help="Output directory (defaults to data/clean/<book>/)")
+    parser.add_argument("--mode", choices=["dev", "prod"], default="dev")
+    parser.add_argument("--preserve-form-feeds", action="store_true")
+    parser.add_argument("--no-reflow", action="store_true")
+    parser.add_argument("--no-dehyphenate", action="store_true")
+    parser.add_argument("--no-dedupe-spaces", action="store_true")
+    parser.add_argument("--no-strip-trailing", action="store_true")
+    # insert-pg is unused now; JSONL generation and DB insert are stubbed
+    parser.add_argument("--insert-pg", action="store_true", help="(no-op) legacy flag")
+    args = parser.parse_args()
+
+    pdf_p = Path(args.input)
+    out_dir = Path(args.out_dir) if args.out_dir else _default_out_dir(pdf_p)
+
+    opts = PipelineOptions(
+        preserve_form_feeds=args.preserve_form_feeds,
+        mode=args.mode,
+        reflow_paragraphs=not args.no_reflow,
+        dehyphenate_wraps=not args.no_dehyphenate,
+        dedupe_inline_spaces=not args.no_dedupe_spaces,
+        strip_trailing_spaces=not args.no_strip_trailing,
+        insert_to_pg=False,
+    )
+    try:
+        written = PdfIngestPipeline().run(pdf_p, out_dir, opts)
+        for k, p in written.items():
+            print(f"wrote {k}: {p}")
+        sys.exit(0)
+    except FileNotFoundError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        sys.exit(2)
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        sys.exit(3)
+    except Exception as exc:  # pragma: no cover
+        print(f"Unexpected error: {exc}", file=sys.stderr)
+        sys.exit(1)

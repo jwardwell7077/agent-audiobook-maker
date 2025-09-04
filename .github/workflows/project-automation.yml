@@ -5,15 +5,17 @@ on:
     types: [opened, labeled]
   pull_request:
     types: [opened, labeled, ready_for_review]
+  workflow_dispatch:
 
 jobs:
   add-to-project:
+    if: ${{ secrets.PROJECTS_TOKEN != '' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/add-to-project@v1.0.2
         with:
           project-url: https://github.com/users/jwardwell7077/projects/3
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PROJECTS_TOKEN }}
 
   wip-guard:
     runs-on: ubuntu-latest
@@ -39,3 +41,13 @@ jobs:
           message: |
             Heads up: More than 5 PRs appear to be in review. Consider reducing WIP to keep flow healthy.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  missing-secret-hint:
+    if: ${{ secrets.PROJECTS_TOKEN == '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show setup hint
+        run: |
+          echo "PROJECTS_TOKEN secret is not set."
+          echo "Create a classic PAT with 'project' and 'repo' scopes under your user, then add it as a repo secret named PROJECTS_TOKEN."
+          echo "After that, re-run this workflow or re-label issues to auto-add to the project."

@@ -15,10 +15,21 @@ BOARD_URL=${BOARD_URL:-"https://github.com/users/jwardwell7077/projects/3"}
 echo "Repo: $REPO"
 echo "Project board: $BOARD_URL"
 
+OWNER="${REPO%/*}"
+NAME="${REPO#*/}"
+
 create_label() {
   local name="$1" color="$2" desc="$3"
-  if ! gh label view "$name" -R "$REPO" >/dev/null 2>&1; then
-    gh label create "$name" -R "$REPO" --color "$color" --description "$desc" || true
+  # Try to fetch label; create if missing
+  if ! gh api -X GET \
+    "/repos/${OWNER}/${NAME}/labels/${name}" \
+    -H "Accept: application/vnd.github+json" >/dev/null 2>&1; then
+    gh api -X POST \
+      "/repos/${OWNER}/${NAME}/labels" \
+      -H "Accept: application/vnd.github+json" \
+      -f name="$name" \
+      -f color="$color" \
+      -f description="$desc" >/dev/null || true
   fi
 }
 
@@ -40,8 +51,15 @@ create_label "scope:infra" "5319e7" "Infra/CI scope"
 
 echo "Creating milestones..."
 for ms in "v0.1 KISS" "v0.2 Casting & SSML" "v0.3 TTS + E2E Demo"; do
-  if ! gh milestone view "$ms" -R "$REPO" >/dev/null 2>&1; then
-    gh milestone create "$ms" -R "$REPO" || true
+  # Check if milestone with this title exists
+  if ! gh api -X GET \
+    "/repos/${OWNER}/${NAME}/milestones?state=all" \
+    -H "Accept: application/vnd.github+json" \
+    -q ".[].title" | grep -Fxq "$ms"; then
+    gh api -X POST \
+      "/repos/${OWNER}/${NAME}/milestones" \
+      -H "Accept: application/vnd.github+json" \
+      -f title="$ms" >/dev/null || true
   fi
 done
 

@@ -20,6 +20,7 @@ Default board: <https://github.com/users/jwardwell7077/projects/3>
 - Scope (parallelization): `scope:ingestion`, `scope:langflow`, `scope:tests`, `scope:docs`, `scope:infra`
 
 Guidance:
+
 - Each issue gets exactly one Type, one Priority, and one Scope label (plus `agent-task` where relevant).
 - Use `blocked` when waiting on dependency; add a short note on the blocker.
 
@@ -59,4 +60,3 @@ Use scopes to run work in parallel without collisions:
 - `scope:tests`: unit/integration tests and fixtures.
 - `scope:docs`: docs, diagrams, policies.
 - `scope:infra`: CI, automation, linting, dependencies.
-
