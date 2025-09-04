@@ -271,6 +271,7 @@ help:
 	@echo 'itest                        - run LangFlow REST flow via tools/run_flow.py'
 	@echo 'docs_link_check              - scan docs/ for broken local links'
 	@echo 'docs_lint                    - run mdformat --check and pymarkdown scan on docs/'
+	@echo 'pre_push                     - run quick local checks before pushing'
 
 
 # Lightweight helpers for the components/ tooling pack (removed duplicate alt install/lint/type/itest)
@@ -295,3 +296,7 @@ docs_lint:
 	@$(VENV_GUARD)
 	mdformat --check docs/
 	python -m pymarkdown --config=pymarkdown.json scan docs/
+
+.PHONY: pre_push
+pre_push:
+	bash scripts/pre_push.sh

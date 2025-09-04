@@ -7,8 +7,22 @@ concurrency:
 on:
   pull_request:
     branches: [ "**" ]
+    paths:
+      - '**/*.py'
+      - 'src/**'
+      - 'Makefile'
+      - 'requirements*.txt'
+      - 'pyproject.toml'
+      - '.github/workflows/quality-gate.yml'
   push:
-    branches: [ "**" ]
+    branches: [ 'main' ]
+    paths:
+      - '**/*.py'
+      - 'src/**'
+      - 'Makefile'
+      - 'requirements*.txt'
+      - 'pyproject.toml'
+      - '.github/workflows/quality-gate.yml'
 
 jobs:
   quality-gate:

@@ -5,10 +5,18 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
-    branches: ["**"]
   pull_request:
     branches: ["**"]
+    paths:
+      - '**/*.py'
+      - 'src/**'
+      - '.github/workflows/codeql.yml'
+  push:
+    branches: ['main']
+    paths:
+      - '**/*.py'
+      - 'src/**'
+      - '.github/workflows/codeql.yml'
   schedule:
     - cron: '24 5 * * 1'
 

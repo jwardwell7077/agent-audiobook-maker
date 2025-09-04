@@ -5,10 +5,26 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
-    branches: ["**"]
   pull_request:
     branches: ["**"]
+    paths:
+      - '**/*.py'
+      - 'src/**'
+      - 'tests/**'
+      - 'requirements*.txt'
+      - 'pyproject.toml'
+      - '.github/workflows/ci.yml'
+      - 'Makefile'
+  push:
+    branches: ['main']
+    paths:
+      - '**/*.py'
+      - 'src/**'
+      - 'tests/**'
+      - 'requirements*.txt'
+      - 'pyproject.toml'
+      - '.github/workflows/ci.yml'
+      - 'Makefile'
 
 jobs:
   build:
