@@ -11,7 +11,7 @@ This is our current implementation approach for Phase 1 - using LangFlow's visua
 | Category | Purpose | Files |
 |----------|---------|-------|
 | 📚 **Setup & Usage** | Getting started with LangFlow | `SETUP_GUIDE.md` |
-| �� **Workflows** | Pre-built examples and patterns | `WORKFLOWS.md` |
+| 🧩 **Workflows** | Pre-built examples and patterns | `WORKFLOWS.md` |
 | 📊 **Component Results** | Testing and validation docs | `COMPONENT_TEST_RESULTS.md` |
 | 🎯 **Success Stories** | Implementation milestones | `LANGFLOW_COMPONENT_SUCCESS.md` |
 | 🎤 **Speaker Attribution (Deterministic)** | Controls & behavior (knobs, pronoun blocklist, orchestrator wiring) | `SPEAKER_ATTRIBUTION_DETERMINISTIC.md` |
@@ -214,6 +214,6 @@ This flow adds filtering capabilities after speaker attribution to remove unwant
 
 ## Related Documentation
 
-- [Component Implementation](../../../lf_components/README.md) - Source code for all components
+- [LangFlow Components Index](COMPONENTS_INDEX.md) - Catalog of available components
 - [Integration Testing](../../../tests/integration/) - End-to-end testing scenarios
 - [Development Journey](../../05-development/journey/README.md) - Implementation history and lessons learned

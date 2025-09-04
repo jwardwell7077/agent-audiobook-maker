@@ -8,8 +8,8 @@ This section contains all the information needed to understand the project's dev
 
 | Category | Purpose | Key Documents |
 |----------|---------|---------------|
-| � **Guides** | Process documentation and how-to guides | `HOW_TO_DOCUMENT.md`, `CONTRIBUTING.md` |
-| �🚀 **Getting Started** | New contributor onboarding | Setup guides, environment config |
+| 📘 **Guides** | Process documentation and how-to guides | `HOW_TO_DOCUMENT.md`, `CONTRIBUTING.md` |
+| 🚀 **Getting Started** | New contributor onboarding | Setup guides, environment config |
 | 📈 **Journey** | Project evolution and lessons learned | `DEVELOPMENT_JOURNEY.md`, `LESSONS_LEARNED.md` |
 | 🗺️ **Planning** | Roadmaps and strategic direction | `MULTI_AGENT_ROADMAP.md`, learning paths |
 | 📋 **Processes** | Development workflows and standards | Code review, testing practices |
@@ -17,7 +17,7 @@ This section contains all the information needed to understand the project's dev
 
 ## Getting Started
 
-### � [Development Guides](guides/README.md)
+### 📘 [Development Guides](guides/README.md)
 
 Process documentation and how-to guides for contributing to the project
 
@@ -64,13 +64,13 @@ pip install -r requirements-dev.txt
 # Verify setup
 make test
 make lint
-```text
+```
 
 ## Project Evolution
 
 ### 📈 [Development Journey](journey/DEVELOPMENT_JOURNEY.md)
 
-**Chronicle of project evolution, decisions, and pivots**
+#### Chronicle of project evolution, decisions, and pivots
 
 This document tracks the major phases of project development:
 
@@ -84,7 +84,7 @@ This document tracks the major phases of project development:
 
 ### 🎓 [Lessons Learned](journey/LESSONS_LEARNED.md)
 
-**Distilled wisdom from development experience**
+#### Distilled wisdom from development experience
 
 Key insights from project development:
 
@@ -99,7 +99,7 @@ Key insights from project development:
 
 ### 🗺️ [Multi-Agent Roadmap](planning/MULTI_AGENT_ROADMAP.md)
 
-**Detailed plan for transitioning to production multi-agent system**
+#### Detailed plan for transitioning to production multi-agent system
 
 Comprehensive roadmap for Phase 2 development:
 
@@ -110,7 +110,7 @@ Comprehensive roadmap for Phase 2 development:
 
 ### 🧠 [Learning Path](planning/LEARNING_PATH_MULTI_AGENT.md)
 
-**Skills and knowledge required for multi-agent development**
+#### Skills and knowledge required for multi-agent development
 
 Educational roadmap for team members:
 
@@ -121,9 +121,9 @@ Educational roadmap for team members:
 
 ## Development Philosophy
 
-### 💎 [KISS Principle](philosophy/KISS.md)
+### 💎 [KISS Principle](../01-project-overview/KISS.md)
 
-**Keep It Simple, Stupid - Our approach to system design**
+#### Keep It Simple, Stupid - Our approach to system design
 
 Core design philosophy guiding all technical decisions:
 
@@ -289,10 +289,10 @@ Core design philosophy guiding all technical decisions:
 
 ## Related Sections
 
-- 📋 [Specifications](../../02-specifications/README.md) - What we're building
-- 🔧 [Implementation](../../03-implementation/README.md) - How we're building it
-- 📊 [Diagrams](../../04-diagrams/README.md) - Visual representations of our designs
-- 📝 [Data Schemas](../data-schemas/README.md) - Structure of our data
+- 📋 [Specifications](../02-specifications/README.md) - What we're building
+- 🔧 [Implementation](../03-implementation/README.md) - How we're building it
+- 📊 [Diagrams](../04-diagrams/README.md) - Visual representations of our designs
+- 📝 [Data Schemas](../02-specifications/data-schemas/README.md) - Structure of our data
 
 ---
 

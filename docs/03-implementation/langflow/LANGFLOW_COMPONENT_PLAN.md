@@ -4,9 +4,14 @@ Last updated: 2025-08-23 (Documentation synchronized with production components)
 
 ## Diagrams
 
-- **Architecture**: [diagrams/langflow_architecture.mmd](diagrams/langflow_architecture.mmd)
-- **UML Class Structure**: [diagrams/langflow_uml.mmd](diagrams/langflow_uml.mmd)  
-- **Finite State Machine**: [diagrams/langflow_fsm.mmd](diagrams/langflow_fsm.mmd)
+- **Architecture**: [../../04-diagrams/architecture/langflow_architecture.mmd](../../04-diagrams/architecture/langflow_architecture.mmd)
+- **UML Class Structure**: [../../04-diagrams/uml/langflow_uml.mmd](../../04-diagrams/uml/langflow_uml.mmd)  
+- **Finite State Machine**: [../../04-diagrams/flows/langflow_fsm.mmd](../../04-diagrams/flows/langflow_fsm.mmd)
+Source diagrams:
+
+- [LangFlow Architecture](../../04-diagrams/architecture/langflow_architecture.mmd)
+- [LangFlow UML](../../04-diagrams/uml/langflow_uml.mmd)
+- [LangFlow FSM](../../04-diagrams/flows/langflow_fsm.mmd)
 
 ## Executive Summary
 
@@ -345,11 +350,11 @@ flowchart LR
 
 ## 🔗 **Related Documentation**
 
-- [Architecture Overview](ARCHITECTURE.md)
-- [Annotation Schema](ANNOTATION_SCHEMA.md)
-- [Multi-Agent Roadmap](MULTI_AGENT_ROADMAP.md)
-- [Structured JSON Schema](STRUCTURED_JSON_SCHEMA.md)
-- [KISS Principles](KISS.md)
+- [Architecture Overview](../../01-project-overview/ARCHITECTURE.md)
+- [Annotation Schema](../../02-specifications/data-schemas/ANNOTATION_SCHEMA.md)
+- [Multi-Agent Roadmap](../multi-agent/MULTI_AGENT_ROADMAP.md)
+- [Structured JSON Schema](../../02-specifications/data-schemas/STRUCTURED_JSON_SCHEMA.md)
+- [KISS Principles](../../01-project-overview/KISS.md)
 
 ---
 

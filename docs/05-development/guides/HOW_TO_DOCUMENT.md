@@ -223,7 +223,7 @@ This section contains [description of content type and audience].
 
 ## Contents
 
-### 📋 [Document Name](DOCUMENT.md)
+### 📋 [Document Name](#document-template)
 **Brief description of what this document contains**
 
 Key information about what users will find:
@@ -235,8 +235,8 @@ Key information about what users will find:
 
 ## Related Sections
 
-- 🔗 [Related Section](../other-section/README.md) - Why it's related
-- 🔗 [Another Section](../another/README.md) - Connection explanation
+- 🔗 [Related Section](#related-section) - Why it's related
+- 🔗 [Another Section](#another-related) - Connection explanation
 
 ---
 
@@ -295,10 +295,10 @@ How the component handles various error conditions.
 
 How to validate that the implementation meets the specification.
 
-## Related Documents
+## Related Documents (examples)
 
-- [Related Spec](OTHER_SPEC.md)
-- [Implementation Guide](../../03-implementation/component/README.md)
+- Related Spec (example)
+- Implementation Guide (example)
 
 ```markdown
 # Implementation: [Component/Feature Name]
@@ -353,8 +353,8 @@ Important performance notes and optimization tips.
 
 ## Reference Documents
 
-- [Specification](../../02-specifications/components/COMPONENT_SPEC.md)
-- [Examples](examples/README.md)
+- Specification (example)
+- Examples (example)
 
 ### Implementation Guide Template
 
@@ -413,8 +413,8 @@ Important performance notes and optimization tips.
 
 ## Links
 
-- [Specification](../../02-specifications/components/COMPONENT_SPEC.md)
-- [Examples](examples/README.md)
+- Specification (example)
+- Examples (example)
 
 ## Documentation Standards
 

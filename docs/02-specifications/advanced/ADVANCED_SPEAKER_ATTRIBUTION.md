@@ -67,8 +67,9 @@ class RuleBasedAttributor:
     def __init__(self):
         self.patterns = {
             'direct_attribution': r'(\w+)\s+(said|asked|replied|whispered|shouted)',
-            'reverse_attribution': r'[""](.*?)[""]\s*,?\s*(\w+)\s+(said|asked)',
-            'action_attribution': r'(\w+)\s+[a-z]+ed[^.]*\.\s*[""](.*?)["""]',
+            # note: split strings to avoid "](" adjacency in docs
+            'reverse_attribution': r"[\"\"]" + r"(.*?)" + r"[\"\"]\s*,?\s*(\\w+)\s+(said|asked)",
+            'action_attribution': r"(\\w+)\s+[a-z]+ed[^.]*\\.\s*" + r"[\"\"]" + r"(.*?)" + r"[\"\"]",
         }
     
     def attribute_speaker(self, utterance: str, context: str) -> Dict:

@@ -52,13 +52,13 @@ Our documentation is organized into 6 main sections designed for different needs
 #### 🏗️ Architect  
 
 1. [System Architecture](01-project-overview/ARCHITECTURE.md) - High-level design
-2. [Multi-Agent Roadmap](05-development/planning/MULTI_AGENT_ROADMAP.md) - Future direction
+2. [Multi-Agent Roadmap](03-implementation/multi-agent/MULTI_AGENT_ROADMAP.md) - Future direction
 3. [Diagrams Collection](04-diagrams/README.md) - Visual documentation
 
 #### 📖 Domain Expert
 
 1. [Project Vision](01-project-overview/VISION.md) - Business understanding
-2. [Quality Specifications](02-specifications/advanced/QUALITY_GATE_SPEC.md) - Standards
+2. [Quality Specifications](02-specifications/components/QUALITY_GATE_SPEC.md) - Standards
 3. [Troubleshooting](06-appendices/TROUBLESHOOTING.md) - Problem solving
 
 ### By Task
@@ -78,13 +78,13 @@ Our documentation is organized into 6 main sections designed for different needs
 #### 🐛 Solving Problems
 
 - [Troubleshooting Guide](06-appendices/TROUBLESHOOTING.md) - Common solutions
-- [Development Issues](05-development/README.md#troubleshooting) - Dev-specific problems
+- [Development Issues](05-development/guides/CONTRIBUTING.md) - Dev-specific problems
 - [Glossary](06-appendices/GLOSSARY.md) - Term definitions
 
 #### 📈 Planning & Strategy
 
-- [Development Journey](05-development/journey/README.md) - Project evolution
-- [Multi-Agent Roadmap](05-development/planning/MULTI_AGENT_ROADMAP.md) - Future plans
+- Journey summaries and updates are under [05-development/journey/](05-development/journey/)
+- [Multi-Agent Roadmap](03-implementation/multi-agent/MULTI_AGENT_ROADMAP.md) - Future plans
 - [Lessons Learned](05-development/journey/LESSONS_LEARNED.md) - Experience insights
 
 ## 🔥 Recent Updates
@@ -113,25 +113,25 @@ Our documentation is organized into 6 main sections designed for different needs
 
 ```text
 📖 GETTING_STARTED.md → 🎯 Project Overview → 🔧 Development Setup
-```text
+```
 
 ### 💻 I Want to Contribute
 
 ```text
 🤝 CONTRIBUTING.md → 🏗️ Architecture → 📝 Component Specs → 🛠️ Implementation
-```text
+```
 
 ### 🔍 I Need to Solve a Problem
 
 ```text
 🚨 TROUBLESHOOTING.md → 📚 Glossary → 🏠 Relevant Section
-```text
+```
 
 ### 📊 I Want to Understand the System
 
 ```text
 🎯 Vision → 🏗️ Architecture → 📊 Diagrams → 📋 Specifications
-```text
+```
 
 ## 💡 Pro Tips
 

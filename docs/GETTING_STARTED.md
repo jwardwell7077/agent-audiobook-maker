@@ -8,12 +8,12 @@ Agent Audiobook Maker transforms long-form PDFs (like novels) into high-quality,
 
 ```mermaid
 graph LR
-    PDF[📕 PDF Novel] --> Extract[🔍 Extract Text]
-    Extract --> Annotate[🏷️ Annotate Dialogue]
-    Annotate --> Cast[🎭 Cast Voices] 
-    Cast --> Render[🎙️ Render Audio]
-    Render --> Master[🎵 Master Audiobook]
-```text
+    PDF["PDF Novel"] --> Extract["Extract Text"]
+    Extract --> Annotate["Annotate Dialogue"]
+    Annotate --> Cast["Cast Voices"]
+    Cast --> Render["Render Audio"]
+    Render --> Master["Master Audiobook"]
+```
 
 ## Current Status
 
@@ -47,7 +47,7 @@ pip install -r requirements-dev.txt
 
 # Verify setup
 make test
-```text
+```
 
 ## Understanding the Architecture
 
@@ -104,7 +104,7 @@ pip install langflow
 
 # Run LangFlow with custom components
 ./scripts/run_langflow.sh
-```text
+```
 
 ### Testing
 
@@ -117,7 +117,7 @@ make test_coverage
 
 # Run quality checks
 make quality_gate
-```text
+```
 
 ## Project Structure
 
@@ -132,13 +132,15 @@ agent-audiobook-maker/
 ├── docs/                    # Documentation (you are here)
 ├── data/                    # Working directory (gitignored)
 └── scripts/                 # Helper scripts
-```text
+```
 
 ## Getting Help
 
 - **Documentation**: Start with this index and follow the links
 - **Issues**: Check existing GitHub issues or create a new one
-- **Questions**: Read the [Development Journey](05-development/journey/README.md) for context
+- **Questions**: Read the Development Journey summaries:
+  - [Documentation Cleanup Summary](05-development/journey/DOCUMENTATION_CLEANUP_SUMMARY.md)
+  - [LangFlow Lessons Learned](05-development/journey/LANGFLOW_LESSONS_LEARNED.md)
 
 ## Next Steps
 
@@ -147,7 +149,7 @@ Choose your path:
 - **📖 Learn More**: [Project Overview](01-project-overview/README.md)
 - **🛠️ Start Coding**: [Implementation Guide](03-implementation/README.md)  
 - **🎨 See Visuals**: [Architecture Diagrams](04-diagrams/README.md)
-- **📈 Follow Progress**: [Development Journey](05-development/journey/README.md)
+- **📈 Follow Progress**: See journey updates in [progress-updates](05-development/journey/progress-updates/)
 
 ---
 

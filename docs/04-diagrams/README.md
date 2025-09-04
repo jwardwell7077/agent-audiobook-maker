@@ -17,7 +17,7 @@ This section contains all the technical diagrams that illustrate how the Agent A
 
 ## Architecture Diagrams
 
-### 🏗️ [High-Level Architecture](high_level_architecture.mmd)
+### 🏗️ [High-Level Architecture](architecture/high_level_architecture.mmd)
 
 System overview showing major components and data flow
 
@@ -55,7 +55,7 @@ graph TB
 
 ## Workflow Diagrams
 
-### 📄 [PDF to Text Flow](pdf_to_text_flow.mmd)
+### 📄 [PDF to Text Flow](flows/pdf_to_text_flow.mmd)
 
 **Detailed workflow for PDF ingestion and text extraction**
 
@@ -64,7 +64,7 @@ graph TB
 - **Quality gates**: Text quality validation, formatting preservation
 - **Output**: Clean text files ready for annotation
 
-### 📝 [TXT to JSON Processing](txt_to_json_spec.mmd)
+### 📝 [TXT to JSON Processing](flows/txt_to_json_spec.mmd)
 
 **Text file to structured annotation workflow**
 
@@ -75,7 +75,7 @@ graph TB
 
 ## Component State Machines
 
-### 📚 [Chapterizer FSM](chapterizer_fsm.mmd)
+### 📚 [Chapterizer FSM](state-machines/chapterizer_fsm.mmd)
 
 **Finite state machine for chapter detection and structuring**
 
@@ -93,7 +93,7 @@ graph TB
 - Content boundaries (page breaks, whitespace)
 - Validation results (pass/fail)
 
-### 🔍 [Section Classifier FSM](section_classifier_fsm.mmd)
+### 🔍 [Section Classifier FSM](state-machines/section_classifier_fsm.mmd)
 
 **State machine for classifying different text sections**
 
@@ -111,7 +111,7 @@ graph TB
 - Front Matter, Back Matter, Bibliography
 - Footnotes, Headers, Page Numbers
 
-### ✅ [Quality Gate FSM](quality_gate_fsm.mmd)
+### ✅ [Quality Gate FSM](state-machines/quality_gate_fsm.mmd)
 
 **State machine for quality assurance workflows**
 
@@ -132,7 +132,7 @@ graph TB
 
 ## UML Diagrams  
 
-### 🔧 [Component UML](pdf_to_text_uml.mmd)
+### 🔧 [Component UML](uml/pdf_to_text_uml.mmd)
 
 **Class diagrams for PDF processing components**
 
@@ -141,7 +141,7 @@ graph TB
 - **Relationships**: Inheritance, composition, dependencies
 - **Methods**: Key public APIs and data transformations
 
-### 📊 [Data Model UML](structured_json_schema.mmd)
+### 📊 [Data Model UML](flows/structured_json_schema.mmd)
 
 **Entity relationship diagrams for data schemas**
 
@@ -247,11 +247,11 @@ These diagrams show the design evolution from file-based storage to the final Po
 
 ## Related Sections
 
-- 🏗️ [Architecture](../../01-project-overview/ARCHITECTURE.md) - What these diagrams illustrate
-- 📋 [Specifications](../../02-specifications/README.md) - Requirements these diagrams support
-- 🔧 [Implementation](../../03-implementation/README.md) - Code that implements these designs
-- 📝 [Data Schemas](../data-schemas/README.md) - Detailed schema documentation
+- 🏗️ [Architecture](../01-project-overview/ARCHITECTURE.md) - What these diagrams illustrate
+- 📋 [Specifications](../02-specifications/README.md) - Requirements these diagrams support
+- 🔧 [Implementation](../03-implementation/README.md) - Code that implements these designs
+- 📝 [Data Schemas](../02-specifications/data-schemas/README.md) - Detailed schema documentation
 
 ---
 
-*Part of [Documentation Index](../../README.md)*
+*Part of [Documentation Index](../README.md)*

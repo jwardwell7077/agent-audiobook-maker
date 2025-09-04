@@ -25,7 +25,7 @@ The components were built with incorrect assumptions about LangFlow's API and da
 ## Action Plan
 
 1. **Immediate**: Do not rely on any existing LangFlow components for production workflows
-2. **Short-term**: Begin systematic rebuild following [LANGFLOW_COMPONENT_PLAN.md](LANGFLOW_COMPONENT_PLAN.md)
+2. **Short-term**: Begin systematic rebuild following [LANGFLOW_COMPONENT_PLAN.md](../../../03-implementation/langflow/LANGFLOW_COMPONENT_PLAN.md)
 3. **Medium-term**: Implement proper testing and validation for all rebuilt components
 
 ## Impact
@@ -37,7 +37,7 @@ The components were built with incorrect assumptions about LangFlow's API and da
 
 ## Next Steps
 
-Refer to the comprehensive rebuild plan in [LANGFLOW_COMPONENT_PLAN.md](LANGFLOW_COMPONENT_PLAN.md) for detailed implementation roadmap.
+Refer to the comprehensive rebuild plan in [LANGFLOW_COMPONENT_PLAN.md](../../../03-implementation/langflow/LANGFLOW_COMPONENT_PLAN.md) for detailed implementation roadmap.
 
 ---
 **Priority**: HIGH  

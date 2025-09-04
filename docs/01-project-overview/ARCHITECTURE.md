@@ -2,7 +2,7 @@
 
 KISS today: local CLI + deterministic ingestion transitioning to a sophisticated two-agent annotation system. The new architecture features hybrid dialogue classification and speaker attribution with PostgreSQL character database integration. Later: multi-agent enrichment, orchestration, TTS, and optional DB.
 
-Source: [docs/diagrams/high_level_architecture.mmd](diagrams/high_level_architecture.mmd)
+Source: See diagrams index: [04-diagrams/README.md](../04-diagrams/README.md)
 
 **Two-Agent System Integration**: The annotation pipeline now incorporates a two-agent system for advanced dialogue processing and character tracking. See [Two-Agent System Specification](../02-specifications/components/two-agent-dialogue-speaker-system.md) for complete details.
 
