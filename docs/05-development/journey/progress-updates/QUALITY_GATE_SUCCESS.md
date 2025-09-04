@@ -74,7 +74,7 @@ This quality gate process exemplifies our core project tenant:
 - ✅ `src/abm/lf_components/audiobook/abm_utterance_jsonl_writer.py`
 - ✅ `src/abm/lf_components/audiobook/abm_chapter_selector.py`
 - ✅ `src/abm/lf_components/audiobook/abm_utterance_filter.py`
-- ✅ `src/abm/structuring/chapterizer.py`
+- ✅ `src/abm/structuring/chapterizer.py` (legacy; retained for historical reference)
 - ✅ `src/abm/classifier/classifier_cli.py`
 
 ### Documentation Files
