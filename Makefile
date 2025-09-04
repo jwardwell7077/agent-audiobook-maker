@@ -274,6 +274,7 @@ help:
 	@echo 'make lint                    - ruff checks'
 	@echo 'make type                    - mypy checks'
 	@echo 'make itest                   - run LangFlow REST flow via tools/run_flow.py'
+	@echo 'docs_link_check              - scan docs/ for broken local links'
 
 
 # Lightweight helpers for the components/ tooling pack
@@ -300,3 +301,9 @@ dev_setup:
 	. .venv/bin/activate; pip install -U pip
 	. .venv/bin/activate; pip install -r requirements-dev.txt
 	@echo 'Activate with: source .venv/bin/activate'
+
+# Docs utilities
+.PHONY: docs_link_check
+docs_link_check:
+	@$(VENV_GUARD)
+	python scripts/check_docs_links.py

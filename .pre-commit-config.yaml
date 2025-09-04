@@ -54,3 +54,11 @@ repos:
         language: system
         pass_filenames: false
         stages: [push]
+
+      - id: docs-link-check
+        name: Docs Link Check (local relative links)
+        entry: bash -lc 'python scripts/check_docs_links.py'
+        language: system
+        pass_filenames: false
+        files: ^docs/.*\.md$
+        stages: [commit, push]
