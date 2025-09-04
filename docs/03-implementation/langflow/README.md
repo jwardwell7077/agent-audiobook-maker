@@ -1,20 +1,18 @@
 # LangFlow Implementation
 
-> **Purpose**: Visual workflow prototyping for the Agent Audiobook Maker annotation pipeline using LangFlow, evolving toward a spans-first two-stage system.
+> Purpose: Visual workflow prototyping for the Agent Audiobook Maker segmentation pipeline using LangFlow.
 
-This is our current implementation approach for Phase 1 - using LangFlow's visual interface to rapidly prototype and validate the annotation pipeline. The system is transitioning from basic segmentation to a spans-first two-stage architecture featuring dialogue classification and deterministic speaker attribution before moving to a production multi-agent system.
-
-Annotation system integration: The pipeline now incorporates hybrid dialogue classification (heuristic + AI fallback) and deterministic speaker attribution. A character database may be added later as an optional enhancement.
+This is our current implementation approach for the KISS branch—using LangFlow's visual interface to prototype deterministic segmentation. The focus is on dialogue/narration segmentation and writing JSONL artifacts. Speaker attribution, databases, and multi‑agent systems are out of scope here.
 
 ## Quick Navigation
 
-| Category                                   | Purpose                                                             | Files                                  |
-| ------------------------------------------ | ------------------------------------------------------------------- | -------------------------------------- |
-| 📚 **Setup & Usage**                       | Getting started with LangFlow                                       | `SETUP_GUIDE.md`                       |
-| 🧩 **Workflows**                           | Pre-built examples and patterns                                     | `WORKFLOWS.md`                         |
-| 📊 **Component Results**                   | Testing and validation docs                                         | `COMPONENT_TEST_RESULTS.md`            |
-| 🎯 **Success Stories**                     | Implementation milestones                                           | `LANGFLOW_COMPONENT_SUCCESS.md`        |
-| 🎤 **Speaker Attribution (Deterministic)** | Controls & behavior (knobs, pronoun blocklist, orchestrator wiring) | `SPEAKER_ATTRIBUTION_DETERMINISTIC.md` |
+| Category                           | Purpose                                 | Files                             |
+| ---------------------------------- | --------------------------------------- | --------------------------------- |
+| 📚 **Setup & Usage**               | Getting started with LangFlow           | `SETUP_GUIDE.md`                  |
+| 🧩 **Workflows**                   | Pre-built examples and patterns         | `WORKFLOWS.md`                    |
+| 📊 **Component Results**           | Testing and validation docs             | `COMPONENT_TEST_RESULTS.md`       |
+| 🎯 **Success Stories**             | Implementation milestones               | `LANGFLOW_COMPONENT_SUCCESS.md`   |
+| 🧪 **Discovery & Troubleshooting** | Component discovery and launch guidance | `LANGFLOW_COMPONENT_DISCOVERY.md` |
 
 ## Contents
 
@@ -81,24 +79,14 @@ Loads book chapters from structured JSON or fallback text files
 - Features: Automatic fallback to .txt files if JSON unavailable
 - Status: ✅ Working and tested
 
-### Segment Dialogue/Narration
+### Span Classification (Dialogue/Narration)
 
-**Legacy Component** (being upgraded to spans-first two-stage)
+Labels spans as dialogue or narration deterministically.
 
-Splits chapter text into dialogue and narration utterances
-
-- Input: Chapter payload with text content
-- Output: Utterances array with role classification (dialogue/narration)
-- Algorithm: Quote-based heuristic detection
-- Status: ✅ Working, transitioning to hybrid dialogue classifier agent
-- **Migration**: Will be enhanced with AI classification fallback and confidence scoring
-
-**Future Enhancement**: This component is evolving into the Dialogue Classifier Agent with:
-
-- Hybrid heuristic + AI classification approach
-- Context window analysis (5-segment windows)
-- Confidence scoring for classification accuracy
-- Support for mixed dialogue/narration segments
+- Input: Spans from the resolver
+- Output: spans_cls with role classification (dialogue/narration)
+- Algorithm: Quote and hint-based simple rules
+- Status: ✅ Working
 
 ### Chapter Selector
 
@@ -127,24 +115,11 @@ Filters utterances by role, length, or content criteria
 - Features: Role filtering, length bounds, substring matching
 - Status: ✅ Working with multiple filter types
 
-### Speaker Attribution Agent
+### Out of Scope (KISS)
 
-Part of the spans-first two-stage annotation system
-
-Associates dialogue segments with specific characters (optional character memory in future)
-
-- Input: Dialogue segments from Dialogue Classifier Agent
-- Output: Speaker-attributed dialogue with character associations
-- Features: Evidence-backed attribution, alias resolution, confidence scoring
-- Database: Optional future character memory
-- Status: 🚧 Architecture complete, implementation in progress
-
-Key capabilities:
-
-- Real-time character lookup by name and aliases
-- Automatic character record creation for new speakers
-- Speaker vs addressee detection in dialogue
-- Character profile building for voice casting integration
+- Speaker attribution and character databases
+- Multi-agent systems
+- Orchestration frameworks
 
 ## Workflow Examples
 
@@ -160,19 +135,16 @@ graph LR
 
 This flow loads a book volume, selects a specific chapter, segments it into dialogue/narration utterances, and writes the results to a JSONL file.
 
-### Two-stage Annotation Flow (New Architecture)
+### Spans-first Segmentation Flow
 
 ```mermaid
 graph LR
-    A[Volume Loader] --> B[Chapter Selector]
-    B --> C[Dialogue Classifier Agent]
-    C --> D[Speaker Attribution Agent]
-    D --> E[(Character Database - optional)]
-    D --> F[JSONL Writer]
-    F --> G[File Output]
+    A[Chapter Loader] --> B[Block Schema Validator]
+    B --> C[Mixed Block Resolver]
+    C --> D[Span Classifier]
+    D --> E[JSONL Writer]
+    E --> F[File Output]
 ```
-
-The enhanced flow incorporates the two-stage system with database-driven character tracking and deterministic speaker attribution.
 
 ### Filtered Processing Flow
 
@@ -180,7 +152,7 @@ The enhanced flow incorporates the two-stage system with database-driven charact
 graph LR
     A[Volume Loader] --> B[Chapter Selector]
     B --> C[Dialogue Classifier Agent]
-    C --> D[Speaker Attribution Agent] 
+    C --> D[Speaker Attribution Agent]
     D --> E[Utterance Filter]
     E --> F[JSONL Writer]
     F --> G[File Output]
@@ -190,12 +162,10 @@ This flow adds filtering capabilities after speaker attribution to remove unwant
 
 ## Development Status
 
-- **Phase**: Transitioning from rapid prototyping to spans-first two-stage architecture
-- **Legacy Components**: 7 custom components available and working
-- **New Components**: Two-stage system (dialogue classifier + speaker attribution) designed
-- **Database Integration**: Optional; future character memory integration
-- **Status**: Legacy system ready for workflow testing, two-stage system architecture complete
-- **Next Steps**: Implementation of hybrid dialogue classifier and speaker attribution agents
+- Phase: KISS segmentation prototype
+- Custom components: Loader, validator, resolver, classifier, iterator, orchestrator
+- Database integration: Out of scope
+- Next: Casting design note → SSML → TTS (future)
 
 ## Architecture Evolution
 
@@ -205,12 +175,11 @@ This flow adds filtering capabilities after speaker attribution to remove unwant
 - File-based processing and output
 - Limited character awareness
 
-### Target State (Two-stage System)
+### Target State (Later)
 
-- Hybrid dialogue classification (heuristic + AI fallback)
-- Optional character memory for speaker attribution
-- Confidence scoring and quality metrics
-- Voice casting preparation capabilities
+- Casting and character bible
+- SSML assembly
+- TTS rendering
 
 ## Related Documentation
 

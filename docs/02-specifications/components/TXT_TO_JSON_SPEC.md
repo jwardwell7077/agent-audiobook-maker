@@ -18,7 +18,7 @@ Convert a plain-text chapter into a structured JSON representation that preserve
     - max_paragraph_len: int (optional) – soft wrap threshold (no reflow by default).
 - Output (chapter_structured.json)
   - book_name, chapter_index, chapter_title
-  - paragraphs: string\[\] – each entry is a paragraph; a blank line between paragraphs is represented by a double newline "\\n\\n" inside the previous paragraph when preserve_lines=true.
+  - paragraphs: string[] – each entry is a paragraph; a blank line between paragraphs is represented by a double newline "\\n\\n" inside the previous paragraph when preserve_lines=true.
   - stats: { paragraph_count, char_count, word_count }
   - sha256: hex – hash of normalized input for determinism.
   - version, created_at
@@ -56,4 +56,4 @@ Convert a plain-text chapter into a structured JSON representation that preserve
 
 ## Integration
 
-- When processing full books, scope to the chapters_section span from Section Classifier, then pass each chapter slice into this converter to populate paragraphs\[\].
+- When processing full books, scope to the chapters_section span from Section Classifier, then pass each chapter slice into this converter to populate paragraphs[].

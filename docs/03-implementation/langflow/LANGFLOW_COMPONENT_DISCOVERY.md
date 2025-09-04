@@ -10,19 +10,20 @@ The `LANGFLOW_COMPONENTS_PATH` environment variable was not properly exported du
 
 ## Solution
 
-1. **Directory Structure** (already correct):
+1. **Directory Structure** (example):
 
    ```
    /src/abm/lf_components/
    ├── __init__.py
    └── audiobook/
-       ├── __init__.py
-       ├── abm_chapter_selector.py
-       ├── abm_chapter_volume_loader.py
-       ├── abm_segment_dialogue_narration.py
-       ├── abm_utterance_filter.py
-       ├── abm_utterance_jsonl_writer.py
-       └── test_component.py
+      ├── __init__.py
+      ├── abm_chapter_loader.py
+      ├── abm_block_schema_validator.py
+      ├── abm_mixed_block_resolver.py
+      ├── abm_span_classifier.py
+      ├── abm_span_iterator.py
+      ├── abm_span_attribution.py
+      └── abm_artifact_orchestrator.py
    ```
 
 1. **Environment Variable Export**:
@@ -58,14 +59,14 @@ After the fix, LangFlow startup shows:
 - LANGFLOW_COMPONENTS_PATH: /home/jon/repos/audio-book-maker-lg/src/abm/lf_components
 ```text
 
-And the "Audiobook" category appears in the LangFlow UI with all 6 components visible.
+And the "Audiobook" category appears in the LangFlow UI with the ABM components visible.
 
-## Components Now Available in UI
+## Components Now Available in UI (examples)
 
-1. **ABM Chapter Selector** - Selects chapters from volumes
-2. **ABM Chapter Volume Loader** - Loads volume data for processing  
-3. **ABM Segment Dialogue Narration** - Segments dialogue and narration
-4. **ABM Utterance Filter** - Filters utterances by criteria
-5. **ABM Utterance JSONL Writer** - Writes utterances to JSONL format
-6. **Test Component** - Minimal test component for validation
+- ABMChapterLoader
+- ABMBlockSchemaValidator
+- ABMMixedBlockResolver
+- ABMSpanClassifier
+- ABMSpanIterator
+- ABMArtifactOrchestrator
 ````

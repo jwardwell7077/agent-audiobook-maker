@@ -40,7 +40,7 @@ Your chapters contain **bulk text** that needs intelligent segmentation:
   },
   {
     "text": "Quinn dismissed the petty mockery as he carried on walking down the school corridor.",
-    "type": "narration", 
+    "type": "narration",
     "chunk_id": 2,
     "context_before": "\"Try not to die by tripping over yourself, Quinn!\"",
     "context_after": "The harassment had become a daily occurrence..."
@@ -61,7 +61,7 @@ class EnhancedTextChunker:
     """
     Smart text chunking for LLM processing with dialogue/narration awareness
     """
-    
+
     def __init__(self):
         # Dialogue indicators (high confidence)
         self.dialogue_patterns = [
@@ -70,38 +70,38 @@ class EnhancedTextChunker:
             r'"[^"]*"',                    # Smart quotes
             r'«[^»]*»',                    # European quotes
         ]
-        
+
         # Attribution patterns (speaker indicators)
         self.attribution_patterns = [
             r'\b(\w+)\s+(said|asked|replied|shouted|whispered|exclaimed)\b',
             r'\b(he|she|they)\s+(said|asked|replied)\b',
             r'\bsaid\s+(\w+)\b',
         ]
-        
+
         # Narration indicators
         self.narration_patterns = [
             r'\b(\w+)\s+(walked|ran|thought|looked|felt|seemed)\b',
             r'\b(The|A|An)\s+\w+',
             r'\b(Meanwhile|However|Then|After|Before)\b',
         ]
-        
+
         # Sentence boundaries
         self.sentence_endings = ['.', '!', '?', '...', '."', ".'", '!"', "!'", '?"', "?'"]
-        
+
     def chunk_chapter(self, chapter_text: str, max_chunk_size: int = 500) -> List[Dict]:
         """
         Chunk chapter text into optimal segments for LLM processing
         """
         chunks = []
         sentences = self._split_into_sentences(chapter_text)
-        
+
         current_chunk = []
         current_size = 0
         chunk_id = 1
-        
+
         for i, sentence in enumerate(sentences):
             sentence_size = len(sentence)
-            
+
             # Check if adding sentence exceeds max size
             if current_size + sentence_size > max_chunk_size and current_chunk:
                 # Flush current chunk
@@ -111,14 +111,14 @@ class EnhancedTextChunker:
                         chunk_text, chunk_id, sentences, i, current_chunk
                     ))
                     chunk_id += 1
-                
+
                 # Start new chunk
                 current_chunk = [sentence]
                 current_size = sentence_size
             else:
                 current_chunk.append(sentence)
                 current_size += sentence_size
-        
+
         # Don't forget final chunk
         if current_chunk:
             chunk_text = ' '.join(current_chunk).strip()
@@ -126,9 +126,9 @@ class EnhancedTextChunker:
                 chunks.append(self._create_chunk(
                     chunk_text, chunk_id, sentences, len(sentences), current_chunk
                 ))
-        
+
         return chunks
-    
+
     def _split_into_sentences(self, text: str) -> List[str]:
         """
         Smart sentence splitting that preserves dialogue boundaries
@@ -138,10 +138,10 @@ class EnhancedTextChunker:
         current_sentence = ""
         in_quote = False
         quote_char = None
-        
+
         for char in text:
             current_sentence += char
-            
+
             # Track quote state
             if char in ['"', "'", '"', '"'] and not in_quote:
                 in_quote = True
@@ -149,38 +149,38 @@ class EnhancedTextChunker:
             elif char == quote_char and in_quote:
                 in_quote = False
                 quote_char = None
-            
+
             # Split on sentence endings, but not within quotes
             if char in ['.', '!', '?'] and not in_quote:
                 # Look ahead to see if this is really the end
                 if self._is_sentence_end(current_sentence):
                     sentences.append(current_sentence.strip())
                     current_sentence = ""
-        
+
         # Add remaining text
         if current_sentence.strip():
             sentences.append(current_sentence.strip())
-            
+
         return sentences
-    
-    def _create_chunk(self, chunk_text: str, chunk_id: int, all_sentences: List[str], 
+
+    def _create_chunk(self, chunk_text: str, chunk_id: int, all_sentences: List[str],
                      current_index: int, current_chunk: List[str]) -> Dict:
         """
         Create a properly structured chunk with metadata
         """
         # Determine chunk type (dialogue vs narration)
         chunk_type = self._classify_chunk_type(chunk_text)
-        
+
         # Generate context windows
         context_before = self._get_context_before(all_sentences, current_index, 2)
         context_after = self._get_context_after(all_sentences, current_index, 2)
-        
+
         # Extract dialogue if present
         dialogue_text = self._extract_dialogue(chunk_text) if chunk_type == "dialogue" else ""
-        
+
         # Find attribution clues
         attribution_clues = self._find_attribution_clues(chunk_text + " " + context_after)
-        
+
         return {
             "chunk_id": chunk_id,
             "text": chunk_text,
@@ -198,17 +198,17 @@ class EnhancedTextChunker:
                 "complexity": self._assess_complexity(chunk_text)
             }
         }
-    
+
     def _classify_chunk_type(self, text: str) -> str:
         """
         Classify chunk as dialogue, narration, or mixed
         """
         has_quotes = any(re.search(pattern, text) for pattern in self.dialogue_patterns)
-        has_attribution = any(re.search(pattern, text, re.IGNORECASE) 
+        has_attribution = any(re.search(pattern, text, re.IGNORECASE)
                             for pattern in self.attribution_patterns)
-        has_narration = any(re.search(pattern, text, re.IGNORECASE) 
+        has_narration = any(re.search(pattern, text, re.IGNORECASE)
                           for pattern in self.narration_patterns)
-        
+
         if has_quotes and has_attribution:
             return "dialogue"
         elif has_quotes and not has_narration:
@@ -250,26 +250,26 @@ class ABMChapterLoader(Component):
             "total_blocks": len(blocks),
         }
         return Data(data={"blocks": blocks, **meta})
-        
+
         # Find target chapter
         target_chapter = None
         for chapter in chapters_data["chapters"]:
             if chapter["index"] == self.chapter_index:
                 target_chapter = chapter
                 break
-        
+
         if not target_chapter:
             return Data(data={"error": f"Chapter {self.chapter_index} not found"})
-        
+
         # Initialize chunker
         chunker = EnhancedTextChunker()
-        
+
         # Chunk the chapter text
         chunks = chunker.chunk_chapter(
-            target_chapter["body_text"], 
+            target_chapter["body_text"],
             max_chunk_size=self.max_chunk_size
         )
-        
+
         return Data(data={
             "book_name": self.book_name,
             "chapter_index": self.chapter_index,
@@ -297,15 +297,15 @@ ABMChapterLoader (blocks_data) → ABMBlockSchemaValidator → ABMMixedBlockReso
 class ABMSpanIterator(Component):
     display_name = "ABM Block Iterator"
     description = "Process blocks one by one through the two-stage pipeline"
-    
+
     def process_blocks(self) -> Data:
         """Iterate through blocks and prepare for agent processing"""
-        
+
     chunks_data = self.chunks_data.data
     chunks = chunks_data.get("chunks", [])
-        
+
         processed_results = []
-        
+
     for chunk in chunks:
             # Prepare data for Stage 1 (Dialogue Classifier)
             utterance_data = {
@@ -317,10 +317,10 @@ class ABMSpanIterator(Component):
                 "utterance_idx": chunk["chunk_id"],
                 "processing_hints": chunk["processing_hints"]
             }
-            
+
             # This would connect to your two-stage pipeline
             processed_results.append(utterance_data)
-        
+
         return Data(data={
             "batch_utterances": processed_results,
             "total_utterances": len(processed_results),
@@ -343,7 +343,7 @@ ______________________________________________________________________
     ABMDialogueClassifier (Stage 1: Classify dialogue/narration)
    ↓
    ChatOutput (Debug: Show classification)
-   ↓ 
+   ↓
     ABMSpeakerAttribution (Stage 2: Identify speakers)
    ↓
    ChatOutput (Debug: Show attribution)
@@ -390,7 +390,7 @@ ______________________________________________________________________
     "classification": "dialogue",
     "confidence": 0.95,
     "speaker_attribution": {
-      "character_name": "Unknown Boy", 
+      "character_name": "Unknown Boy",
       "confidence": 0.8,
       "method": "direct_explicit_said"
     }
@@ -448,12 +448,12 @@ CHUNKING_CONFIG = {
     "max_chunk_size": 300,          # Max words per chunk
     "min_chunk_size": 50,           # Min words per chunk  
     "context_window": 2,            # Sentences for context
-    
+
     # Boundary preservation
     "preserve_dialogue": True,      # Don't split quotes
     "preserve_paragraphs": True,    # Respect paragraph breaks
     "smart_sentence_split": True,   # Handle complex punctuation
-    
+
     # Classification hints
     "boost_attribution_clues": True,    # Weight dialogue with speakers higher
     "detect_conversation_flow": True,   # Track multi-turn dialogue

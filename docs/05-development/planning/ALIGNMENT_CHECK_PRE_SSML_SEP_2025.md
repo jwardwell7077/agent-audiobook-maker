@@ -1,7 +1,6 @@
 # Alignment Check — Pre‑SSML Redesign (Sept 2025)
 
-Source redesign: `docs/03-implementation/langflow/REDESIGN_PRE_SSML_PIPELINE.md`
-Scope: Upstream (Blocks → Spans → Spans_Cls → Spans_Attr → Spans_Cast; optional Spans_Style)
+Source redesign: `docs/03-implementation/langflow/REDESIGN_PRE_SSML_PIPELINE.md` Scope: Upstream (Blocks → Spans → Spans_Cls → Spans_Attr → Spans_Cast; optional Spans_Style)
 
 ## Snapshot summary
 

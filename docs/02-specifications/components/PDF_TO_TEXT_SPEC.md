@@ -1,8 +1,6 @@
 # PDF → Text — Full Design Spec
 
-Status: Draft
-Owner: jon
-Last updated: 2025-08-21
+Status: Draft Owner: jon Last updated: 2025-08-21
 
 ## Overview
 

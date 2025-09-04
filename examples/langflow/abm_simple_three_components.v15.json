@@ -73,8 +73,8 @@
             "beta": false,
             "conditional_paths": [],
             "custom_fields": {},
-            "description": "Run the end-to-end two-agent pipeline for a chapter",
-            "display_name": "ABM Two-Agent Runner",
+            "description": "Run the end-to-end ABM pipeline for a chapter",
+            "display_name": "ABM Chapter Pipeline Runner",
             "documentation": "Executes: Enhanced Loader → Block Iterator → Dialogue Classifier → Speaker Attribution → Aggregator",
             "edited": false,
             "field_order": [
@@ -258,7 +258,7 @@
             "custom_fields": {},
             "description": "Normalize aggregated results into standard utterances schema",
             "display_name": "ABM Results → Utterances",
-            "documentation": "Takes aggregated two-agent results and emits `utterances` list",
+            "documentation": "Takes aggregated results and emits `utterances` list",
             "edited": false,
             "field_order": [
               "aggregated_results"
@@ -293,7 +293,7 @@
                 "advanced": false,
                 "display_name": "Aggregated Results",
                 "dynamic": false,
-                "info": "Output of ABM Two-Agent Runner",
+                "info": "Output of ABM Pipeline Runner",
                 "input_types": [
                   "Data"
                 ],
@@ -434,7 +434,7 @@
       "zoom": 1
     }
   },
-  "description": "Simple 3-component pipeline: Two-Agent Runner → Utterances → JSONL",
+  "description": "Simple 3-component pipeline: Pipeline Runner → Utterances → JSONL",
   "endpoint_name": null,
   "id": "abm_simple_three_components_v15",
   "is_component": false,

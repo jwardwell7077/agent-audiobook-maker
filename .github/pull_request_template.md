@@ -1,3 +1,23 @@
+# Pull Request
+
+## Linked Issue
+
+Fixes #
+
+## What changed
+
+-
+
+## How verified
+
+- Lint/typecheck/tests
+- Manual smoke as applicable
+
+## Risk & rollout
+
+- Risk level: low/med/high
+- Rollout plan / rollback
+
 ## Summary
 
 - What changed and why?

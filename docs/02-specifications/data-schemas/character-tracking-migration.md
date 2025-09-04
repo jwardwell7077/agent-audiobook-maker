@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS characters (
     profile JSONB DEFAULT '{}'::JSONB, -- collected character traits and data
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     -- Constraints
     CONSTRAINT characters_name_not_empty CHECK (length(trim(name)) > 0),
     CONSTRAINT characters_book_name_unique UNIQUE (book_id, canonical_name)
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS character_text_segments (
     context_after TEXT, -- text context after the segment
     confidence_score FLOAT DEFAULT 0.0, -- agent confidence in association
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     -- Constraints
     CONSTRAINT cts_segment_type_valid CHECK (segment_type IN ('dialogue', 'about_character', 'context')),
     CONSTRAINT cts_confidence_valid CHECK (confidence_score >= 0.0 AND confidence_score <= 1.0),
@@ -65,7 +65,7 @@ CREATE INDEX idx_cts_relationship ON character_text_segments(relationship);
 
 ```sql
 -- Add columns to existing utterances table for agent processing results
-ALTER TABLE utterances 
+ALTER TABLE utterances
 ADD COLUMN IF NOT EXISTS dialogue_classification VARCHAR(20), -- 'dialogue', 'narration', 'mixed'
 ADD COLUMN IF NOT EXISTS dialogue_confidence FLOAT DEFAULT 0.0, -- classifier confidence
 ADD COLUMN IF NOT EXISTS speaker_character_id INTEGER, -- resolved speaker character
@@ -73,17 +73,17 @@ ADD COLUMN IF NOT EXISTS speaker_confidence FLOAT DEFAULT 0.0, -- attribution co
 ADD COLUMN IF NOT EXISTS processed_by_agents TIMESTAMP; -- when agents last processed
 
 -- Add foreign key constraint for speaker_character_id
-ALTER TABLE utterances 
-ADD CONSTRAINT fk_utterances_speaker_character 
+ALTER TABLE utterances
+ADD CONSTRAINT fk_utterances_speaker_character
 FOREIGN KEY (speaker_character_id) REFERENCES characters(id) ON DELETE SET NULL;
 
 -- Add check constraints for new columns
-ALTER TABLE utterances 
-ADD CONSTRAINT utterances_dialogue_class_valid 
+ALTER TABLE utterances
+ADD CONSTRAINT utterances_dialogue_class_valid
 CHECK (dialogue_classification IN ('dialogue', 'narration', 'mixed') OR dialogue_classification IS NULL),
-ADD CONSTRAINT utterances_dialogue_conf_valid 
+ADD CONSTRAINT utterances_dialogue_conf_valid
 CHECK (dialogue_confidence >= 0.0 AND dialogue_confidence <= 1.0),
-ADD CONSTRAINT utterances_speaker_conf_valid 
+ADD CONSTRAINT utterances_speaker_conf_valid
 CHECK (speaker_confidence >= 0.0 AND speaker_confidence <= 1.0);
 
 -- Add indexes for performance
@@ -96,8 +96,8 @@ CREATE INDEX IF NOT EXISTS idx_utterances_processed_by_agents ON utterances(proc
 
 ```sql
 -- Add foreign key constraint for first_appearance_segment_id
-ALTER TABLE characters 
-ADD CONSTRAINT fk_characters_first_appearance 
+ALTER TABLE characters
+ADD CONSTRAINT fk_characters_first_appearance
 FOREIGN KEY (first_appearance_segment_id) REFERENCES utterances(id) ON DELETE SET NULL;
 
 CREATE INDEX IF NOT EXISTS idx_characters_first_appearance ON characters(first_appearance_segment_id);
@@ -170,7 +170,7 @@ ALTER TABLE characters DROP CONSTRAINT IF EXISTS fk_characters_first_appearance;
 ALTER TABLE utterances DROP CONSTRAINT IF EXISTS fk_utterances_speaker_character;
 
 -- Remove added columns from utterances
-ALTER TABLE utterances 
+ALTER TABLE utterances
 DROP COLUMN IF EXISTS dialogue_classification,
 DROP COLUMN IF EXISTS dialogue_confidence,
 DROP COLUMN IF EXISTS speaker_character_id,
@@ -198,23 +198,23 @@ After migration, run these queries to validate the schema:
 
 ```sql
 -- Verify tables exist
-SELECT table_name FROM information_schema.tables 
-WHERE table_schema = 'public' 
+SELECT table_name FROM information_schema.tables
+WHERE table_schema = 'public'
 AND table_name IN ('characters', 'character_text_segments');
 
 -- Verify utterances columns added
-SELECT column_name FROM information_schema.columns 
-WHERE table_schema = 'public' 
-AND table_name = 'utterances' 
+SELECT column_name FROM information_schema.columns
+WHERE table_schema = 'public'
+AND table_name = 'utterances'
 AND column_name IN ('dialogue_classification', 'speaker_character_id');
 
 -- Verify constraints
-SELECT constraint_name, constraint_type FROM information_schema.table_constraints 
-WHERE table_schema = 'public' 
+SELECT constraint_name, constraint_type FROM information_schema.table_constraints
+WHERE table_schema = 'public'
 AND table_name IN ('characters', 'character_text_segments', 'utterances');
 
 -- Verify indexes
-SELECT indexname FROM pg_indexes 
+SELECT indexname FROM pg_indexes
 WHERE tablename IN ('characters', 'character_text_segments', 'utterances')
 AND schemaname = 'public';
 ```

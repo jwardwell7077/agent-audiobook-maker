@@ -19,16 +19,16 @@ Each new character discovered gets a dedicated database table where all related 
 flowchart LR
     Input[📖 Utterance Text] --> Agent1[🤖 Dialogue Classifier]
     Agent1 --> Decision{Dialogue?}
-    
+
     Decision -->|Yes| Agent2[🎭 Speaker Attribution]
     Decision -->|No| Narrator[📝 Narration Handler]
-    
+
     Agent2 --> CharDiscovery[👤 Character Discovery]
     CharDiscovery --> CharDB[(🗄️ Character Tables)]
-    
+
     Narrator --> Context[📋 Context Collector]
     Context --> CharDB
-    
+
     CharDB --> Profile[👥 Character Profile Building]
 ```
 
@@ -103,7 +103,7 @@ Analyze each utterance and classify as dialogue vs. narration using multiple det
 ```json
 {
   "book_id": "SAMPLE_BOOK",
-  "chapter_id": "SAMPLE_BOOK_CH0001", 
+  "chapter_id": "SAMPLE_BOOK_CH0001",
   "utterance_idx": 42,
   "text": "\"Hello there,\" said Anna warmly.",
   "context_before": "Anna walked into the room and noticed...",
@@ -206,7 +206,7 @@ For each character utterance, collect:
 
 ```json
 {
-  "book_id": "SAMPLE_BOOK", 
+  "book_id": "SAMPLE_BOOK",
   "chapter_id": "SAMPLE_BOOK_CH0001",
   "utterance_idx": 42,
   "text": "\"Hello there,\" said Anna warmly.",
@@ -312,9 +312,9 @@ Existing Pipeline:
 PDF → Structured JSON → Utterance Segmentation
 
 New Two-Agent Extension:
-Utterances → Agent 1 (Dialogue Classifier) → Agent 2 (Speaker Attribution) 
+Utterances → Agent 1 (Dialogue Classifier) → Agent 2 (Speaker Attribution)
          → Character Data Collection → Database Storage
-         
+
 Background Process:
 Character Data → Profile Analysis → Voice Casting Profiles
 ```

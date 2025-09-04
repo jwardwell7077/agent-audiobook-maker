@@ -240,7 +240,7 @@ langflow_start_bg:
 .PHONY: langflow_stop
 langflow_stop:
 	chmod +x scripts/langflow_stop.sh; ./scripts/langflow_stop.sh
-	
+
 .PHONY: langflow-import-segments
 langflow-import-segments:
 	./scripts/import_segments_flow.sh

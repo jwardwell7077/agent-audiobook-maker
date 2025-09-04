@@ -1,11 +1,11 @@
 [flake8]
 max-line-length = 120
-extend-ignore = 
+extend-ignore =
     # Allow line breaks before binary operators (W503 is deprecated)
     W503,
     # Allow line breaks after binary operators
     W504
-exclude = 
+exclude =
     .venv,
     __pycache__,
     .git,

@@ -1,10 +1,10 @@
 #!/bin/bash
-# Ollama Model Setup Script for ABM Two-Agent System
+# Ollama Model Setup Script for ABM (legacy banners removed)
 # This script pulls and configures the LLM models needed for dialogue classification
 
 set -e
 
-echo "🤖 Setting up Ollama models for ABM Two-Agent System..."
+echo "🤖 Setting up Ollama models for ABM..."
 
 # Wait for Ollama to be ready
 echo "⏳ Waiting for Ollama to be available..."
@@ -57,7 +57,7 @@ echo "📋 Available models:"
 ollama list
 
 echo ""
-echo "🔧 Models configured for ABM Two-Agent System:"
+echo "🔧 Models configured for ABM:"
 echo "  - llama3.2:3b - Primary model for AI fallback classification"
 echo "  - phi3:mini - Lightweight alternative for fast inference"
 echo "  - dialogue-classifier - Specialized model for dialogue classification"

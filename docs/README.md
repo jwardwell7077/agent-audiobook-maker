@@ -28,7 +28,7 @@ Our documentation is organized into 6 main sections designed for different needs
 | ----------------------------------------------------------- | ------------------------------------ | ------------------------- | --------------------------------------- |
 | **[📋 01-Project Overview](01-project-overview/README.md)** | Vision, architecture, and context    | All stakeholders          | Vision, architecture, project context   |
 | **[📝 02-Specifications](02-specifications/README.md)**     | Technical requirements and contracts | Developers, architects    | API specs, data schemas, components     |
-| **[🔧 03-Implementation](03-implementation/README.md)**     | How the system is built              | Developers                | LangFlow, multi-agent approaches        |
+| **[🔧 03-Implementation](03-implementation/README.md)**     | How the system is built              | Developers                | LangFlow segmentation prototype         |
 | **[📊 04-Diagrams](04-diagrams/README.md)**                 | Visual representations               | All technical roles       | Architecture, workflows, state machines |
 | **[👥 05-Development](05-development/README.md)**           | Contributor resources                | Contributors, maintainers | Processes, journey, roadmaps            |
 | **[📚 06-Appendices](06-appendices/README.md)**             | Reference materials                  | All users                 | Glossary, troubleshooting, resources    |
@@ -52,7 +52,7 @@ Our documentation is organized into 6 main sections designed for different needs
 #### 🏗️ Architect
 
 1. [System Architecture](01-project-overview/ARCHITECTURE.md) - High-level design
-1. [Multi-Agent Roadmap](03-implementation/multi-agent/MULTI_AGENT_ROADMAP.md) - Future direction
+1. Casting/SSML/TTS (future direction) – see roadmap in root README
 1. [Diagrams Collection](04-diagrams/README.md) - Visual documentation
 
 #### 📖 Domain Expert
@@ -100,12 +100,11 @@ Our documentation is organized into 6 main sections designed for different needs
 
 ### What's New
 
-- **Annotation System**: Hybrid dialogue classifier and deterministic speaker attribution with optional database integration
-- **Character Memory (optional)**: Future character profiling for voice casting decisions
-- **LangFlow Components**: Production-ready audiobook processing components
-- **Quality Gates**: Automated validation and error detection systems
-- **Multi-Agent Planning**: Detailed roadmap for production architecture
-- **Documentation Reorganization**: Professional knowledge base structure
+- Annotation prototype: deterministic dialogue/narration segmentation
+- Character memory: future consideration only
+- LangFlow components: audiobook processing components
+- Quality gates: automated validation and error detection
+- Documentation reorganization: professional knowledge base structure
 
 ## 🚀 Getting Started Paths
 
@@ -155,13 +154,13 @@ The Agent Audiobook Maker is a sophisticated text processing pipeline that trans
 
 - **📄 Text Ingestion**: PDF and text file processing with quality validation
 - **🔍 Content Analysis**: Chapter detection, structure classification, quality assessment
-- **✂️ Intelligent Segmentation**: Spans-first two-stage system for dialogue/narration classification and deterministic speaker attribution
+- **✂️ Intelligent Segmentation**: Spans-first segmentation for dialogue/narration
 - **🗄️ Character Memory (optional)**: Future character profiling and voice casting preparation
-- **🤖 AI-Powered Annotation**: Rich metadata generation with confidence scoring and quality metrics
+- **🤖 AI-Powered Annotation**: Rich metadata (later phases)
 - **🎯 Quality Assurance**: Automated validation and human-in-the-loop workflows
 
-**Current Status**: Phase 1+ (Spans-first two-stage) - Hybrid classification\
-**Next Phase**: Phase 2 (Multi-Agent System) - Advanced orchestration and production deployment
+**Current Status**: KISS segmentation prototype\
+**Next Phase**: Casting → SSML → TTS (no multi-agent on this branch)
 
 **Annotation System Features**:
 

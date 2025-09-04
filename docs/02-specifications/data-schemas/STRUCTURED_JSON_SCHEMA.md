@@ -2,8 +2,7 @@
 
 Last updated: 2025-08-21
 
-This defines the "Structured JSON" produced by the ingestion pipeline.
-Starting with v1.1, chapters are embedded directly in the Volume Manifest for simplicity (local‑first, single artifact). Per‑chapter files remain optional as a materialized view.
+This defines the "Structured JSON" produced by the ingestion pipeline. Starting with v1.1, chapters are embedded directly in the Volume Manifest for simplicity (local‑first, single artifact). Per‑chapter files remain optional as a materialized view.
 
 - Volume Manifest: `data/clean/<book_id>/<pdf_stem>_volume.json` (embeds `chapters[]` with full bodies in v1.1)
 - Per‑Chapter JSON (optional): `data/clean/<book_id>/<chapter_id>.json`

@@ -40,7 +40,7 @@ CREATE TABLE chapters (
     metadata JSONB DEFAULT '{}'::JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     UNIQUE(book_id, chapter_index)
 );
 
@@ -56,39 +56,39 @@ CREATE TABLE utterances (
     id SERIAL PRIMARY KEY,
     book_id INTEGER NOT NULL REFERENCES books(id) ON DELETE CASCADE,
     chapter_id INTEGER NOT NULL REFERENCES chapters(id) ON DELETE CASCADE,
-    
+
     -- Core content
     text TEXT NOT NULL,
     position_in_chapter INTEGER NOT NULL,
     word_count INTEGER DEFAULT 0,
     character_count INTEGER DEFAULT 0,
-    
+
     -- Agent 1 results (Dialogue Classification)
     dialogue_classification VARCHAR(20), -- 'dialogue', 'narration', 'mixed'
     dialogue_confidence FLOAT DEFAULT 0.0,
     classification_method VARCHAR(20), -- 'heuristic', 'ai', 'hybrid'
     classification_reasoning TEXT,
-    
+
     -- Agent 2 results (Speaker Attribution)  
     speaker_character_id INTEGER REFERENCES characters(id) ON DELETE SET NULL,
     speaker_confidence FLOAT DEFAULT 0.0,
     attribution_method VARCHAR(20), -- 'direct', 'contextual', 'inferred'
     attribution_reasoning TEXT,
-    
+
     -- Processing metadata
     processed_by_agents TIMESTAMP,
     processing_version VARCHAR(10) DEFAULT '1.0',
-    
+
     -- Timestamps
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     -- Constraints
-    CONSTRAINT utterances_dialogue_class_valid 
+    CONSTRAINT utterances_dialogue_class_valid
         CHECK (dialogue_classification IN ('dialogue', 'narration', 'mixed') OR dialogue_classification IS NULL),
-    CONSTRAINT utterances_dialogue_conf_valid 
+    CONSTRAINT utterances_dialogue_conf_valid
         CHECK (dialogue_confidence >= 0.0 AND dialogue_confidence <= 1.0),
-    CONSTRAINT utterances_speaker_conf_valid 
+    CONSTRAINT utterances_speaker_conf_valid
         CHECK (speaker_confidence >= 0.0 AND speaker_confidence <= 1.0),
     CONSTRAINT utterances_position_positive
         CHECK (position_in_chapter > 0)
@@ -100,7 +100,7 @@ CREATE INDEX idx_utterances_chapter_id ON utterances(chapter_id);
 CREATE INDEX idx_utterances_position ON utterances(chapter_id, position_in_chapter);
 CREATE INDEX idx_utterances_dialogue_class ON utterances(dialogue_classification);
 CREATE INDEX idx_utterances_speaker_id ON utterances(speaker_character_id);
-CREATE INDEX idx_utterances_unprocessed ON utterances(book_id, processed_by_agents) 
+CREATE INDEX idx_utterances_unprocessed ON utterances(book_id, processed_by_agents)
     WHERE processed_by_agents IS NULL;
 ```
 
@@ -110,16 +110,16 @@ CREATE INDEX idx_utterances_unprocessed ON utterances(book_id, processed_by_agen
 CREATE TABLE characters (
     id SERIAL PRIMARY KEY,
     book_id INTEGER NOT NULL REFERENCES books(id) ON DELETE CASCADE,
-    
+
     -- Character identification
     name VARCHAR(255) NOT NULL,
     canonical_name VARCHAR(255) NOT NULL, -- normalized form for matching
     display_name VARCHAR(255), -- preferred display form
-    
+
     -- Character classification
     character_type VARCHAR(50) DEFAULT 'person', -- 'person', 'narrator', 'group', 'entity'
     importance_level VARCHAR(20) DEFAULT 'unknown', -- 'major', 'minor', 'background'
-    
+
     -- Aliases and alternative names (JSONB for flexibility)
     aliases JSONB DEFAULT '[]'::JSONB,
     /* Alias structure:
@@ -129,31 +129,31 @@ CREATE TABLE characters (
         {"name": "Dad", "type": "relationship", "confidence": 0.7, "used_by": ["Mary", "Tom"]}
     ]
     */
-    
+
     -- Character profile (JSONB for flexible schema evolution)
     profile JSONB DEFAULT '{}'::JSONB,
     /* Profile structure documented below */
-    
+
     -- First appearance tracking
     first_appearance_segment_id INTEGER,
     first_mention_chapter_id INTEGER REFERENCES chapters(id),
-    
+
     -- Statistics (updated by triggers or batch processes)
     dialogue_count INTEGER DEFAULT 0,
     mention_count INTEGER DEFAULT 0,
     total_word_count INTEGER DEFAULT 0,
-    
+
     -- Timestamps
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     -- Constraints
     CONSTRAINT characters_name_not_empty CHECK (length(trim(name)) > 0),
     CONSTRAINT characters_canonical_not_empty CHECK (length(trim(canonical_name)) > 0),
     CONSTRAINT characters_book_canonical_unique UNIQUE (book_id, canonical_name),
-    CONSTRAINT characters_type_valid 
+    CONSTRAINT characters_type_valid
         CHECK (character_type IN ('person', 'narrator', 'group', 'entity', 'unknown')),
-    CONSTRAINT characters_importance_valid 
+    CONSTRAINT characters_importance_valid
         CHECK (importance_level IN ('major', 'minor', 'background', 'unknown'))
 );
 
@@ -167,8 +167,8 @@ CREATE INDEX idx_characters_type ON characters(character_type);
 CREATE INDEX idx_characters_first_appearance ON characters(first_appearance_segment_id);
 
 -- Add foreign key constraint after utterances table exists
-ALTER TABLE characters 
-ADD CONSTRAINT fk_characters_first_appearance 
+ALTER TABLE characters
+ADD CONSTRAINT fk_characters_first_appearance
 FOREIGN KEY (first_appearance_segment_id) REFERENCES utterances(id) ON DELETE SET NULL;
 ```
 
@@ -179,20 +179,20 @@ CREATE TABLE character_text_segments (
     id SERIAL PRIMARY KEY,
     character_id INTEGER NOT NULL REFERENCES characters(id) ON DELETE CASCADE,
     utterance_id INTEGER NOT NULL REFERENCES utterances(id) ON DELETE CASCADE,
-    
+
     -- Relationship type
     segment_type VARCHAR(20) NOT NULL, -- 'dialogue', 'about_character', 'context', 'action'
     relationship VARCHAR(50) NOT NULL, -- 'speaker', 'addressee', 'mentioned', 'described_by', 'action_by'
-    
+
     -- Context preservation
     context_before TEXT, -- text immediately before this segment
     context_after TEXT, -- text immediately after this segment
-    
+
     -- Agent confidence and reasoning
     confidence_score FLOAT DEFAULT 0.0,
     detection_method VARCHAR(30), -- 'dialogue_tag', 'contextual', 'pattern_match', 'ai_inference'
     reasoning TEXT, -- explanation of why this association was made
-    
+
     -- Additional context data (JSONB for flexibility)
     context_data JSONB DEFAULT '{}'::JSONB,
     /* Context data structure:
@@ -205,19 +205,19 @@ CREATE TABLE character_text_segments (
         "speaking_style": "formal"
     }
     */
-    
+
     -- Timestamps
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     -- Constraints
-    CONSTRAINT cts_segment_type_valid 
+    CONSTRAINT cts_segment_type_valid
         CHECK (segment_type IN ('dialogue', 'about_character', 'context', 'action')),
-    CONSTRAINT cts_relationship_valid 
+    CONSTRAINT cts_relationship_valid
         CHECK (relationship IN ('speaker', 'addressee', 'mentioned', 'described_by', 'action_by', 'referenced')),
-    CONSTRAINT cts_confidence_valid 
+    CONSTRAINT cts_confidence_valid
         CHECK (confidence_score >= 0.0 AND confidence_score <= 1.0),
-    CONSTRAINT cts_character_utterance_relationship_unique 
+    CONSTRAINT cts_character_utterance_relationship_unique
         UNIQUE (character_id, utterance_id, relationship)
 );
 
@@ -238,7 +238,7 @@ The `characters.profile` JSONB field stores comprehensive character information:
 {
     "basic_info": {
         "age": "unknown",
-        "gender": "unknown", 
+        "gender": "unknown",
         "occupation": [],
         "relationships": {
             "family": [],
@@ -329,7 +329,7 @@ The `characters.profile` JSONB field stores comprehensive character information:
 
 ```sql
 CREATE VIEW character_summary AS
-SELECT 
+SELECT
     c.id,
     c.book_id,
     c.name,
@@ -338,21 +338,21 @@ SELECT
     c.dialogue_count,
     c.mention_count,
     c.total_word_count,
-    
+
     -- Profile extracts
     c.profile->>'basic_info'->>'gender' as gender,
     c.profile->>'basic_info'->>'age' as age,
     c.profile->>'personality'->>'traits' as personality_traits,
     c.profile->>'voice_casting_data'->>'suggested_voice_type' as voice_type,
-    
+
     -- Statistics
     COUNT(cts.id) as total_text_associations,
     COUNT(CASE WHEN cts.relationship = 'speaker' THEN 1 END) as speaking_instances,
     COUNT(CASE WHEN cts.relationship = 'mentioned' THEN 1 END) as mention_instances,
-    
+
     c.created_at,
     c.updated_at
-    
+
 FROM characters c
 LEFT JOIN character_text_segments cts ON c.id = cts.character_id
 GROUP BY c.id;
@@ -362,17 +362,17 @@ GROUP BY c.id;
 
 ```sql
 CREATE VIEW character_dialogue_analysis AS
-SELECT 
+SELECT
     c.id as character_id,
     c.name,
     COUNT(cts.id) as dialogue_segments,
     AVG(u.word_count) as avg_words_per_segment,
     STRING_AGG(DISTINCT u.dialogue_classification, ', ') as dialogue_types,
     AVG(cts.confidence_score) as avg_attribution_confidence,
-    
+
     -- Recent dialogue sample
     ARRAY_AGG(u.text ORDER BY u.created_at DESC)[:5] as recent_dialogue_sample
-    
+
 FROM characters c
 JOIN character_text_segments cts ON c.id = cts.character_id
 JOIN utterances u ON cts.utterance_id = u.id
@@ -431,9 +431,9 @@ BEGIN
     RETURN QUERY
     SELECT c.id, 'exact_name'::TEXT, 1.0::FLOAT
     FROM characters c
-    WHERE c.book_id = p_book_id 
+    WHERE c.book_id = p_book_id
       AND (c.name = p_name OR c.canonical_name = p_name OR c.display_name = p_name);
-    
+
     -- If no direct match, check aliases
     IF NOT FOUND THEN
         RETURN QUERY
@@ -445,7 +445,7 @@ BEGIN
         ORDER BY (alias->>'confidence')::FLOAT DESC
         LIMIT 1;
     END IF;
-    
+
     -- If still no match, fuzzy search
     IF NOT FOUND THEN
         RETURN QUERY
@@ -464,17 +464,17 @@ $$ LANGUAGE plpgsql;
 
 ```sql
 -- Batch update character statistics
-CREATE OR REPLACE FUNCTION update_character_statistics(p_character_ids INTEGER[]) 
+CREATE OR REPLACE FUNCTION update_character_statistics(p_character_ids INTEGER[])
 RETURNS VOID AS $$
 BEGIN
-    UPDATE characters 
-    SET 
+    UPDATE characters
+    SET
         dialogue_count = stats.dialogue_count,
         mention_count = stats.mention_count,
         total_word_count = stats.total_words,
         updated_at = CURRENT_TIMESTAMP
     FROM (
-        SELECT 
+        SELECT
             cts.character_id,
             COUNT(CASE WHEN cts.relationship = 'speaker' THEN 1 END) as dialogue_count,
             COUNT(CASE WHEN cts.relationship = 'mentioned' THEN 1 END) as mention_count,
@@ -495,12 +495,12 @@ $$ LANGUAGE plpgsql;
 
 ```sql
 -- Ensure character-utterance associations are valid
-CREATE OR REPLACE FUNCTION validate_character_associations() 
+CREATE OR REPLACE FUNCTION validate_character_associations()
 RETURNS TABLE(issue_type TEXT, character_id INTEGER, utterance_id INTEGER, description TEXT) AS $$
 BEGIN
     -- Check for orphaned character associations
     RETURN QUERY
-    SELECT 
+    SELECT
         'orphaned_association'::TEXT,
         cts.character_id,
         cts.utterance_id,
@@ -509,10 +509,10 @@ BEGIN
     LEFT JOIN characters c ON cts.character_id = c.id
     LEFT JOIN utterances u ON cts.utterance_id = u.id
     WHERE c.id IS NULL OR u.id IS NULL;
-    
+
     -- Check for inconsistent speaker attributions
     RETURN QUERY
-    SELECT 
+    SELECT
         'inconsistent_speaker'::TEXT,
         cts.character_id,
         cts.utterance_id,
@@ -521,10 +521,10 @@ BEGIN
     JOIN utterances u ON cts.utterance_id = u.id
     WHERE cts.relationship = 'speaker'
       AND (u.speaker_character_id != cts.character_id OR u.speaker_character_id IS NULL);
-      
+
     -- Check for duplicate speaker assignments
     RETURN QUERY
-    SELECT 
+    SELECT
         'duplicate_speaker'::TEXT,
         cts1.character_id,
         cts1.utterance_id,
@@ -567,7 +567,7 @@ BEGIN
             WHERE c.book_id = p_book_id
         )
     ) INTO result;
-    
+
     RETURN result;
 END;
 $$ LANGUAGE plpgsql;

@@ -22,6 +22,4 @@ References:
 - src/abm/classifier/section_classifier.py (fa99ab7-style)
 - tests/unit_tests/test_section_classifier_block.py
 
-Owner: TBD
-Priority: Medium
-Status: Open (test skipped)
+Owner: TBD Priority: Medium Status: Open (test skipped)

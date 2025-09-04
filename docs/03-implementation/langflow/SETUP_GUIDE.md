@@ -127,8 +127,7 @@ Check terminal output for:
 
 **Purpose**: Segments chapters into dialogue and narration
 
-**Algorithm**: Quote-based detection using paragraph structure
-**Configuration**:
+**Algorithm**: Quote-based detection using paragraph structure **Configuration**:
 
 - `min_segment_length`: Minimum segment length in characters
 - `dialogue_markers`: Characters indicating dialogue (default: quotation marks)
@@ -212,8 +211,7 @@ Pre-built workflow available at: `examples/langflow/mvp_audiobook_processing_flo
 
 ### Components Not Visible
 
-**Issue**: Components don't appear in LangFlow UI
-**Solution**:
+**Issue**: Components don't appear in LangFlow UI **Solution**:
 
 1. Check LANGFLOW_COMPONENTS_PATH environment variable
 1. Restart LangFlow server
@@ -221,8 +219,7 @@ Pre-built workflow available at: `examples/langflow/mvp_audiobook_processing_flo
 
 ### Data Path Errors
 
-**Issue**: Components can't find data files
-**Solution**:
+**Issue**: Components can't find data files **Solution**:
 
 1. Verify ABM_DATA_ROOT and related paths in .env
 1. Check that sample data exists at expected locations
@@ -230,8 +227,7 @@ Pre-built workflow available at: `examples/langflow/mvp_audiobook_processing_flo
 
 ### Connection Errors
 
-**Issue**: Components won't connect properly
-**Solution**:
+**Issue**: Components won't connect properly **Solution**:
 
 1. Verify compatible data types between components
 1. Check component input/output specifications

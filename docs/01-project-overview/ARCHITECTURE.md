@@ -20,13 +20,13 @@ flowchart LR
   TxtStructured["TXT→Structured (paragraphs[])"]
 
     JSONStruct(("Structured JSON (manifest + chapters)"))
-    
+
   subgraph Anno["Spans-first two-stage Annotation"]
       DialogueAgent["Dialogue Classifier<br/>(Hybrid: Heuristic + AI)"]
   SpeakerAgent["Speaker Attribution"]
   CharDB(("Character DB (optional)"))
     end
-    
+
     Artifacts(("data/clean/<book>/<chapter>.json\n<pdf_stem>_volume.json"))
     Annos(("data/annotations/<book>/<chapter>.jsonl"))
   end

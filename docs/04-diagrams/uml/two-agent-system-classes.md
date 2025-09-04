@@ -1,7 +1,6 @@
-# \[DEPRECATED\] UML Class Diagram: Two-Agent Character Tracking System
+# [DEPRECATED] UML Class Diagram: Two-Agent Character Tracking System
 
-> Deprecated terminology. See spans-first two-stage components for current
-> UML where available. This document is preserved for historical reference.
+> Deprecated terminology. See spans-first two-stage components for current UML where available. This document is preserved for historical reference.
 
 ## Overview
 
@@ -289,7 +288,7 @@ class LLMInterface(ABC):
     @abstractmethod
     def classify(self, prompt: str, context: dict) -> dict:
         pass
-    
+
     @abstractmethod
     def batch_classify(self, prompts: list[str]) -> list[dict]:
         pass
@@ -302,7 +301,7 @@ class DatabasePool(ABC):
     @abstractmethod
     async def acquire(self) -> Connection:
         pass
-    
+
     @abstractmethod
     async def execute_batch(self, queries: list[str]) -> list[dict]:
         pass

@@ -1,8 +1,6 @@
 # P0 Execution Plan – September 2025
 
-Status: draft
-Branch: snapshot-2025-08-31-wip
-Related: planning/ROADMAP_SEP_2025.md, tickets/ATTRIBUTION_CONFIDENCE_TODO.md
+Status: draft Branch: snapshot-2025-08-31-wip Related: planning/ROADMAP_SEP_2025.md, tickets/ATTRIBUTION_CONFIDENCE_TODO.md
 
 ## Purpose
 
@@ -62,7 +60,7 @@ Goal: Add confidence scaffolding so downstream can consume it before v1 lands.
 
 Tasks
 
-- Define confidence schema: `confidence.score` (float \[0,1\]), `method` (string), optional `evidence` (list\[str\]).
+- Define confidence schema: `confidence.score` (float [0,1]), `method` (string), optional `evidence` (list[str]).
 - Update `ABMSpanAttribution` to emit `confidence.score=0.5`, `method="deterministic_v0"`.
 - Bump artifact version in spans_attr sidecar meta; record `confidence_schema_version`.
 - Update readers (iterator/casting) to accept and pass-through the new fields; no behavior change.
@@ -94,7 +92,7 @@ Tasks
 
 - Implement deterministic features: name proximity, continuity, narration cues, quote boundaries, block context, optional character priors.
 - Create a small weights config (JSON/YAML) with sensible defaults; load via component param.
-- Scoring: weighted sum → normalization to \[0,1\] (logistic or min-max); document choice.
+- Scoring: weighted sum → normalization to [0,1] (logistic or min-max); document choice.
 - Tiebreaker: deterministic hash of `(span_uid, book_id)`; unit test tie scenarios.
 - Threshold parameter (default 0.6) surfaced in orchestrator; mark low-confidence spans in meta summary.
 - Tests: feature unit tests, scorer normalization, tie behavior, end-to-end emission of confidence with `method="deterministic_v1"`.

@@ -49,7 +49,7 @@ When configured with `book_name="mvs"`, the component provides:
 ```python
 {
     "books_dir": "/home/user/data/books",
-    "clean_dir": "/home/user/data/clean", 
+    "clean_dir": "/home/user/data/clean",
     "annotations_dir": "/home/user/data/annotations",
     "book_clean_dir": "/home/user/data/clean/mvs",
     "book_annotations_dir": "/home/user/data/annotations/mvs",

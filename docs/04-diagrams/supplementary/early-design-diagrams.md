@@ -1,7 +1,6 @@
-# \[DEPRECATED\] Supplementary Two-Agent System Diagrams
+# [DEPRECATED] Supplementary Two-Agent System Diagrams
 
-> Deprecated terminology. Retained as historical notes; not representative of
-> the current spans-first two-stage implementation.
+> Deprecated terminology. Retained as historical notes; not representative of the current spans-first two-stage implementation.
 
 ## Early Design Evolution Diagrams
 
@@ -20,20 +19,20 @@ graph TB
         A --> D[narration_context.jsonl]
         A --> E[casting_metadata.json]
     end
-    
+
     subgraph "character_profiles.json Structure"
         B --> F[Character ID Mappings<br/>- canonical_name: string<br/>- display_name: string<br/>- aliases: array<br/>- character_type: string<br/>- first_appearance: string]
     end
-    
-    subgraph "dialogue_collection.jsonl Structure" 
+
+    subgraph "dialogue_collection.jsonl Structure"
         C --> G[Per-Line Records<br/>- character_id: string<br/>- utterance_id: string<br/>- text: string<br/>- context_before: string<br/>- context_after: string<br/>- confidence: float]
     end
-    
+
     subgraph "narration_context.jsonl Structure"
         D --> H[Context Records<br/>- character_id: string<br/>- segment_id: string<br/>- text: string<br/>- relationship: string<br/>- mention_type: string]
     end
-    
-    subgraph "casting_metadata.json Structure" 
+
+    subgraph "casting_metadata.json Structure"
         E --> I[Voice Casting Data<br/>- character_id: string<br/>- estimated_age: string<br/>- gender_markers: array<br/>- speech_patterns: object<br/>- vocal_characteristics: array]
     end
 ```
@@ -64,7 +63,7 @@ erDiagram
     Character_Registry ||--o{ Character_Context : references
     Character_Registry ||--o{ Character_Aliases : has
     Character_Registry ||--o{ Casting_Metadata : generates
-    
+
     Character_Registry {
         string character_id PK
         string canonical_name
@@ -76,7 +75,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     Character_Dialogues {
         string id PK
         string character_id FK
@@ -88,7 +87,7 @@ erDiagram
         string detection_method
         timestamp recorded_at
     }
-    
+
     Character_Context {
         string id PK
         string character_id FK
@@ -99,7 +98,7 @@ erDiagram
         float relevance_score
         timestamp recorded_at
     }
-    
+
     Character_Aliases {
         string id PK
         string character_id FK
@@ -109,7 +108,7 @@ erDiagram
         int first_used_segment
         timestamp created_at
     }
-    
+
     Casting_Metadata {
         string character_id PK
         string estimated_age
@@ -130,39 +129,39 @@ flowchart TD
     B --> C[Analyze Dialogue Tags]
     C --> D[Check Quote Attribution]
     D --> E{Has Clear Attribution?}
-    
+
     E -->|Yes| F[Direct Speaker Assignment]
     E -->|No| G[Contextual Analysis]
-    
+
     G --> H[Check Previous Context]
     H --> I[Look for Address Patterns]
     I --> J[Check Name Proximity]
     J --> K{Multiple Candidates?}
-    
+
     K -->|No| L[Single Speaker Assignment]
     K -->|Yes| M[Apply Disambiguation Rules]
-    
+
     M --> N[Check Conversation Flow]
     N --> O[Analyze Speaking Patterns]
     O --> P[Apply Confidence Scoring]
-    
+
     P --> Q{Confidence > Threshold?}
     Q -->|Yes| R[Speaker Assignment]
     Q -->|No| S[Flag for Manual Review]
-    
+
     F --> T[Identify Addressee Candidates]
     L --> T
     R --> T
-    
+
     T --> U[Check Direct Address Patterns]
     U --> V[Analyze Character Mentions]
     V --> W[Apply Context Rules]
     W --> X[Addressee Assignment]
-    
+
     S --> Y[Uncertain Attribution Record]
     X --> Z[Complete Attribution Record]
     Y --> Z
-    
+
     Z --> AA[Update Character Database]
 ```
 
@@ -173,32 +172,32 @@ flowchart TB
     A[Character Name Extracted] --> B[Normalize Name]
     B --> C[Primary Name Lookup]
     C --> D{Found in Character Registry?}
-    
+
     D -->|Yes| E[Return Character Record]
     D -->|No| F[Alias Lookup]
-    
+
     F --> G[Search Character Aliases]
     G --> H{Alias Match Found?}
-    
+
     H -->|Yes| I[Return Parent Character]
     H -->|No| J[Fuzzy Name Matching]
-    
+
     J --> K[Calculate Name Similarity]
     K --> L{Similarity > Threshold?}
-    
+
     L -->|Yes| M[Return Best Match with Confidence]
     L -->|No| N[Create New Character Record]
-    
+
     N --> O[Generate Character ID]
     O --> P[Initialize Character Profile]
     P --> Q[Add to Character Registry]
     Q --> R[Return New Character Record]
-    
+
     E --> S[Update Character Statistics]
     I --> S
     M --> S
     R --> S
-    
+
     S --> T[Character Lookup Complete]
 ```
 
@@ -212,7 +211,7 @@ flowchart LR
         A[Text Segment Queue] --> B[Context Window Builder]
         B --> C[5-Segment Buffer]
         C --> D[Target Segment Analysis]
-        
+
         subgraph "Buffer Management"
             E[Previous 2 Segments]
             F[Current Target]
@@ -221,19 +220,19 @@ flowchart LR
             C --> F
             C --> G
         end
-        
+
         D --> H[Agent Processing]
         H --> I[Slide Window Forward]
         I --> B
     end
-    
+
     subgraph "Database Query Strategy"
         J[Segment ID Input] --> K[Query Adjacent Segments]
         K --> L[ORDER BY position_in_chapter]
         L --> M[LIMIT 5 OFFSET calculated]
         M --> N[Return Context Window]
     end
-    
+
     subgraph "Memory Optimization"
         O[Context Cache] --> P[LRU Eviction]
         P --> Q[Memory Threshold Check]
@@ -250,10 +249,10 @@ sequenceDiagram
     participant Cache as Context Cache
     participant DB as Database
     participant Proc as Processor
-    
+
     App->>Cache: Request context window for segment_123
     Cache->>Cache: Check if window cached
-    
+
     alt Cache Hit
         Cache->>App: Return cached window
     else Cache Miss
@@ -263,14 +262,14 @@ sequenceDiagram
         Cache->>Cache: Build context window
         Cache->>App: Return new window
     end
-    
+
     App->>Proc: Process context window
     Proc->>Proc: Classification/Attribution
     Proc->>App: Return results
-    
+
     App->>Cache: Mark window as processed
     Cache->>Cache: Update LRU position
-    
+
     loop Memory Management
         Cache->>Cache: Check memory usage
         Cache->>Cache: Evict oldest windows if needed
@@ -291,7 +290,7 @@ classDiagram
         +slide_forward() ContextWindow
         +to_processing_format() Dict
     }
-    
+
     class SegmentBuffer {
         +int max_size = 5
         +Queue~Segment~ segments
@@ -301,7 +300,7 @@ classDiagram
         +evict_oldest() void
         +calculate_memory_usage() int
     }
-    
+
     class ContextCache {
         +Dict~string, ContextWindow~ cache
         +int max_memory_mb = 100
@@ -312,7 +311,7 @@ classDiagram
         +evict_lru() void
         +memory_pressure_check() bool
     }
-    
+
     class OptimizedProcessor {
         +ContextCache cache
         +SegmentBuffer buffer
@@ -321,7 +320,7 @@ classDiagram
         +optimize_memory_usage() void
         +get_processing_stats() ProcessingStats
     }
-    
+
     ContextWindow --> SegmentBuffer : uses
     OptimizedProcessor --> ContextCache : manages
     OptimizedProcessor --> SegmentBuffer : maintains
@@ -338,27 +337,27 @@ flowchart TB
         C --> D[Write Coalescing Buffer]
         D --> E[Batch Database Commits]
     end
-    
+
     subgraph "Database Storage Layout"
         F[PostgreSQL Data Directory] --> G[Character Tables: Fast Access]
         F --> H[Association Tables: Sequential Layout]
         F --> I[JSONB Data: Compressed Storage]
         F --> J[Index Files: Memory Mapped]
     end
-    
+
     subgraph "Caching Strategy"
         K[Database Cache: 8GB] --> L[Character Profiles: Hot Data]
         K --> M[Recent Associations: Warm Data]
         K --> N[Statistics: Cold Data]
     end
-    
+
     subgraph "Write Optimization"
         O[Batch Size: 100 records] --> P[Transaction Grouping]
         P --> Q[WAL Optimization]
         Q --> R[fsync Tuning]
         R --> S[Checkpoint Intervals]
     end
-    
+
     A --> F
     K --> A
     O --> A
@@ -377,7 +376,7 @@ graph TB
         B --> E[Context Markers]
         B --> F[Performance Metrics]
     end
-    
+
     subgraph "Metadata Fields"
         G[segment_id: unique identifier]
         H[text: cleaned content]
@@ -388,7 +387,7 @@ graph TB
         M[context_importance: relevance weight]
         N[processing_priority: queue order]
     end
-    
+
     B --> G
     B --> H
     B --> I
@@ -397,7 +396,7 @@ graph TB
     B --> L
     B --> M
     B --> N
-    
+
     subgraph "Enhanced Output Format"
         O[JSON Structure]
         P["segments": array of enhanced segments]
@@ -405,7 +404,7 @@ graph TB
         R["quality_indicators": validation results]
         S["optimization_hints": performance guidance]
     end
-    
+
     A --> O
     O --> P
     O --> Q
@@ -422,24 +421,24 @@ sequenceDiagram
     participant Meta as Metadata Enricher
     participant Valid as Validator
     participant Out as Enhanced Output
-    
+
     Input->>Seg: Chapter text with structure
     Seg->>Seg: Split by blank lines
     Seg->>Seg: Generate segment IDs
     Seg->>Meta: Basic segments
-    
+
     Meta->>Meta: Calculate word counts
     Meta->>Meta: Detect quote patterns
     Meta->>Meta: Analyze paragraph structure
     Meta->>Meta: Estimate complexity
     Meta->>Meta: Add processing hints
     Meta->>Valid: Enhanced segments
-    
+
     Valid->>Valid: Validate text quality
     Valid->>Valid: Check segment boundaries
     Valid->>Valid: Verify metadata consistency
     Valid->>Out: Validated segments
-    
+
     Out->>Out: Format for agent processing
     Out->>Out: Add performance metadata
     Out->>Out: Generate processing statistics

@@ -83,4 +83,3 @@ skip_covered = false
 omit = [
 	"src/**/__init__.py",
 ]
-

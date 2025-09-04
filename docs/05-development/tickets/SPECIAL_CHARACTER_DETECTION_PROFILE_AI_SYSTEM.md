@@ -1,9 +1,6 @@
 # Ticket: Special Character Detection Profile — AI-System
 
-Status: Proposed
-Priority: P1-Next
-Owner: TBD
-Related: SECTION_CLASSIFIER_MIDDLE_MATTER_TICKET.md
+Status: Proposed Priority: P1-Next Owner: TBD Related: SECTION_CLASSIFIER_MIDDLE_MATTER_TICKET.md
 
 ## Goal
 
@@ -22,7 +19,7 @@ Define a minimal, deterministic detection profile for AI-system lines and apply 
 - tags\[\]: add `ai_system` when detected
 - subtype_tags\[\]: optional \[`status`, `menu`\]
 - ai_system_confidence: 1.0 for matches, otherwise absent
-- ai_system_reasons\[\]: e.g., \["angle_bracket_block"\]
+- ai_system_reasons\[\]: e.g., ["angle_bracket_block"]
 - ai_system_block_id: optional for grouping adjacent ai_system lines
 
 ## Grouping (optional)

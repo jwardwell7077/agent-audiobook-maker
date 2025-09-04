@@ -1,8 +1,6 @@
 # Quality Gate — Full Design Spec
 
-Status: Draft
-Owner: OWNER
-Last updated: 2025-08-21
+Status: Draft Owner: OWNER Last updated: 2025-08-21
 
 ## Overview
 

@@ -8,8 +8,7 @@ Last updated: 2025-08-23 (Documentation synchronized with production components)
 
 - **UML Class Structure**: [../../04-diagrams/uml/langflow_uml.mmd](../../04-diagrams/uml/langflow_uml.mmd)
 
-- **Finite State Machine**: [../../04-diagrams/flows/langflow_fsm.mmd](../../04-diagrams/flows/langflow_fsm.mmd)
-  Source diagrams:
+- **Finite State Machine**: [../../04-diagrams/flows/langflow_fsm.mmd](../../04-diagrams/flows/langflow_fsm.mmd) Source diagrams:
 
 - [LangFlow Architecture](../../04-diagrams/architecture/langflow_architecture.mmd)
 
@@ -258,7 +257,7 @@ ______________________________________________________________________
 ````mermaid
 flowchart LR
   A[Built-in File Loader] --> B[ABMChapterLoader]
-    B --> C[ABMChapterSelector] 
+    B --> C[ABMChapterSelector]
     C --> D[ABMSegmentDialogueNarration]
     D --> E[ABMUtteranceFilter]
     E --> F[ABMUtteranceJsonlWriter]
@@ -273,7 +272,7 @@ flowchart LR
 flowchart LR
     A[Built-in JSONL Loader] --> B[ABMCharacterBibleBuilder]
     B --> C[ABMProsodyGenerator]
-    C --> D[ABMSSMLBuilder] 
+    C --> D[ABMSSMLBuilder]
     D --> E[ABMTTSRenderer]
     E --> F[Built-in File Operations]
     F --> G[ABMAudioMaster]

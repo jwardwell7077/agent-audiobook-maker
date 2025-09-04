@@ -1,23 +1,7 @@
-# Two-Agent System Specification: Dialogue Classification and Speaker Attribution
+This document has moved. The legacy two-agent plan is out of scope for this branch.
 
-## 1. Executive Summary
+See: `docs/_deprecated/two-agent-dialogue-speaker-system.md`.
 
-This document specifies a two-agent system for processing audiobook text to identify dialogue, attribute speakers, and build character profiles for voice casting decisions.
-
-**Primary Objectives:**
-
-- Agent 1: Classify text segments as dialogue or narration
-- Agent 2: Identify speakers for dialogue segments
-- Build comprehensive character databases for future analysis
-
-## 2. System Architecture
-
-### 2.1 Agent Overview
-
-#### Dialogue Classifier Agent
-
-- **Purpose**: Distinguish dialogue from narration in text segments
-- **Input**: Raw text segments from segmentation pipeline
 - **Output**: Classified segments with confidence scores
 - **Database Impact**: Updates utterances table with classification data
 
@@ -76,7 +60,7 @@ CREATE TABLE character_text_segments (
 #### Utterances Table Extensions
 
 ```sql
-ALTER TABLE utterances 
+ALTER TABLE utterances
 ADD COLUMN dialogue_classification VARCHAR(20),
 ADD COLUMN dialogue_confidence FLOAT DEFAULT 0.0,
 ADD COLUMN speaker_character_id INTEGER REFERENCES characters(id),

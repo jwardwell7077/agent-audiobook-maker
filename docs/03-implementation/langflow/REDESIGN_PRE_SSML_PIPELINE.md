@@ -48,7 +48,7 @@ Benefits
 - Output: spans_cls.jsonl + spans_cls.meta.json
 - Responsibilities:
   - Classifier: type (dialogue/narration/mixed as features), lightweight features (optional).
-  - Attribution (dialogue only): speaker (canonical), confidence \[0..1\], evidence\[\], provenance (rules used).
+  - Attribution (dialogue only): speaker (canonical), confidence [0..1], evidence[], provenance (rules used).
   - Deterministic given same inputs.
 
 ### 4. Character Casting
@@ -88,7 +88,7 @@ All records should include timestamps and version fields in practice (omitted he
 
   - span_uid, role, text_norm
   - type (dialogue/narration/mixed as classifier label), features? {}
-  - speaker?, confidence?, evidence\[\] (dialogue only)
+  - speaker?, confidence?, evidence[] (dialogue only)
   - provenance {rules, thresholds}
 
 - Cast span (spans_cast.jsonl)
@@ -137,7 +137,7 @@ Tweak to match the new plan
 
 - abm_speaker_attribution.py → span-level with evidence/confidence
 
-  - Input: classified span; Output: {speaker, confidence, evidence\[\], provenance} (dialogue only).
+  - Input: classified span; Output: {speaker, confidence, evidence[], provenance} (dialogue only).
 
 - abm_casting_director.py → character casting
 
@@ -190,6 +190,4 @@ Defer/replace after new stages land (then remove)
 
 ______________________________________________________________________
 
-Owner: Upstream Text Intelligence (pre-SSML)
-Status: Proposed
-Scope: LangFlow components under src/abm/lf_components/audiobook and associated runners
+Owner: Upstream Text Intelligence (pre-SSML) Status: Proposed Scope: LangFlow components under src/abm/lf_components/audiobook and associated runners

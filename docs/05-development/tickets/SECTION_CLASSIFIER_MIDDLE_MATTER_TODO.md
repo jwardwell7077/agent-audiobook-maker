@@ -1,7 +1,6 @@
 # TODO: Section Classifier — middle_matter (tail-only)
 
-Status: Deferred until lf_components focus completes
-Owner: TBD
+Status: Deferred until lf_components focus completes Owner: TBD
 
 ## Steps
 

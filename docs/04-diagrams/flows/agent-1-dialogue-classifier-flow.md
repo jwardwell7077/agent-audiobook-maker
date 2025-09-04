@@ -15,95 +15,95 @@ The Stage 1 Dialogue Classifier uses a hybrid approach combining fast heuristic 
 flowchart TD
     %% Input Stage
     INPUT[📝 INPUT STAGE<br/>• utterance_text (required)<br/>• book_id, chapter_id, utterance_idx<br/>• context_before, context_after<br/>• classification_method<br/>• confidence_threshold]
-    
+
     %% Heuristic Classification
     HEURISTIC[🔍 HEURISTIC CLASSIFICATION<br/>Pattern Matching Analysis]
-    
+
     %% Pattern Matching Sub-processes
     DIALOGUE_PATTERNS[📖 Dialogue Patterns<br/>• Standard quotes: "text" (0.9)<br/>• Single quotes: 'text' (0.7)<br/>• Smart quotes: "text" (0.9)<br/>• Em dash: —text (0.6)]
-    
+
     ATTRIBUTION_BOOST[🎭 Attribution Clue Boost<br/>• Find: "he said", "she replied"<br/>• Action: +0.1 confidence boost<br/>• Max: 0.95]
-    
+
     NARRATION_INDICATORS[📋 Narration Indicators<br/>• "he walked", "meanwhile"<br/>• "the room", etc.<br/>• Score: +1 per match]
-    
+
     %% Decision Logic
     DECISION{🎯 CLASSIFICATION DECISION}
-    
+
     %% Decision Outcomes
     HIGH_DIALOGUE[📢 High Confidence Dialogue<br/>confidence > 0.5]
     NARRATION_DETECTED[📖 Narration Detected<br/>narration_score > 0]
     UNKNOWN[❓ Unknown Classification<br/>confidence = 0.3]
-    
+
     %% Mixed Content Check
     MIXED_CHECK{Narration Score > 2?}
     DIALOGUE_FULL[✅ DIALOGUE<br/>Full Confidence]
     DIALOGUE_REDUCED[⚠️ DIALOGUE<br/>Reduced Confidence × 0.7]
     NARRATION_RESULT[✅ NARRATION<br/>Confidence = 0.7]
-    
+
     %% AI Enhancement Check
     AI_CHECK{🤖 AI Enhancement<br/>Method allows AI?<br/>Confidence < threshold?}
-    
+
     %% AI Processing
     AI_PROCESS[🤖 OLLAMA AI PROCESSING<br/>1. Build context-aware prompt<br/>2. Send to llama3.2:3b<br/>3. Parse response<br/>4. Return with 0.85 confidence]
-    
+
     %% AI Fallback Handling
     AI_SUCCESS{AI Success?}
     AI_FALLBACK[⚠️ AI Fallback<br/>• Timeout → narration (0.5)<br/>• Error → narration (0.5)<br/>• Invalid → narration (0.6)]
-    
+
     %% Hybrid Combination
     HYBRID_CHECK{Method = hybrid?}
     LLM_ENHANCED[🤖 Use AI Result<br/>Replace heuristic completely]
     HYBRID_COMBINE[⚖️ HYBRID FUSION<br/>AI conf > heuristic?<br/>• Yes: Use AI + average confidence<br/>• No: Keep heuristic]
-    
+
     %% Final Output
     OUTPUT[📦 STRUCTURED OUTPUT<br/>• classification, confidence, method<br/>• dialogue_text, attribution_clues<br/>• metadata, timestamp<br/>• error handling]
-    
+
     %% Flow Connections
     INPUT --> HEURISTIC
     HEURISTIC --> DIALOGUE_PATTERNS
     HEURISTIC --> ATTRIBUTION_BOOST
     HEURISTIC --> NARRATION_INDICATORS
-    
+
     DIALOGUE_PATTERNS --> DECISION
     ATTRIBUTION_BOOST --> DECISION
     NARRATION_INDICATORS --> DECISION
-    
+
     DECISION -->|confidence > 0.5| HIGH_DIALOGUE
     DECISION -->|narration_score > 0| NARRATION_DETECTED
     DECISION -->|else| UNKNOWN
-    
+
     HIGH_DIALOGUE --> MIXED_CHECK
     MIXED_CHECK -->|Yes| DIALOGUE_REDUCED
     MIXED_CHECK -->|No| DIALOGUE_FULL
     NARRATION_DETECTED --> NARRATION_RESULT
-    
+
     DIALOGUE_FULL --> AI_CHECK
     DIALOGUE_REDUCED --> AI_CHECK
     NARRATION_RESULT --> AI_CHECK
     UNKNOWN --> AI_CHECK
-    
+
     AI_CHECK -->|Yes| AI_PROCESS
     AI_CHECK -->|No| OUTPUT
-    
+
     AI_PROCESS --> AI_SUCCESS
     AI_SUCCESS -->|Yes| HYBRID_CHECK
     AI_SUCCESS -->|No| AI_FALLBACK
     AI_FALLBACK --> OUTPUT
-    
+
     HYBRID_CHECK -->|llm_enhanced| LLM_ENHANCED
     HYBRID_CHECK -->|hybrid| HYBRID_COMBINE
     HYBRID_CHECK -->|No (heuristic_only)| OUTPUT
-    
+
     LLM_ENHANCED --> OUTPUT
     HYBRID_COMBINE --> OUTPUT
-    
+
     %% Styling
     classDef inputNode fill:#e1f5fe,stroke:#01579b,stroke-width:2px
     classDef processNode fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
     classDef decisionNode fill:#fff3e0,stroke:#e65100,stroke-width:2px
     classDef aiNode fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
     classDef outputNode fill:#fce4ec,stroke:#880e4f,stroke-width:2px
-    
+
     class INPUT inputNode
     class HEURISTIC,DIALOGUE_PATTERNS,ATTRIBUTION_BOOST,NARRATION_INDICATORS processNode
     class DECISION,MIXED_CHECK,AI_CHECK,AI_SUCCESS,HYBRID_CHECK decisionNode

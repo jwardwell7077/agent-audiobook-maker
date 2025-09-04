@@ -72,7 +72,7 @@ CREATE TABLE character_text_segments (
 
 ```sql
 -- Add columns to existing utterances table
-ALTER TABLE utterances 
+ALTER TABLE utterances
 ADD COLUMN dialogue_classification VARCHAR(20), -- 'dialogue', 'narration', 'mixed'
 ADD COLUMN dialogue_confidence FLOAT DEFAULT 0.0,
 ADD COLUMN speaker_character_id INTEGER REFERENCES characters(id),

@@ -17,9 +17,7 @@ A sophisticated approach to identifying speakers in dialogue using:
 - Confidence scoring and quality assurance
 - Integration with multi-agent validation workflow
 
-**Complexity Level**: High - Requires ML expertise and training data
-**Dependencies**: HuggingFace transformers, local ML models
-**Target Phase**: Phase 2 (Multi-Agent System)
+**Complexity Level**: High - Requires ML expertise and training data **Dependencies**: HuggingFace transformers, local ML models **Target Phase**: Phase 2 (Multi-Agent System)
 
 ### 📋 [MVP Specification](MVP_SPECIFICATION.md)
 
@@ -32,9 +30,7 @@ Comprehensive definition of what constitutes a successful MVP for the Agent Audi
 - Integration test scenarios and validation criteria
 - Success metrics and user acceptance tests
 
-**Complexity Level**: Medium - Cross-cutting system concerns
-**Dependencies**: All core components
-**Target Phase**: Phase 1-2 transition
+**Complexity Level**: Medium - Cross-cutting system concerns **Dependencies**: All core components **Target Phase**: Phase 1-2 transition
 
 ## Planned Advanced Features
 

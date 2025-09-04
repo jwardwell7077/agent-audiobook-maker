@@ -29,7 +29,7 @@ jobs:
         run: |
           source .venv/bin/activate
           make quality_gate COMP_PATH=src || (echo "Quality gate failed" && exit 1)
-      
+
       - name: Docs link check
         run: |
           source .venv/bin/activate

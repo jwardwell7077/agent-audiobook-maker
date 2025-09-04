@@ -147,9 +147,9 @@ The **Audio Book Maker MVP** delivers a complete, deterministic pipeline that co
 ### **Data Flow**
 
 ````text
-PDF Upload → TOC Parse → Chapter Extract → Utterance Segment → 
-Speaker Identify → Emotion Classify → Character Bible → 
-Prosody Generate → SSML Build → TTS Render → Audio Master → 
+PDF Upload → TOC Parse → Chapter Extract → Utterance Segment →
+Speaker Identify → Emotion Classify → Character Bible →
+Prosody Generate → SSML Build → TTS Render → Audio Master →
 Final Audiobook
 ```text
 

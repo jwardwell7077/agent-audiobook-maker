@@ -1,0 +1,36 @@
+name: Agent task
+description: A focused engineering task for the repo management agent
+labels: ["agent-task"]
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Relevant paths, files, or constraints
+      placeholder: docs/..., src/..., scripts/...
+    validations:
+      required: true
+  - type: textarea
+    id: plan
+    attributes:
+      label: Plan
+      description: Concrete steps and tooling to use
+      placeholder: Checklist of actions
+    validations:
+      required: true
+  - type: textarea
+    id: deliverables
+    attributes:
+      label: Deliverables
+      description: Files changed/added and outcomes
+      placeholder: Bulleted list
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: What proves the task is complete
+      placeholder: Build/lint/tests green; docs updated; links fixed
+    validations:
+      required: true

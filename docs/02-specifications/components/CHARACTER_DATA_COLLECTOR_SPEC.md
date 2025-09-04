@@ -16,20 +16,20 @@ graph TB
         A[Speaker-Attributed Utterances]
         B[Chapter Metadata]
     end
-    
+
     subgraph "Character Data Collection Agent"
         C[Character Detection]
         D[Dialogue Extraction]
         E[Context Collection]
         F[Data Aggregation]
     end
-    
+
     subgraph "Output Files"
         G[Character Registry]
         H[Dialogue Collection]
         I[Narration Context]
     end
-    
+
     A --> C
     B --> C
     C --> D
@@ -48,7 +48,7 @@ sequenceDiagram
     participant Pipeline as LangFlow Pipeline
     participant Agent as Character Collection Agent
     participant FileSystem as File System
-    
+
     Pipeline->>Agent: Speaker-attributed utterances
     Agent->>Agent: Extract character data
     Agent->>Agent: Aggregate by character
@@ -133,7 +133,7 @@ sequenceDiagram
 ```jsonc
 {
   "character_focus": "quinn_talen",
-  "book_id": "mvs", 
+  "book_id": "mvs",
   "chapter_id": "mvs_ch001",
   "chapter_title": "Chapter 1: Just an old Book",
   "utterance_idx": 44,
@@ -282,6 +282,4 @@ data/characters/{book_id}/
 
 ______________________________________________________________________
 
-**Status**: Ready for implementation following TDD approach
-**Next Step**: Create unit tests for core data collection logic
-**Estimated Effort**: 1 week for complete implementation and testing
+**Status**: Ready for implementation following TDD approach **Next Step**: Create unit tests for core data collection logic **Estimated Effort**: 1 week for complete implementation and testing

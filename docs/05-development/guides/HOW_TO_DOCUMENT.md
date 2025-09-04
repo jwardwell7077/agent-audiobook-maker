@@ -585,19 +585,19 @@ This project uses Mermaid for diagrams. Follow these rules to avoid GitHub rende
 - Examples:
 
   - Flowchart file:
-    
+
     flowchart LR
       PDF[PDF file] -->|"PyMuPDF / fitz"| EXTRACT[Extract pages]
       EXTRACT --> CLEAN[Normalize & clean]
       CLEAN --> TXT[Write .txt]
-    
+
   - Class diagram file:
-    
+
     classDiagram
       direction TB
       Component <|-- ABMChapterVolumeLoader
       ABMCacheManager ..> ABMTTSRenderer : caches
-    
+
 
 ### When embedding diagrams inside Markdown (`.md`)
 
@@ -605,7 +605,7 @@ This project uses Mermaid for diagrams. Follow these rules to avoid GitHub rende
 - Put the directive (`flowchart LR`, `classDiagram`, etc.) as the first line inside the fence.
 - Do not nest fences or add blank lines immediately after ```mermaid.
 - Example:
-  
+
   ```mermaid
   flowchart LR
     A --> B

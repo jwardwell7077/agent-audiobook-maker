@@ -19,7 +19,7 @@ graph LR
     PDF[📕 PDF Input] --> Structured[📊 Structured JSON]
     Structured --> Annotation[🏷️ Annotation Schema]
     Annotation --> Audio[🎵 Audio Output]
-    
+
     Structured --> Validation{✅ JSON Schema}
     Annotation --> Validation
 ```text
@@ -54,7 +54,7 @@ graph LR
 **Evolution Path:**
 
 - v1: Basic segmentation (dialogue/narration) - **Legacy LangFlow**
-- v1.5: Spans-first two-stage (hybrid classification + deterministic speaker attribution) - **Current** 
+- v1.5: Spans-first two-stage (hybrid classification + deterministic speaker attribution) - **Current**
 - v2: Enhanced CrewAI integration with emotion classification - **Phase 2**
 - v3: Prosody analysis and quality gates - **Phase 3**  
 - v4: SSML generation and TTS metadata - **Phase 4**

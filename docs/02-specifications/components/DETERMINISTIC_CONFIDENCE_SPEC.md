@@ -1,26 +1,16 @@
 # Deterministic Confidence Scoring Specification
 
-Status: Draft
-Version: 1.0
-Owner: ABM Upstream (Attribution)
-Last updated: 2025-09-02
+Status: Draft Version: 1.0 Owner: ABM Upstream (Attribution) Last updated: 2025-09-02
 
 ## 1. Purpose & Scope
 
-Provide a deterministic, explainable confidence score in \[0,1\] for dialogue speaker attribution, using local cues and continuity. This score stabilizes upstream artifacts, supports UI filtering, and sets a baseline before any ML/LLM fallback.
+Provide a deterministic, explainable confidence score in [0,1] for dialogue speaker attribution, using local cues and continuity. This score stabilizes upstream artifacts, supports UI filtering, and sets a baseline before any ML/LLM fallback.
 
 Out of scope: ML-based speaker ID, cross-chapter coreference, and language-specific NLP beyond simple regex.
 
 ## 2. Requirements
 
-R1. Deterministic: For identical inputs, outputs must be identical.
-R2. Explainable: Output must include evidence: raw feature weights and parameters.
-R3. Bounded: Confidence must be clamped to \[min_confidence, max_confidence\].
-R4. Configurable: Weights and bounds must be configurable with safe defaults.
-R5. Locality: Only local context (adjacent narration spans and immediate continuity) is used.
-R6. Non-intrusive: If disabled, attribution falls back to base/unknown constants.
-R7. Integration: Plug-in scoring for `ABMSpanAttribution`; no change to span IDs or schemas beyond attribution.evidence.
-R8. Tests: Unit tests must cover primary signals and continuity behavior.
+R1. Deterministic: For identical inputs, outputs must be identical. R2. Explainable: Output must include evidence: raw feature weights and parameters. R3. Bounded: Confidence must be clamped to [min_confidence, max_confidence]. R4. Configurable: Weights and bounds must be configurable with safe defaults. R5. Locality: Only local context (adjacent narration spans and immediate continuity) is used. R6. Non-intrusive: If disabled, attribution falls back to base/unknown constants. R7. Integration: Plug-in scoring for `ABMSpanAttribution`; no change to span IDs or schemas beyond attribution.evidence. R8. Tests: Unit tests must cover primary signals and continuity behavior.
 
 ## 3. Interface Specification
 
@@ -37,7 +27,7 @@ Inputs (to `score` method):
 
 Outputs:
 
-- confidence: float in \[min_confidence, max_confidence\]
+- confidence: float in [min_confidence, max_confidence]
 - evidence: object with
   - confidence_method: "deterministic_v1"
   - raw_score: float (sum of feature weights)
@@ -69,7 +59,7 @@ Raw score = sum(weights for present features)
 
 - logistic(x) = 1 / (1 + exp(-k·x)), with sigmoid_scale k = 0.6
 - confidence = min + (max - min) * logistic(raw)
-- Clamp to \[min_confidence, max_confidence\] to prevent extreme 0/1 and ensure stability
+- Clamp to [min_confidence, max_confidence] to prevent extreme 0/1 and ensure stability
 - Defaults: min=0.35, max=0.95
 
 Rationale: The clamp ensures confidence exceeds unknown baseline when a speaker is found, but never reaches unjustified certainty.

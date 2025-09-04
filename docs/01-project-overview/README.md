@@ -48,12 +48,12 @@ graph LR
         PDF[📕 PDF] --> Extract[🔍 Extract]
         Extract --> Chapters[📚 Chapters]
     end
-    
+
     subgraph "Phase 1 🚧"
         Chapters --> Segment[✂️ Segment]
         Segment --> Annotate[🏷️ Annotate]
     end
-    
+
     subgraph "Phase 2-3 ⏳"
         Annotate --> Cast[🎭 Cast]
         Cast --> Render[🎙️ TTS]

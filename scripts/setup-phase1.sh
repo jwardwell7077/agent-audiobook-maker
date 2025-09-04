@@ -1,10 +1,10 @@
 #!/bin/bash
-# ABM Two-Agent System - Phase 1: External Foundation Setup
+# ABM Setup - Phase 1: External Foundation Setup
 # This script sets up all external infrastructure dependencies
 
 set -e
 
-echo "🚀 ABM Two-Agent System - Phase 1: External Foundation Setup"
+echo "🚀 ABM Setup - Phase 1: External Foundation Setup"
 echo "============================================================"
 echo ""
 
@@ -89,7 +89,7 @@ fi
 print_status "🤖 Starting Ollama service..."
 if docker compose --profile ollama up -d ollama; then
     print_success "Ollama service started"
-    
+
     # Wait for Ollama to be ready
     print_status "⏳ Waiting for Ollama to initialize..."
     timeout=120
@@ -103,10 +103,10 @@ if docker compose --profile ollama up -d ollama; then
         fi
         echo "   Waiting for Ollama API... (${counter}s/${timeout}s)"
     done
-    
+
     if [ $counter -lt $timeout ]; then
         print_success "Ollama is ready"
-        
+
         # Run model setup
         print_status "📥 Setting up Ollama models..."
         if docker compose exec ollama /bin/bash -c "$(cat scripts/setup-ollama.sh)"; then
@@ -142,7 +142,7 @@ echo "📋 Infrastructure Ready:"
 echo "  🗄️  PostgreSQL Database: localhost:5432"
 echo "      - Database: audiobook_maker"
 echo "      - User: abm_user"
-echo "      - Schema: Two-agent system tables created"
+echo "      - Schema: legacy tables created"
 echo ""
 if docker compose ps ollama | grep -q "Up"; then
     echo "  🤖 Ollama LLM Service: localhost:11434"

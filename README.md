@@ -1,11 +1,6 @@
+# Audio Book Maker – Deterministic Ingestion → Segmentation Prototype → SSML → TTS
 
-# Audio Book Maker – Deterministic Ingestion → Rich Annotation → Multi‑Voice Rendering
-
-> AI‑generated, Copilot‑assisted project
-> This repo is an experiment in co‑creating software with GitHub Copilot to force‑multiply design and development. Most content is AI‑generated and evolves quickly—expect rapid iteration and rough edges.
-> Multi‑agent, local‑first audiobook production pipeline. Current focus: rock‑solid deterministic ingestion + prototype annotation flow (LangFlow) as a stepping stone to CrewAI then LangChain/LangGraph orchestration.
-> KISS branch scope
-> This branch is documentation‑first. Keep it simple: only set up a local Python `.venv` and minimal dev tools. Sections below that mention Docker, Postgres, LangGraph runtime, or API endpoints are roadmap/design notes, not required to get started on this branch. See `docs/KISS.md`.
+> AI‑generated, Copilot‑assisted project This repo is an experiment in co‑creating software with GitHub Copilot to force‑multiply design and development. Most content is AI‑generated and evolves quickly—expect rapid iteration and rough edges. Local‑first audiobook pipeline. Current focus: rock‑solid deterministic ingestion and a simple segmentation prototype (LangFlow) that leads to SSML and TTS. No multi‑agent system in this branch. KISS branch scope This branch is documentation‑first. Keep it simple: only set up a local Python `.venv` and minimal dev tools. Sections below that mention Docker, Postgres, LangGraph runtime, or API endpoints are roadmap/design notes, not required to get started on this branch. See `docs/01-project-overview/KISS.md`.
 
 ## KISS Quickstart (this branch)
 
@@ -30,17 +25,17 @@ make dev_setup
 source .venv/bin/activate
 ```
 
-See `docs/KISS.md` for the policy and guardrails.
+See `docs/01-project-overview/KISS.md` for the policy and guardrails.
 
 ## High-Level Architecture
 
-The KISS slice today is a local-first CLI that produces deterministic file artifacts. The system is evolving from simple segmentation to a spans-first two-stage annotation system: dialogue classification followed by deterministic speaker attribution. The diagram below shows today and the forward path.
+The KISS slice today is a local-first CLI that produces deterministic file artifacts. The v0 path is a single, simple sequence: segmentation prototype → casting/character bible (later) → SSML → TTS. The diagram below shows today and the forward path.
 
 Source: [docs/diagrams/high_level_architecture.mmd](docs/diagrams/high_level_architecture.mmd)
 
 Full documentation index: [docs/README.md](docs/README.md)
 
-Annotation system: The pipeline now features a hybrid dialogue classifier (heuristic + AI fallback) and deterministic speaker attribution with optional PostgreSQL character database integration.
+Annotation prototype: The pipeline focuses on deterministic dialogue/narration segmentation. Speaker attribution and databases are out of scope on this branch.
 
 ```mermaid
 flowchart LR
@@ -70,40 +65,31 @@ flowchart LR
   end
 
   Annos -.-> Casting -.-> SSML -.-> TTS --> Stems --> Renders --> Master
-  Orchestrator -.controls.-> JSONStruct
-  Orchestrator -.controls.-> Annot
-  Orchestrator -.controls.-> TTS
-
-  Artifacts -.sync.-> DB
-  Annos -.sync.-> DB
-  Renders -.sync.-> DB
 ```
 
 See more in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 Structured JSON schema: [docs/STRUCTURED_JSON_SCHEMA.md](docs/STRUCTURED_JSON_SCHEMA.md).
 
-## Status Snapshot (2025-01-14)
+## Status Snapshot (2025-09-03)
 
-| Layer                           | State                       | Notes                                                                           |
-| ------------------------------- | --------------------------- | ------------------------------------------------------------------------------- |
-| Ingestion                       | Stable + deterministic      | Structured TOC only; per‑chapter JSON + volume manifest; hash regression tests. |
-| Annotation (Spans-first two-stage) | Architecture complete       | Hybrid dialogue classifier + deterministic speaker attribution; optional PostgreSQL integration. |
-| Annotation (LangFlow prototype) | Loader → Segmenter → Writer | Produces dialogue/narration utterances JSONL. Upgrading to spans-first two-stage flow. |
-| Character Database              | Schema designed             | PostgreSQL with JSONB profiles, aliases, and text associations.                |
-| LangGraph Graph                 | Minimal sample              | Will be replaced by chapter annotation / casting graph.                         |
-| Casting                         | Character profiling ready   | Database-driven character bible + voice mapping integration.                    |
-| TTS Rendering                   | Prototype stubs             | Real XTTS/Piper integration upcoming.                                           |
-| Dagster Orchestration           | Partial                     | Ingestion + preliminary rendering assets.                                       |
-| Roadmap Docs                    | Updated                     | Annotation system specs, FSM diagrams, and UML architecture added.              |
+| Layer                             | State                       | Notes                                                                           |
+| --------------------------------- | --------------------------- | ------------------------------------------------------------------------------- |
+| Ingestion                         | Stable + deterministic      | Structured TOC only; per‑chapter JSON + volume manifest; hash regression tests. |
+| Segmentation (LangFlow prototype) | Loader → Segmenter → Writer | Produces dialogue/narration utterances JSONL.                                   |
+| Speaker Attribution               | Out of scope                | Deferred to a future milestone.                                                 |
+| Character Database                | Out of scope                | No DB on this branch.                                                           |
+| Orchestration (graphs)            | Out of scope                | No orchestrator on this branch.                                                 |
+| Casting                           | Planned (future)            | Character bible and voice mapping later.                                        |
+| SSML/TTS                          | Planned (future)            | SSML assembly and TTS adapters later.                                           |
+| Roadmap Docs                      | Simplified                  | Sequential, single-path plan only.                                              |
 
-## Multi‑Agent Migration Path
+## Roadmap (sequential)
 
-1. LangFlow (rapid prototyping / visual wiring of segmentation + writer) – CURRENT
-1. CrewAI (role / task abstraction for speaker attribution & QA agents)
-1. LangChain + LangGraph (deterministic state machine orchestration, resumability, devtools)
-
-See `docs/MULTI_AGENT_ROADMAP.md` for detailed phase goals, exit criteria, and risk controls.
+1. Segmentation prototype (LangFlow) – CURRENT
+1. Casting & Character Bible (design notes only)
+1. SSML assembly
+1. TTS rendering (XTTS/Piper)
 
 ## Getting Started (Development)
 
@@ -234,13 +220,15 @@ This script automatically:
 
 The custom components are located at `src/abm/lf_components/audiobook/` and include:
 
-- **ABM Chapter Selector** - Selects chapters from volumes
-- **ABM Chapter Volume Loader** - Loads volume data for processing
-- **ABM Segment Dialogue Narration** - Segments dialogue and narration
-- **ABM Utterance Filter** - Filters utterances by criteria
-- **ABM Utterance JSONL Writer** - Writes utterances to JSONL format
+- ABMChapterLoader – Load volume manifest and chapter JSON
+- ABMMixedBlockResolver – Split blocks into dialogue/narration spans
+- ABMSpanClassifier – Label spans deterministically
+- ABMSpanAttribution – Basic attribution utilities (speaker attribution is deferred overall)
+- ABMSpanIterator – Iterate spans for downstream steps
+- ABMBlockSchemaValidator – Normalize blocks and write JSONL
+- ABMArtifactOrchestrator – Run end-to-end JSONL artifact pipeline (blocks → spans → spans_cls → spans_attr)
 
-Import the sample flow (`examples/langflow/sample_volume_segmentation_flow.json`) and adjust the `book_id` + manifest path fields.
+Import the sample flow (`examples/langflow/abm_spans_first_pipeline.v15.json`) and adjust inputs.
 
 > **Note**: If components don't appear, ensure `LANGFLOW_COMPONENTS_PATH` is properly set in `.env`. See `docs/LANGFLOW_COMPONENT_DISCOVERY.md` for troubleshooting.
 
@@ -255,13 +243,11 @@ Import the sample flow (`examples/langflow/sample_volume_segmentation_flow.json`
 
 All outputs are plain Python (dict/list) for interop with future CrewAI / LangGraph nodes.
 
-### Planned Near-Term Components
+### Out of scope (this branch)
 
-- SpeakerAttributionAgent (LLM + heuristics)
-- EmotionProsodyClassifier (HF local + rules)
-- CharacterBibleBuilder
-- SSMLAssembler
-- TTSRenderer (XTTS v2 + Piper fallback)
+- Multi-agent systems and agents
+- Database integrations (Postgres, etc.)
+- Orchestration frameworks (LangGraph, Dagster)
 
 ## Environment Variables (Ingestion & Annotation)
 

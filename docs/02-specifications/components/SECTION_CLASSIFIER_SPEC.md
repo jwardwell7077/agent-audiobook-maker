@@ -8,10 +8,10 @@ A block-based, paragraph-first classifier that segments books into chapters usin
 
 - Input: JSONL-only. The classifier SHALL accept only a JSONL file where each line is a JSON object with at least a `text: string` field (one paragraph/block per line). Body chapter heading blocks contain only the heading.
 - Output artifacts:
-  - toc: { entries: \[{chapter_index, title, start_block, end_block}\], warnings: \[str\] }
-  - chapters: { chapters: \[{chapter_index, title, start_block, end_block, paragraphs: list\[str\]}\] }
-  - front_matter: { span_blocks: \[start,end\] or \[-1,-1\], paragraphs: list\[str\], warnings: \[str\] }
-  - back_matter: { span_blocks: \[start,end\] or \[-1,-1\], paragraphs: list\[str\], warnings: \[str\] }
+  - toc: { entries: [{chapter_index, title, start_block, end_block}], warnings: [str] }
+  - chapters: { chapters: \[{chapter_index, title, start_block, end_block, paragraphs: list[str]}\] }
+  - front_matter: { span_blocks: [start,end] or [-1,-1], paragraphs: list[str], warnings: [str] }
+  - back_matter: { span_blocks: [start,end] or [-1,-1], paragraphs: list[str], warnings: [str] }
 
 All spans are inclusive and use zero-based block indices.
 
@@ -54,7 +54,7 @@ Used for dedupe and robust title equality:
 
 ### Dedupe and Stop Rules
 
-- Maintain seen_titles: Set\[canon_title(title)\] and seen_ordinals: Dict\[int -> canon_title\].
+- Maintain seen_titles: Set[canon_title(title)] and seen_ordinals: Dict[int -> canon_title].
 - Stop conditions (in priority order once ≥ 2 TOC items have been parsed):
   1. First whole-block body chapter heading encountered → stop TOC (do not consume this block).
   1. Duplicate TOC title encountered (canon equal) → stop TOC; do not consume this block. Warning: "TOC ended on duplicate title: '<title>' (block j)".
@@ -105,7 +105,7 @@ Failure mode: If none of the passes match, raise an error: "Chapter heading not 
   - title normalized match used for TOC entry '<title>' matched at block i
   - ordinal fallback used for TOC entry '<title>' (chapter n) matched at block i
 - Front matter warning:
-  - unclaimed blocks: \[indices\]
+  - unclaimed blocks: [indices]
 
 Warnings from heading matching are surfaced together with TOC warnings under toc.warnings; front/back keep their own warnings fields.
 
@@ -181,10 +181,9 @@ Default directory: `data/clean/<book>/classified` (overridable).
 
 - front_matter.json
 
-  - { span_blocks: \[start:number, end:number\] | \[-1,-1\] when empty, paragraphs: string\[\], warnings: string\[\] }
+  - { span_blocks: [start:number, end:number] | [-1,-1] when empty, paragraphs: string[], warnings: string[] }
 
-- back_matter.json
-  Field names and shapes must match the example artifacts (ex_toc.json, ex_chapters.json) and current code.
+- back_matter.json Field names and shapes must match the example artifacts (ex_toc.json, ex_chapters.json) and current code.
 
 - Detect a TOC heading via regex anchored at the start of a line (allow leading whitespace): `/^\s*(table of contents|contents)\b/i`.
 

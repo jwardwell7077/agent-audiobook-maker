@@ -1,8 +1,6 @@
-# \[DEPRECATED\] Two-Agent System Database Schema Diagrams
+# [DEPRECATED] Two-Agent System Database Schema Diagrams
 
-> Deprecated terminology and scope. Database-backed character tracking is not
-> part of the current spans-first pipeline; this page remains for historical
-> context only.
+> Deprecated terminology and scope. Database-backed character tracking is not part of the current spans-first pipeline; this page remains for historical context only.
 
 ## Entity Relationship Diagram (ERD)
 
@@ -15,7 +13,7 @@ erDiagram
     utterances ||--o{ character_text_associations : "associated_with"
     characters ||--o{ character_interactions : "participates_in"
     characters ||--o{ character_scene_presence : "appears_in"
-    
+
     books {
         serial id PK
         varchar title
@@ -25,7 +23,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     characters {
         serial id PK
         int book_id FK
@@ -42,7 +40,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     character_aliases {
         serial id PK
         int character_id FK
@@ -54,7 +52,7 @@ erDiagram
         int usage_count
         timestamp created_at
     }
-    
+
     utterances {
         varchar id PK
         int book_id FK
@@ -69,7 +67,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     character_text_associations {
         serial id PK
         int character_id FK
@@ -85,7 +83,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     character_interactions {
         serial id PK
         int character1_id FK
@@ -99,7 +97,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     character_scene_presence {
         serial id PK
         int character_id FK
@@ -133,7 +131,7 @@ graph TB
             🔄 updated_at: TIMESTAMP DEFAULT NOW()
         ]
     end
-    
+
     subgraph "Characters Table"  
         CharsTable[
             <b>characters</b><br/>
@@ -154,7 +152,7 @@ graph TB
             🔄 updated_at: TIMESTAMP DEFAULT NOW()
         ]
     end
-    
+
     subgraph "Utterances Table"
         UtterTable[
             <b>utterances</b><br/>
@@ -173,7 +171,7 @@ graph TB
             🔄 updated_at: TIMESTAMP DEFAULT NOW()
         ]
     end
-    
+
     BooksTable --> CharsTable
     BooksTable --> UtterTable
 ```
@@ -197,7 +195,7 @@ graph TB
             ⏰ created_at: TIMESTAMP DEFAULT NOW()
         ]
     end
-    
+
     subgraph "Character Text Associations Table"
         AssocTable[
             <b>character_text_associations</b><br/>
@@ -217,7 +215,7 @@ graph TB
             🔄 updated_at: TIMESTAMP DEFAULT NOW()
         ]
     end
-    
+
     subgraph "Character Interactions Table"
         InteractTable[
             <b>character_interactions</b><br/>
@@ -235,7 +233,7 @@ graph TB
             🔄 updated_at: TIMESTAMP DEFAULT NOW()
         ]
     end
-    
+
     subgraph "Character Scene Presence Table"
         PresenceTable[
             <b>character_scene_presence</b><br/>
@@ -258,12 +256,12 @@ graph TB
 graph TD
     subgraph "Primary Indexes"
         PK1[books.id - PRIMARY KEY]
-        PK2[characters.id - PRIMARY KEY] 
+        PK2[characters.id - PRIMARY KEY]
         PK3[utterances.id - PRIMARY KEY]
         PK4[character_aliases.id - PRIMARY KEY]
         PK5[character_text_associations.id - PRIMARY KEY]
     end
-    
+
     subgraph "Foreign Key Indexes"
         FK1[characters.book_id - INDEX]
         FK2[utterances.book_id - INDEX]
@@ -271,7 +269,7 @@ graph TD
         FK4[character_text_associations.character_id - INDEX]
         FK5[character_text_associations.utterance_id - INDEX]
     end
-    
+
     subgraph "Search and Query Indexes"
         SI1[characters.name - INDEX]
         SI2[characters.canonical_name - INDEX]
@@ -280,7 +278,7 @@ graph TD
         SI5[character_text_associations.relationship - INDEX]
         SI6[character_text_associations.confidence_score - INDEX]
     end
-    
+
     subgraph "Composite Indexes"
         CI1[characters(book_id, name) - UNIQUE]
         CI2[character_aliases(character_id, alias_name) - UNIQUE]
@@ -288,14 +286,14 @@ graph TD
         CI4[character_text_associations(character_id, relationship) - INDEX]
         CI5[character_interactions(character1_id, character2_id) - UNIQUE]
     end
-    
+
     subgraph "JSONB Indexes"
         JI1[characters.profile - GIN INDEX]
         JI2[utterances.metadata - GIN INDEX]
         JI3[utterances.dialogue_portions - GIN INDEX]
         JI4[character_text_associations.context_data - GIN INDEX]
     end
-    
+
     subgraph "Performance Monitoring"
         PM1[Query Execution Stats]
         PM2[Index Usage Statistics]
@@ -310,28 +308,28 @@ graph TD
 graph TB
     subgraph "Character Profile JSONB Structure"
         ProfileRoot[character.profile: JSONB]
-        
+
         BasicInfo[basic_info:<br/>- age: string<br/>- gender: string<br/>- occupation: array<br/>- title: string<br/>- family_status: string<br/>- social_class: string]
-        
+
         PhysDesc[physical_description:<br/>- height: string<br/>- build: string<br/>- hair: string<br/>- eyes: string<br/>- distinguishing_features: array<br/>- clothing_style: string]
-        
+
         Personality[personality:<br/>- traits: array<br/>- temperament: string<br/>- motivations: array<br/>- fears: array<br/>- values: array<br/>- flaws: array]
-        
+
         SpeechPatterns[speech_patterns:<br/>- vocabulary_level: string<br/>- common_phrases: array<br/>- dialect_markers: array<br/>- formality_level: string<br/>- emotional_range: array<br/>- speech_tempo: string]
-        
+
         DialogueStats[dialogue_statistics:<br/>- total_words: integer<br/>- total_segments: integer<br/>- avg_words_per_segment: float<br/>- vocabulary_richness: float<br/>- most_common_words: array<br/>- emotional_tone_distribution: object<br/>- question_ratio: float<br/>- exclamation_ratio: float]
-        
+
         ScenePresence[scene_presence:<br/>- chapters_appeared: array<br/>- total_segments: integer<br/>- first_appearance: string<br/>- last_appearance: string<br/>- presence_density: float]
-        
+
         Interactions[character_interactions:<br/>- speaks_to: object<br/>- addressed_by: object<br/>- mentioned_with: object<br/>- relationship_hints: object]
-        
+
         VoiceCasting[voice_casting_data:<br/>- estimated_age: string<br/>- gender_presentation: string<br/>- accent_hints: array<br/>- vocal_characteristics: array<br/>- emotional_range: string<br/>- formality_preference: string<br/>- casting_notes: string]
-        
+
         NarrativeRole[narrative_role:<br/>- role_type: string<br/>- importance_arc: array<br/>- character_development: object<br/>- plot_relevance: string]
-        
+
         Metadata[metadata:<br/>- profile_completeness: float<br/>- last_updated: timestamp<br/>- data_sources: array<br/>- confidence_scores: object<br/>- review_flags: array]
     end
-    
+
     ProfileRoot --> BasicInfo
     ProfileRoot --> PhysDesc
     ProfileRoot --> Personality
@@ -350,47 +348,47 @@ graph TB
 flowchart TD
     subgraph "Migration Strategy"
         M1[Migration 001: Core Tables<br/>- Create books table<br/>- Create characters table<br/>- Create utterances table<br/>- Add basic constraints]
-        
+
         M2[Migration 002: Aliases<br/>- Create character_aliases table<br/>- Add foreign key constraints<br/>- Create search indexes]
-        
+
         M3[Migration 003: Associations<br/>- Create character_text_associations<br/>- Add relationship constraints<br/>- Create composite indexes]
-        
+
         M4[Migration 004: Interactions<br/>- Create character_interactions<br/>- Create character_scene_presence<br/>- Add performance indexes]
-        
+
         M5[Migration 005: JSONB Optimization<br/>- Add GIN indexes for JSONB<br/>- Create partial indexes<br/>- Add check constraints]
-        
+
         M6[Migration 006: Performance Tuning<br/>- Add query-specific indexes<br/>- Create materialized views<br/>- Set up connection pooling]
-        
+
         Rollback1[Rollback Scripts<br/>- Drop constraints first<br/>- Drop indexes<br/>- Drop tables in reverse order]
     end
-    
+
     subgraph "Data Validation"
         V1[Constraint Validation<br/>- NOT NULL constraints<br/>- FOREIGN KEY integrity<br/>- UNIQUE constraints<br/>- CHECK constraints]
-        
+
         V2[JSONB Schema Validation<br/>- Required field validation<br/>- Data type validation<br/>- Nested object constraints]
-        
+
         V3[Business Logic Validation<br/>- Character name uniqueness<br/>- Confidence score ranges<br/>- Relationship type validation]
     end
-    
+
     subgraph "Data Seeding"
         S1[Test Data Seeding<br/>- Sample book data<br/>- Character examples<br/>- Test utterances<br/>- Development fixtures]
-        
+
         S2[Reference Data<br/>- Character types<br/>- Relationship types<br/>- Classification categories<br/>- Default configurations]
     end
-    
+
     M1 --> M2
     M2 --> M3
     M3 --> M4
     M4 --> M5
     M5 --> M6
-    
+
     M6 --> V1
     V1 --> V2
     V2 --> V3
-    
+
     V3 --> S1
     S1 --> S2
-    
+
     M6 -.-> Rollback1
 ```
 
@@ -400,55 +398,55 @@ flowchart TD
 graph TB
     subgraph "Application Layer"
         App1[LangFlow Component 1]
-        App2[LangFlow Component 2] 
+        App2[LangFlow Component 2]
         App3[Background Processor]
         App4[API Service]
     end
-    
+
     subgraph "Connection Pool Layer"
         PoolManager[Connection Pool Manager<br/>- Max connections: 20<br/>- Min connections: 5<br/>- Connection timeout: 30s<br/>- Idle timeout: 300s]
-        
+
         Pool1[Pool 1: Read Operations<br/>- Size: 10<br/>- Character lookups<br/>- Profile queries]
-        
+
         Pool2[Pool 2: Write Operations<br/>- Size: 8<br/>- Character creation<br/>- Association updates]
-        
+
         Pool3[Pool 3: Batch Operations<br/>- Size: 2<br/>- Bulk inserts<br/>- Statistics updates]
     end
-    
+
     subgraph "Database Layer"
         PrimDB[(PostgreSQL Primary<br/>- Write operations<br/>- Consistency critical)]
-        
+
         ReadReplica1[(Read Replica 1<br/>- Character lookups<br/>- Profile queries)]
-        
+
         ReadReplica2[(Read Replica 2<br/>- Statistics queries<br/>- Reporting)]
-        
+
         BackupDB[(Backup Database<br/>- Point-in-time recovery<br/>- Disaster recovery)]
     end
-    
+
     subgraph "Caching Layer"
         RedisCache[(Redis Cache<br/>- Character cache<br/>- Query result cache<br/>- Session data)]
-        
+
         MemCache[In-Memory Cache<br/>- Frequently accessed characters<br/>- Recent associations<br/>- LRU eviction]
     end
-    
+
     App1 --> PoolManager
     App2 --> PoolManager
     App3 --> PoolManager
     App4 --> PoolManager
-    
+
     PoolManager --> Pool1
     PoolManager --> Pool2
     PoolManager --> Pool3
-    
+
     Pool1 --> ReadReplica1
     Pool1 --> ReadReplica2
     Pool2 --> PrimDB
     Pool3 --> PrimDB
-    
+
     PrimDB --> ReadReplica1
     PrimDB --> ReadReplica2
     PrimDB --> BackupDB
-    
+
     Pool1 <--> RedisCache
     Pool2 <--> RedisCache
     App1 <--> MemCache
@@ -461,47 +459,47 @@ graph TB
 graph TD
     subgraph "Common Query Patterns"
         Q1[Character Lookup by Name<br/>SELECT * FROM characters c<br/>LEFT JOIN character_aliases a<br/>WHERE c.name = ? OR a.alias_name = ?<br/>Index: characters_name_idx, aliases_name_idx]
-        
+
         Q2[Find Character Associations<br/>SELECT c.*, cta.*<br/>FROM characters c<br/>JOIN character_text_associations cta<br/>WHERE cta.utterance_id = ?<br/>Index: assoc_utterance_idx]
-        
+
         Q3[Character Profile Query<br/>SELECT profile FROM characters<br/>WHERE id = ?<br/>JSONB operations on profile data<br/>Index: characters_pkey, profile_gin_idx]
-        
+
         Q4[Batch Association Insert<br/>INSERT INTO character_text_associations<br/>(character_id, utterance_id, relationship, ...)<br/>VALUES (?, ?, ?, ...), ...<br/>Batch size: 100-500 records]
-        
+
         Q5[Character Statistics<br/>SELECT character_id, COUNT(*), AVG(confidence_score)<br/>FROM character_text_associations<br/>GROUP BY character_id<br/>Index: assoc_char_conf_idx]
     end
-    
+
     subgraph "Performance Metrics"
         P1[Query Execution Time<br/>- Target: < 50ms for lookups<br/>- Target: < 200ms for complex joins<br/>- Target: < 1s for statistics]
-        
+
         P2[Index Usage Statistics<br/>- Index hit ratio: > 95%<br/>- Sequential scan ratio: < 5%<br/>- Index cache efficiency: > 90%]
-        
+
         P3[Connection Pool Metrics<br/>- Active connections: monitored<br/>- Wait time: < 10ms<br/>- Connection lifetime: optimized]
-        
+
         P4[JSONB Performance<br/>- GIN index usage: monitored<br/>- Query optimization: enabled<br/>- Profile query time: < 100ms]
     end
-    
+
     subgraph "Optimization Strategies"
         O1[Query Optimization<br/>- Prepared statements<br/>- Query plan analysis<br/>- Index hint usage<br/>- Batch operations]
-        
+
         O2[Index Strategy<br/>- Composite indexes for common queries<br/>- Partial indexes for filtered data<br/>- GIN indexes for JSONB<br/>- Regular index maintenance]
-        
+
         O3[Caching Strategy<br/>- Character profile caching<br/>- Query result caching<br/>- Application-level caching<br/>- Cache invalidation strategy]
-        
+
         O4[Hardware Optimization<br/>- SSD storage utilization<br/>- Memory allocation tuning<br/>- Connection pooling configuration<br/>- CPU core utilization]
     end
-    
+
     Q1 --> P1
     Q2 --> P1
     Q3 --> P1
     Q4 --> P1
     Q5 --> P1
-    
+
     P1 --> O1
     P2 --> O2
     P3 --> O1
     P4 --> O3
-    
+
     O1 --> O4
     O2 --> O4
     O3 --> O4

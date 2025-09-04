@@ -1,8 +1,6 @@
 # Ticket: Deprecate legacy deterministic_confidence import path
 
-Status: Open
-Owner: Upstream Attribution
-Created: 2025-09-02
+Status: Open Owner: Upstream Attribution Created: 2025-09-02
 
 ## Context
 

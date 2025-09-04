@@ -70,11 +70,11 @@ graph TB
     JSONLoader --> ChapterLoader
     ChapterLoader --> ChapterSelector
     ChapterSelector --> Segmenter
-    
+
     %% Text processing integration
     TextRegex --> Segmenter
     TextFilter --> Segmenter
-    
+
     Segmenter --> UtteranceFilter
     UtteranceFilter --> JSONLWriter
     JSONLWriter --> SegmentedJSONL
@@ -82,11 +82,11 @@ graph TB
     %% Multi-Agent Enhancement Flow
     SegmentedJSONL --> JSONLLoader
     JSONLLoader --> SpeakerAgent
-    
+
     %% LLM integration for speaker attribution
     OllamaLLM --> SpeakerAgent
     PromptTemplate --> SpeakerAgent
-    
+
     SpeakerAgent --> EmotionAgent
     EmotionAgent --> QAAgent
     QAAgent --> DataTransform
@@ -115,7 +115,7 @@ graph TB
     CacheManager -.-> SpeakerAgent
     CacheManager -.-> EmotionAgent
     CacheManager -.-> TTSRenderer
-    
+
     PayloadLogger -.-> ChapterLoader
     PayloadLogger -.-> SpeakerAgent
     PayloadLogger -.-> QAAgent

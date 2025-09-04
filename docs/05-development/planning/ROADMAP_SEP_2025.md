@@ -1,8 +1,6 @@
 # ABM Roadmap – September 2025
 
-Status: draft
-Branch: snapshot-2025-08-31-wip
-Related tickets: tickets/ATTRIBUTION_CONFIDENCE_TODO.md
+Status: draft Branch: snapshot-2025-08-31-wip Related tickets: tickets/ATTRIBUTION_CONFIDENCE_TODO.md
 
 ## Priorities
 

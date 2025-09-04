@@ -32,18 +32,18 @@ graph TB
         PDF[PDF Files] --> PdfToText[PDF to Text]
         TXT[Text Files] --> TextProcessor[Text Processing]
     end
-    
+
     subgraph "Content Analysis"
         TextProcessor --> Classifier[Section Classifier]
         PdfToText --> Classifier
     Classifier --> ChapterStructure[Chapter Structure (derived)]
     end
-    
+
     subgraph "Annotation Pipeline"  
     ChapterStructure --> Segmenter[Dialogue/Narration]
         Segmenter --> Annotator[Metadata Generation]
     end
-    
+
     subgraph "Output & Quality"
         Annotator --> QualityGate[Quality Assurance]
         QualityGate --> Output[Structured JSON/JSONL]
@@ -160,7 +160,7 @@ sequenceDiagram
     participant ChapterStructure as Chapter Structure
     participant Annotator as Annotation Engine
     participant Output as Structured Output
-    
+
     Input->>Processor: Raw text/PDF
     Processor->>Classifier: Clean text
     Classifier->>ChapterStructure: Classified sections
