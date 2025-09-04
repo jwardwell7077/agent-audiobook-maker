@@ -1,6 +1,11 @@
 default_language_version:
   python: python3.11
 
+default_install_hook_types:
+  - pre-commit
+  - pre-push
+  - commit-msg
+
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.12.10
@@ -43,14 +48,36 @@ repos:
       - id: trailing-whitespace
         # Preserve two-space Markdown hard line breaks instead of stripping them,
         # which otherwise fights with mdformat and causes edit loops.
-  args: ["--markdown-linebreak-ext=md,mdx,mmd"]
-  exclude: "\\.md$"
+        args: ["--markdown-linebreak-ext=md,mdx,mmd"]
 
   - repo: local
     hooks:
+      - id: commit-message-guard
+        name: Commit Message Guard (single Fixes #ID, subject <=72)
+  entry: bash scripts/validate_commit_message.sh
+        language: system
+        stages: [commit-msg]
+        pass_filenames: true
+
       - id: quality-gate
         name: Quality Gate (ruff, docstrings=100%, coverage=100%)
         entry: bash -lc 'make quality_gate'
         language: system
         pass_filenames: false
         stages: [push]
+
+      - id: docs-link-check
+        name: Docs Link Check (local relative links)
+        entry: bash -lc 'python scripts/check_docs_links.py'
+        language: system
+        pass_filenames: false
+        files: ^docs/.*\.md$
+        stages: [commit, push]
+
+      - id: docs-lint
+        name: Docs Lint (mdformat check + PyMarkdown)
+        entry: bash -lc 'make docs_lint'
+        language: system
+        pass_filenames: false
+        files: ^docs/.*\.md$
+        stages: [commit, push]

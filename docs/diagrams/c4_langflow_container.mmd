@@ -1,0 +1,19 @@
+C4Container
+    title LangFlow – Container Diagram (Prototype)
+
+    Person(operator, "Operator", "Builds/tests flows locally")
+
+    Container_Boundary(langflow, "LangFlow (Local)") {
+      Container(ui, "LangFlow UI", "Web App", "Design and run flows")
+      Container(flow, "Segmentation Flow", "JSON", "Loader → Segment → Writer components")
+      Container(fs, "Filesystem", "ext4", "Flow exports and JSONL outputs")
+    }
+
+    System_Ext(abm, "ABM CLI/Agents", "Consumes/produces JSONL; interoperates with flows")
+
+    Rel(operator, ui, "Edits/runs flows")
+    Rel(ui, flow, "Exports/imports JSON")
+    Rel(flow, fs, "Reads/Writes JSONL")
+    Rel(abm, fs, "Reads/Writes JSONL; imports flow exports")
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")

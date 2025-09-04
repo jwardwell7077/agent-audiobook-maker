@@ -1,0 +1,42 @@
+name: Feature request
+description: Propose a new feature for the KISS branch
+labels: ["type:feature"]
+body:
+  - type: input
+    id: goal
+    attributes:
+      label: Goal
+      description: What problem does this feature solve?
+      placeholder: One sentence outcome
+    validations:
+      required: true
+  - type: textarea
+    id: scope_in
+    attributes:
+      label: In Scope
+      description: What will be covered?
+      placeholder: Bulleted list
+    validations:
+      required: true
+  - type: textarea
+    id: scope_out
+    attributes:
+      label: Out of Scope
+      description: What will not be done?
+      placeholder: Bulleted list
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: Observable, testable outcomes
+      placeholder: Given/When/Then or checklist
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Links to docs, code, examples
+      placeholder: URLs or relative doc paths

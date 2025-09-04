@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database for character tracking and audiobook data
+  db:
+    image: postgres:16-alpine
+    container_name: abm_postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME:-audiobook_maker}
+      POSTGRES_USER: ${DB_USER:-abm_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-abm_dev_password}
+      # Enable logging for development
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-abm_user} -d ${DB_NAME:-audiobook_maker}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - abm_network
+
+  # Optional: pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: abm_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@audiobook-maker.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - abm_network
+    profiles:
+      - admin # Optional service, start with: docker compose --profile admin up
+
+  # Optional: API service (when ready)
+  api:
+    build: .
+    container_name: abm_api
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data
+    networks:
+      - abm_network
+    profiles:
+      - api # Optional service
+
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  abm_network:
+    driver: bridge

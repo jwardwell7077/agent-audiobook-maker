@@ -1,0 +1,34 @@
+%% LangFlow Components Wire Diagram (ABM) - Updated 2025-08-30
+%% View with Mermaid-compatible renderer
+
+flowchart TD
+
+	%% Ingestion & Selection (Unified)
+	subgraph Ingestion
+		ChapterLoader["ABMChapterLoader\ninputs: book_name, chapter_index, base_data_dir, context_sentences\noutputs: chapters_data, chapter_data, blocks_data"]
+	end
+
+	%% Two-Stage Streaming Path (per-paragraph)
+	subgraph TwoAgent
+		BlockIter["ABMBlockIterator\ninputs: blocks_data\noutputs: current_utterance (Data)"]
+		DialogueClassifier["ABMDialogueClassifier\ninputs: utterance_data(Data)\noutputs: classified_utterance"]
+		SpeakerAttr["ABMSpeakerAttribution\ninputs: classified_utterance\noutputs: attributed_utterance"]
+		Aggregator["ABMResultsAggregator\ninputs: attribution_result\noutputs: aggregated_results (on completion)"]
+		ResultsToUtterances["ABM Results → Utterances\ninputs: aggregated_results\noutputs: utterances_data"]
+		Casting["ABMCastingDirector\ninputs: utterances_data, voice_bank_path\noutputs: enriched_utterances"]
+		AggJsonl["ABMAggregatedJsonlWriter\ninputs: utterances_data, output_path\noutputs: write_result"]
+		CharCollector["ABMCharacterDataCollector\ninputs: utterances_data, book_id\noutputs: collection_stats"]
+	end
+
+	ChapterLoader -->|blocks_data| BlockIter
+	BlockIter --> DialogueClassifier --> SpeakerAttr --> Aggregator --> ResultsToUtterances --> Casting --> AggJsonl
+	ResultsToUtterances --> CharCollector
+
+	%% Optional Data Sink
+	Postgres["ABMPostgresClient\nquery/execute"]
+	ResultsToUtterances -. optional .-> Postgres
+	Casting -. optional .-> Postgres
+
+	%% Diagnostics / Misc
+	Echo["ABMEcho"]
+	Echo -. test .- ChapterLoader

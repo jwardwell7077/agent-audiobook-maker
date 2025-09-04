@@ -1,8 +1,6 @@
 # Quality Gate — Full Design Spec
 
-Status: Draft
-Owner: OWNER
-Last updated: 2025-08-21
+Status: Draft Owner: OWNER Last updated: 2025-08-21
 
 ## Overview
 
@@ -13,7 +11,7 @@ Last updated: 2025-08-21
 
 - Architecture (Mermaid)
 
-```mermaid
+````mermaid
 flowchart LR
   Dev["Developer/CI"] --> GateRunner["Quality Gate Runner (pre-commit/CI)"]
   GateRunner --> Ruff["Ruff (format + lint)"]
@@ -114,3 +112,4 @@ Source: docs/diagrams/quality_gate_fsm.mmd
 ## Open Questions
 
 - Should mypy strict be part of the gate for all components, or remain a repo-wide gate only?
+````

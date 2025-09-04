@@ -1,0 +1,3 @@
+# Progress Update — 2025-08-23
+
+- 2025-08-30: Ingestion + JSONL-only classifier green again (MVS: 700 TOC entries, 700 chapters). Duplicate chapter names permitted in TOC parsing.

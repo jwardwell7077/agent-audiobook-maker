@@ -1,0 +1,32 @@
+{
+    "name": "Orchestrator with Confidence Threshold",
+    "description": "One-node orchestrator: validator → resolver → classifier → attribution (deterministic confidence) with dialogue filtering by min_confidence_pct; emits artifact summary",
+    "nodes": [
+        {
+            "id": "orch",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_artifact_orchestrator",
+            "class_name": "ABMArtifactOrchestrator",
+            "data": {
+                "write_to_disk": false,
+                "enable_style_planner": false,
+                "output_dir": "",
+                "min_confidence_pct": "75"
+            }
+        },
+        {
+            "id": "out",
+            "type": "ChatOutput",
+            "data": {}
+        }
+    ],
+    "edges": [
+        {
+            "id": "e1",
+            "source": "orch",
+            "sourceHandle": "artifact_summary",
+            "target": "out",
+            "targetHandle": "input"
+        }
+    ]
+}

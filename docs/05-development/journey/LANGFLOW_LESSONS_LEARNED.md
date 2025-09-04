@@ -18,7 +18,7 @@ This document captures the lessons learned during the integration of Audio Book 
 
 #### What Works (Per Official Documentation)
 
-```text
+````text
 /your/custom/components/path/    # Base directory set by LANGFLOW_COMPONENTS_PATH
     └── category_name/          # Required category subfolder (determines menu location)
         ├── __init__.py         # Required (Python package requirement)
@@ -229,3 +229,4 @@ AFTER:  /src/abm/lf_components/audiobook/abm_*.py
 - [ ] Components can be dragged into flows
 - [ ] Components execute correctly within LangFlow
 - [ ] Verify predictions were correct
+````

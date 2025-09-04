@@ -39,17 +39,17 @@ This document captures the comprehensive documentation updates made to synchroni
 
 All 5 LangFlow components are now production-ready with full documentation synchronization:
 
-| Component | Status | Display Name | Icon | Inputs | Outputs |
-|-----------|---------|--------------|------|---------|---------|
-| ABMChapterVolumeLoader | ✅ Production | 📚 Chapter Volume Loader | book-open | 3 | 1 |
-| ABMChapterSelector | ✅ Production | 🎯 Chapter Selector | filter | 3 | 1 |
-| ABMSegmentDialogueNarration | ✅ Production | ✂️ Segment Dialogue Narration | message-square | 1 | 1 |
-| ABMUtteranceFilter | ✅ Production | 🔍 Utterance Filter | filter | 5 | 1 |
-| ABMUtteranceJsonlWriter | ✅ Production | 💾 Utterance JSONL Writer | file-text | 2 | 1 |
+| Component                   | Status        | Display Name                  | Icon           | Inputs | Outputs |
+| --------------------------- | ------------- | ----------------------------- | -------------- | ------ | ------- |
+| ABMChapterVolumeLoader      | ✅ Production | 📚 Chapter Volume Loader      | book-open      | 3      | 1       |
+| ABMChapterSelector          | ✅ Production | 🎯 Chapter Selector           | filter         | 3      | 1       |
+| ABMSegmentDialogueNarration | ✅ Production | ✂️ Segment Dialogue Narration | message-square | 1      | 1       |
+| ABMUtteranceFilter          | ✅ Production | 🔍 Utterance Filter           | filter         | 5      | 1       |
+| ABMUtteranceJsonlWriter     | ✅ Production | 💾 Utterance JSONL Writer     | file-text      | 2      | 1       |
 
 ## Pipeline Flow (Updated)
 
-```text
+````text
 File Loader → ChapterVolumeLoader → ChapterSelector → SegmentDialogueNarration → UtteranceFilter → UtteranceJsonlWriter
 ```text
 
@@ -98,3 +98,4 @@ This documentation synchronization exemplifies our core principle of **"Engineer
 ## Next Steps
 
 Documentation is now fully synchronized. Future component changes should trigger corresponding documentation updates to maintain this synchronization.
+````
