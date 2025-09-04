@@ -1,9 +1,10 @@
-# Two-Agent System Architecture Diagrams
+# \[DEPRECATED\] Two-Agent System Architecture Diagrams
 
-Note: This page retains legacy naming for historical continuity. The current
-annotation architecture is described as a spans-first two-stage system
-(dialogue classification → deterministic speaker attribution). The diagrams
-below remain valid conceptually and will be renamed in a future pass.
+> Deprecated terminology. Use “spans-first two-stage annotation” instead.
+> These diagrams remain as historical reference and conceptually map to the
+> current architecture (dialogue classification → deterministic speaker
+> attribution). New work should not add to or reference this page except as
+> legacy.
 
 ## System Architecture Overview
 

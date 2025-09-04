@@ -1,3 +1,5 @@
+# LangFlow Status Update (2025-08-30)
+
 Ingestion and classification status (2025-08-30)
 
 - WellDone -> JSONL ingestion: Verified working. JSONL now includes line_count, char_count, word_count, start_line, end_line per block.

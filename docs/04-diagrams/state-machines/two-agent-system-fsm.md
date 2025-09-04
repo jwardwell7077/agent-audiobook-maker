@@ -1,4 +1,7 @@
-# Two-Agent System Finite State Machine Specifications
+# \[DEPRECATED\] Two-Agent System Finite State Machine Specifications
+
+> Deprecated terminology. Use the spans-first two-stage FSMs instead where
+> applicable. This document is kept for historical reference.
 
 ## Processing State Machine Overview
 

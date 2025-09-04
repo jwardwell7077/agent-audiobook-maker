@@ -1,4 +1,7 @@
-# Supplementary Two-Agent System Diagrams
+# \[DEPRECATED\] Supplementary Two-Agent System Diagrams
+
+> Deprecated terminology. Retained as historical notes; not representative of
+> the current spans-first two-stage implementation.
 
 ## Early Design Evolution Diagrams
 

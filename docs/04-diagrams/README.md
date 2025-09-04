@@ -6,14 +6,13 @@ This section contains all the technical diagrams that illustrate how the Agent A
 
 ## Quick Navigation
 
-| Diagram Type                  | Purpose                                     | Files                                      |
-| ----------------------------- | ------------------------------------------- | ------------------------------------------ |
-| 🏗️ **Architecture**           | System overview and component relationships | `architecture/high_level_architecture.mmd` |
-| 🔄 **Data Flow**              | Processing pipelines and data movement      | `flows/txt_to_json_spec.mmd`               |
-| 🤖 **State Machines**         | Component behavior and state transitions    | `state-machines/quality_gate_fsm.mmd`      |
-| 📊 **UML Diagrams**           | Class structures and relationships          | `uml/langflow_uml.mmd`                     |
-| 🗄️ **Database Schema**        | Data models and relationships               | `database/schema_overview.md`              |
-| 📋 **Early Design Evolution** | Initial concepts and alternative approaches | `supplementary/early-design-diagrams.md`   |
+| Diagram Type           | Purpose                                     | Files                                      |
+| ---------------------- | ------------------------------------------- | ------------------------------------------ |
+| 🏗️ **Architecture**    | System overview and component relationships | `architecture/high_level_architecture.mmd` |
+| 🔄 **Data Flow**       | Processing pipelines and data movement      | `flows/txt_to_json_spec.mmd`               |
+| 🤖 **State Machines**  | Component behavior and state transitions    | `state-machines/quality_gate_fsm.mmd`      |
+| 📊 **UML Diagrams**    | Class structures and relationships          | `uml/langflow_uml.mmd`                     |
+| 🗄️ **Database Schema** | Data models and relationships               | `database/schema_overview.md`              |
 
 ## Architecture Diagrams
 
@@ -228,20 +227,7 @@ graph LR
 4. **Test rendering** in multiple viewers
 5. **Get feedback** from domain experts
 
-## Design Evolution Documentation
 
-### Early Design Concepts
-
-The `supplementary/early-design-diagrams.md` document captures important diagrams and data models from the initial design phase:
-
-- **File-Based Character Data Model** - Original JSON/JSONL approach considered
-- **Enhanced Agent 2 Diagrams** - Detailed speaker attribution flows  
-- **Speaker vs Addressee Detection Logic** - Character role disambiguation
-- **Character Lookup Flow** - Database query optimization strategies
-- **5-Segment Context Windows** - Memory-efficient processing approach
-- **Enhanced Segmentation Output** - Metadata enrichment structures
-
-These diagrams show the design evolution from file-based storage to the final PostgreSQL-based architecture, preserving important architectural decisions and alternative approaches considered.
 
 ## Related Sections
 

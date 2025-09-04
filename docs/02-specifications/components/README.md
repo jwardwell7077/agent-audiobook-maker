@@ -50,14 +50,14 @@ Every component specification includes:
 
 ## Current Implementation Status
 
-| Component            | Specification | Implementation | Tests       | Status       |
-| -------------------- | ------------- | -------------- | ----------- | ------------ |
-| PDF to Text          | ✅ Complete   | ✅ Complete    | ✅ Complete | 🟢 Stable    |
-| Section Classifier   | ✅ Complete   | ✅ Complete    | ✅ Complete | 🟢 Stable    |
-| Chapterizer (Legacy) | ✅ Historical | ❌ Removed     | ❌ N/A      | � Deprecated |
-| Text to JSON         | ✅ Complete   | ✅ Complete    | ✅ Complete | 🟢 Stable    |
-| Quality Gate         | ✅ Complete   | ✅ Complete    | ✅ Complete | 🟢 Stable    |
-| PDF CLI              | ✅ Complete   | ✅ Complete    | ✅ Complete | 🟢 Stable    |
+| Component            | Specification | Implementation | Tests       | Status     |
+| -------------------- | ------------- | -------------- | ----------- | ---------- |
+| PDF to Text          | ✅ Complete   | ✅ Complete    | ✅ Complete | 🟢 Stable  |
+| Section Classifier   | ✅ Complete   | ✅ Complete    | ✅ Complete | 🟢 Stable  |
+| Chapterizer (Legacy) | ✅ Historical | ❌ Removed     | ❌ N/A      | Deprecated |
+| Text to JSON         | ✅ Complete   | ✅ Complete    | ✅ Complete | 🟢 Stable  |
+| Quality Gate         | ✅ Complete   | ✅ Complete    | ✅ Complete | 🟢 Stable  |
+| PDF CLI              | ✅ Complete   | ✅ Complete    | ✅ Complete | 🟢 Stable  |
 
 ## Architecture Overview
 

@@ -129,7 +129,7 @@ Filters utterances by role, length, or content criteria
 
 ### Speaker Attribution Agent
 
-**New Component** (part of two-agent system)
+Part of the spans-first two-stage annotation system
 
 Associates dialogue segments with specific characters using database-driven lookup
 

@@ -2,42 +2,39 @@
 
 Last updated: 2025-01-14
 
-> KISS scope note: This roadmap reflects the evolution to a two-agent system architecture. On the current KISS branch, we now include PostgreSQL for character database functionality. Start with the `.venv` and `requirements-dev.txt`, then add PostgreSQL as needed for two-agent system implementation.
+> Scope note: This roadmap is future-looking. Current v0 focuses on spans-first two-stage annotation with no DB dependency.
 
 ## Purpose
 
-Structured path to evolve from deterministic ingestion through a sophisticated two-agent system to a production-grade multi-agent audiobook generation system while preserving reproducibility and local-first constraints.
+Structured path to evolve from deterministic ingestion through a production-grade multi-agent audiobook generation system while preserving reproducibility and local-first constraints.
 
 ## Phase Overview
 
-| Phase | Focus                          | Primary Outputs                                     | Exit Criteria                                      |
-| ----- | ------------------------------ | --------------------------------------------------- | -------------------------------------------------- |
-| 0     | Deterministic Ingestion (DONE) | Chapter JSON, Volume Manifest, Hash Snapshot        | Two-cycle identical hashes; snapshot frozen        |
-| 1     | LangFlow Prototype (DONE)      | Segmentation components (Loader, Segmenter, Writer) | Importable flow writes utterance JSONL             |
-| 1.5   | Two-Agent System (CURRENT)     | Dialogue classifier + Speaker attribution agents    | Database-driven character tracking with confidence |
-| 2     | CrewAI Role Agents             | Enhanced QA and emotion analysis agents             | Enriched utterances with quality metrics           |
-| 3     | LangGraph Orchestration        | Deterministic state graph for annotation            | Re-runnable graph with resume & caching            |
-| 4     | Casting & Voice Profiles       | Character bible + voice mapping                     | Persisted character profiles + TTS profile JSON    |
-| 5     | TTS Rendering (XTTS/Piper)     | Stems + chapter renders                             | Real audio files + loudness stats stored           |
-| 6     | Mastering & Assembly           | Book-level mastering & QA gating                    | EBU R128-compliant master + QA report              |
-| 7     | Observability & Metrics        | Structured logs, metrics, tracing                   | Dashboard with latency, cache hit, GPU util        |
-| 8     | Optimization & Scaling         | Parallelism tuning, caching layers                  | Throughput meets target chapters/hr locally        |
+| Phase | Focus                          | Primary Outputs                                     | Exit Criteria                                   |
+| ----- | ------------------------------ | --------------------------------------------------- | ----------------------------------------------- |
+| 0     | Deterministic Ingestion (DONE) | Chapter JSON, Volume Manifest, Hash Snapshot        | Two-cycle identical hashes; snapshot frozen     |
+| 1     | LangFlow Prototype (DONE)      | Segmentation components (Loader, Segmenter, Writer) | Importable flow writes utterance JSONL          |
+| 1.5   | Two-Stage Annotation (Future)  | Dialogue classifier + Speaker attribution           | Optional character DB (future)                  |
+| 2     | CrewAI Role Agents             | Enhanced QA and emotion analysis agents             | Enriched utterances with quality metrics        |
+| 3     | LangGraph Orchestration        | Deterministic state graph for annotation            | Re-runnable graph with resume & caching         |
+| 4     | Casting & Voice Profiles       | Character bible + voice mapping                     | Persisted character profiles + TTS profile JSON |
+| 5     | TTS Rendering (XTTS/Piper)     | Stems + chapter renders                             | Real audio files + loudness stats stored        |
+| 6     | Mastering & Assembly           | Book-level mastering & QA gating                    | EBU R128-compliant master + QA report           |
+| 7     | Observability & Metrics        | Structured logs, metrics, tracing                   | Dashboard with latency, cache hit, GPU util     |
+| 8     | Optimization & Scaling         | Parallelism tuning, caching layers                  | Throughput meets target chapters/hr locally     |
 
-## Phase 1.5: Two-Agent System (NEW)
+## Phase 1.5: Two-Stage Annotation (Future)
 
 ### Architecture Components
 
-| Agent                   | Inputs                      | Outputs                               | Notes                                     |
-| ----------------------- | --------------------------- | ------------------------------------- | ----------------------------------------- |
-| DialogueClassifierAgent | Raw text segments           | dialogue/narration/mixed + confidence | Hybrid heuristic + AI fallback approach   |
-| SpeakerAttributionAgent | Dialogue segments + context | character associations + metadata     | PostgreSQL character database integration |
+| Agent                   | Inputs                      | Outputs                               | Notes                                  |
+| ----------------------- | --------------------------- | ------------------------------------- | -------------------------------------- |
+| DialogueClassifierAgent | Raw text segments           | dialogue/narration/mixed + confidence | Heuristic-first, optional AI fallback  |
+| SpeakerAttributionAgent | Dialogue segments + context | speaker labels + metadata             | Deterministic attribution; DB optional |
 
 ### Database Integration
 
-- **Character Database**: PostgreSQL with JSONB profiles for flexible character data
-- **Alias Resolution**: Automatic handling of character name variations
-- **Context Tracking**: Before/after context storage for improved attribution accuracy
-- **Confidence Scoring**: Quality metrics for both classification and attribution
+- Optional Character Database: For advanced casting and long-form consistency (future)
 
 ### Key Features
 
@@ -48,7 +45,7 @@ Structured path to evolve from deterministic ingestion through a sophisticated t
 
 ## Detailed Milestones
 
-### Phase 1.5 → 2 Bridge (Two-Agent → CrewAI)
+### Phase 1.5 → 2 Bridge (Two-Stage → CrewAI)
 
 - Integrate existing DialogueClassifierAgent and SpeakerAttributionAgent into CrewAI framework
 - Enhance with emotion analysis and advanced QA agents
@@ -57,13 +54,13 @@ Structured path to evolve from deterministic ingestion through a sophisticated t
 
 ### CrewAI Agent Roles (Enhanced from Two-Agent Foundation)
 
-| Agent                   | Inputs                           | Outputs                               | Notes                                             |
-| ----------------------- | -------------------------------- | ------------------------------------- | ------------------------------------------------- |
-| DialogueClassifierAgent | Raw text segments                | dialogue/narration/mixed + confidence | **Existing**: Hybrid heuristic + AI approach      |
-| SpeakerAttributionAgent | Dialogue segments + character DB | speaker labels + character metadata   | **Existing**: PostgreSQL integration              |
-| EmotionAgent            | Utterances (speaker tagged)      | emotion label + confidence            | **New**: Local classifier + rule smoothing        |
-| QAAgent                 | Annotated utterances             | qa_flags per record                   | **New**: Deterministic rules + limited LLM checks |
-| ProsodyAgent (later)    | Utterances + emotion             | prosody struct                        | **Future**: Rate/pitch breaks & emphasis          |
+| Agent                   | Inputs                      | Outputs                               | Notes                                             |
+| ----------------------- | --------------------------- | ------------------------------------- | ------------------------------------------------- |
+| DialogueClassifierAgent | Raw text segments           | dialogue/narration/mixed + confidence | Heuristic-first + optional AI                     |
+| SpeakerAttributionAgent | Dialogue segments           | speaker labels + metadata             | Deterministic; DB optional                        |
+| EmotionAgent            | Utterances (speaker tagged) | emotion label + confidence            | **New**: Local classifier + rule smoothing        |
+| QAAgent                 | Annotated utterances        | qa_flags per record                   | **New**: Deterministic rules + limited LLM checks |
+| ProsodyAgent (later)    | Utterances + emotion        | prosody struct                        | **Future**: Rate/pitch breaks & emphasis          |
 
 ### Phase 3 LangGraph Design Principles
 
@@ -74,16 +71,16 @@ Structured path to evolve from deterministic ingestion through a sophisticated t
 
 ### Caching & Hashing Strategy
 
-| Layer        | Hash Inputs                                           | Artifact                      | Notes                                |
-| ------------ | ----------------------------------------------------- | ----------------------------- | ------------------------------------ |
-| Segmentation | chapter.text_sha256 + segmentation_params             | utterances_v1.jsonl           | Legacy LangFlow component            |
-| Dialogue     | segmentation_hash + classifier_params + model_version | utterances_dialogue_v2.jsonl  | **Two-Agent**: Hybrid classification |
-| Speaker      | dialogue_hash + speaker_params + char_db_version      | utterances_speaker_v3.jsonl   | **Two-Agent**: Database integration  |
-| Emotion      | speaker_hash + emotion_model_version                  | utterances_emotion_v4.jsonl   | Enhanced CrewAI agent                |
-| Prosody      | emotion_hash + prosody_rules_version                  | utterances_prosody_v5.jsonl   | Future enhancement                   |
-| SSML         | prosody_hash + ssml_template_version                  | chapter.ssml                  | Production rendering                 |
-| TTS          | ssml_hash + tts_engine_version + voice_profile_hash   | stems/\*                      | Audio generation                     |
-| Master       | render_hashes + mastering_params_version              | chapter.wav / book_master.wav | Final assembly                       |
+| Layer        | Hash Inputs                                           | Artifact                      | Notes                     |
+| ------------ | ----------------------------------------------------- | ----------------------------- | ------------------------- |
+| Segmentation | chapter.text_sha256 + segmentation_params             | utterances_v1.jsonl           | Legacy LangFlow component |
+| Dialogue     | segmentation_hash + classifier_params + model_version | utterances_dialogue_v2.jsonl  | Heuristic + optional AI   |
+| Speaker      | dialogue_hash + speaker_params                        | utterances_speaker_v3.jsonl   | Deterministic attribution |
+| Emotion      | speaker_hash + emotion_model_version                  | utterances_emotion_v4.jsonl   | Enhanced CrewAI agent     |
+| Prosody      | emotion_hash + prosody_rules_version                  | utterances_prosody_v5.jsonl   | Future enhancement        |
+| SSML         | prosody_hash + ssml_template_version                  | chapter.ssml                  | Production rendering      |
+| TTS          | ssml_hash + tts_engine_version + voice_profile_hash   | stems/\*                      | Audio generation          |
+| Master       | render_hashes + mastering_params_version              | chapter.wav / book_master.wav | Final assembly            |
 
 ### Failure / Retry Semantics
 

@@ -1,4 +1,8 @@
-# Two-Agent System Database Schema Diagrams
+# \[DEPRECATED\] Two-Agent System Database Schema Diagrams
+
+> Deprecated terminology and scope. Database-backed character tracking is not
+> part of the current spans-first pipeline; this page remains for historical
+> context only.
 
 ## Entity Relationship Diagram (ERD)
 

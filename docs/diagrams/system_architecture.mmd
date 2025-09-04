@@ -13,6 +13,7 @@ flowchart LR
 	CleanArtifacts(("data/clean/<book>/<chapter>.json\n<pdf_stem>_volume.json")):::today
 
 	%% Two-Agent system (annotation today; DB is future unless enabled)
+	%% DEPRECATED: legacy two-agent naming; maps to two-stage annotation today
 	subgraph TwoAgent["Two-Agent Annotation System"]
 		DialogueAgent["Dialogue Classifier (heuristic + AI)"]:::today
 		SpeakerAgent["Speaker Attribution (Character DB)"]:::today

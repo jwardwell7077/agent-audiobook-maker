@@ -1,4 +1,7 @@
-# UML Class Diagram: Two-Agent Character Tracking System
+# \[DEPRECATED\] UML Class Diagram: Two-Agent Character Tracking System
+
+> Deprecated terminology. See spans-first two-stage components for current
+> UML where available. This document is preserved for historical reference.
 
 ## Overview
 
