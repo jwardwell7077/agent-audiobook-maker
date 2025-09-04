@@ -152,7 +152,7 @@ run_api:
 # DEV PIPELINE SHORTCUTS
 ######################
 
-.PHONY: dev_mvs_txt dev_mvs_classify dev_mvs_chapterize dev_mvs_all test_quick test_all_optional
+.PHONY: dev_mvs_txt dev_mvs_classify dev_mvs_all test_quick test_all_optional
 
 # Produce cleaned text from the local mvs PDF (dev only). Creates mvs.txt and mvs_nopp.txt.
 dev_mvs_txt:
@@ -167,11 +167,8 @@ dev_mvs_classify:
 	$(ACTIVATE) python -m abm.classifier.classifier_cli \
 		data/clean/mvs/mvs_ch_0001_0700_well_done.jsonl data/clean/mvs/classified
 
-# Run the chapterizer CLI on local mvs text and emit chapters.json and readable variants
-dev_mvs_chapterize:
-	@echo "Chapterizer removed; see classifier outputs for chapter info."
 
-# One-shot: pdf->text --dev, classifier, chapterizer --dev
+# One-shot: pdf->text --dev, classifier --dev
 dev_mvs_all: dev_mvs_txt dev_mvs_classify
 
 # Fast unit tests only

@@ -197,7 +197,7 @@ docs/
 | Type | Naming Pattern | Example | Purpose |
 |------|----------------|---------|---------|
 | **Index** | `README.md` | `02-specifications/README.md` | Section navigation |
-| **Specification** | `*_SPEC.md` | `CHAPTERIZER_SPEC.md` | Technical requirements |
+| **Specification** | `*_SPEC.md` | `SECTION_CLASSIFIER_SPEC.md` | Technical requirements |
 | **Schema** | `*_SCHEMA.md` | `ANNOTATION_SCHEMA.md` | Data structure definitions |
 | **Guide** | `*_GUIDE.md` | `SETUP_GUIDE.md` | How-to instructions |
 | **Template** | `*_TEMPLATE.md` | `DESIGN_SPEC_TEMPLATE.md` | Reusable document templates |

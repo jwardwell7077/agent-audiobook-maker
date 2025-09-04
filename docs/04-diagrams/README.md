@@ -75,9 +75,7 @@ graph TB
 
 ## Component State Machines
 
-### 📚 [Chapterizer FSM](state-machines/chapterizer_fsm.mmd) (Legacy)
-
-**Historical FSM for chapter detection and structuring (component removed)**
+<!-- Chapterizer FSM removed as component is deprecated; see section classifier and processing pipeline diagrams instead. -->
 
 **States:**
 

@@ -25,7 +25,7 @@ docs/
 │   ├── components/             # Component specifications
 │   │   ├── PDF_TO_TEXT_SPEC.md
 │   │   ├── SECTION_CLASSIFIER_SPEC.md
-│   │   ├── CHAPTERIZER_SPEC.md
+│   │   ├── (removed) CHAPTERIZER_SPEC.md
 │   │   └── QUALITY_GATE_SPEC.md
 │   └── advanced/               # Complex features
 │       ├── ADVANCED_SPEAKER_ATTRIBUTION.md
