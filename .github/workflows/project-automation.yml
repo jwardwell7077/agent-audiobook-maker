@@ -36,7 +36,7 @@ jobs:
             core.setOutput('count', String(count));
       - name: Warn if too many in review
         if: ${{ fromJSON(steps.pr_count.outputs.count || '0') > 5 }}
-        uses: thollander/actions-comment-pull-request@v2
+        uses: thollander/actions-comment-pull-request@v3
         with:
           message: |
             Heads up: More than 5 PRs appear to be in review. Consider reducing WIP to keep flow healthy.
