@@ -11,8 +11,6 @@
 ✓ ABMBlockIterator properly inherits from Component
 ✓ ABMDialogueClassifier properly inherits from Component
 ✓ ABMSpeakerAttribution properly inherits from Component
-✓ ABMResultsAggregator properly inherits from Component
-✓ ABMResultsToUtterances properly inherits from Component
 ✓ ABMAggregatedJsonlWriter properly inherits from Component
 ✓ ABMCastingDirector properly inherits from Component
 ✓ ABMCharacterDataCollector properly inherits from Component
@@ -30,8 +28,6 @@
    audiobook/abm_block_iterator.py
    audiobook/abm_dialogue_classifier.py
    audiobook/abm_speaker_attribution.py
-   audiobook/abm_results_aggregator.py
-   audiobook/abm_results_to_utterances.py
    audiobook/abm_aggregated_jsonl_writer.py
    audiobook/abm_casting_director.py
    audiobook/abm_character_data_collector.py
