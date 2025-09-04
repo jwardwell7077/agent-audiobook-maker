@@ -1,0 +1,41 @@
+name: Project Automation
+
+on:
+  issues:
+    types: [opened, labeled]
+  pull_request:
+    types: [opened, labeled, ready_for_review]
+
+jobs:
+  add-to-project:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@v1.0.2
+        with:
+          project-url: https://github.com/users/jwardwell7077/projects/3
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  wip-guard:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Count PRs in review
+        uses: actions/github-script@v7
+        id: pr_count
+        with:
+          script: |
+            const { data: prs } = await github.search.issuesAndPullRequests({
+              q: `org:${context.repo.owner} repo:${context.repo.repo} is:pr is:open review:required`,
+            });
+            const count = prs?.total_count ?? 0;
+            core.notice(`Open PRs requiring review: ${count}`);
+            core.setOutput('count', String(count));
+      - name: Warn if too many in review
+        if: ${{ fromJSON(steps.pr_count.outputs.count || '0') > 5 }}
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            Heads up: More than 5 PRs appear to be in review. Consider reducing WIP to keep flow healthy.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
