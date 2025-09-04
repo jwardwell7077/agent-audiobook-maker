@@ -1,6 +1,3 @@
-import pytest
-
-pytest.skip(
-    "Deprecated legacy test skipped: pdf_to_text edgecases no longer applicable.",
-    allow_module_level=True,
-)
+"""Removed legacy pdf_to_text edgecases test.
+This file is intentionally empty to preserve history.
+"""
