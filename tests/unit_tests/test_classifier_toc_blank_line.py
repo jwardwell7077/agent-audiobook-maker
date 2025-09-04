@@ -1,6 +1,3 @@
-import pytest
-
-pytest.skip(
-    "Legacy page-based classifier tests are deprecated; use block-based inputs (JSONL-first).",
-    allow_module_level=True,
-)
+"""Removed legacy page-based classifier blank line test.
+This file is intentionally empty to preserve history.
+"""
