@@ -1,0 +1,38 @@
+{
+  "name": "MasterExample→ChatOutput",
+  "description": "Routes MasterExample.message → Chat Output",
+  "nodes": [
+    {
+      "id": "master_example_1",
+      "type": "custom",
+      "module": "components.helpers.master_example",
+      "class_name": "MasterExample",
+      "data": {
+        "title": "Demo Title",
+        "notes": "Hello from JSON",
+        "enabled": true,
+        "count": 2,
+        "threshold": 0.5,
+        "mode": "Message",
+        "tags": "alpha,beta",
+        "items": ["one", "two"]
+      },
+      "position": { "x": 100, "y": 100 }
+    },
+    {
+      "id": "chat_output_1",
+      "type": "ChatOutput",
+      "data": {},
+      "position": { "x": 500, "y": 100 }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_msg",
+      "source": "master_example_1",
+      "sourceHandle": "msg_out",
+      "target": "chat_output_1",
+      "targetHandle": "input"
+    }
+  ]
+}

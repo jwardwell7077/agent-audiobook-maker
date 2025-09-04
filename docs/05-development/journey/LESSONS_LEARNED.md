@@ -76,7 +76,7 @@ Deterministic text derivation is prerequisite for meaningful content-addressable
 ### Mermaid Diagram Reliability on GitHub
 
 - Issue: Multiple GitHub render failures — “Parse error” and “No diagram type detected”. Root causes:
-  - `.mmd` files wrapped in ```mermaid fences; GitHub and tools expect raw Mermaid in standalone `.mmd` files.
+  - `.mmd` files wrapped in \`\`\`mermaid fences; GitHub and tools expect raw Mermaid in standalone `.mmd` files.
   - Labels with parentheses, e.g., `PyMuPDF (fitz)`, can break the parser unless quoted.
   - Using flowchart dotted link syntax (`-.->`) inside `classDiagram` (UML) blocks; correct dependency arrow is `..>`.
   - Duplicate `classDiagram` directives and stray custom fence headers like `mermaid.radar`.
@@ -86,7 +86,7 @@ Deterministic text derivation is prerequisite for meaningful content-addressable
   - Replaced `-.->` with `..>` in class diagrams; kept proper UML arrows elsewhere.
   - Ensured only one directive per diagram and used standard `mermaid` fences when embedding in `.md`.
 - Lessons:
-  - Keep `.mmd` raw; only `.md` uses ```mermaid fences.
+  - Keep `.mmd` raw; only `.md` uses \`\`\`mermaid fences.
   - Quote labels containing parentheses or special chars.
   - Use diagram-appropriate relations; UML arrows differ from flowchart links.
   - Add a quick validation step or preview before commit to avoid doc regressions.

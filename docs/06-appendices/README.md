@@ -6,11 +6,11 @@ This section provides supplementary information that supports the main documenta
 
 ## Quick Reference
 
-| Resource Type | Purpose | Documents |
-|---------------|---------|-----------|
-| 📖 **Glossary** | Definitions of technical terms | `GLOSSARY.md` |
-| 🔧 **Troubleshooting** | Common problems and solutions | `TROUBLESHOOTING.md` |
-| 📚 **References** | External resources and citations | `REFERENCES.md` |
+| Resource Type          | Purpose                          | Documents            |
+| ---------------------- | -------------------------------- | -------------------- |
+| 📖 **Glossary**        | Definitions of technical terms   | `GLOSSARY.md`        |
+| 🔧 **Troubleshooting** | Common problems and solutions    | `TROUBLESHOOTING.md` |
+| 📚 **References**      | External resources and citations | `REFERENCES.md`      |
 
 ## Contents
 
@@ -21,7 +21,7 @@ This section provides supplementary information that supports the main documenta
 Essential terminology for the Agent Audiobook Maker project:
 
 - **Core concepts**: Utterances, segmentation, annotation pipeline
-- **Technical terms**: Multi-agent systems, LangFlow, CrewAI, LangGraph  
+- **Technical terms**: Multi-agent systems, LangFlow, CrewAI, LangGraph
 - **Domain vocabulary**: Audiobook production, text-to-speech, dialogue/narration
 - **Acronyms and abbreviations**: Common project shorthand
 
@@ -55,6 +55,6 @@ Curated collection of useful resources:
 
 *Use this to deepen understanding or find additional help.*
 
----
+______________________________________________________________________
 
 *Part of [Documentation Index](../README.md)*

@@ -1,330 +1,308 @@
-"""Minimal, deterministic Section Classifier stub.
-
-This provides a contract-satisfying function `classify_sections` that
-constructs placeholder artifacts with empty/warning-only content. It lets
-us wire up APIs and tests before heuristics are implemented.
-
-See docs/SECTION_CLASSIFIER_SPEC.md for details.
-"""
-
 from __future__ import annotations
 
+import json
 import re
-from hashlib import sha256
+import unicodedata
+from typing import Any
 
-from abm.classifier.types import (
-    TOC,
-    BackMatter,
-    ChaptersSection,
-    ClassifierInputs,
-    ClassifierOutputs,
-    DocumentMeta,
-    FrontMatter,
-    Page,
-    PageMarker,
-    PerPageLabel,
-    TOCEntry,
+TOC_HEADING_RE = re.compile(r"^\s*(table of contents|contents)\b", re.I)
+BULLET = r"[\u2022\-\*]?"  # • - * optional
+ORDINAL = r"(?:chapter\s+(?P<digits>\d+)|prologue|epilogue)"
+SEPARATOR = r"[\s:\.-]*"
+TITLE_CAPTURE = r"(?P<title>.+?)\s*$"
+TOC_ITEM_RE_STRICT = re.compile(rf"^\s*{BULLET}\s*{ORDINAL}{SEPARATOR}{TITLE_CAPTURE}", re.I)
+# Within the TOC span, accept lines with optional ordinal tokens followed by a title
+TOC_ITEM_RE_LOOSE = re.compile(rf"^\s*{BULLET}\s*(?:(?:{ORDINAL}{SEPARATOR})\s*)?{TITLE_CAPTURE}", re.I)
+# Fallback pattern: accept dotted leaders and optional trailing page numbers
+TOC_ITEM_RE_FALLBACK = re.compile(
+    r"^\s*[\u2022\-\*]?\s*(?:"  # optional bullet
+    r"(?:(?:Chapter\s+(?P<digits_fb>\d+))|Prologue|Epilogue)[:\s\.-]*)?"  # optional ordinal prefix
+    r"(?P<title_fb>.+?)\s*"  # title
+    r"(?:\.{2,}\s*\d+)?\s*$",  # optional dotted leaders + page number
+    re.I,
+)
+BODY_HEADING_RE = re.compile(
+    r"^\s*(?:(?:Chapter\s+(?P<digits>\d+))|(?P<pro>Prologue)|(?P<epi>Epilogue))\s*(?::|\.|\-|\s)?\s*(?P<title>[^\n]*)\s*$",
+    re.I,
 )
 
-_NUM_ONLY_RE = re.compile(r"^(?:page\s+)?(\d{1,4})$", re.IGNORECASE)
-_ROMAN_ONLY_RE = re.compile(r"^(?=.{2,}$)[IVXLCDM]+$", re.IGNORECASE)
-_INLINE_TRAIL_NUM_RE = re.compile(
-    r"^(?P<prefix>.*?)\s*(?:[-–—•\s]+)?(?:(?:page\s+)?(?P<num>\d{1,4}))\s*$",
-    re.IGNORECASE,
-)
-
-_TOC_HEADING_RE = re.compile(
-    r"^\s*(table of contents|contents)\s*$",
-    re.IGNORECASE,
-)
-_TOC_LINE_ENDS_NUM_RE = re.compile(r"\d{1,4}\s*$")
-_TOC_DOTS_RE = re.compile(r"\.{2,}\s*\d{1,4}$")
+# Heuristics for heading candidates using enriched JSONL fields
+MAX_HEADING_WORDS = 12
+MAX_HEADING_CHARS = 80
 
 
-def _is_page_number_only(text: str) -> str | None:
-    """Return normalized page number string if line is a page-number-only line.
-
-    Supports simple numeric forms (e.g., "12", "Page 12") and Roman numerals
-    (at least two chars) on a line by themselves.
-    """
-
-    s = text.strip()
-    m = _NUM_ONLY_RE.match(s)
-    if m:
-        return m.group(1)
-    if _ROMAN_ONLY_RE.match(s):
-        return s.upper()
-    return None
+def canon_title(s: str) -> str:
+    norm = unicodedata.normalize("NFKD", s)
+    no_marks = "".join(ch for ch in norm if not unicodedata.combining(ch))
+    lowered = no_marks.lower()
+    cleaned = re.sub(r"[^\w\s]", " ", lowered)
+    collapsed = re.sub(r"\s+", " ", cleaned).strip()
+    return collapsed
 
 
-def _strip_inline_trailing_page_number(text: str) -> tuple[str, str | None]:
-    """Strip a trailing page-number token from a content line if present.
-
-    Returns (cleaned_line, number_value or None). Only numeric trailing tokens
-    like "... 12" or "... Page 12" are stripped. Roman numerals are not
-    handled here to avoid removing valid headings like "Chapter IV".
-    """
-
-    s = text.rstrip()
-    m = _INLINE_TRAIL_NUM_RE.match(s)
-    if not m:
-        return text, None
-    prefix = m.group("prefix") or ""
-    num = m.group("num")
-    if not prefix.strip():
-        # This is likely a page-number-only line; do not strip here.
-        return text, None
-    return prefix.rstrip(), num
-
-
-def _build_body_and_markers(
-    pages: list[Page],
-) -> tuple[list[tuple[int, str]], list[PageMarker]]:
-    """Return flattened cleaned lines with page indices and page markers.
-
-    - Remove page-number-only lines and record a marker.
-    - For inline trailing numbers, strip the token and record a marker.
-    Returns:
-        flat_lines: [(page_index, cleaned_line), ...]
-        markers: list of PageMarker
-    """
-
-    flat_lines: list[tuple[int, str]] = []
-    markers: list[PageMarker] = []
-    global_line_index = 0
-
-    for page in pages:
-        for line in page.lines:
-            only = _is_page_number_only(line)
-            if only is not None:
-                markers.append(
-                    {
-                        "page_index": page.page_index,
-                        "line_index_global": global_line_index,
-                        "value": only,
-                    }
-                )
-                # Do not add the line; do not advance global_line_index
+def _load_jsonl_blocks(path: str) -> list[dict[str, Any]]:
+    if not path.endswith(".jsonl"):
+        raise ValueError("Input must be a .jsonl file")
+    blocks: list[dict[str, Any]] = []
+    with open(path, encoding="utf-8") as f:
+        for ln, line in enumerate(f, 1):
+            line = line.strip("\n")
+            if not line:
                 continue
-
-            cleaned, num = _strip_inline_trailing_page_number(line)
-            if num is not None:
-                markers.append(
-                    {
-                        "page_index": page.page_index,
-                        "line_index_global": global_line_index,
-                        "value": num,
-                    }
-                )
-            flat_lines.append((page.page_index, cleaned))
-            global_line_index += 1
-
-    return flat_lines, markers
+            try:
+                obj = json.loads(line)
+            except json.JSONDecodeError as e:
+                raise ValueError(f"Malformed JSONL at line {ln}: {e}") from e
+            if not isinstance(obj, dict) or "text" not in obj or not isinstance(obj["text"], str):
+                raise ValueError(f"Invalid JSONL record at line {ln}: expected object with text:string")
+            blocks.append(obj)
+    if not blocks:
+        raise ValueError("No valid blocks found in JSONL")
+    if all(isinstance(b.get("index"), int) for b in blocks):
+        blocks.sort(key=lambda b: int(b["index"]))
+    return blocks
 
 
-def _detect_toc_pages(pages: list[Page]) -> list[int]:
-    """Heuristic detection of TOC pages.
+def _find_toc_heading(blocks: list[dict[str, Any]]) -> int:
+    for i, b in enumerate(blocks):
+        if TOC_HEADING_RE.search(b["text"]):
+            ahead = blocks[i + 1 : i + 6]
+            # Keep strict lookahead to avoid false positives
+            count = sum(1 for a in ahead if TOC_ITEM_RE_STRICT.search(a["text"]))
+            if count >= 2:
+                return i
+            else:
+                break
+    raise ValueError("TOC heading not found or insufficient TOC-like lines in lookahead")
 
-    Signals:
-    - Presence of a heading line "Contents" or "Table of Contents".
-    - Many short lines ending with numbers and/or dotted leaders.
-    """
 
-    toc_pages: list[int] = []
-    for page in pages:
-        lines = page.lines
-        if any(_TOC_HEADING_RE.match(ln or "") for ln in lines):
-            toc_pages.append(page.page_index)
+def _parse_toc_items(
+    blocks: list[dict[str, Any]], start_idx: int, end_idx: int | None = None
+) -> tuple[list[dict[str, Any]], int, list[str]]:
+    entries: list[dict[str, Any]] = []
+    warnings: list[str] = []
+    # We no longer dedupe by canonical title; duplicates can be legitimate
+    last_text: str | None = None
+    seen_ord: dict[int, str] = {}
+    last_item_block = start_idx
+    i = start_idx + 1
+    # Heuristics to avoid picking non-TOC lines in the TOC span
+    MAX_TOC_WORDS = 30
+    MAX_TOC_CHARS = 150
+    limit = end_idx if isinstance(end_idx, int) else len(blocks)
+    while i < len(blocks) and i < limit:
+        blk = blocks[i]
+        # Skip multi-line or very long blocks which are unlikely to be single TOC items
+        lc = blk.get("line_count")
+        wc = blk.get("word_count")
+        cc = blk.get("char_count")
+        if (
+            (isinstance(lc, int) and lc > 2)
+            or (isinstance(wc, int) and wc > MAX_TOC_WORDS)
+            or (isinstance(cc, int) and cc > MAX_TOC_CHARS)
+        ):
+            i += 1
             continue
-
-        candidates = 0
-        dots = 0
-        for ln in lines:
-            if len(ln) > 120:
+        text = blk.get("text", "").strip()
+        m = TOC_ITEM_RE_LOOSE.match(text)
+        if not m:
+            # Try fallback (handles dotted leaders with trailing page numbers)
+            m2 = TOC_ITEM_RE_FALLBACK.match(text)
+            if not m2:
+                i += 1
                 continue
-            if _TOC_LINE_ENDS_NUM_RE.search(ln or ""):
-                candidates += 1
-            if _TOC_DOTS_RE.search(ln or ""):
-                dots += 1
-        total = len(lines) or 1
-        ratio = candidates / total
-        if candidates >= 3 and (ratio >= 0.3 or dots >= 2):
-            toc_pages.append(page.page_index)
-    return sorted(set(toc_pages))
-
-
-_TOC_ENTRY_RE = re.compile(r"^(?P<title>.+?)\s*(?:\.{2,}|\s{2,}|[-–—•\s]{2,})?\s*(?P<page>\d{1,4})$")
-
-
-def _parse_toc_entries(pages: list[Page], toc_pages: list[int]) -> list[TOCEntry]:
-    """Parse basic TOC entries from the detected TOC pages."""
-
-    entries: list[TOCEntry] = []
-    toc_set = set(toc_pages)
-    for page in pages:
-        if page.page_index not in toc_set:
+            title = (m2.group("title_fb") or "").strip()
+            digits = m2.group("digits_fb")
+        else:
+            title = (m.group("title") or "").strip()
+            digits = m.group("digits")
+        ordinal = int(digits) if digits else None
+        ctitle = canon_title(title)
+        # Skip only immediate exact duplicate lines to avoid double-capture
+        if last_text is not None and text == last_text:
+            warnings.append(f"immediate duplicate TOC line skipped at block {i}")
+            i += 1
             continue
-        for i, raw in enumerate(page.lines):
-            s = raw.strip()
-            if not s:
+        if ordinal is not None:
+            if ordinal in seen_ord and seen_ord[ordinal] != ctitle:
+                warnings.append(f"ordinal conflict in TOC at block {i}: chapter {ordinal} titles differ; keeping first")
+                # Keep the first mapping, skip this conflicting line
+            else:
+                seen_ord[ordinal] = ctitle
+        idx = len(entries)
+        entries.append(
+            {
+                "chapter_index": idx,
+                "title": title,
+                "ordinal": ordinal,
+                "start_block": -1,
+                "end_block": -1,
+            }
+        )
+        last_text = text
+        last_item_block = i
+        i += 1
+    if not entries:
+        raise ValueError("No TOC entries parsed")
+    return entries, last_item_block, warnings
+
+
+def _is_body_heading_block(block: dict[str, Any]) -> re.Match[str] | None:
+    """Return regex match if this block is a plausible standalone heading.
+
+    Uses enriched fields when available: require 1 line, and short word/char counts.
+    """
+    text = block.get("text", "")
+    lc = block.get("line_count")
+    wc = block.get("word_count")
+    cc = block.get("char_count")
+    if lc is not None and isinstance(lc, int) and lc != 1:
+        return None
+    if wc is not None and isinstance(wc, int) and wc > MAX_HEADING_WORDS:
+        return None
+    if cc is not None and isinstance(cc, int) and cc > MAX_HEADING_CHARS:
+        return None
+    return BODY_HEADING_RE.match(text)
+
+
+def _match_chapters(
+    blocks: list[dict[str, Any]], toc_entries: list[dict[str, Any]], start_search: int
+) -> tuple[list[dict[str, Any]], list[str]]:
+    warnings: list[str] = []
+    claimed_heading_indices: set[int] = set()
+    search_pos = max(start_search, 0)
+    # Track minimum allowed start_line to enforce forward progression by original document lines
+    min_start_line = -1
+    if search_pos > 0 and (search_pos - 1) < len(blocks):
+        prev = blocks[search_pos - 1]
+        prev_end_line = prev.get("end_line")
+        if isinstance(prev_end_line, int):
+            min_start_line = prev_end_line
+    for entry in toc_entries:
+        title = entry["title"]
+        ctitle = canon_title(title)
+        ordinal = entry.get("ordinal")
+        found_idx: int | None = None
+        mode = ""
+        i = search_pos
+        while i < len(blocks):
+            blk = blocks[i]
+            # Respect line bounds if available
+            sl = blk.get("start_line")
+            if isinstance(sl, int) and sl <= min_start_line:
+                i += 1
                 continue
-            m = _TOC_ENTRY_RE.match(s)
-            if not m:
-                continue
-            title = m.group("title").strip()
-            # Reject titles that are too short after stripping
-            if not title or title.isdigit():
-                continue
-            page_no = int(m.group("page"))
-            entries.append(
-                {
-                    "title": title,
-                    "page": page_no,
-                    "raw": raw,
-                    "line_in_toc": i,
-                }
+            m = _is_body_heading_block(blk)
+            if m:
+                if i in claimed_heading_indices:
+                    raise ValueError(f"Duplicate chapter heading match at block {i}")
+                h_title = (m.group("title") or "").strip()
+                h_canon = canon_title(h_title)
+                h_digits = m.group("digits")
+                if h_title and h_title.strip() == title.strip():
+                    found_idx = i
+                    mode = "exact"
+                    break
+                if h_title and h_canon == ctitle:
+                    found_idx = i
+                    mode = "normalized"
+                    break
+                if ordinal is not None and h_digits and int(h_digits) == ordinal:
+                    found_idx = i
+                    mode = "ordinal"
+                    break
+            i += 1
+        if found_idx is None:
+            raise ValueError(f"Chapter heading not found for TOC entry: '{title}'")
+        entry["start_block"] = found_idx
+        claimed_heading_indices.add(found_idx)
+        # Update min_start_line to enforce forward-only matching by original line number
+        next_min_sl = blocks[found_idx].get("start_line")
+        if isinstance(next_min_sl, int):
+            min_start_line = max(min_start_line, next_min_sl)
+        if mode == "normalized":
+            warnings.append(f"title normalized match used for TOC entry '{title}' matched at block {found_idx}")
+        elif mode == "ordinal":
+            warnings.append(
+                f"ordinal fallback used for TOC entry '{title}' (chapter {ordinal}) matched at block {found_idx}"
             )
-    return entries
-
-
-def classify_sections(inputs: ClassifierInputs) -> ClassifierOutputs:
-    """Classify book sections and return four artifacts.
-
-        This stub returns deterministic, minimal artifacts:
-        - span values cover the entire concatenated text (0..N chars) based on
-            joined lines.
-    - text_sha256 is computed from the joined text for front/back placeholders.
-    - toc contains no entries.
-    - per_page_labels marks all pages as "body" with confidence 0.0.
-    - warnings explain that this is a stub.
-    """
-
-    pages = inputs.get("pages", [])
-    flat_lines, page_markers = _build_body_and_markers(pages)
-    body_lines = [ln for _, ln in flat_lines]
-    joined = "\n".join(body_lines)
-    text_hash = sha256(joined.encode("utf-8")).hexdigest()
-
-    # overall length of cleaned joined text
-    total_len = len(joined)
-
-    # Compute per-page char spans using flattened lines and joined text.
-    page_spans: dict[int, tuple[int, int]] = {}
-    char_pos = 0
-    for idx, (pg_idx, line) in enumerate(flat_lines):
-        start = char_pos
-        end = start + len(line)
-        if pg_idx not in page_spans:
-            page_spans[pg_idx] = (start, end)
+        search_pos = found_idx + 1
+    for idx, entry in enumerate(toc_entries):
+        if idx < len(toc_entries) - 1:
+            entry["end_block"] = toc_entries[idx + 1]["start_block"] - 1
         else:
-            # expand existing span
-            cur_s, cur_e = page_spans[pg_idx]
-            page_spans[pg_idx] = (min(cur_s, start), max(cur_e, end))
-        # advance for newline except after last line
-        if idx < len(flat_lines) - 1:
-            char_pos = end + 1
-        else:
-            char_pos = end
+            entry["end_block"] = len(blocks) - 1
+    return toc_entries, warnings
 
-    # Derive coarse section spans:
-    # chapters_section covers all body; others are before/after.
-    if page_spans:
-        first_body_start = min(s for s, _ in page_spans.values())
-        last_body_end = max(e for _, e in page_spans.values())
-        span_front = [0, first_body_start]
-        span_body = [first_body_start, last_body_end]
-        span_back = [last_body_end, total_len]
-    else:
-        span_front = [0, 0]
-        span_body = [0, 0]
-        span_back = [0, 0]
-    span_toc = [0, 0]
 
-    document_meta: DocumentMeta = {"page_markers": page_markers}
-
-    front: FrontMatter = {
-        "span": span_front,
-        "text_sha256": text_hash,
-        "warnings": [
-            "page-number-only lines removed; inline trailing numbers stripped",
+def classify_blocks(jsonl_path: str) -> dict[str, Any]:
+    blocks = _load_jsonl_blocks(jsonl_path)
+    toc_start = _find_toc_heading(blocks)
+    # Find the first body heading to bound TOC parsing window
+    first_body_heading_idx = None
+    for i in range(toc_start + 1, len(blocks)):
+        if _is_body_heading_block(blocks[i]):
+            first_body_heading_idx = i
+            break
+    toc_entries, toc_end, toc_warnings = _parse_toc_items(blocks, toc_start, first_body_heading_idx)
+    start_search = first_body_heading_idx or toc_end + 1
+    matched_entries, match_warnings = _match_chapters(blocks, toc_entries, start_search)
+    toc_all_warnings = toc_warnings + match_warnings
+    claimed = [False] * len(blocks)
+    for bi in range(toc_start, toc_end + 1):
+        claimed[bi] = True
+    chapters_out = []
+    for e in matched_entries:
+        s, eidx = e["start_block"], e["end_block"]
+        for bi in range(s, eidx + 1):
+            claimed[bi] = True
+        paragraphs = [blocks[bi]["text"] for bi in range(s, eidx + 1)]
+        chapters_out.append(
+            {
+                "chapter_index": e["chapter_index"],
+                "title": e["title"],
+                "start_block": s,
+                "end_block": eidx,
+                "paragraphs": paragraphs,
+            }
+        )
+    first_ch_start = matched_entries[0]["start_block"]
+    front_span = [-1, -1]
+    front_paras: list[str] = []
+    front_warn: list[str] = []
+    if toc_start > 0:
+        unclaimed_pre = [i for i in range(first_ch_start) if not claimed[i]]
+        if unclaimed_pre:
+            front_span = [unclaimed_pre[0], unclaimed_pre[-1]]
+            front_paras = [blocks[i]["text"] for i in unclaimed_pre]
+            front_warn = [f"unclaimed blocks: {unclaimed_pre}"]
+    last_ch_end = matched_entries[-1]["end_block"]
+    back_span = [-1, -1]
+    back_paras: list[str] = []
+    if last_ch_end < len(blocks) - 1:
+        unclaimed_post = [i for i in range(last_ch_end + 1, len(blocks)) if not claimed[i]]
+        if unclaimed_post:
+            back_span = [unclaimed_post[0], unclaimed_post[-1]]
+            back_paras = [blocks[i]["text"] for i in unclaimed_post]
+    toc_out = {
+        "entries": [
+            {
+                "chapter_index": e["chapter_index"],
+                "title": e["title"],
+                "start_block": e["start_block"],
+                "end_block": e["end_block"],
+            }
+            for e in matched_entries
         ],
-        "document_meta": document_meta,
+        "warnings": toc_all_warnings,
+        "toc_span_blocks": [toc_start, toc_end],
     }
-
-    # TOC detection and span
-    toc_pages = _detect_toc_pages(pages)
-    toc_entries = _parse_toc_entries(pages, toc_pages)
-    if toc_pages and page_spans:
-        common = set(toc_pages).intersection(page_spans.keys())
-        if common:
-            starts = [page_spans[i][0] for i in common]
-            ends = [page_spans[i][1] for i in common]
-            span_toc = [min(starts), max(ends)]
-    toc_warnings: list[str] = []
-    if not toc_entries:
-        toc_warnings.append("no toc entries parsed")
-    else:
-        toc_warnings.append(f"parsed {len(toc_entries)} entries from {len(set(toc_pages))} toc page(s)")
-    toc: TOC = {
-        "span": span_toc,
-        "entries": toc_entries,
-        "warnings": toc_warnings,
-    }
-
-    # Tighten section spans using TOC as an anchor: front ends at TOC start,
-    # body starts at TOC end. Apply only when span_toc is non-empty.
-    if span_toc[1] > span_toc[0]:
-        # keep within total bounds and maintain monotonicity
-        span_front = [max(0, span_front[0]), min(span_front[1], span_toc[0])]
-        span_body = [
-            max(span_toc[1], span_body[0]),
-            max(span_toc[1], span_body[1]),
-        ]
-
-    # Per-page labels using TOC as anchors
-    toc_page_set = set(toc_pages)
-    toc_entry_pages = {e["page"] for e in toc_entries}
-    per_page: list[PerPageLabel] = []
-    for p in pages:
-        if p.page_index in toc_page_set:
-            per_page.append(
-                {
-                    "page_index": p.page_index,
-                    "label": "toc",
-                    "confidence": 0.95,
-                }
-            )
-        elif p.page_index in toc_entry_pages:
-            per_page.append(
-                {
-                    "page_index": p.page_index,
-                    "label": "body",
-                    "confidence": 0.8,
-                }
-            )
-        else:
-            per_page.append(
-                {
-                    "page_index": p.page_index,
-                    "label": "body",
-                    "confidence": 0.4,
-                }
-            )
-    chapters_section: ChaptersSection = {
-        "span": span_body,
-        "per_page_labels": per_page,
-        "warnings": ["stub: all pages labeled body with 0.0 confidence"],
-    }
-
-    back: BackMatter = {
-        "span": span_back,
-        "text_sha256": text_hash,
-        "warnings": ["stub: identical to front for placeholder"],
-    }
-
+    chapters_json = {"chapters": chapters_out}
+    front_json = {"span_blocks": front_span, "paragraphs": front_paras, "warnings": front_warn}
+    back_json = {"span_blocks": back_span, "paragraphs": back_paras, "warnings": []}
     return {
-        "front_matter": front,
-        "toc": toc,
-        "chapters_section": chapters_section,
-        "back_matter": back,
+        "toc": toc_out,
+        "chapters": chapters_json,
+        "front_matter": front_json,
+        "back_matter": back_json,
     }

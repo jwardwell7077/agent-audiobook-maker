@@ -1,0 +1,123 @@
+%%{init: { 'flowchart': { 'curve': 'linear' } } }%%
+flowchart LR
+  %% Loader (optional)
+  subgraph Loader [Input]
+    direction LR
+    ECL[ABMEnhancedChapterLoader]
+    ECL -->|blocks_data| V
+  end
+
+  %% Core pipeline
+
+  subgraph Core_Pipeline [Core Pipeline]
+    direction LR
+    V[ABMBlockSchemaValidator]
+    R[ABMMixedBlockResolver]
+    C[ABMSpanClassifier]
+    A[ABMSpanAttribution\n(use_deterministic_confidence = true)]
+    S{{DeterministicConfidenceScorer\nclamp [0.35, 0.95]}}
+
+    V -->|validated_blocks| R -->|spans| C -->|spans_cls| A
+    A -. uses .- S
+  end
+
+  %% Iterator / Viewer path
+  subgraph Iterator_and_Viewer [High-Confidence Dialogue Preview]
+    direction LR
+    I[ABMSpanIterator\n(dialogue_only = true; min_confidence_pct)]
+    Chat[ChatOutput]
+    A -->|spans_attr| I -->|current_span| Chat
+  end
+
+  %% Orchestrator alternative path
+  subgraph Orchestrator_Alt [Orchestrator (alternative)]
+    direction LR
+    ORCH[ABMArtifactOrchestrator\n(min_confidence_pct)]
+    ORCH_OUT[artifact_summary\n(spans_attr filtered)]
+    ORCH --> ORCH_OUT --> Chat2[ChatOutput]
+  end
+
+  %% Optional Style Planner
+  subgraph Style_Planner_Optional [Optional]
+    direction LR
+    SP[ABMStylePlanner]
+    A -. optional .- SP
+    ORCH -. optional .- SP
+  end
+
+  %% Evidence note
+  EV[(Evidence\n- confidence\n- dialogue_tag\n- continuity_prev_same\n- proper_noun_proximity)]
+  A -. emits .- EV
+
+  %% Artifacts written when write_to_disk = true
+  subgraph Artifacts [On-Disk Artifacts]
+    direction LR
+    D1[(blocks.jsonl)]
+    D2[(spans.jsonl)]
+    D3[(spans_cls.jsonl)]
+    D4[(spans_attr.jsonl)]
+    %%{init: { 'flowchart': { 'curve': 'linear' } } }%%
+    flowchart LR
+      %% Loader (optional)
+      subgraph Loader
+        direction LR
+        ECL[ABMEnhancedChapterLoader]
+        ECL -->|blocks_data| V
+      end
+
+      %% Core pipeline
+      subgraph Core_Pipeline
+        direction LR
+        V[ABMBlockSchemaValidator]
+        R[ABMMixedBlockResolver]
+        C[ABMSpanClassifier]
+      A["ABMSpanAttribution<br/>use_deterministic_confidence=true"]
+      S{{"DeterministicConfidenceScorer<br/>clamp [0.35, 0.95]"}}
+
+        V -->|validated_blocks| R -->|spans| C -->|spans_cls| A
+        A -. uses .- S
+      end
+
+      %% Iterator / Viewer path
+      subgraph Iterator_and_Viewer
+        direction LR
+      I["ABMSpanIterator<br/>dialogue_only=true; min_confidence_pct"]
+        Chat[ChatOutput]
+        A -->|spans_attr| I -->|current_span| Chat
+      end
+
+      %% Orchestrator alternative path
+      subgraph Orchestrator_Alt
+        direction LR
+      ORCH["ABMArtifactOrchestrator<br/>min_confidence_pct"]
+      ORCH_OUT["artifact_summary<br/>spans_attr filtered"]
+        ORCH --> ORCH_OUT --> Chat2[ChatOutput]
+      end
+
+      %% Optional Style Planner
+      subgraph Style_Planner_Optional
+        direction LR
+        SP[ABMStylePlanner]
+        A -. optional .- SP
+        ORCH -. optional .- SP
+      end
+
+      %% Evidence note
+      EV["Evidence<br/>- confidence<br/>- dialogue_tag<br/>- continuity_prev_same<br/>- proper_noun_proximity"]
+      A -. emits .- EV
+
+      %% Artifacts written when write_to_disk = true
+      subgraph Artifacts
+        direction LR
+        D1[(blocks.jsonl)]
+        D2[(spans.jsonl)]
+        D3[(spans_cls.jsonl)]
+        D4[(spans_attr.jsonl)]
+        V -. write_to_disk .- D1
+        R -. write_to_disk .- D2
+        C -. write_to_disk .- D3
+        A -. write_to_disk .- D4
+      end
+
+      classDef faint fill:#f7f7f7,stroke:#ddd,color:#666;
+      class Loader,Style_Planner_Optional,Artifacts,Orchestrator_Alt faint;

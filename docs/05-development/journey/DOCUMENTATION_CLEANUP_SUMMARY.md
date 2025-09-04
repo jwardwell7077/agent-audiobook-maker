@@ -6,7 +6,7 @@ Successfully reorganized **57 documentation files** from a flat structure into a
 
 ## New Structure Overview
 
-```text
+````text
 docs/
 ├── README.md                    # 🎯 Main documentation index
 ├── GETTING_STARTED.md           # 🚀 New contributor guide
@@ -25,7 +25,7 @@ docs/
 │   ├── components/             # Component specifications
 │   │   ├── PDF_TO_TEXT_SPEC.md
 │   │   ├── SECTION_CLASSIFIER_SPEC.md
-│   │   ├── CHAPTERIZER_SPEC.md
+│   │   ├── (removed) CHAPTERIZER_SPEC.md
 │   │   └── QUALITY_GATE_SPEC.md
 │   └── advanced/               # Complex features
 │       ├── ADVANCED_SPEAKER_ATTRIBUTION.md
@@ -89,11 +89,11 @@ docs/
 
 ## New Documents Created
 
-1. **[GETTING_STARTED.md](GETTING_STARTED.md)** - Comprehensive onboarding guide
-2. **[01-project-overview/VISION.md](01-project-overview/VISION.md)** - Project vision, goals, and success criteria
-3. **[01-project-overview/README.md](01-project-overview/README.md)** - Project overview index
-4. **[02-specifications/README.md](02-specifications/README.md)** - Specifications index
-5. **Main [README.md](README.md)** - Completely restructured documentation index
+1. **[GETTING_STARTED.md](../../GETTING_STARTED.md)** - Comprehensive onboarding guide
+2. **[01-project-overview/VISION.md](../../01-project-overview/VISION.md)** - Project vision, goals, and success criteria
+3. **[01-project-overview/README.md](../../01-project-overview/README.md)** - Project overview index
+4. **[02-specifications/README.md](../../02-specifications/README.md)** - Specifications index
+5. **Main [README.md](../../README.md)** - Completely restructured documentation index
 
 ## Files Relocated (No Content Changes)
 
@@ -138,3 +138,4 @@ This reorganization transforms documentation from a **flat list of files** into 
 ---
 
 *Documentation cleanup completed on 2025-08-23 in branch `document-cleanup`*
+````

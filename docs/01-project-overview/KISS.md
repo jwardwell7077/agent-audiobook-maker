@@ -15,7 +15,7 @@ This repository explicitly adopts KISS — Keep It Simple, Simple.
 
 Lean workflow (today)
 
-1. Python 3.11, local `.venv` only
+1. Python 3.11, local `.venv` only (activate with `source .venv/bin/activate`)
 1. Minimal dev tools: ruff, mypy, pytest, pre-commit
 1. No app installs until code lands (no -e ., no heavy ML deps)
 
@@ -30,3 +30,28 @@ Definition of done (KISS slice)
 - One command to set up, one to run, one to test
 - No external services required
 - Deterministic outputs for the covered slice
+
+Components path
+
+- Export `LANGFLOW_COMPONENTS_PATH` to include our custom components directory
+- Typical value: `export LANGFLOW_COMPONENTS_PATH="$(pwd)/src/abm/lf_components"`
+
+Available components (this branch)
+
+- ABMChapterLoader – book/chapters
+- ABMBlockSchemaValidator – normalize + JSONL
+- ABMMixedBlockResolver – spans
+- ABMSpanClassifier – dialogue/narration
+- ABMSpanIterator – simple windowing
+- ABMArtifactOrchestrator – blocks → spans → spans_cls → spans_attr
+
+Import sample flow
+
+- Use `examples/langflow/abm_spans_first_pipeline.v15.json`
+- Adjust inputs (paths, chapter selection) in the UI
+
+Out of scope (this branch)
+
+- Multi-agent systems
+- Databases
+- Orchestration frameworks

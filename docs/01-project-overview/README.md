@@ -42,18 +42,18 @@ Agent Audiobook Maker is a local-first, multi-agent system that transforms novel
 
 ## Architecture at a Glance
 
-```mermaid
+````mermaid
 graph LR
     subgraph "Phase 0 ✅"
         PDF[📕 PDF] --> Extract[🔍 Extract]
         Extract --> Chapters[📚 Chapters]
     end
-    
+
     subgraph "Phase 1 🚧"
         Chapters --> Segment[✂️ Segment]
         Segment --> Annotate[🏷️ Annotate]
     end
-    
+
     subgraph "Phase 2-3 ⏳"
         Annotate --> Cast[🎭 Cast]
         Cast --> Render[🎙️ TTS]
@@ -77,3 +77,4 @@ graph LR
 ---
 
 *Part of [Documentation Index](../README.md)*
+````

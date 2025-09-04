@@ -1,7 +1,7 @@
 """ABM LangFlow Components Package.
 
-Custom LangFlow components for audiobook processing pipeline.
+Components are defined under ``abm.lf_components.audiobook`` and are not
+re-exported here to avoid legacy shims.
 """
 
-# LangFlow components are auto-discovered
-# No explicit imports needed
+__all__: list[str] = []

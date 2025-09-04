@@ -1,0 +1,37 @@
+flowchart LR
+	%% Active components pipeline (spans-first, pre-SSML)
+
+	classDef core fill:#0d47a1,stroke:#0d47a1,color:#fff,stroke-width:2px
+	classDef stage fill:#1b5e20,stroke:#1b5e20,color:#fff,stroke-width:2px
+	classDef art fill:#546e7a,stroke:#546e7a,color:#fff,stroke-width:2px
+
+	L[ABM Chapter Loader]
+	V[ABM Block Schema Validator]
+	R[ABM Mixed-Block Resolver]
+	C[ABM Span Classifier]
+	A[ABM Span Attribution]
+	SP[ABM Style Planner]
+	IT[ABM Span Iterator]
+	CAST[ABM Span Casting]
+	ORCH[ABM Artifact Orchestrator]
+
+	subgraph Artifacts
+		BJA[blocks.jsonl]
+		SJA[spans.jsonl]
+		SCA[spans_cls.jsonl]
+		SAT[spans_attr.jsonl]
+		SST[spans_style.jsonl]
+	end
+
+	L -->|blocks_data| V -->|validated_blocks| R -->|spans| C -->|spans_cls| A -->|spans_attr| SP -->|spans_style| IT
+	A -.-> CAST
+	V -. write .-> BJA
+	R -. write .-> SJA
+	C -. write .-> SCA
+	A -. write .-> SAT
+	SP -. write .-> SST
+
+	ORCH:::stage
+
+	class L,V,R,C,A,SP,IT,CAST core
+	class BJA,SJA,SCA,SAT,SST art
