@@ -9,7 +9,7 @@ We need a small, fully public sample dataset to exercise the spans-first upstrea
 - Minimal but representative sample book with 2–3 short chapters.
 - Include source text, normalized chapters.json, and optional prebuilt "golden" artifacts (blocks/spans/spans_cls/spans_attr) for deterministic tests.
 - Copyright-clean (synthetic or public domain) with LICENSE/ATTRIBUTION note.
-- Small size for CI (< 2 MB total, text-only; no audio).
+- Small size for CI (\< 2 MB total, text-only; no audio).
 - Tiny voice bank sample mapping narrator + 1–2 speakers.
 
 ## Deliverables
@@ -37,7 +37,7 @@ We need a small, fully public sample dataset to exercise the spans-first upstrea
 
 - Spans-first pipeline runs locally on SAMPLE_BOOK with no network calls.
 - Unit tests using SAMPLE_BOOK pass deterministically on CI and locally.
-- Repo size increase remains minimal (< ~2 MB).
+- Repo size increase remains minimal (\< ~2 MB).
 - Licensing/provenance documented; no restricted content.
 
 ## Notes

@@ -16,7 +16,7 @@ This note documents the current deterministic speaker attribution behavior and t
   - Enables the deterministic, explainable confidence from `DeterministicConfidenceScorer` on dialogue spans with a detected speaker.
 - search_radius_spans: number (default: 4)
   - Size of the local window over narration spans when inferring speakers (e.g., “Quinn said”). Larger windows consider more nearby narration; keep small to reduce drift.
-- narration_confidence: number in [0,1] (default: 0.95)
+- narration_confidence: number in \[0,1\] (default: 0.95)
   - Confidence to apply to narration spans when evidence is not computed.
 - use_narration_confidence_evidence: bool (default: false)
   - When true, narration spans include confidence evidence; otherwise a fixed `narration_confidence` is used.
@@ -34,7 +34,7 @@ This note documents the current deterministic speaker attribution behavior and t
 
 - Enabled via `use_deterministic_confidence`.
 - Signals: dialogue_tag, proper_noun_proximity, continuity_prev_same (reserved), adjacent_narration_present.
-- Mapping: logistic with clamp, default bounds [0.35, 0.95]. Evidence is emitted at `attribution.evidence.confidence`.
+- Mapping: logistic with clamp, default bounds \[0.35, 0.95\]. Evidence is emitted at `attribution.evidence.confidence`.
 - Unknown or non-dialogue:
   - Falls back to base/unknown constants; narration can use `narration_confidence` or evidence if enabled.
 

@@ -1,4 +1,4 @@
-# [DEPRECATED] Two-Agent System UML Class Diagrams
+# \[DEPRECATED\] Two-Agent System UML Class Diagrams
 
 > Deprecated terminology. Refer to spans-first two-stage UML where available; this page remains for historical context only.
 

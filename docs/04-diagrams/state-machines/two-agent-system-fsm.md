@@ -1,4 +1,4 @@
-# [DEPRECATED] Two-Agent System Finite State Machine Specifications
+# \[DEPRECATED\] Two-Agent System Finite State Machine Specifications
 
 > Deprecated terminology. Use the spans-first two-stage FSMs instead where applicable. This document is kept for historical reference.
 
@@ -517,13 +517,13 @@ stateDiagram-v2
 
 ### Attribution State Transitions
 
-| From State     | To State            | Condition                | Action                       |
-| -------------- | ------------------- | ------------------------ | ---------------------------- |
-| DatabaseLookup | CharacterFound      | Exact/alias match found  | Load character record        |
-| DatabaseLookup | NoCharacterMatch    | No matches in database   | Prepare character creation   |
-| AnalyzingRole  | SpeakerIdentified   | "said [Name]" pattern    | Create speaker association   |
-| AnalyzingRole  | AddresseeIdentified | "[Name]," within quotes  | Create addressee association |
-| AnalyzingRole  | AmbiguousRole       | Multiple role indicators | Store all possibilities      |
+| From State     | To State            | Condition                 | Action                       |
+| -------------- | ------------------- | ------------------------- | ---------------------------- |
+| DatabaseLookup | CharacterFound      | Exact/alias match found   | Load character record        |
+| DatabaseLookup | NoCharacterMatch    | No matches in database    | Prepare character creation   |
+| AnalyzingRole  | SpeakerIdentified   | "said \[Name\]" pattern   | Create speaker association   |
+| AnalyzingRole  | AddresseeIdentified | "\[Name\]," within quotes | Create addressee association |
+| AnalyzingRole  | AmbiguousRole       | Multiple role indicators  | Store all possibilities      |
 
 ### Database State Transitions
 

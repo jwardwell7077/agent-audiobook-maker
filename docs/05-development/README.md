@@ -275,10 +275,10 @@ Core design philosophy guiding all technical decisions:
 
 **Process Efficiency:**
 
-- Average PR review time < 48 hours
+- Average PR review time \< 48 hours
 - Build success rate > 95%
 - Issue resolution time improving over time
-- Contributor onboarding time < 1 week
+- Contributor onboarding time \< 1 week
 
 **Product Impact:**
 

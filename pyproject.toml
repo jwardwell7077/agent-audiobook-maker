@@ -46,10 +46,18 @@ packages = ["abm"]
 ignore_missing_imports = false
 # Use explicit package bases for src layout to avoid duplicate module mapping
 explicit_package_bases = true
+# Point mypy to the src/ layout so local packages (abm) resolve
+mypy_path = ["src"]
 
 [[tool.mypy.overrides]]
-module = ["fitz", "psycopg", "psycopg.*"]
+module = ["fitz", "psycopg", "psycopg.*", "langflow", "langflow.*"]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# LangFlow component modules are integration points with heavy runtime types;
+# keep them out of strict typing for now.
+module = ["abm.lf_components.*", "abm.classifier.classifier_cli"]
+ignore_errors = true
 
 [tool.pytest.ini_options]
 addopts = "-q"

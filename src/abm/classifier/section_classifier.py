@@ -147,7 +147,7 @@ def _parse_toc_items(
     return entries, last_item_block, warnings
 
 
-def _is_body_heading_block(block: dict[str, Any]) -> re.Match | None:
+def _is_body_heading_block(block: dict[str, Any]) -> re.Match[str] | None:
     """Return regex match if this block is a plausible standalone heading.
 
     Uses enriched fields when available: require 1 line, and short word/char counts.

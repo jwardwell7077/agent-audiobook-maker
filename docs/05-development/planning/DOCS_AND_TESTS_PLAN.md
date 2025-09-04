@@ -19,17 +19,17 @@ Modes redefined:
 
 Outputs:
 
-- [STEM]\_raw.txt
+- \[STEM\]\_raw.txt
 
-- [STEM]\_well_done.txt
+- \[STEM\]\_well_done.txt
 
-- [STEM]\_ingest_meta.json
+- \[STEM\]\_ingest_meta.json
 
-- [STEM]\_well_done.jsonl
+- \[STEM\]\_well_done.jsonl
 
-- [STEM]\_well_done_meta.json
+- \[STEM\]\_well_done_meta.json
 
-- Prints "[DB STUB] Would insert …"
+- Prints "\[DB STUB\] Would insert …"
 
 - prod: writes no artifacts; DB insert stub only (in-memory)
 
@@ -113,8 +113,8 @@ Test data
 
 Ingestion tests
 
-- dev mode: Run ingest on a small PDF fixture or mock the extractor; assert all artifacts exist and that a “[DB STUB]” message is printed. Validate JSONL/meta sanity.
-- prod mode: Ensure no artifacts are written. Confirm “[DB STUB]” message with in-memory indicator is printed.
+- dev mode: Run ingest on a small PDF fixture or mock the extractor; assert all artifacts exist and that a “\[DB STUB\]” message is printed. Validate JSONL/meta sanity.
+- prod mode: Ensure no artifacts are written. Confirm “\[DB STUB\]” message with in-memory indicator is printed.
 - Validate meta fields: book, source_pdf, mode, options present; sha256 on raw; well_done references present in dev.
 - Error handling: missing input file generates non-zero exit and clear message.
 
@@ -124,7 +124,7 @@ Classifier tests
 - TOC detection: Positive case with TOC heading and ≥2 items in lookahead. Constrained lookahead does not swallow body headings.
 - Chapter mapping multi-pass: Exact title match; Ordinal fallback (simulate “Miltary” vs “Military”); Relaxed match (prefix/fuzzy) when no ordinal is present.
 - Error modes: Multiple headings in one block → raises. TOC entry cannot be matched → raises. Insufficient TOC-like items → raises.
-- Output shape: toc.json, chapters.json, front/back matter shapes and inclusive spans. Heading block appears as paragraphs[0] for chapters.
+- Output shape: toc.json, chapters.json, front/back matter shapes and inclusive spans. Heading block appears as paragraphs\[0\] for chapters.
 
 CLI tests (lightweight)
 

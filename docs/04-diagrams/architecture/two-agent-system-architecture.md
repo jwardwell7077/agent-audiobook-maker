@@ -1,4 +1,4 @@
-# [DEPRECATED] Two-Agent System Architecture Diagrams
+# \[DEPRECATED\] Two-Agent System Architecture Diagrams
 
 > Deprecated terminology. Use “spans-first two-stage annotation” instead. These diagrams remain as historical reference and conceptually map to the current architecture (dialogue classification → deterministic speaker attribution). New work should not add to or reference this page except as legacy.
 

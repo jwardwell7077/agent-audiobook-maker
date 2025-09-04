@@ -39,7 +39,7 @@ AI “system” tagging is out of scope for this ticket (handled by a separate p
 
 - Input: normalized text per book (doc_id, text)
 - Outputs (JSONL): toc.jsonl, front_matter.jsonl, chapters.jsonl, middle_matter.jsonl, back_matter.jsonl
-- Section record fields: id, doc_id, section_kind, subtype_tags[], text, start_char, end_char, start_line, end_line, detection[], confidence, prev_section_id, next_section_id, order
+- Section record fields: id, doc_id, section_kind, subtype_tags\[\], text, start_char, end_char, start_line, end_line, detection\[\], confidence, prev_section_id, next_section_id, order
 - ID scheme: deterministic (e.g., `doc_id:start-end` or sha1(doc_id+start+end))
 
 ## Detection and extraction (tail-only)
@@ -58,7 +58,7 @@ Required promo/author-note signals (case-insensitive):
 Non-examples (stay in chapter):
 
 - Scene breaks/separators alone (\*\*\*, -----, \_\_\_)
-- In-universe system notices (e.g., "[New quest received]")
+- In-universe system notices (e.g., "\[New quest received\]")
 
 ## Confidence scoring (deterministic)
 

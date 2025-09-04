@@ -1,4 +1,4 @@
-# [DEPRECATED] Two-Agent System Specification
+# \[DEPRECATED\] Two-Agent System Specification
 
 This document described a legacy two-agent plan (dialogue classifier + speaker attribution).
 

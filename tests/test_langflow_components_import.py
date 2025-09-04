@@ -38,4 +38,3 @@ def test_component_classes_exist():
         ABMArtifactOrchestrator,
     ]:
         assert cls.__name__.startswith("ABM")
-

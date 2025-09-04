@@ -1,4 +1,4 @@
-# [DEPRECATED] Two-Agent System Data Flow Diagrams
+# \[DEPRECATED\] Two-Agent System Data Flow Diagrams
 
 > Deprecated terminology. Refer to the spans-first two-stage data flow. This document is preserved for historical context only.
 
