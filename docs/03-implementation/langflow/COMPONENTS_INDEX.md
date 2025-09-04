@@ -21,8 +21,8 @@ This index reflects the current upstream components after the redesign (Blocks �
 ## To Be Removed / Legacy (post-P0)
 
 - abm_enhanced_chapter_loader.py — Legacy “chunk” loader; replaced by unified chapter loader
-- abm_two_agent_runner.py, abm_two_agent_runner_component.py — Legacy runners (replace with upstream/downstream runners)
-- abm_results_aggregator.py, abm_results_to_utterances.py — Superseded by JSONL artifacts and generalized writers
+- abm_two_agent_runner.py, abm_two_agent_runner_component.py — Removed (legacy runners)
+- abm_results_aggregator.py, abm_results_to_utterances.py — Removed (superseded by JSONL artifacts and generalized writers)
 - abm_speaker_attribution.py — Legacy attribution; use abm_span_attribution.py
 
 ## Notes
