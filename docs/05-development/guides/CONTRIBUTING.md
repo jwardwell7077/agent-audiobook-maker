@@ -83,7 +83,7 @@ Treat each gate as a merge precondition; do not defer earlier gates downstream.
 
 ## Local setup
 
-```bash
+````bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -U pip ruff mypy pre-commit pydantic
@@ -105,7 +105,7 @@ Single virtual environment policy:
 
   ```bash
   rm -rf venv .venv311
-  ```
+````
 
 - Editors (VS Code / PyCharm) should point to `.venv/bin/python`.
 
@@ -124,7 +124,7 @@ Installed via `pre-commit install`. Current hooks (see `.pre-commit-config.yaml`
 
 Run manually across all files:
 
-```bash
+````bash
 pre-commit run --all-files
 ```text
 
@@ -227,3 +227,4 @@ When facing a large endpoint:
 1. Keep the public endpoint body to orchestration + response shaping only.
 
 This approach eliminated prior `noqa` complexity suppressions; any new endpoint exceeding limits should first attempt this decomposition style.
+````

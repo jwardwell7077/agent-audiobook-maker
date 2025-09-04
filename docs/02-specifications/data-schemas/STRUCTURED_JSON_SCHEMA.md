@@ -2,8 +2,7 @@
 
 Last updated: 2025-08-21
 
-This defines the "Structured JSON" produced by the ingestion pipeline.
-Starting with v1.1, chapters are embedded directly in the Volume Manifest for simplicity (local‑first, single artifact). Per‑chapter files remain optional as a materialized view.
+This defines the "Structured JSON" produced by the ingestion pipeline. Starting with v1.1, chapters are embedded directly in the Volume Manifest for simplicity (local‑first, single artifact). Per‑chapter files remain optional as a materialized view.
 
 - Volume Manifest: `data/clean/<book_id>/<pdf_stem>_volume.json` (embeds `chapters[]` with full bodies in v1.1)
 - Per‑Chapter JSON (optional): `data/clean/<book_id>/<chapter_id>.json`
@@ -12,9 +11,9 @@ Versioning: `schema_version` is a string. Backward-compatible additions bump the
 
 ## Diagram
 
-Source: [docs/diagrams/structured_json_schema.mmd](diagrams/structured_json_schema.mmd)
+Source: [docs/04-diagrams/flows/structured_json_schema.mmd](../../04-diagrams/flows/structured_json_schema.mmd)
 
-```mermaid
+````mermaid
 classDiagram
   class VolumeManifest {
     +string schema_version
@@ -196,4 +195,5 @@ Example
 ## Related
 
 - Annotation records: [docs/ANNOTATION_SCHEMA.md](ANNOTATION_SCHEMA.md)
-- Architecture overview: [docs/ARCHITECTURE.md](ARCHITECTURE.md)
+- Architecture overview: [docs/01-project-overview/ARCHITECTURE.md](../../01-project-overview/ARCHITECTURE.md)
+````

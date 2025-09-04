@@ -115,7 +115,7 @@ ______________________________________________________________________
 
 One JSON object per utterance (lines delimited):
 
-```json
+````json
 {
   "book_id": "...",
   "chapter_id": "...",
@@ -327,3 +327,4 @@ ______________________________________________________________________
 - JSONL: JSON Lines; one JSON object per line.
 - SSML: Speech Synthesis Markup Language used to control TTS.
 - EBU R128: Loudness normalization standard for broadcast consistency.
+````

@@ -15,10 +15,10 @@ Creating high-quality audiobooks from text requires significant manual effort:
 Agent Audiobook Maker provides an **automated, local-first pipeline** that:
 
 1. **Extracts clean text** from PDF novels with chapter structure
-2. **Identifies speakers** using AI agents for dialogue attribution  
-3. **Casts voice profiles** to match characters consistently
-4. **Renders high-quality audio** using text-to-speech engines
-5. **Masters the final product** with professional audio standards
+1. **Identifies speakers** using AI agents for dialogue attribution
+1. **Casts voice profiles** to match characters consistently
+1. **Renders high-quality audio** using text-to-speech engines
+1. **Masters the final product** with professional audio standards
 
 ## Key Differentiators
 
@@ -117,10 +117,10 @@ Agent Audiobook Maker provides an **automated, local-first pipeline** that:
 This vision directly supports our [KISS principles](KISS.md):
 
 - **Simple**: Start with minimum viable features, add complexity only when needed
-- **Local-first**: No external dependencies for core functionality  
+- **Local-first**: No external dependencies for core functionality
 - **Deterministic**: Reproducible outputs enable testing and validation
 - **Spec-first**: Clear requirements drive implementation decisions
 
----
+______________________________________________________________________
 
 *Next: [System Context](CONTEXT.md) - Understanding the technical environment*

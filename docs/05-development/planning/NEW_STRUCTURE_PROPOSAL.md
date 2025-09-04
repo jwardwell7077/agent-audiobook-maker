@@ -8,7 +8,7 @@
 
 ## Proposed Structure
 
-```text
+````text
 docs/
 ├── README.md                           # Main documentation index
 ├── GETTING_STARTED.md                  # Quick start guide
@@ -125,3 +125,4 @@ Each major section will have:
 - Quick navigation to key documents
 - Visual hierarchy (when appropriate)
 - Status indicators (draft/stable/deprecated)
+````

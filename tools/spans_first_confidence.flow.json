@@ -1,0 +1,97 @@
+{
+    "name": "Spans-First with Confidence",
+    "description": "Validator → Resolver → Classifier → Attribution (deterministic confidence) → Iterator",
+    "nodes": [
+        {
+            "id": "validator",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_block_schema_validator",
+            "class_name": "ABMBlockSchemaValidator",
+            "data": {
+                "write_to_disk": false
+            }
+        },
+        {
+            "id": "resolver",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_mixed_block_resolver",
+            "class_name": "ABMMixedBlockResolver",
+            "data": {
+                "write_to_disk": false
+            }
+        },
+        {
+            "id": "classifier",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_span_classifier",
+            "class_name": "ABMSpanClassifier",
+            "data": {
+                "write_to_disk": false
+            }
+        },
+        {
+            "id": "attrib",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_span_attribution",
+            "class_name": "ABMSpanAttribution",
+            "data": {
+                "use_deterministic_confidence": true,
+                "base_confidence": 0.75,
+                "unknown_confidence": 0.35,
+                "write_to_disk": false
+            }
+        },
+        {
+            "id": "iter",
+            "type": "custom",
+            "module": "abm.lf_components.audiobook.abm_span_iterator",
+            "class_name": "ABMSpanIterator",
+            "data": {
+                "dialogue_only": true,
+                "min_confidence_pct": 75
+            }
+        },
+        {
+            "id": "out",
+            "type": "ChatOutput",
+            "data": {}
+        }
+    ],
+    "edges": [
+        {
+            "id": "e1",
+            "source": "validator",
+            "sourceHandle": "blocks",
+            "target": "resolver",
+            "targetHandle": "validated_blocks"
+        },
+        {
+            "id": "e2",
+            "source": "resolver",
+            "sourceHandle": "spans",
+            "target": "classifier",
+            "targetHandle": "spans"
+        },
+        {
+            "id": "e3",
+            "source": "classifier",
+            "sourceHandle": "spans_cls",
+            "target": "attrib",
+            "targetHandle": "spans_cls"
+        },
+        {
+            "id": "e4",
+            "source": "attrib",
+            "sourceHandle": "spans_attr",
+            "target": "iter",
+            "targetHandle": "spans_data"
+        },
+        {
+            "id": "e5",
+            "source": "iter",
+            "sourceHandle": "current_span",
+            "target": "out",
+            "targetHandle": "input"
+        }
+    ]
+}

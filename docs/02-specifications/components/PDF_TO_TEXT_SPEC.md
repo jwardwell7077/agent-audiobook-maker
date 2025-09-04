@@ -1,8 +1,6 @@
 # PDF → Text — Full Design Spec
 
-Status: Draft
-Owner: jon
-Last updated: 2025-08-21
+Status: Draft Owner: jon Last updated: 2025-08-21
 
 ## Overview
 
@@ -17,14 +15,14 @@ Assumptions and constraints
 
 ## Diagrams
 
-```mermaid
+````mermaid
 flowchart LR
   PDF[PDF file] -->|PyMuPDF (fitz)| EXTRACT[Extract pages]
   EXTRACT --> CLEAN[Normalize & clean]
   CLEAN --> TXT[Write .txt]
 ```text
 
-Diagram source: [diagrams/pdf_to_text_flow.mmd](diagrams/pdf_to_text_flow.mmd)
+Diagram source: [diagrams/pdf_to_text_flow.mmd](../../04-diagrams/flows/pdf_to_text_flow.mmd)
 
 UML (class)
 
@@ -37,6 +35,9 @@ classDiagram
       +bool dedupe_whitespace = true
       +bool preserve_form_feeds = false
       +str newline = "\\n"
+      +bool use_blocks = true
+      +bool insert_blank_line_between_blocks = true
+      +int block_gap_threshold = 6
     }
 
     class PdfToTextExtractor {
@@ -57,6 +58,9 @@ Inputs
 - options (optional):
   - dedupe_whitespace: bool (default true)
   - preserve_form_feeds: bool (default false)
+  - use_blocks: bool (default true) – enable block-aware extraction to preserve layout-driven paragraph breaks.
+  - insert_blank_line_between_blocks: bool (default true) – add a blank line between blocks when vertical gaps exceed threshold.
+  - block_gap_threshold: int (default 6) – vertical gap threshold (pixels/points per PyMuPDF units) that defines a block break.
 
 Outputs
 
@@ -67,6 +71,7 @@ Invariants and guarantees
 
 - UTF‑8 encoding, newline = "\n".
 - Page order preserved; a single form feed ("\f") between pages when preserve_form_feeds=true, else a blank line.
+- When use_blocks=true, intra-page blocks are joined with explicit blank lines when insert_blank_line_between_blocks=true and the vertical gap between their bounding boxes exceeds block_gap_threshold.
 - No PDF object text reordering beyond library defaults; we do not attempt multi‑column reconstruction in this slice.
 
 Error modes and edge cases
@@ -85,7 +90,7 @@ Error modes and edge cases
 ## Task Plan
 
 - [ ] Implement `src/ingestion/pdf_to_text.py` with a small `PdfToTextOptions` dataclass and `extract(pdf_path, out_path, options)` using PyMuPDF (fitz).
-- [ ] Add a thin CLI wrapper: `python -m src.ingestion.pdf_to_text_cli input.pdf output.txt --no-dedupe-whitespace --preserve-form-feeds`.
+- Deprecated: Use `python -m abm.ingestion.ingest_pdf <pdf> --out-dir <dir> [--mode dev] [--preserve-form-feeds]` instead of the old pdf_to_text_cli.
 - [ ] Tests: golden samples with tiny fixture PDFs; determinism test; encrypted/invalid file tests.
 - [ ] Wire into Makefile optional target `make pdf_to_text FILE=... OUT=...`.
 
@@ -117,3 +122,4 @@ Coverage/docstrings
 
 - Do we prefer pdfplumber over pdfminer.six as the “fallback” for line ordering? Start with pdfminer.six due to stability.
 - Should we emit a sidecar JSON with page offsets for downstream alignment? Likely yes in the next slice.
+````

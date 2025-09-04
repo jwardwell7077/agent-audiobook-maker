@@ -100,7 +100,8 @@ ingest: init_dirs
 
 pdf_to_text:
 	@$(VENV_GUARD)
-	python -m abm.ingestion.pdf_to_text_cli $(FILE) $(OUT)
+	# Deprecated: use ingest_pdf instead
+	python -m abm.ingestion.ingest_pdf --help
 
 ######################
 # DATABASE / ALEMBIC
@@ -151,29 +152,24 @@ run_api:
 # DEV PIPELINE SHORTCUTS
 ######################
 
-.PHONY: dev_mvs_txt dev_mvs_classify dev_mvs_chapterize dev_mvs_all test_quick test_all_optional
+.PHONY: dev_mvs_txt dev_mvs_classify dev_mvs_all test_quick test_all_optional
 
 # Produce cleaned text from the local mvs PDF (dev only). Creates mvs.txt and mvs_nopp.txt.
 dev_mvs_txt:
 	@$(VENV_GUARD)
-	$(ACTIVATE) python -m abm.ingestion.pdf_to_text_cli \
+	$(ACTIVATE) python -m abm.ingestion.ingest_pdf \
 		data/books/mvs/source_pdfs/MyVampireSystem_CH0001_0700.pdf \
-		data/clean/mvs/mvs.txt --preserve-form-feeds --dev
+		--out-dir data/clean/mvs --mode dev
 
-# Run the classifier CLI on local mvs text and write artifacts under data/clean/mvs/classified
+# Run the classifier CLI on local mvs JSONL and write artifacts under data/clean/mvs/classified
 dev_mvs_classify:
 	@$(VENV_GUARD)
 	$(ACTIVATE) python -m abm.classifier.classifier_cli \
-		data/clean/mvs/mvs.txt data/clean/mvs/classified
+		data/clean/mvs/mvs_ch_0001_0700_well_done.jsonl data/clean/mvs/classified
 
-# Run the chapterizer CLI on local mvs text and emit chapters.json and readable variants
-dev_mvs_chapterize:
-	@$(VENV_GUARD)
-	$(ACTIVATE) python -m abm.structuring.chapterizer_cli \
-		data/clean/mvs/mvs.txt data/clean/mvs/chapters.json --dev
 
-# One-shot: pdf->text --dev, classifier, chapterizer --dev
-dev_mvs_all: dev_mvs_txt dev_mvs_classify dev_mvs_chapterize
+# One-shot: pdf->text --dev, classifier --dev
+dev_mvs_all: dev_mvs_txt dev_mvs_classify
 
 # Fast unit tests only
 test_quick:
@@ -187,6 +183,47 @@ test_all_optional:
 
 
 ######################
+# ARTIFACT CLEAN + GENERIC INGEST/CLASSIFY TASKS (no src edits)
+######################
+
+.PHONY: clean_artifacts clean_artifacts_apply ingest_pdf classify_well_done ingest_and_classify
+
+# Clean generated artifacts under data/clean/<book>
+# Usage: make clean_artifacts BOOK=mvs WHAT=all DRY_RUN=true
+BOOK?=mvs
+WHAT?=all             # classified | ingest | all
+DRY_RUN?=true         # true | false
+clean_artifacts:
+	bash scripts/clean_artifacts.sh $(BOOK) --what=$(WHAT) --dry-run=$(DRY_RUN)
+
+# Apply cleanup quickly
+clean_artifacts_apply:
+	bash scripts/clean_artifacts.sh $(BOOK) --what=$(WHAT) --dry-run=false
+
+# Ingest a PDF to raw/well_done + JSONL (wrapper around existing CLI)
+# Usage: make ingest_pdf PDF=path/to/book.pdf OUT_DIR=data/clean/<book> MODE=dev
+PDF?=data/books/mvs/source_pdfs/mvs_ch_0001_0700.pdf
+OUT_DIR?=data/clean/mvs
+MODE?=dev
+ingest_pdf:
+	@$(VENV_GUARD)
+	$(ACTIVATE) python scripts/ingest_nodb.py $(PDF) $(OUT_DIR)
+
+# Classify a well_done.jsonl into sections under classified/
+# Usage: make classify_well_done WELL_DONE=path/to/*_well_done.jsonl OUT_DIR=data/clean/<book>/classified
+# Classify a well_done.jsonl into sections under classified/
+# Usage: make classify_well_done WELL_DONE=path/to/*_well_done.jsonl OUT_DIR=data/clean/<book>/classified
+WELL_DONE?=$(OUT_DIR)/mvs_ch_0001_0700_well_done.jsonl
+CLASSIFIED_OUT?=$(OUT_DIR)/classified
+classify_well_done:
+	@$(VENV_GUARD)
+	$(ACTIVATE) python -m abm.classifier.classifier_cli $(WELL_DONE) $(CLASSIFIED_OUT)
+
+# Convenience combo: ingest then classify using variables above
+ingest_and_classify: ingest_pdf classify_well_done
+
+
+######################
 # LANGFLOW
 ######################
 
@@ -194,15 +231,23 @@ test_all_optional:
 langflow:
 	@$(VENV_GUARD)
 	./scripts/run_langflow.sh
-	
+
+.PHONY: langflow_start_bg
+langflow_start_bg:
+	@$(VENV_GUARD)
+	chmod +x scripts/langflow_start_bg.sh; ./scripts/langflow_start_bg.sh
+
+.PHONY: langflow_stop
+langflow_stop:
+	chmod +x scripts/langflow_stop.sh; ./scripts/langflow_stop.sh
+
 .PHONY: langflow-import-segments
 langflow-import-segments:
 	./scripts/import_segments_flow.sh
 
 .PHONY: segment
 segment:
-	@$(VENV_GUARD)
-	$(ACTIVATE) python -m src.abm.langflow_runner mvs --stem segments_dev
+	@echo "segment target deprecated: langflow_runner removed. Use LangFlow UI or tools/run_flow.py."
 
 
 ######################
@@ -211,7 +256,7 @@ segment:
 
 help:
 	@echo '----'
-	@echo 'dev_setup                   - create .venv and install minimal dev tools'
+	@echo 'dev_setup                    - create .venv and install minimal dev tools'
 	@echo 'venv                         - create virtual environment (.venv)'
 	@echo 'install                      - install base package editable'
 	@echo 'install_dev                  - install dev extras'
@@ -222,6 +267,13 @@ help:
 	@echo 'tests                        - run unit tests'
 	@echo 'test TEST_FILE=<test_file>   - run all tests in file'
 	@echo 'test_watch                   - run unit tests in watch mode'
+	@echo 'type                         - mypy checks'
+	@echo 'itest                        - run LangFlow REST flow via tools/run_flow.py'
+	@echo 'docs_link_check              - scan docs/ for broken local links'
+	@echo 'docs_lint                    - run mdformat --check and pymarkdown scan on docs/'
+
+
+# Lightweight helpers for the components/ tooling pack (removed duplicate alt install/lint/type/itest)
 
 
 # Minimal KISS dev setup
@@ -231,3 +283,15 @@ dev_setup:
 	. .venv/bin/activate; pip install -U pip
 	. .venv/bin/activate; pip install -r requirements-dev.txt
 	@echo 'Activate with: source .venv/bin/activate'
+
+# Docs utilities
+.PHONY: docs_link_check
+docs_link_check:
+	@$(VENV_GUARD)
+	python scripts/check_docs_links.py
+
+.PHONY: docs_lint
+docs_lint:
+	@$(VENV_GUARD)
+	mdformat --check docs/
+	python -m pymarkdown --config=pymarkdown.json scan docs/

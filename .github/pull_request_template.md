@@ -1,3 +1,23 @@
+# Pull Request
+
+## Linked Issue (exactly one)
+
+Fixes #123
+
+## What changed
+
+-
+
+## How verified
+
+- Lint/typecheck/tests
+- Manual smoke as applicable
+
+## Risk & rollout
+
+- Risk level: low/med/high
+- Rollout plan / rollback
+
 ## Summary
 
 - What changed and why?
@@ -9,6 +29,8 @@
 - [ ] Linters/formatting passed (ruff/mypy/interrogate)
 - [ ] If behavior changed, docs/README updated
 - [ ] Artifacts and dev-mode outputs verified (if applicable)
+
+Branch naming: use `<type>/#<issue>-<kebab-desc>` (e.g., `feat/#123-short-desc`).
 
 ## Testing
 

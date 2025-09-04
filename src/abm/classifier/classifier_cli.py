@@ -1,120 +1,96 @@
-"""Command-line interface for the Section Classifier.
-
-Reads a plain text file that contains book pages joined either by form-feed
-characters (``\f``) or by double newlines, converts it into the classifier's
-Page objects, runs classification, and writes four JSON artifacts to an
-output directory.
-
-Usage (programmatic):
-    from abm.classifier import classifier_cli
-    exit_code = classifier_cli.main(["input.txt", "out_dir"])  # type:
-    # ignore[arg-type]
-
-This mirrors the style of ``pdf_to_text_cli`` for tests and simplicity.
-"""
-
 from __future__ import annotations
 
+import argparse
 import json
-import sys
-from collections.abc import Iterable
+import os
+import tempfile
 from pathlib import Path
 
-from abm.classifier.section_classifier import classify_sections
-from abm.classifier.types import ClassifierInputs, Page
+from abm.classifier.section_classifier import classify_blocks
 
 
-def _split_pages(text: str) -> list[str]:
-    """Split the input text into page-sized strings.
+def _iter_blocks_from_text(text: str) -> list[dict]:
+    """Convert plain text into enriched JSONL-like blocks (one block per line).
 
-    Prefer form-feed (\f) separators when present. Otherwise, treat double
-    newlines as page boundaries. Trailing whitespace is stripped.
+    We deliberately emit one block per non-empty line so that TOC headings and
+    TOC item lines are independently detectable by the classifier.
     """
-
-    if "\f" in text:
-        parts = text.split("\f")
-    else:
-        parts = text.split("\n\n")
-    # Normalize line endings and strip outer whitespace per page
-    return [p.strip("\n\r ") for p in parts]
-
-
-def _to_pages(raw_pages: Iterable[str]) -> list[Page]:
-    pages: list[Page] = []
-    for i, p in enumerate(raw_pages):
-        if not p:
-            lines: list[str] = []
-        else:
-            lines = p.splitlines()
-        pages.append(Page(page_index=i + 1, lines=lines))
-    return pages
+    blocks: list[dict] = []
+    line_cursor = 1
+    idx = 0
+    for raw_line in text.splitlines():
+        line = raw_line.rstrip("\r")
+        # Always advance line counter even if we skip empty lines
+        if line.strip():
+            blocks.append(
+                {
+                    "index": idx,
+                    "text": line,
+                    "line_count": 1,
+                    "word_count": len(line.split()),
+                    "char_count": len(line),
+                    "start_line": line_cursor,
+                    "end_line": line_cursor,
+                }
+            )
+            idx += 1
+        line_cursor += 1
+    return blocks
 
 
 def _write_json(path: Path, data: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(data, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Run the classifier CLI.
+    p = argparse.ArgumentParser(description="Section classifier CLI (text or JSONL)")
+    p.add_argument("input_path", help="Input .txt (paragraphs) or .jsonl (blocks)")
+    p.add_argument("output_dir", help="Output directory for artifacts")
+    args = p.parse_args(argv)
 
-    Args:
-        argv: Command-line arguments, expected ``[input_txt, output_dir]``.
-            If None, ``sys.argv[1:]`` is used.
-    Returns:
-        Process exit code (0 on success, non-zero on error).
-    """
+    in_path = Path(args.input_path)
+    out_dir = Path(args.output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
 
-    args = list(sys.argv[1:] if argv is None else argv)
-    if len(args) != 2:
-        sys.stderr.write("Usage: classifier_cli <input.txt> <output_dir>\n")
+    tmp_jsonl: Path | None = None
+    try:
+        if in_path.suffix.lower() == ".jsonl":
+            jsonl_path = in_path
+        else:
+            # Treat any non-.jsonl as plain text input
+            text = in_path.read_text(encoding="utf-8")
+            blocks = _iter_blocks_from_text(text)
+            # Persist to a temp JSONL file alongside outputs
+            fd, tmp_name = tempfile.mkstemp(prefix="blocks_", suffix=".jsonl", dir=str(out_dir))
+            os.close(fd)
+            tmp_jsonl = Path(tmp_name)
+            with tmp_jsonl.open("w", encoding="utf-8") as f:
+                for obj in blocks:
+                    f.write(json.dumps(obj, ensure_ascii=False) + "\n")
+            jsonl_path = tmp_jsonl
+
+        result = classify_blocks(str(jsonl_path))
+
+        _write_json(out_dir / "toc.json", result["toc"])  # type: ignore[index]
+        _write_json(out_dir / "chapters.json", result["chapters"])  # type: ignore[index]
+        _write_json(out_dir / "front_matter.json", result["front_matter"])  # type: ignore[index]
+        _write_json(out_dir / "back_matter.json", result["back_matter"])  # type: ignore[index]
+
+        # Tiny summary for interactive usage
+        print(f"Wrote artifacts to {out_dir}")
+        return 0
+    except Exception as exc:
+        print(f"Error: {exc}")
         return 2
-
-    in_path = Path(args[0])
-    out_dir = Path(args[1])
-    if not in_path.exists() or not in_path.is_file():
-        sys.stderr.write(f"Input text not found: {in_path}\n")
-        return 3
-
-    try:
-        text = in_path.read_text(encoding="utf-8")
-    except Exception as exc:
-        sys.stderr.write(f"Failed to read input: {exc}\n")
-        return 4
-
-    raw_pages = _split_pages(text)
-    pages = _to_pages(raw_pages)
-    inputs: ClassifierInputs = {"pages": pages}
-    outputs = classify_sections(inputs)
-
-    try:
-        _write_json(
-            out_dir / "front_matter.json",
-            outputs["front_matter"],  # type: ignore[index]
-        )
-        _write_json(
-            out_dir / "toc.json",
-            outputs["toc"],  # type: ignore[index]
-        )
-        _write_json(
-            out_dir / "chapters_section.json",
-            outputs["chapters_section"],  # type: ignore[index]
-        )
-        _write_json(
-            out_dir / "back_matter.json",
-            outputs["back_matter"],  # type: ignore[index]
-        )
-    except Exception as exc:
-        sys.stderr.write(f"Failed to write outputs: {exc}\n")
-        return 5
-
-    # print a tiny summary to stdout for interactive usage
-    sys.stdout.write("Wrote classifier artifacts to " + str(out_dir) + "\n")
-    return 0
+    finally:
+        if tmp_jsonl and tmp_jsonl.exists():
+            try:
+                tmp_jsonl.unlink()
+            except Exception:
+                # Non-fatal cleanup failure
+                pass
 
 
-if __name__ == "__main__":  # pragma: no cover - manual execution
+if __name__ == "__main__":
     raise SystemExit(main())

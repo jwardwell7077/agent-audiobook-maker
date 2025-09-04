@@ -1,8 +1,8 @@
 # Advanced Speaker Attribution Strategy for 95% F1 Score
 
-**Document Purpose:** Technical approach to achieve 95% F1 score for speaker attribution in dialogue  
-**Current Baseline:** Simple heuristic-based segmentation (~60-70% estimated accuracy)  
-**Target Performance:** 95% F1 score on test dataset  
+**Document Purpose:** Technical approach to achieve 95% F1 score for speaker attribution in dialogue\
+**Current Baseline:** Simple heuristic-based segmentation (~60-70% estimated accuracy)\
+**Target Performance:** 95% F1 score on test dataset\
 **Timeline:** 3 weeks (Phase 2 of MVP)
 
 ## Current State Analysis
@@ -17,7 +17,7 @@
 
 ### **Performance Gap Assessment**
 
-```text
+````text
 Current: ~60-70% (estimated, heuristic-based)
 Target:   95% F1 score
 Gap:      25-35 percentage points improvement needed
@@ -67,10 +67,11 @@ class RuleBasedAttributor:
     def __init__(self):
         self.patterns = {
             'direct_attribution': r'(\w+)\s+(said|asked|replied|whispered|shouted)',
-            'reverse_attribution': r'[""](.*?)[""]\s*,?\s*(\w+)\s+(said|asked)',
-            'action_attribution': r'(\w+)\s+[a-z]+ed[^.]*\.\s*[""](.*?)["""]',
+            # note: split strings to avoid "](" adjacency in docs
+            'reverse_attribution': r"[\"\"]" + r"(.*?)" + r"[\"\"]\s*,?\s*(\\w+)\s+(said|asked)",
+            'action_attribution': r"(\\w+)\s+[a-z]+ed[^.]*\\.\s*" + r"[\"\"]" + r"(.*?)" + r"[\"\"]",
         }
-    
+
     def attribute_speaker(self, utterance: str, context: str) -> Dict:
         # Rule-based matching with confidence scoring
         pass
@@ -85,11 +86,11 @@ from transformers import pipeline
 class CorefAttributor:
     def __init__(self):
         # Use specialized coreference model (e.g., SpanBERT-coref)
-        self.coref_model = pipeline("coreference-resolution", 
+        self.coref_model = pipeline("coreference-resolution",
                                    model="SpanBERT-coref")
-        self.ner_model = pipeline("ner", 
+        self.ner_model = pipeline("ner",
                                  model="dbmdz/bert-large-cased-finetuned-conll03-english")
-    
+
     def resolve_speakers(self, chapter_text: str) -> Dict:
         # Full chapter coreference resolution
         # Link pronouns to character entities
@@ -103,16 +104,16 @@ class LLMAttributor:
     def __init__(self):
         # Use local LLM (Llama 3.1 8B) for complex attribution
         self.model = "llama3.1:8b-instruct-q4_k_m"
-        
-    def attribute_with_llm(self, utterance: str, context: str, 
+
+    def attribute_with_llm(self, utterance: str, context: str,
                           characters: List[str]) -> Dict:
         prompt = f"""
         Given this dialogue and context, identify the speaker:
-        
+
         Characters: {', '.join(characters)}
         Context: {context}
         Dialogue: "{utterance}"
-        
+
         Return the most likely speaker with confidence (0-1).
         Format: {{"speaker": "NAME", "confidence": 0.95, "reasoning": "..."}}
         """
@@ -129,11 +130,11 @@ class EmbeddingAttributor:
     def __init__(self):
         self.encoder = SentenceTransformer('all-MiniLM-L6-v2')
         self.character_profiles = {}  # Character → embedding vectors
-    
+
     def build_character_profiles(self, attributed_utterances: List[Dict]):
         """Build character speech pattern embeddings from known attributions."""
         pass
-    
+
     def similarity_attribution(self, utterance: str, characters: List[str]) -> Dict:
         """Find most similar character based on speech patterns."""
         pass
@@ -152,8 +153,8 @@ class EnsembleAttributor:
             LLMAttributor(weight=0.3),
             EmbeddingAttributor(weight=0.2)
         ]
-        
-    def predict_speaker(self, utterance: str, context: str, 
+
+    def predict_speaker(self, utterance: str, context: str,
                        characters: List[str]) -> Dict:
         predictions = []
         for model in self.models:
@@ -163,7 +164,7 @@ class EnsembleAttributor:
                 'confidence': pred['confidence'] * model.weight,
                 'model': model.__class__.__name__
             })
-        
+
         # Weighted voting with confidence thresholding
         final_prediction = self._ensemble_vote(predictions)
         return final_prediction
@@ -179,7 +180,7 @@ class ConversationState:
         self.active_speakers = []  # Currently present characters
         self.last_speaker = None   # Last identified speaker
         self.conversation_turns = []  # Turn-taking history
-        
+
     def update_context(self, utterance: Dict, attribution: Dict):
         """Update conversation state with new attribution."""
         if attribution['confidence'] > 0.8:
@@ -189,7 +190,7 @@ class ConversationState:
                 'turn_index': len(self.conversation_turns),
                 'utterance_id': utterance['id']
             })
-    
+
     def get_likely_speaker(self) -> Dict:
         """Use conversation flow to predict likely next speaker."""
         # Implement turn-taking heuristics
@@ -202,8 +203,8 @@ class ConversationState:
 class CharacterBible:
     def __init__(self):
         self.characters = {}  # name → character profile
-        
-    def add_character(self, name: str, aliases: List[str], 
+
+    def add_character(self, name: str, aliases: List[str],
                      speech_patterns: Dict, personality: Dict):
         """Add character with speech characteristics."""
         self.characters[name] = {
@@ -212,7 +213,7 @@ class CharacterBible:
             'personality': personality,  # affects dialogue style
             'dialogue_history': [],  # previous utterances
         }
-    
+
     def resolve_alias(self, speaker_candidate: str) -> str:
         """Resolve speaker alias to canonical character name."""
         pass
@@ -239,20 +240,20 @@ GOLD_STANDARD_ANNOTATIONS = [
 #### **Automated Evaluation Pipeline**
 
 ```python
-def evaluate_speaker_attribution(predictions: List[Dict], 
+def evaluate_speaker_attribution(predictions: List[Dict],
                                 gold_standard: List[Dict]) -> Dict:
     """Calculate precision, recall, F1 for speaker attribution."""
-    tp = sum(1 for p, g in zip(predictions, gold_standard) 
+    tp = sum(1 for p, g in zip(predictions, gold_standard)
              if p['speaker'] == g['speaker'])
     fp = sum(1 for p, g in zip(predictions, gold_standard)
              if p['speaker'] != g['speaker'] and p['speaker'] != 'UNKNOWN')
     fn = sum(1 for p, g in zip(predictions, gold_standard)
              if p['speaker'] != g['speaker'] and g['speaker'] != 'UNKNOWN')
-    
+
     precision = tp / (tp + fp) if (tp + fp) > 0 else 0
     recall = tp / (tp + fn) if (tp + fn) > 0 else 0
     f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
-    
+
     return {'precision': precision, 'recall': recall, 'f1': f1}
 ```text
 
@@ -367,3 +368,4 @@ dependencies:
 ---
 
 This comprehensive approach combines multiple proven NLP techniques in an ensemble system designed specifically to achieve the ambitious 95% F1 target for speaker attribution. The phased implementation allows for iterative improvement and risk mitigation while maintaining the deterministic, local-first principles of the project.
+````

@@ -1,0 +1,61 @@
+graph LR
+  %% Loader (optional)
+  subgraph Loader
+    direction LR
+    ECL[ABMEnhancedChapterLoader]
+    ECL -->|blocks_data| V
+  end
+
+  %% Core pipeline
+  subgraph Core
+    direction LR
+    V[ABMBlockSchemaValidator]
+    R[ABMMixedBlockResolver]
+    C[ABMSpanClassifier]
+    A[ABMSpanAttribution deterministic]
+    S[DeterministicConfidenceScorer clamp 0.35..0.95]
+
+    V -->|validated_blocks| R -->|spans| C -->|spans_cls| A
+    A -. uses .- S
+  end
+
+  %% Iterator / Viewer path
+  subgraph Iterator
+    direction LR
+    I[ABMSpanIterator dialogue_only min_conf]
+    Chat[ChatOutput]
+    A -->|spans_attr| I -->|current_span| Chat
+  end
+
+  %% Orchestrator alternative path
+  subgraph Orchestrator
+    direction LR
+    ORCH[ABMArtifactOrchestrator min_conf]
+    ORCH_OUT[artifact_summary]
+    ORCH --> ORCH_OUT --> Chat2[ChatOutput]
+  end
+
+  %% Optional Style Planner
+  subgraph Style
+    direction LR
+    SP[ABMStylePlanner]
+    A -. optional .- SP
+    ORCH -. optional .- SP
+  end
+
+  %% Evidence note
+  EV[Evidence: confidence, dialogue_tag, continuity_prev_same, proper_noun_proximity]
+  A -. emits .- EV
+
+  %% Artifacts written when write_to_disk = true
+  subgraph Artifacts
+    direction LR
+    D1[(blocks.jsonl)]
+    D2[(spans.jsonl)]
+    D3[(spans_cls.jsonl)]
+    D4[(spans_attr.jsonl)]
+    V -. write_to_disk .- D1
+    R -. write_to_disk .- D2
+    C -. write_to_disk .- D3
+    A -. write_to_disk .- D4
+  end

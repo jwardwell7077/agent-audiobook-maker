@@ -17,9 +17,9 @@ This guide explains our documentation structure, standards, templates, and best 
 ### Documentation-First Approach
 
 1. **Design documents** before coding major features
-2. **Update docs** with every code change that affects user experience
-3. **Test documentation** - ensure examples work and instructions are clear
-4. **Review docs** as part of the code review process
+1. **Update docs** with every code change that affects user experience
+1. **Test documentation** - ensure examples work and instructions are clear
+1. **Review docs** as part of the code review process
 
 ## Documentation Structure
 
@@ -27,7 +27,7 @@ This guide explains our documentation structure, standards, templates, and best 
 
 Our documentation follows a 6-section structure designed for different user types and needs:
 
-```text
+````text
 docs/
 ├── README.md                    # Main documentation index
 ├── GETTING_STARTED.md          # New contributor onboarding
@@ -197,7 +197,7 @@ docs/
 | Type | Naming Pattern | Example | Purpose |
 |------|----------------|---------|---------|
 | **Index** | `README.md` | `02-specifications/README.md` | Section navigation |
-| **Specification** | `*_SPEC.md` | `CHAPTERIZER_SPEC.md` | Technical requirements |
+| **Specification** | `*_SPEC.md` | `SECTION_CLASSIFIER_SPEC.md` | Technical requirements |
 | **Schema** | `*_SCHEMA.md` | `ANNOTATION_SCHEMA.md` | Data structure definitions |
 | **Guide** | `*_GUIDE.md` | `SETUP_GUIDE.md` | How-to instructions |
 | **Template** | `*_TEMPLATE.md` | `DESIGN_SPEC_TEMPLATE.md` | Reusable document templates |
@@ -223,7 +223,7 @@ This section contains [description of content type and audience].
 
 ## Contents
 
-### 📋 [Document Name](DOCUMENT.md)
+### 📋 [Document Name](#document-template)
 **Brief description of what this document contains**
 
 Key information about what users will find:
@@ -235,8 +235,8 @@ Key information about what users will find:
 
 ## Related Sections
 
-- 🔗 [Related Section](../other-section/README.md) - Why it's related
-- 🔗 [Another Section](../another/README.md) - Connection explanation
+- 🔗 [Related Section](#related-section) - Why it's related
+- 🔗 [Another Section](#another-related) - Connection explanation
 
 ---
 
@@ -295,10 +295,10 @@ How the component handles various error conditions.
 
 How to validate that the implementation meets the specification.
 
-## Related Documents
+## Related Documents (examples)
 
-- [Related Spec](OTHER_SPEC.md)
-- [Implementation Guide](../../03-implementation/component/README.md)
+- Related Spec (example)
+- Implementation Guide (example)
 
 ```markdown
 # Implementation: [Component/Feature Name]
@@ -353,8 +353,8 @@ Important performance notes and optimization tips.
 
 ## Reference Documents
 
-- [Specification](../../02-specifications/components/COMPONENT_SPEC.md)
-- [Examples](examples/README.md)
+- Specification (example)
+- Examples (example)
 
 ### Implementation Guide Template
 
@@ -413,8 +413,8 @@ Important performance notes and optimization tips.
 
 ## Links
 
-- [Specification](../../02-specifications/components/COMPONENT_SPEC.md)
-- [Examples](examples/README.md)
+- Specification (example)
+- Examples (example)
 
 ## Documentation Standards
 
@@ -585,19 +585,19 @@ This project uses Mermaid for diagrams. Follow these rules to avoid GitHub rende
 - Examples:
 
   - Flowchart file:
-    
+
     flowchart LR
       PDF[PDF file] -->|"PyMuPDF / fitz"| EXTRACT[Extract pages]
       EXTRACT --> CLEAN[Normalize & clean]
       CLEAN --> TXT[Write .txt]
-    
+
   - Class diagram file:
-    
+
     classDiagram
       direction TB
       Component <|-- ABMChapterVolumeLoader
       ABMCacheManager ..> ABMTTSRenderer : caches
-    
+
 
 ### When embedding diagrams inside Markdown (`.md`)
 
@@ -605,11 +605,11 @@ This project uses Mermaid for diagrams. Follow these rules to avoid GitHub rende
 - Put the directive (`flowchart LR`, `classDiagram`, etc.) as the first line inside the fence.
 - Do not nest fences or add blank lines immediately after ```mermaid.
 - Example:
-  
+
   ```mermaid
   flowchart LR
     A --> B
-  ```
+````
 
 ### GitHub-specific pitfalls and fixes
 
@@ -634,9 +634,10 @@ This project uses Mermaid for diagrams. Follow these rules to avoid GitHub rende
 ### Validation and tests
 
 - We include unit tests to validate Mermaid syntax and catch regressions.
+
   - Run just the Mermaid tests:
 
-    pytest tests/unit_tests/test_mermaid_*.py -q
+    pytest tests/unit_tests/test_mermaid\_\*.py -q
 
 - Locally preview in VS Code with a Mermaid extension, or use the project’s validator where available.
 
