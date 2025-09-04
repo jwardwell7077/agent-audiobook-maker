@@ -55,7 +55,7 @@ Current examples include:
 
 ### Component Integration
 
-````mermaid
+```mermaid
 graph LR
     subgraph "LangFlow Approach (Phase 1)"
         L1[Volume Loader] --> L2[Segmenter]
@@ -70,7 +70,7 @@ graph LR
     end
 
     L4 -.evolution.-> M1
-```text
+```
 
 ### Data Flow Patterns
 
@@ -150,4 +150,3 @@ graph LR
 ---
 
 *Part of [Documentation Index](../README.md)*
-````
