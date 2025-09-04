@@ -9,7 +9,7 @@ This represents Phase 2 of our implementation strategy - transitioning from Lang
 ### Specialized Intelligence
 
 - **Expert agents** - Each agent optimized for specific domain knowledge
-- **Focused responsibilities** - Single purpose agents with clear boundaries  
+- **Focused responsibilities** - Single purpose agents with clear boundaries
 - **Intelligent coordination** - Agents communicate and collaborate autonomously
 - **Adaptive workflows** - System adjusts to content complexity and quality
 
@@ -47,7 +47,7 @@ This represents Phase 2 of our implementation strategy - transitioning from Lang
 - Narrative structure detection
 - Content pattern recognition
 
-### ✂️ Segmentation Agent  
+### ✂️ Segmentation Agent
 
 **Expert in splitting text into meaningful utterances**
 
@@ -72,7 +72,7 @@ This represents Phase 2 of our implementation strategy - transitioning from Lang
 **Responsibilities:**
 
 - Build character registry from text analysis
-- Track speaker patterns and speech characteristics  
+- Track speaker patterns and speech characteristics
 - Resolve ambiguous speaker attribution
 - Maintain character consistency across chapters
 
@@ -141,7 +141,7 @@ This represents Phase 2 of our implementation strategy - transitioning from Lang
 
 ### Agent Framework: CrewAI
 
-```python
+````python
 from crewai import Agent, Task, Crew, Process
 
 # Example agent definition
@@ -353,3 +353,4 @@ graph TD
 ---
 
 *Part of [Implementation](../README.md) | [Documentation Index](../../README.md)*
+````

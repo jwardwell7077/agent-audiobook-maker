@@ -61,17 +61,17 @@ classDiagram
     }
 
     %% Core Pipeline Components
-    class ABMChapterVolumeLoader {
-        +display_name: "📚 Chapter Volume Loader"
-        +description: "Loads structured chapter data with volume metadata"
+    class ABMChapterLoader {
+        +display_name: "📚 ABM Chapter Loader"
+        +description: "Unified loader: chapters_data, chapter_data, blocks_data"
         +icon: "book-open"
-        +name: "abm_chapter_volume_loader"
-        +inputs: [StrInput file_path, DataInput volume_metadata, IntInput chapter_index]
-        +outputs: [Output chapter_data]
-        -_load_volume_manifest(file_path: str) dict
-        -_extract_chapter_by_index(manifest: dict, index: int) dict
-        -_validate_chapter_schema(data: dict) bool
-        +build() Data
+        +name: "ABMChapterLoader"
+        +inputs: [StrInput book_name, StrInput base_data_dir, StrInput chapters_file, IntInput chapter_index, IntInput context_sentences]
+        +outputs: [Output chapters_data, Output chapter_data, Output blocks_data]
+        -_read_chapters() tuple[bool, dict]
+        -_get_by_index(chapters: list, idx: int) dict
+        -_split_into_sentences(text: str) list[str]
+        -_blocks_from_paragraphs(paragraphs: list[str], title: str) list[dict]
     }
 
     class ABMChapterSelector {
@@ -144,7 +144,7 @@ classDiagram
     }
 
     class ABMEmotionClassifier {
-        +display_name: "Emotion Classifier" 
+        +display_name: "Emotion Classifier"
         +description: "Classify emotional tone using local models"
         +icon: "MaterialSymbolsMood"
         +name: "abm_emotion_classifier"
@@ -281,7 +281,7 @@ classDiagram
     }
 
     %% Inheritance Relationships
-    Component <|-- ABMChapterVolumeLoader
+    Component <|-- ABMChapterLoader
     Component <|-- ABMChapterSelector
     Component <|-- ABMSegmentDialogueNarration
     Component <|-- ABMUtteranceFilter
@@ -307,26 +307,23 @@ classDiagram
     Component --> Input : configures
     Component --> Output : defines
 
-    %% Data Flow Dependencies
-    ABMChapterVolumeLoader --> ABMChapterSelector : chapter_payload
-    ABMChapterSelector --> ABMSegmentDialogueNarration : selected_chapter
-    ABMSegmentDialogueNarration --> ABMUtteranceFilter : utterances
-    ABMUtteranceFilter --> ABMUtteranceJsonlWriter : filtered_utterances
-    ABMUtteranceJsonlWriter --> ABMSpeakerAttributionAgent : utterance_jsonl
-    ABMSpeakerAttributionAgent --> ABMEmotionClassifier : speaker_utterances
-    ABMEmotionClassifier --> ABMQualityAssuranceAgent : emotion_utterances
-    ABMQualityAssuranceAgent --> ABMCharacterBibleBuilder : qa_utterances
-    ABMCharacterBibleBuilder --> ABMProsodyGenerator : character_profiles
-    ABMProsodyGenerator --> ABMSSMLBuilder : prosody_utterances
-    ABMSSMLBuilder --> ABMTTSRenderer : ssml_documents
-    ABMTTSRenderer --> ABMAudioMaster : audio_stems
+    %% Data Flow Dependencies (active minimal pipeline)
+    ABMChapterLoader --> ABMBlockSchemaValidator : blocks_data
+    ABMBlockSchemaValidator --> ABMMixedBlockResolver : validated_blocks
+    ABMMixedBlockResolver --> ABMSpanClassifier : spans
+    ABMSpanClassifier --> ABMSpanAttribution : spans_cls
+    ABMSpanAttribution --> ABMSpanIterator : spans_attr
+    ABMDialogueClassifier --> ABMSpeakerAttribution : classified_utterance
+    ABMSpeakerAttribution --> ABMResultsAggregator : attribution_result
+    ABMResultsAggregator --> ABMResultsToUtterances : aggregated_results
+    ABMResultsToUtterances --> ABMAggregatedJsonlWriter : utterances_data
 
     %% Cross-cutting Concerns
-    ABMCacheManager ..> ABMChapterVolumeLoader : caches
+    ABMCacheManager ..> ABMChapterLoader : caches
     ABMCacheManager ..> ABMSpeakerAttributionAgent : caches
     ABMCacheManager ..> ABMEmotionClassifier : caches
     ABMCacheManager ..> ABMTTSRenderer : caches
-    ABMPayloadLogger ..> ABMChapterVolumeLoader : logs
+    ABMPayloadLogger ..> ABMChapterLoader : logs
     ABMPayloadLogger ..> ABMSpeakerAttributionAgent : logs
     ABMPayloadLogger ..> ABMQualityAssuranceAgent : logs
     ABMPayloadLogger ..> ABMTTSRenderer : logs

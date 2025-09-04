@@ -17,10 +17,9 @@ Current focus for Phase 1 - rapid prototyping of the annotation pipeline using v
 - Component integration and data flow validation
 - Transition strategy to production multi-agent system
 
-**Status**: Active development (Phase 1)
-**Use Cases**: Rapid prototyping, visual debugging, stakeholder demos
+**Status**: Active development (Phase 1) **Use Cases**: Rapid prototyping, visual debugging, stakeholder demos
 
-### 🤖 [Multi-Agent Implementation](multi-agent/README.md)  
+### 🤖 [Multi-Agent Implementation](multi-agent/README.md)
 
 **Sophisticated multi-agent system for production use**
 
@@ -31,8 +30,7 @@ Future implementation approach for Phases 2-3 using specialized AI agents:
 - Agent role definitions and interaction protocols
 - Scalability and performance optimization strategies
 
-**Status**: Planning and design (Phase 2+)
-**Use Cases**: Production deployment, complex reasoning, quality assurance
+**Status**: Planning and design (Phase 2+) **Use Cases**: Production deployment, complex reasoning, quality assurance
 
 ## Code Examples & Patterns
 
@@ -43,7 +41,7 @@ Future implementation approach for Phases 2-3 using specialized AI agents:
 Real-world examples demonstrating:
 
 - Component integration patterns
-- Data transformation examples  
+- Data transformation examples
 - Error handling and recovery
 - Testing and validation approaches
 
@@ -57,20 +55,20 @@ Current examples include:
 
 ### Component Integration
 
-```mermaid
+````mermaid
 graph LR
     subgraph "LangFlow Approach (Phase 1)"
-        L1[Volume Loader] --> L2[Segmenter] 
+        L1[Volume Loader] --> L2[Segmenter]
         L2 --> L3[JSONL Writer]
         L3 --> L4[Visual Validation]
     end
-    
+
     subgraph "Multi-Agent Approach (Phase 2+)"
         M1[Speaker Agent] --> M2[Emotion Agent]
         M2 --> M3[QA Agent]
         M3 --> M4[Orchestrator]
     end
-    
+
     L4 -.evolution.-> M1
 ```text
 
@@ -152,3 +150,4 @@ graph LR
 ---
 
 *Part of [Documentation Index](../README.md)*
+````

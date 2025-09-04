@@ -6,10 +6,10 @@ This section contains practical guides for developers, contributors, and maintai
 
 ## Quick Navigation
 
-| Category | Purpose | Files |
-|----------|---------|-------|
+| Category             | Purpose                                  | Files                |
+| -------------------- | ---------------------------------------- | -------------------- |
 | 📝 **Documentation** | How to create and maintain documentation | `HOW_TO_DOCUMENT.md` |
-| 🤝 **Contributing** | How to contribute code and improvements | `CONTRIBUTING.md` |
+| 🤝 **Contributing**  | How to contribute code and improvements  | `CONTRIBUTING.md`    |
 
 ## Contents
 
@@ -46,6 +46,6 @@ Essential information for project contributors:
 - 🔗 [Development Planning](../planning/README.md) - Roadmaps and strategic planning
 - 🔗 [Development Templates](../templates/README.md) - Reusable document templates
 
----
+______________________________________________________________________
 
 *Part of [Development Resources](../README.md) | [Documentation Index](../../README.md)*

@@ -9,7 +9,7 @@ Last updated: 2025-08-14
 
 ## Prototype (v1 – Segmentation Only)
 
-```jsonc
+````jsonc
 {
   "book_id": "SAMPLE_BOOK",
   "chapter_id": "SAMPLE_BOOK_CH0001",
@@ -93,3 +93,4 @@ See `docs/CONTEXT.md` for comprehensive final target record including prosody, s
 - Transient performance metrics (latency_ms)
 
 Keep deterministic subset small and stable; treat non-deterministic as optional enrichments.
+````
