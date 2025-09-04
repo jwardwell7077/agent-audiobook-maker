@@ -22,7 +22,12 @@ TOC_ITEM_RE_FALLBACK = re.compile(
     re.I,
 )
 BODY_HEADING_RE = re.compile(
-    r"^\s*(?:(?:Chapter\s+(?P<digits>\d+))|(?P<pro>Prologue)|(?P<epi>Epilogue))\s*(?::|\.|\-|\s)?\s*(?P<title>[^\n]*)\s*$",
+    (
+        r"^\s*"
+        r"(?:(?:Chapter\s+(?P<digits>\d+))|(?P<pro>Prologue)|(?P<epi>Epilogue))"
+        r"\s*(?::|\.|\-|\s)?\s*"
+        r"(?P<title>[^\n]*)\s*$"
+    ),
     re.I,
 )
 
@@ -64,16 +69,20 @@ def _load_jsonl_blocks(path: str) -> list[dict[str, Any]]:
 
 
 def _find_toc_heading(blocks: list[dict[str, Any]]) -> int:
+    saw_heading = False
     for i, b in enumerate(blocks):
         if TOC_HEADING_RE.search(b["text"]):
-            ahead = blocks[i + 1 : i + 6]
+            saw_heading = True
+            ahead = blocks[i + 1:i + 6]
             # Keep strict lookahead to avoid false positives
             count = sum(1 for a in ahead if TOC_ITEM_RE_STRICT.search(a["text"]))
             if count >= 2:
                 return i
             else:
                 break
-    raise ValueError("TOC heading not found or insufficient TOC-like lines in lookahead")
+    if saw_heading:
+        raise ValueError("TOC heading found but no TOC items ahead")
+    raise ValueError("TOC heading not found")
 
 
 def _parse_toc_items(
@@ -104,11 +113,12 @@ def _parse_toc_items(
             i += 1
             continue
         text = blk.get("text", "").strip()
-        m = TOC_ITEM_RE_LOOSE.match(text)
+        m = TOC_ITEM_RE_STRICT.match(text)
         if not m:
-            # Try fallback (handles dotted leaders with trailing page numbers)
+            # Try fallback only if it resembles a typical TOC line with dotted leaders
             m2 = TOC_ITEM_RE_FALLBACK.match(text)
-            if not m2:
+            dotted = bool(re.search(r"\.{2,}\s*\d+\s*$", text))
+            if not m2 or not dotted:
                 i += 1
                 continue
             title = (m2.group("title_fb") or "").strip()
@@ -116,6 +126,19 @@ def _parse_toc_items(
         else:
             title = (m.group("title") or "").strip()
             digits = m.group("digits")
+        # Clean up TOC title: drop dotted leaders and trailing page numbers if present
+        if title:
+            title = re.sub(r"\.{2,}\s*\d+\s*$", "", title).strip()
+        # Filter out lines that look like numeric-only sequences (e.g., '1..2..3..4..5')
+        canon_no_space = re.sub(r"\s+", "", canon_title(title))
+        digits_only_pattern = re.compile(r"^(?:\d+[\.]*)+$")
+        has_letters = bool(re.search(r"[A-Za-z]", title))
+        if not has_letters and (digits is None):
+            i += 1
+            continue
+        if canon_no_space and digits_only_pattern.match(canon_no_space):
+            i += 1
+            continue
         ordinal = int(digits) if digits else None
         ctitle = canon_title(title)
         # Skip only immediate exact duplicate lines to avoid double-capture
@@ -162,7 +185,15 @@ def _is_body_heading_block(block: dict[str, Any]) -> re.Match[str] | None:
         return None
     if cc is not None and isinstance(cc, int) and cc > MAX_HEADING_CHARS:
         return None
+    # Exclude likely TOC item lines that have dotted leaders and trailing page numbers
+    if re.search(r"\.{2,}\s*\d+\s*$", text):
+        return None
     return BODY_HEADING_RE.match(text)
+
+
+def _looks_like_toc_item_line(text: str) -> bool:
+    """Heuristic: line resembles a TOC entry (strict or fallback)."""
+    return bool(TOC_ITEM_RE_STRICT.match(text) or TOC_ITEM_RE_FALLBACK.match(text))
 
 
 def _match_chapters(
@@ -170,6 +201,8 @@ def _match_chapters(
 ) -> tuple[list[dict[str, Any]], list[str]]:
     warnings: list[str] = []
     claimed_heading_indices: set[int] = set()
+    # Prevent using two headings that originated from the same source block index
+    claimed_heading_src_indices: set[int] = set()
     search_pos = max(start_search, 0)
     # Track minimum allowed start_line to enforce forward progression by original document lines
     min_start_line = -1
@@ -194,6 +227,12 @@ def _match_chapters(
                 continue
             m = _is_body_heading_block(blk)
             if m:
+                # If this heading candidate comes from the same source block index
+                # as a previously claimed heading, skip it to avoid ambiguous multi-heading blocks
+                src_idx = blk.get("index")
+                if isinstance(src_idx, int) and src_idx in claimed_heading_src_indices:
+                    i += 1
+                    continue
                 if i in claimed_heading_indices:
                     raise ValueError(f"Duplicate chapter heading match at block {i}")
                 h_title = (m.group("title") or "").strip()
@@ -216,6 +255,9 @@ def _match_chapters(
             raise ValueError(f"Chapter heading not found for TOC entry: '{title}'")
         entry["start_block"] = found_idx
         claimed_heading_indices.add(found_idx)
+        src_idx2 = blocks[found_idx].get("index")
+        if isinstance(src_idx2, int):
+            claimed_heading_src_indices.add(src_idx2)
         # Update min_start_line to enforce forward-only matching by original line number
         next_min_sl = blocks[found_idx].get("start_line")
         if isinstance(next_min_sl, int):
@@ -240,10 +282,20 @@ def classify_blocks(jsonl_path: str) -> dict[str, Any]:
     toc_start = _find_toc_heading(blocks)
     # Find the first body heading to bound TOC parsing window
     first_body_heading_idx = None
+    saw_non_heading_after_toc = False
     for i in range(toc_start + 1, len(blocks)):
-        if _is_body_heading_block(blocks[i]):
-            first_body_heading_idx = i
-            break
+        b = blocks[i]
+        m = _is_body_heading_block(b)
+        if m:
+            # Only treat as first body heading if we've passed a non-heading
+            # separator line (e.g., Preface/Preamble text)
+            if saw_non_heading_after_toc:
+                first_body_heading_idx = i
+                break
+            # Otherwise, this is likely still part of the TOC region; continue scanning
+        else:
+            # Any non-heading line after the TOC indicates we've left the TOC list area
+            saw_non_heading_after_toc = True
     toc_entries, toc_end, toc_warnings = _parse_toc_items(blocks, toc_start, first_body_heading_idx)
     start_search = first_body_heading_idx or toc_end + 1
     matched_entries, match_warnings = _match_chapters(blocks, toc_entries, start_search)
