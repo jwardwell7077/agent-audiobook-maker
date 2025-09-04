@@ -275,6 +275,7 @@ help:
 	@echo 'make type                    - mypy checks'
 	@echo 'make itest                   - run LangFlow REST flow via tools/run_flow.py'
 	@echo 'docs_link_check              - scan docs/ for broken local links'
+	@echo 'docs_lint                    - run mdformat --check and pymarkdown scan on docs/'
 
 
 # Lightweight helpers for the components/ tooling pack
@@ -307,3 +308,9 @@ dev_setup:
 docs_link_check:
 	@$(VENV_GUARD)
 	python scripts/check_docs_links.py
+
+.PHONY: docs_lint
+docs_lint:
+	@$(VENV_GUARD)
+	mdformat --check docs/
+	python -m pymarkdown --config=pymarkdown.json scan docs/

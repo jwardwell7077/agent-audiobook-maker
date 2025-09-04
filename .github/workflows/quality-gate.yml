@@ -34,3 +34,13 @@ jobs:
         run: |
           source .venv/bin/activate
           make docs_link_check
+
+      - name: Docs lint (mdformat + PyMarkdown)
+        run: |
+          source .venv/bin/activate
+          make docs_lint
+
+      - name: pre-commit (selected)
+        run: |
+          source .venv/bin/activate
+          pre-commit run -a mdformat pymarkdown || (echo "pre-commit docs format/lint failed" && exit 1)

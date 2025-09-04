@@ -62,3 +62,11 @@ repos:
         pass_filenames: false
         files: ^docs/.*\.md$
         stages: [commit, push]
+
+      - id: docs-lint
+        name: Docs Lint (mdformat check + PyMarkdown)
+        entry: bash -lc 'make docs_lint'
+        language: system
+        pass_filenames: false
+        files: ^docs/.*\.md$
+        stages: [commit, push]
