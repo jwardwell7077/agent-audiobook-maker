@@ -2,8 +2,8 @@ flowchart LR
 	%% LangFlow Architecture for Audiobook Maker
 	%% Core entry points
 	start([User selects book/chapter])
-%% DEPRECATED: Two-Agent Runner is legacy; see spans-first orchestrator path
-twoRunner["ABM Two-Agent Runner<br/>(ABMTwoAgentRunner)"]
+%% Optional convenience runner (legacy name kept temporarily)
+twoRunner["ABM Two-Stage Runner<br/>(ABMRunner)"]
 
 		%% Core processing components
 		subgraph CORE[Core Processing]
@@ -46,7 +46,7 @@ twoRunner["ABM Two-Agent Runner<br/>(ABMTwoAgentRunner)"]
 		attrib --> aggregator
 		aggregator --> norm
 
-		%% Two-agent runner outputs aggregated results directly
+		%% Runner outputs aggregated results directly
 		twoRunner -->|Aggregated Results| aggregator
 
 		%% Optional alt path
@@ -62,7 +62,7 @@ twoRunner["ABM Two-Agent Runner<br/>(ABMTwoAgentRunner)"]
 		classDef note fill:#eef,stroke:#99f,stroke-width:1px,color:#000
 		N1["Deterministic mode: set disable_llm=true on classifier for tests"]:::note
 		N2["0-based chapter_index, 1-based UI input"]:::note
-		N3["ABM Two-Agent Runner is a convenience wrapper for CORE path"]:::note
+		N3["ABM Runner is a convenience wrapper for CORE path"]:::note
 		classifier --- N1
 		loader --- N2
 		twoRunner --- N3

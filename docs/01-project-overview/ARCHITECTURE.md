@@ -1,6 +1,6 @@
 # High-Level Architecture
 
-KISS today: local CLI + deterministic ingestion transitioning to a spans-first two-stage annotation system. The architecture features hybrid dialogue classification and deterministic speaker attribution with optional PostgreSQL character database integration. Later: multi-agent enrichment, orchestration, TTS, and optional DB.
+KISS today: local CLI + deterministic ingestion transitioning to a spans-first two-stage annotation system. The architecture features hybrid dialogue classification and deterministic speaker attribution. A character database may be added later as an optional enhancement. Later: multi-agent enrichment, orchestration, TTS, and optional DB.
 
 Source: See diagrams index: [04-diagrams/README.md](../04-diagrams/README.md)
 
@@ -23,8 +23,8 @@ flowchart LR
     
   subgraph Anno["Spans-first two-stage Annotation"]
       DialogueAgent["Dialogue Classifier<br/>(Hybrid: Heuristic + AI)"]
-      SpeakerAgent["Speaker Attribution<br/>(Character Database)"]
-      CharDB(("Character DB<br/>(PostgreSQL)"))
+  SpeakerAgent["Speaker Attribution"]
+  CharDB(("Character DB (optional)"))
     end
     
     Artifacts(("data/clean/<book>/<chapter>.json\n<pdf_stem>_volume.json"))

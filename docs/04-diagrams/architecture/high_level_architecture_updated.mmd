@@ -9,8 +9,8 @@ flowchart LR
     
   subgraph Anno["Spans-first two-stage Annotation"]
       DialogueAgent["Dialogue Classifier<br/>(Hybrid: Heuristic + AI)"]
-      SpeakerAgent["Speaker Attribution<br/>(Character Database)"]
-      CharDB[("Character DB<br/>(PostgreSQL)")]
+  SpeakerAgent["Speaker Attribution"]
+  CharDB[("Character DB (optional)")]
     end
     
     Artifacts[("data/clean/<book>/<chapter>.json\n<pdf_stem>_volume.json")]

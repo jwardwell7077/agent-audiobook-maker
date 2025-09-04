@@ -1,4 +1,4 @@
-# Agent 1 Dialogue Classifier - Processing Flow
+# Stage 1: Dialogue Classifier - Processing Flow
 
 **Component**: ABMDialogueClassifier\
 **Purpose**: Hybrid dialogue/narration classification for character tracking\
@@ -7,7 +7,7 @@
 
 ## Overview
 
-The Agent 1 Dialogue Classifier uses a hybrid approach combining fast heuristic pattern matching (90% of cases) with AI-powered classification fallback (10% of cases) to classify utterances as dialogue, narration, or unknown.
+The Stage 1 Dialogue Classifier uses a hybrid approach combining fast heuristic pattern matching (90% of cases) with AI-powered classification fallback (10% of cases) to classify utterances as dialogue, narration, or unknown.
 
 ## Processing Flow Diagram
 
@@ -245,15 +245,13 @@ Output: narration (0.7, "heuristic_narration_indicators")
 
 ### Output Destinations
 
-- Agent 2 (Speaker Attribution)
-- Database storage (utterances table)
+- Stage 2 (Speaker Attribution)
 - Quality assurance workflows
 - Voice casting preparation
 
 ### Dependencies
 
 - Ollama service (for AI enhancement)
-- PostgreSQL (for result storage)
 - LangFlow runtime environment
 
 ## Configuration
@@ -289,5 +287,4 @@ ______________________________________________________________________
 
 **Related Documentation**:
 
-- [Agent 1 Implementation](../../../src/abm/lf_components/audiobook/abm_dialogue_classifier.py)
-- [Database Schema](../../../database/init/01-init-schema.sql)
+- [Stage 1 Implementation](../../../src/abm/lf_components/audiobook/abm_dialogue_classifier.py)

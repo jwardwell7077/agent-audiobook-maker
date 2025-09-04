@@ -307,7 +307,7 @@ class ABMSpanIterator(Component):
         processed_results = []
         
     for chunk in chunks:
-            # Prepare data for Agent 1 (Dialogue Classifier)
+            # Prepare data for Stage 1 (Dialogue Classifier)
             utterance_data = {
                 "utterance_text": chunk["text"],
                 "context_before": chunk["context_before"],
@@ -340,11 +340,11 @@ ______________________________________________________________________
 2. ABMSpanIterator (Iterate spans)
    ↓
 3. [FOR EACH CHUNK]
-   ABMDialogueClassifier (Agent 1: Classify dialogue/narration)
+    ABMDialogueClassifier (Stage 1: Classify dialogue/narration)
    ↓
    ChatOutput (Debug: Show classification)
    ↓ 
-   ABMSpeakerAttribution (Agent 2: Identify speakers)
+    ABMSpeakerAttribution (Stage 2: Identify speakers)
    ↓
    ChatOutput (Debug: Show attribution)
    ↓
@@ -352,7 +352,7 @@ ______________________________________________________________________
    ↓
 5. ABMUtteranceJsonlWriter (Output to JSONL format)
    ↓
-6. DatabaseUpdater (Persist to PostgreSQL)
+6. (Optional) DatabaseUpdater (Persist results)
 ```
 
 ______________________________________________________________________
@@ -413,7 +413,7 @@ ______________________________________________________________________
 1. ✅ Create enhanced chapter loader component
 1. ✅ Test loading MVS Chapter 1 data
 1. ✅ Validate chunking algorithm with sample text
-1. ✅ Connect to existing Agent 1 → Agent 2 pipeline
+1. ✅ Connect to existing Stage 1 → Stage 2 pipeline
 
 ### **Phase 2: Batch Processing (Week 2)**
 
@@ -422,11 +422,11 @@ ______________________________________________________________________
 1. ✅ Create results aggregation component
 1. ✅ Test full chapter processing
 
-### **Phase 3: Database Integration (Week 3)**
+### **Phase 3: Output & Optional Persistence (Week 3)**
 
-1. ✅ Connect to PostgreSQL character database
-1. ✅ Implement character persistence and updates
 1. ✅ Add JSONL output with proper metadata
+1. ✅ (Optional) Implement character persistence and updates
+1. ✅ (Optional) Connect to character database
 1. ✅ Create production pipeline validation
 
 ### **Phase 4: Multi-Chapter Processing (Week 4)**

@@ -4,7 +4,7 @@
 
 This is our current implementation approach for Phase 1 - using LangFlow's visual interface to rapidly prototype and validate the annotation pipeline. The system is transitioning from basic segmentation to a spans-first two-stage architecture featuring dialogue classification and deterministic speaker attribution before moving to a production multi-agent system.
 
-Annotation system integration: The pipeline now incorporates hybrid dialogue classification (heuristic + AI fallback) and deterministic speaker attribution with optional PostgreSQL character database integration.
+Annotation system integration: The pipeline now incorporates hybrid dialogue classification (heuristic + AI fallback) and deterministic speaker attribution. A character database may be added later as an optional enhancement.
 
 ## Quick Navigation
 
@@ -131,12 +131,12 @@ Filters utterances by role, length, or content criteria
 
 Part of the spans-first two-stage annotation system
 
-Associates dialogue segments with specific characters using database-driven lookup
+Associates dialogue segments with specific characters (optional character memory in future)
 
 - Input: Dialogue segments from Dialogue Classifier Agent
 - Output: Speaker-attributed dialogue with character associations
-- Features: Character database integration, alias resolution, confidence scoring
-- Database: PostgreSQL with JSONB character profiles
+- Features: Evidence-backed attribution, alias resolution, confidence scoring
+- Database: Optional future character memory
 - Status: 🚧 Architecture complete, implementation in progress
 
 Key capabilities:
@@ -167,7 +167,7 @@ graph LR
     A[Volume Loader] --> B[Chapter Selector]
     B --> C[Dialogue Classifier Agent]
     C --> D[Speaker Attribution Agent]
-    D --> E[(Character Database)]
+    D --> E[(Character Database - optional)]
     D --> F[JSONL Writer]
     F --> G[File Output]
 ```
@@ -193,7 +193,7 @@ This flow adds filtering capabilities after speaker attribution to remove unwant
 - **Phase**: Transitioning from rapid prototyping to spans-first two-stage architecture
 - **Legacy Components**: 7 custom components available and working
 - **New Components**: Two-stage system (dialogue classifier + speaker attribution) designed
-- **Database Integration**: PostgreSQL schema complete for character management
+- **Database Integration**: Optional; future character memory integration
 - **Status**: Legacy system ready for workflow testing, two-stage system architecture complete
 - **Next Steps**: Implementation of hybrid dialogue classifier and speaker attribution agents
 
@@ -208,7 +208,7 @@ This flow adds filtering capabilities after speaker attribution to remove unwant
 ### Target State (Two-stage System)
 
 - Hybrid dialogue classification (heuristic + AI fallback)
-- Database-driven character tracking and speaker attribution
+- Optional character memory for speaker attribution
 - Confidence scoring and quality metrics
 - Voice casting preparation capabilities
 

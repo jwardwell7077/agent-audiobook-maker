@@ -8,7 +8,7 @@ flowchart TD
 		ChapterLoader["ABMChapterLoader\ninputs: book_name, chapter_index, base_data_dir, context_sentences\noutputs: chapters_data, chapter_data, blocks_data"]
 	end
 
-	%% Two-Agent Streaming Path (per-paragraph)
+	%% Two-Stage Streaming Path (per-paragraph)
 	subgraph TwoAgent
 		BlockIter["ABMBlockIterator\ninputs: blocks_data\noutputs: current_utterance (Data)"]
 		DialogueClassifier["ABMDialogueClassifier\ninputs: utterance_data(Data)\noutputs: classified_utterance"]

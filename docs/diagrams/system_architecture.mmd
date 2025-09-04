@@ -12,12 +12,11 @@ flowchart LR
 	JSONStruct[("Structured JSON: manifest + per-chapter")]:::today
 	CleanArtifacts(("data/clean/<book>/<chapter>.json\n<pdf_stem>_volume.json")):::today
 
-	%% Two-Agent system (annotation today; DB is future unless enabled)
-	%% DEPRECATED: legacy two-agent naming; maps to two-stage annotation today
-	subgraph TwoAgent["Two-Agent Annotation System"]
+	%% Two-stage annotation system (DB optional/future)
+	subgraph TwoStage["Two-Stage Annotation System"]
 		DialogueAgent["Dialogue Classifier (heuristic + AI)"]:::today
-		SpeakerAgent["Speaker Attribution (Character DB)"]:::today
-		CharDB[("PostgreSQL: characters, aliases, profiles")]:::future
+		SpeakerAgent["Speaker Attribution"]:::today
+		CharDB[("Character DB (optional, PostgreSQL)")]:::future
 	end
 
 	Annos(("data/annotations/<book>/<chapter>.jsonl")):::today
@@ -42,7 +41,7 @@ flowchart LR
 
 	Annos -.-> Casting -.-> SSML -.-> TTSNode --> Stems --> Renders --> Master
 	Orchestrator -.controls.-> SectionClassifier
-	Orchestrator -.controls.-> TwoAgent
+	Orchestrator -.controls.-> TwoStage
 	Orchestrator -.controls.-> TTSNode
 
 	CleanArtifacts -.sync.-> DB

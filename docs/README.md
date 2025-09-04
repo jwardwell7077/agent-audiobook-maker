@@ -92,7 +92,7 @@ Our documentation is organized into 6 main sections designed for different needs
 ### Latest Changes
 
 - ✅ **Spans-first two-stage annotation** - Complete specifications for dialogue classification and deterministic speaker attribution
-- ✅ **Database-Driven Character Management** - PostgreSQL schema for character profiles and voice casting
+- ✅ **Optional Character Memory** - Future-ready design for character profiles and voice casting
 - ✅ Complete documentation reorganization into logical 6-section structure
 - ✅ LangFlow component implementation with full UI integration
 - ✅ Multi-agent system architecture planning and roadmap
@@ -101,7 +101,7 @@ Our documentation is organized into 6 main sections designed for different needs
 ### What's New
 
 - **Annotation System**: Hybrid dialogue classifier and deterministic speaker attribution with optional database integration
-- **Character Database**: PostgreSQL-based character profiling for voice casting decisions
+- **Character Memory (optional)**: Future character profiling for voice casting decisions
 - **LangFlow Components**: Production-ready audiobook processing components
 - **Quality Gates**: Automated validation and error detection systems
 - **Multi-Agent Planning**: Detailed roadmap for production architecture
@@ -156,17 +156,17 @@ The Agent Audiobook Maker is a sophisticated text processing pipeline that trans
 - **📄 Text Ingestion**: PDF and text file processing with quality validation
 - **🔍 Content Analysis**: Chapter detection, structure classification, quality assessment
 - **✂️ Intelligent Segmentation**: Spans-first two-stage system for dialogue/narration classification and deterministic speaker attribution
-- **🗄️ Character Database**: PostgreSQL-driven character profiling and voice casting preparation
+- **🗄️ Character Memory (optional)**: Future character profiling and voice casting preparation
 - **🤖 AI-Powered Annotation**: Rich metadata generation with confidence scoring and quality metrics
 - **🎯 Quality Assurance**: Automated validation and human-in-the-loop workflows
 
-**Current Status**: Phase 1+ (Spans-first two-stage) - Hybrid classification with optional database integration\
+**Current Status**: Phase 1+ (Spans-first two-stage) - Hybrid classification\
 **Next Phase**: Phase 2 (Multi-Agent System) - Advanced orchestration and production deployment
 
 **Annotation System Features**:
 
 - Hybrid dialogue classification (heuristic + AI fallback)
-- Database-driven speaker attribution with character tracking
+- Evidence-backed speaker attribution (DB optional in future)
 - Confidence scoring for quality assurance
 - Character profile building for voice casting decisions
 

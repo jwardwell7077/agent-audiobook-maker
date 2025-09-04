@@ -1,4 +1,4 @@
-# Agent 2 Speaker Attribution - Processing Flow
+# Stage 2: Speaker Attribution - Processing Flow
 
 **Component**: ABMSpeakerAttribution\
 **Purpose**: Identify speakers in dialogue and build character voice profiles\
@@ -7,21 +7,21 @@
 
 ## Overview
 
-The Agent 2 Speaker Attribution system processes dialogue utterances from Agent 1 to identify WHO is speaking, create character profiles, and build comprehensive voice casting data. It uses a multi-layered approach combining direct attribution, contextual analysis, and conversation flow tracking.
+The Stage 2 Speaker Attribution system processes dialogue utterances from Stage 1 to identify WHO is speaking and produce evidence-backed attributions. Profile building and character databases are optional future enhancements.
 
 ## Processing Flow Diagram
 
 ```mermaid
 flowchart TD
     %% Input Stage
-    INPUT["📝 INPUT STAGE<br/>From Agent 1:<br/>• classified_utterance<br/>• book_id, chapter_id<br/>• dialogue_text<br/>• context_before, context_after"]
+  INPUT["📝 INPUT STAGE<br/>From Stage 1:<br/>• classified_utterance<br/>• book_id, chapter_id<br/>• dialogue_text<br/>• context_before, context_after"]
     
     %% Validation Gate
     VALIDATION{"📋 Validation Gate<br/>Is dialogue?<br/>Has dialogue_text?"}
     SKIP["⏭️ Skip Processing<br/>Return with status: skipped"]
     
-    %% Character Database Lookup
-    DB_LOOKUP["🗃️ Character Database Lookup<br/>• Load chapter characters<br/>• Check character history<br/>• Get conversation context"]
+  %% Optional Character Memory (Future)
+  DB_LOOKUP["🗃️ Optional Character Memory (Future)<br/>• Load chapter characters<br/>• Check character history<br/>• Get conversation context"]
     
     %% Attribution Analysis Stage
     ATTRIBUTION_ANALYSIS["🎭 ATTRIBUTION ANALYSIS<br/>Multi-Method Speaker Detection"]
@@ -71,8 +71,8 @@ flowchart TD
     %% Confidence Scoring
     CONFIDENCE_CALC["📈 Confidence Calculation<br/>Combined score from:<br/>• Attribution method<br/>• Context consistency"]
     
-    %% Database Updates
-    DB_UPDATES["💾 Database Updates<br/>• Insert/update utterances<br/>• Update character profiles<br/>• Log processing status"]
+  %% Optional Persistence (Future)
+  DB_UPDATES["💾 Optional Persistence (Future)<br/>• Insert/update utterances<br/>• Update character profiles<br/>• Log processing status"]
     
     %% Output Generation
     OUTPUT_GEN["📦 Output Generation<br/>• Attributed dialogue<br/>• Character metadata<br/>• Confidence metrics"]
@@ -248,9 +248,9 @@ graph LR
     class PROFILE outputNode
 ```
 
-## Database Integration
+## Optional Database Integration (Future)
 
-### Character Tables Updated
+### Character Tables (Future)
 
 1. **Characters Table**
 
@@ -353,8 +353,7 @@ Output: character_id=new, confidence=0.3, method=unknown
 
 ### Input Sources
 
-- Agent 1 (Dialogue Classifier) classified utterances
-- Existing character databases
+- Stage 1 (Dialogue Classifier) classified utterances
 - Chapter processing workflows
 
 ### Output Destinations
@@ -366,15 +365,14 @@ Output: character_id=new, confidence=0.3, method=unknown
 
 ### Dependencies
 
-- PostgreSQL (character and utterance storage)
-- Agent 1 output format compatibility
+- Stage 1 output format compatibility
 - LangFlow runtime environment
 
 ## Configuration
 
 ### Environment Variables
 
-- `CHARACTER_DB_URL`: Character database connection
+- `CHARACTER_DB_URL`: Character database connection (optional; future)
 - `ATTRIBUTION_CONFIDENCE_MIN`: Minimum confidence threshold (default: 0.3)
 - `NEW_CHARACTER_THRESHOLD`: Threshold for creating new characters (default: 0.5)
 - `PROFILE_UPDATE_BATCH_SIZE`: Database batch size (default: 100)
@@ -406,6 +404,4 @@ ______________________________________________________________________
 
 **Related Documentation**:
 
-- [Agent 1 Dialogue Classifier Flow](agent-1-dialogue-classifier-flow.md)
-
-- [Database Schema](../../../database/init/01-init-schema.sql)
+- [Stage 1 Dialogue Classifier Flow](agent-1-dialogue-classifier-flow.md)
