@@ -1,8 +1,8 @@
 # Agent 2 Speaker Attribution - Processing Flow
 
-**Component**: ABMSpeakerAttribution  
-**Purpose**: Identify speakers in dialogue and build character voice profiles  
-**Status**: 🚧 In Development  
+**Component**: ABMSpeakerAttribution\
+**Purpose**: Identify speakers in dialogue and build character voice profiles\
+**Status**: 🚧 In Development\
 **Last Updated**: August 24, 2025
 
 ## Overview
@@ -168,7 +168,7 @@ Examples:
 **Speaker Identification Patterns:**
 
 - Character names followed by speech verbs
-- Pronoun + speech verb combinations  
+- Pronoun + speech verb combinations
 - Character titles and formal names
 - Direct speaker indicators
 
@@ -215,12 +215,12 @@ Result:
 
 ### 🗣️ Speech Pattern Analysis
 
-| Pattern Type | Detection Method | Profile Update |
-|-------------|------------------|----------------|
-| Formality Level | Vocabulary analysis, sentence structure | formal/casual/mixed |
-| Common Phrases | Frequency analysis of multi-word phrases | Top 10 phrases |
-| Dialect Markers | Regional language patterns | Dialect tags |
-| Emotional Tone | Sentiment analysis, exclamation usage | Personality traits |
+| Pattern Type    | Detection Method                         | Profile Update      |
+| --------------- | ---------------------------------------- | ------------------- |
+| Formality Level | Vocabulary analysis, sentence structure  | formal/casual/mixed |
+| Common Phrases  | Frequency analysis of multi-word phrases | Top 10 phrases      |
+| Dialect Markers | Regional language patterns               | Dialect tags        |
+| Emotional Tone  | Sentiment analysis, exclamation usage    | Personality traits  |
 
 ### 🎵 Voice Characteristics Extraction
 
@@ -253,16 +253,19 @@ graph LR
 ### Character Tables Updated
 
 1. **Characters Table**
+
    - Insert new characters
    - Update character profiles
    - Track first/last appearance
 
-2. **Utterances Table**
+1. **Utterances Table**
+
    - Link utterances to characters
    - Store attribution confidence
    - Record attribution method
 
-3. **Character_Text_Segments Table**
+1. **Character_Text_Segments Table**
+
    - Store dialogue samples
    - Build speech pattern database
    - Enable voice characteristic analysis
@@ -329,14 +332,14 @@ Output: character_id=new, confidence=0.3, method=unknown
 ### Speed
 
 - **Database Lookup**: ~5-10ms per query
-- **Attribution Analysis**: ~10-20ms per utterance  
+- **Attribution Analysis**: ~10-20ms per utterance
 - **Profile Updates**: ~5ms per character update
 - **Total Processing**: ~20-35ms per dialogue utterance
 
 ### Accuracy Targets
 
 - **Direct Attribution**: 95%+ accuracy
-- **Contextual Attribution**: 80%+ accuracy  
+- **Contextual Attribution**: 80%+ accuracy
 - **Flow Inference**: 60%+ accuracy
 - **Overall System**: 85%+ accuracy across all methods
 
@@ -354,7 +357,7 @@ Output: character_id=new, confidence=0.3, method=unknown
 - Existing character databases
 - Chapter processing workflows
 
-### Output Destinations  
+### Output Destinations
 
 - Voice casting profile generation
 - Character relationship mapping
@@ -388,9 +391,9 @@ Output: character_id=new, confidence=0.3, method=unknown
 ### Graceful Degradation
 
 1. **Database Unavailable**: Process in memory, queue for later persistence
-2. **Attribution Failure**: Return unknown speaker with error details
-3. **Character Creation Error**: Log error, continue with temp character ID
-4. **Profile Update Failure**: Continue processing, log for retry
+1. **Attribution Failure**: Return unknown speaker with error details
+1. **Character Creation Error**: Log error, continue with temp character ID
+1. **Profile Update Failure**: Continue processing, log for retry
 
 ### Logging
 
@@ -399,10 +402,10 @@ Output: character_id=new, confidence=0.3, method=unknown
 - Profile updates at DEBUG level
 - Errors at ERROR level with full context and recovery actions
 
----
+______________________________________________________________________
 
 **Related Documentation**:
 
 - [Agent 1 Dialogue Classifier Flow](agent-1-dialogue-classifier-flow.md)
-- [Two-Agent System Specification](../../02-specifications/components/two-agent-dialogue-speaker-system.md)
+
 - [Database Schema](../../../database/init/01-init-schema.sql)

@@ -4,16 +4,16 @@
 
 This is our current implementation approach for Phase 1 - using LangFlow's visual interface to rapidly prototype and validate the annotation pipeline. The system is transitioning from basic segmentation to a spans-first two-stage architecture featuring dialogue classification and deterministic speaker attribution before moving to a production multi-agent system.
 
-Annotation system integration: The pipeline now incorporates hybrid dialogue classification (heuristic + AI fallback) and deterministic speaker attribution with optional PostgreSQL character database integration. For historical details, see the legacy [Two-Agent System Specification](../../02-specifications/components/two-agent-dialogue-speaker-system.md).
+Annotation system integration: The pipeline now incorporates hybrid dialogue classification (heuristic + AI fallback) and deterministic speaker attribution with optional PostgreSQL character database integration.
 
 ## Quick Navigation
 
-| Category | Purpose | Files |
-|----------|---------|-------|
-| 📚 **Setup & Usage** | Getting started with LangFlow | `SETUP_GUIDE.md` |
-| 🧩 **Workflows** | Pre-built examples and patterns | `WORKFLOWS.md` |
-| 📊 **Component Results** | Testing and validation docs | `COMPONENT_TEST_RESULTS.md` |
-| 🎯 **Success Stories** | Implementation milestones | `LANGFLOW_COMPONENT_SUCCESS.md` |
+| Category                                   | Purpose                                                             | Files                                  |
+| ------------------------------------------ | ------------------------------------------------------------------- | -------------------------------------- |
+| 📚 **Setup & Usage**                       | Getting started with LangFlow                                       | `SETUP_GUIDE.md`                       |
+| 🧩 **Workflows**                           | Pre-built examples and patterns                                     | `WORKFLOWS.md`                         |
+| 📊 **Component Results**                   | Testing and validation docs                                         | `COMPONENT_TEST_RESULTS.md`            |
+| 🎯 **Success Stories**                     | Implementation milestones                                           | `LANGFLOW_COMPONENT_SUCCESS.md`        |
 | 🎤 **Speaker Attribution (Deterministic)** | Controls & behavior (knobs, pronoun blocklist, orchestrator wiring) | `SPEAKER_ATTRIBUTION_DETERMINISTIC.md` |
 
 ## Contents
@@ -25,7 +25,7 @@ Complete setup and configuration guide - see [SETUP_GUIDE.md](SETUP_GUIDE.md)
 Everything needed to get LangFlow running with ABM components:
 
 - Environment configuration and prerequisites
-- Component discovery and loading  
+- Component discovery and loading
 - Step-by-step setup instructions
 - Troubleshooting common issues
 
@@ -81,7 +81,7 @@ Loads book chapters from structured JSON or fallback text files
 - Features: Automatic fallback to .txt files if JSON unavailable
 - Status: ✅ Working and tested
 
-### Segment Dialogue/Narration  
+### Segment Dialogue/Narration
 
 **Legacy Component** (being upgraded to spans-first two-stage)
 
@@ -105,7 +105,7 @@ Splits chapter text into dialogue and narration utterances
 Selects specific chapter by index for processing
 
 - Input: Multi-chapter payload and chapter index
-- Output: Single chapter payload for downstream processing  
+- Output: Single chapter payload for downstream processing
 - Features: Bounds checking and validation
 - Status: ✅ Working and tested
 
@@ -176,7 +176,7 @@ The enhanced flow incorporates the two-stage system with database-driven charact
 
 ### Filtered Processing Flow
 
-```mermaid  
+```mermaid
 graph LR
     A[Volume Loader] --> B[Chapter Selector]
     B --> C[Dialogue Classifier Agent]
@@ -193,7 +193,7 @@ This flow adds filtering capabilities after speaker attribution to remove unwant
 - **Phase**: Transitioning from rapid prototyping to spans-first two-stage architecture
 - **Legacy Components**: 7 custom components available and working
 - **New Components**: Two-stage system (dialogue classifier + speaker attribution) designed
-- **Database Integration**: PostgreSQL schema complete for character management  
+- **Database Integration**: PostgreSQL schema complete for character management
 - **Status**: Legacy system ready for workflow testing, two-stage system architecture complete
 - **Next Steps**: Implementation of hybrid dialogue classifier and speaker attribution agents
 

@@ -9,12 +9,12 @@ This section defines the structured data formats that serve as contracts between
 The system uses three main data formats:
 
 1. **Structured JSON** - Volume manifests and chapter data from ingestion
-2. **Annotation Schema** - Rich utterance annotations from the multi-agent pipeline  
-3. **JSON Schema Definitions** - Machine-readable validation schemas
+1. **Annotation Schema** - Rich utterance annotations from the multi-agent pipeline
+1. **JSON Schema Definitions** - Machine-readable validation schemas
 
 ## Data Flow
 
-```mermaid
+````mermaid
 graph LR
     PDF[📕 PDF Input] --> Structured[📊 Structured JSON]
     Structured --> Annotation[🏷️ Annotation Schema]
@@ -122,3 +122,4 @@ graph LR
 ---
 
 *Part of [Specifications](../README.md) | [Documentation Index](../../README.md)*
+````

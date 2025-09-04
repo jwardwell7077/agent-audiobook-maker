@@ -8,10 +8,10 @@ A block-based, paragraph-first classifier that segments books into chapters usin
 
 - Input: JSONL-only. The classifier SHALL accept only a JSONL file where each line is a JSON object with at least a `text: string` field (one paragraph/block per line). Body chapter heading blocks contain only the heading.
 - Output artifacts:
-  - toc: { entries: [{chapter_index, title, start_block, end_block}], warnings: [str] }
-  - chapters: { chapters: [{chapter_index, title, start_block, end_block, paragraphs: list[str]}] }
-  - front_matter: { span_blocks: [start,end] or [-1,-1], paragraphs: list[str], warnings: [str] }
-  - back_matter: { span_blocks: [start,end] or [-1,-1], paragraphs: list[str], warnings: [str] }
+  - toc: { entries: \[{chapter_index, title, start_block, end_block}\], warnings: \[str\] }
+  - chapters: { chapters: \[{chapter_index, title, start_block, end_block, paragraphs: list\[str\]}\] }
+  - front_matter: { span_blocks: \[start,end\] or \[-1,-1\], paragraphs: list\[str\], warnings: \[str\] }
+  - back_matter: { span_blocks: \[start,end\] or \[-1,-1\], paragraphs: list\[str\], warnings: \[str\] }
 
 All spans are inclusive and use zero-based block indices.
 
@@ -38,7 +38,7 @@ All spans are inclusive and use zero-based block indices.
 ## TOC Item Parsing
 
 - Parse starting at the TOC heading block, moving forward block-by-block.
-- A TOC item line matches the pattern: optional bullet (•,-,*) + ("chapter <digits>" | "prologue" | "epilogue") + optional punctuation + captured title.
+- A TOC item line matches the pattern: optional bullet (•,-,\*) + ("chapter <digits>" | "prologue" | "epilogue") + optional punctuation + captured title.
 - For each TOC item, extract:
   - title (str)
   - ordinal (int or None), if the line includes "chapter <digits>".
@@ -46,6 +46,7 @@ All spans are inclusive and use zero-based block indices.
 ### Canonical Title Normalization (canon_title)
 
 Used for dedupe and robust title equality:
+
 - Unicode NFKD, drop combining marks (diacritics)
 - Lowercase
 - Remove punctuation/symbols (keep letters/digits/spaces)
@@ -53,12 +54,12 @@ Used for dedupe and robust title equality:
 
 ### Dedupe and Stop Rules
 
-- Maintain seen_titles: Set[canon_title(title)] and seen_ordinals: Dict[int -> canon_title].
+- Maintain seen_titles: Set\[canon_title(title)\] and seen_ordinals: Dict\[int -> canon_title\].
 - Stop conditions (in priority order once ≥ 2 TOC items have been parsed):
-  1) First whole-block body chapter heading encountered → stop TOC (do not consume this block).
-  2) Duplicate TOC title encountered (canon equal) → stop TOC; do not consume this block. Warning: "TOC ended on duplicate title: '<title>' (block j)".
-  3) Ordinal conflict: same chapter number appears with a different title canon → stop TOC; keep first. Warning: "ordinal conflict in TOC at block j: chapter n titles differ; keeping first".
-  4) A non-TOC block appears after items were found → stop TOC.
+  1. First whole-block body chapter heading encountered → stop TOC (do not consume this block).
+  1. Duplicate TOC title encountered (canon equal) → stop TOC; do not consume this block. Warning: "TOC ended on duplicate title: '<title>' (block j)".
+  1. Ordinal conflict: same chapter number appears with a different title canon → stop TOC; keep first. Warning: "ordinal conflict in TOC at block j: chapter n titles differ; keeping first".
+  1. A non-TOC block appears after items were found → stop TOC.
 - Dedupe during parsing:
   - If a duplicate title is seen before ≥ 2 items exist, skip it and warn: "duplicate TOC item skipped: '<title>' (block j)".
 - toc_end is set to the last block that actually contained a TOC item (last_item_block), not the first non-item block.
@@ -66,6 +67,7 @@ Used for dedupe and robust title equality:
 ## First Body Heading Block
 
 A block is a body heading only if the entire block matches the anchored heading shape:
+
 - Starts with "Chapter <digits>" or "Prologue/Epilogue"
 - Optional punctuation and optional title
 - No other content in the block
@@ -76,15 +78,18 @@ This rule prevents misclassifying TOC lines or narrative paragraphs as headings.
 
 The classifier searches forward from the previous match to preserve chapter order. It uses the following passes and stops at the first success:
 
-1) Strict exact title match
+1. Strict exact title match
+
    - Condition: block is a body heading AND heading_title.strip() == toc_title.strip() (case-sensitive exact after trim)
    - Warning: none
 
-2) Normalized/canonical title match
+1. Normalized/canonical title match
+
    - Condition: block is a body heading AND canon_title(heading_title) == canon_title(toc_title)
    - Warning: "title normalized match used for TOC entry '<title>' matched at block i"
 
-3) Ordinal fallback
+1. Ordinal fallback
+
    - Condition: block is a body heading with digits AND digits == toc ordinal
    - Warning: "ordinal fallback used for TOC entry '<title>' (chapter n) matched at block i"
 
@@ -100,7 +105,7 @@ Failure mode: If none of the passes match, raise an error: "Chapter heading not 
   - title normalized match used for TOC entry '<title>' matched at block i
   - ordinal fallback used for TOC entry '<title>' (chapter n) matched at block i
 - Front matter warning:
-  - unclaimed blocks: [indices]
+  - unclaimed blocks: \[indices\]
 
 Warnings from heading matching are surfaced together with TOC warnings under toc.warnings; front/back keep their own warnings fields.
 
@@ -129,27 +134,35 @@ Warnings from heading matching are surfaced together with TOC warnings under toc
 
 ## Example (from mvs JSONL)
 
-  - index 12–15: "• Chapter 1: Just an old Book", "• Chapter 2: …", "• Chapter 3: …", "• Chapter 4: …"
+- index 12–15: "• Chapter 1: Just an old Book", "• Chapter 2: …", "• Chapter 3: …", "• Chapter 4: …"
 - Body snippet:
   - index 712: "Chapter 1: Just an old Book" (body heading)
   - index 713+: narrative blocks
 
 Behavior:
+
 - TOC items parsed from 12–15; toc_end = 15.
+
 - First body heading is 712 (whole-block match), so TOC parsing ends well before 712.
+
 - Matching for Chapter 1 succeeds in Pass 1 (strict exact title). No warnings for this item.
 
 - leniency flags (future): enable spelled-out/Roman numerals, fuzzy title matching thresholds. Default remains strict.
+
 - logging/warnings aggregation: printable and/or return-embedded (current: toc.warnings, front/back warnings).
 
 ## Future Work (TODO)
 
 - Recognize spelled-out and Roman numerals in body headings (e.g., "Chapter One", "Chapter I") and map to ordinals for fallback and matching.
+
 - Optional fuzzy title similarity (e.g., ≥ 0.9) behind a feature flag, with clear warnings.
 
 - Deterministic segmentation with strict contract and clear error modes.
+
 - No double-inclusion of chapters due to TOC spillover or duplicates.
+
 - Robust to punctuation, case, whitespace, and diacritics differences in titles.
+
 # Section Classifier – Block-based Design Spec
 
 This version replaces the prior page-based design with a paragraph/block-first approach.
@@ -158,7 +171,7 @@ This version replaces the prior page-based design with a paragraph/block-first a
 
 Given a plain-text book, split it into paragraph blocks (blank-line separated) and deterministically classify four regions: front matter, table of contents (TOC), chapters, and back matter. Emit four JSON artifacts using zero-based block indices as the source of truth.
 
-- txt_path: UTF-8 text with Unix newlines ("\n").
+- txt_path: UTF-8 text with Unix newlines ("\\n").
 - Block loading:
   - Split on blank-line boundaries using regex like `\n\s*\n+`.
   - Preserve inner whitespace and line breaks inside each block.
@@ -167,18 +180,24 @@ Given a plain-text book, split it into paragraph blocks (blank-line separated) a
 Default directory: `data/clean/<book>/classified` (overridable).
 
 - front_matter.json
-  - { span_blocks: [start:number, end:number] | [-1,-1] when empty, paragraphs: string[], warnings: string[] }
-- back_matter.json
-Field names and shapes must match the example artifacts (ex_toc.json, ex_chapters.json) and current code.
 
+  - { span_blocks: \[start:number, end:number\] | \[-1,-1\] when empty, paragraphs: string\[\], warnings: string\[\] }
+
+- back_matter.json
+  Field names and shapes must match the example artifacts (ex_toc.json, ex_chapters.json) and current code.
 
 - Detect a TOC heading via regex anchored at the start of a line (allow leading whitespace): `/^\s*(table of contents|contents)\b/i`.
+
 - After the heading, look ahead up to 5 blocks for TOC-like chapter list lines. Characteristics:
-  - Bullet is optional (•, -, *, or none).
+
+  - Bullet is optional (•, -, \*, or none).
   - Case-insensitive; arbitrary whitespace allowed.
   - Accept forms like: `Chapter 1: Title`, `1. Title`, `I. Title`, `Prologue`, `Epilogue`, optionally with dot leaders.
+
 - If the lookahead doesn’t present at least two TOC-like lines → error and exit.
+
 - Parse TOC entries (title and optional ordinal).
+
 - Find the first body block whose heading matches the first TOC entry by title (preferred) or ordinal (fallback). Once found, the TOC region is from the heading block index to the block before this first chapter block.
 
 ## Chapter matching and spans

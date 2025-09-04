@@ -18,7 +18,7 @@ Preferred: use the helper script which wires env vars and PYTHONPATH.
 
 If you launch manually, set component discovery explicitly (example):
 
-- `LANGFLOW_COMPONENTS_PATH="$(pwd)/lf_components:$(pwd)/components"`  
+- `LANGFLOW_COMPONENTS_PATH="$(pwd)/lf_components:$(pwd)/components"`
 - Ensure your venv is active and `langflow` is installed in it
 
 Then start LangFlow and import the sample flow from the UI.
@@ -33,7 +33,7 @@ Future expansions will version the schema to add: `speaker`, `emotion`, `prosody
 
 ## Testing a flow via REST
 
-- Export the flow, note its `flow_id` (from the LangFlow UI)  
+- Export the flow, note its `flow_id` (from the LangFlow UI)
 - Call it with `tools/run_flow.py` (uses `LANGFLOW_URL`, `LANGFLOW_FLOW_ID`)
 
 This returns status + JSON body so you can script quick checks.
@@ -46,5 +46,5 @@ This returns status + JSON body so you can script quick checks.
 
 If components aren’t visible:
 
-- Verify `LANGFLOW_COMPONENTS_PATH` includes both `lf_components` and `components`  
+- Verify `LANGFLOW_COMPONENTS_PATH` includes both `lf_components` and `components`
 - Restart LangFlow after editing components

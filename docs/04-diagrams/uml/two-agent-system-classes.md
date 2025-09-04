@@ -310,10 +310,10 @@ class DatabasePool(ABC):
 ### Processing Flow Pattern
 
 1. **TwoAgentProcessor** loads context windows via **ContextWindowLoader**
-2. **HybridDialogueClassifier** processes segments using heuristics or agents
-3. **SpeakerAttributionAgent** attributes speakers for dialogue segments
-4. **CharacterProfileBuilder** updates character profiles
-5. **DatabaseManager** persists all results in batches
+1. **HybridDialogueClassifier** processes segments using heuristics or agents
+1. **SpeakerAttributionAgent** attributes speakers for dialogue segments
+1. **CharacterProfileBuilder** updates character profiles
+1. **DatabaseManager** persists all results in batches
 
 ### Error Handling Pattern
 

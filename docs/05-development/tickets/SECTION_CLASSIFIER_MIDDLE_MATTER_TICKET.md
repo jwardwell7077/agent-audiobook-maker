@@ -21,7 +21,7 @@ AI “system” tagging is out of scope for this ticket (handled by a separate p
 - "For MVS artwork and updates follow on Instagram and Facebook: jksmanga"
 - "My werewolf system Exclusive on P.a.t.r.e.o.n … (2 Chapters per month)"
 - "Remember to vote … mass release … 4600 Stones … 4800 Stones …"
-- Lone separators (***, *****) must not be classified as middle_matter unless promo lines are present.
+- Lone separators (\*\*\*, \*\*\*\*\*) must not be classified as middle_matter unless promo lines are present.
 
 ## Scope
 
@@ -39,15 +39,15 @@ AI “system” tagging is out of scope for this ticket (handled by a separate p
 
 - Input: normalized text per book (doc_id, text)
 - Outputs (JSONL): toc.jsonl, front_matter.jsonl, chapters.jsonl, middle_matter.jsonl, back_matter.jsonl
-- Section record fields: id, doc_id, section_kind, subtype_tags[], text, start_char, end_char, start_line, end_line, detection[], confidence, prev_section_id, next_section_id, order
+- Section record fields: id, doc_id, section_kind, subtype_tags\[\], text, start_char, end_char, start_line, end_line, detection\[\], confidence, prev_section_id, next_section_id, order
 - ID scheme: deterministic (e.g., `doc_id:start-end` or sha1(doc_id+start+end))
 
 ## Detection and extraction (tail-only)
 
-1) Find hard chapter boundaries by headers (e.g., `^Chapter\\s+(?:\\d+|[IVXLC]+)\\b[:\\s].*`) and separators (`^\\s*([*\\-_])\\1{2,}\\s*$`).
-2) For each chapter, define tail window: from the last narrative paragraph (>=120 chars or ends with .?! and not link-heavy) to chapter end (trim trailing blanks).
-3) Candidate middle_matter block = smallest contiguous region in the tail window containing at least one promo/author-note signal; may include 0–2 blank lines and an adjacent separator line.
-4) Extract candidate block as section_kind=middle_matter and shrink chapter end accordingly, if confidence ≥ threshold.
+1. Find hard chapter boundaries by headers (e.g., `^Chapter\\s+(?:\\d+|[IVXLC]+)\\b[:\\s].*`) and separators (`^\\s*([*\\-_])\\1{2,}\\s*$`).
+1. For each chapter, define tail window: from the last narrative paragraph (>=120 chars or ends with .?! and not link-heavy) to chapter end (trim trailing blanks).
+1. Candidate middle_matter block = smallest contiguous region in the tail window containing at least one promo/author-note signal; may include 0–2 blank lines and an adjacent separator line.
+1. Extract candidate block as section_kind=middle_matter and shrink chapter end accordingly, if confidence ≥ threshold.
 
 Required promo/author-note signals (case-insensitive):
 
@@ -57,8 +57,8 @@ Required promo/author-note signals (case-insensitive):
 
 Non-examples (stay in chapter):
 
-- Scene breaks/separators alone (***, -----, ___)
-- In-universe system notices (e.g., "[New quest received]")
+- Scene breaks/separators alone (\*\*\*, -----, \_\_\_)
+- In-universe system notices (e.g., "\[New quest received\]")
 
 ## Confidence scoring (deterministic)
 
@@ -66,14 +66,14 @@ Signals and weights (tunable defaults):
 
 - promo lexicon present (required): +0.40
 - tail position (inside tail window): +0.20
-- separator adjacency (*** or similar immediately before): +0.10
+- separator adjacency (\*\*\* or similar immediately before): +0.10
 - links/handles in lines: +0.05 each, capped at +0.20
 - numeric CTAs ("4600 Stones", "2 extra Chapters"): +0.05 each, capped at +0.15
 - line-count feature (non-blank lines in block):
   - 1–8 lines: +0.25
   - 9–12 lines: +0.10
   - 13–20 lines: +0.00
-  - >20 lines: −0.20
+  - > 20 lines: −0.20
   - 0 lines: −0.50 (guard)
 - short_line_ratio (≤120 chars): ≥0.75 → +0.10; 0.5–0.75 → +0.05
 

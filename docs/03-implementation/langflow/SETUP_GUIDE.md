@@ -160,18 +160,18 @@ Check terminal output for:
 Standard audiobook processing workflow:
 
 1. **ABM Data Config** → Configure paths
-2. **ABM Chapter Volume Loader** → Load chapter data
-3. **ABM Chapter Selector** → Select chapters to process
-4. **ABM Segment Dialogue Narration** → Create segments
-5. **ABM Utterance Filter** → Filter by quality
-6. **ABM Utterance JSONL Writer** → Export results
+1. **ABM Chapter Volume Loader** → Load chapter data
+1. **ABM Chapter Selector** → Select chapters to process
+1. **ABM Segment Dialogue Narration** → Create segments
+1. **ABM Utterance Filter** → Filter by quality
+1. **ABM Utterance JSONL Writer** → Export results
 
 ### Connecting Components
 
 1. **Add Components**: Drag from "Audiobook" category
-2. **Connect Outputs to Inputs**: Link compatible data types
-3. **Configure Parameters**: Set component-specific values
-4. **Test Connections**: Verify data flows correctly
+1. **Connect Outputs to Inputs**: Link compatible data types
+1. **Configure Parameters**: Set component-specific values
+1. **Test Connections**: Verify data flows correctly
 
 ## Sample Workflows
 
@@ -188,9 +188,9 @@ Pre-built workflow available at: `examples/langflow/mvp_audiobook_processing_flo
 **To Import**:
 
 1. Open LangFlow UI
-2. Look for import/upload functionality
-3. Select the MVP flow JSON file
-4. Configure output paths as needed
+1. Look for import/upload functionality
+1. Select the MVP flow JSON file
+1. Configure output paths as needed
 
 ### Testing with Sample Data
 
@@ -204,9 +204,9 @@ Pre-built workflow available at: `examples/langflow/mvp_audiobook_processing_flo
 **Quick Test**:
 
 1. Use ABMChapterVolumeLoader with book_name="mvs"
-2. Set ABMChapterSelector to range="1-2" for quick test
-3. Configure output path for results
-4. Run workflow and verify JSONL output
+1. Set ABMChapterSelector to range="1-2" for quick test
+1. Configure output path for results
+1. Run workflow and verify JSONL output
 
 ## Troubleshooting
 
@@ -216,8 +216,8 @@ Pre-built workflow available at: `examples/langflow/mvp_audiobook_processing_flo
 **Solution**:
 
 1. Check LANGFLOW_COMPONENTS_PATH environment variable
-2. Restart LangFlow server
-3. Verify .env file is loaded correctly
+1. Restart LangFlow server
+1. Verify .env file is loaded correctly
 
 ### Data Path Errors
 
@@ -225,8 +225,8 @@ Pre-built workflow available at: `examples/langflow/mvp_audiobook_processing_flo
 **Solution**:
 
 1. Verify ABM_DATA_ROOT and related paths in .env
-2. Check that sample data exists at expected locations
-3. Use ABMDataConfig component to validate paths
+1. Check that sample data exists at expected locations
+1. Use ABMDataConfig component to validate paths
 
 ### Connection Errors
 
@@ -234,17 +234,17 @@ Pre-built workflow available at: `examples/langflow/mvp_audiobook_processing_flo
 **Solution**:
 
 1. Verify compatible data types between components
-2. Check component input/output specifications
-3. Ensure components are properly configured
+1. Check component input/output specifications
+1. Ensure components are properly configured
 
 ## Performance Tips
 
 ### Development Workflow
 
 1. **Start Small**: Test with 1-2 chapters initially
-2. **Iterative Testing**: Run individual components to debug
-3. **Monitor Memory**: Large texts can consume significant memory
-4. **Save Frequently**: Export working workflows as JSON
+1. **Iterative Testing**: Run individual components to debug
+1. **Monitor Memory**: Large texts can consume significant memory
+1. **Save Frequently**: Export working workflows as JSON
 
 ### Production Considerations
 
@@ -258,6 +258,6 @@ Pre-built workflow available at: `examples/langflow/mvp_audiobook_processing_flo
 - [Data Schemas](../../02-specifications/data-schemas/README.md) - Data structure definitions
 - [Multi-Agent Roadmap](../../05-development/planning/MULTI_AGENT_ROADMAP.md) - Future implementation
 
----
+______________________________________________________________________
 
 *Part of [LangFlow Implementation](README.md) | [Implementation Guide](../README.md)*

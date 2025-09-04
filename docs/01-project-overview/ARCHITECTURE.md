@@ -4,7 +4,7 @@ KISS today: local CLI + deterministic ingestion transitioning to a spans-first t
 
 Source: See diagrams index: [04-diagrams/README.md](../04-diagrams/README.md)
 
-Annotation integration: The annotation pipeline incorporates a two-stage flow (dialogue classification → speaker attribution). For historical context, see the legacy [Two-Agent System Specification](../02-specifications/components/two-agent-dialogue-speaker-system.md).
+Annotation integration: The annotation pipeline incorporates a two-stage flow (dialogue classification → speaker attribution).
 
 ```mermaid
 flowchart LR

@@ -28,20 +28,24 @@ The MVP workflow demonstrates the complete audiobook processing pipeline using s
 If building from scratch in LangFlow UI:
 
 1. **Add ABMChapterLoader**
+
    - Set book_name: "mvs"
    - Set chapter_index: 1
    - Set base_data_dir: absolute path to `data/clean`
 
-2. **Add ABMSpanIterator**
+1. **Add ABMSpanIterator**
+
    - Connect Chapter Loader `blocks_data` → Iterator `blocks_data`
    - Use defaults for batch and priority
 
-3. **Add Classifier → Attribution → (Optional) Style Planner → Aggregator**
+1. **Add Classifier → Attribution → (Optional) Style Planner → Aggregator**
+
    - Connect in series
    - Disable LLMs for deterministic offline tests (if available)
    - If including Style Planner, connect `ABMStylePlanner.spans_style` to downstream nodes; enable its disk writes to produce `spans_style.jsonl`.
 
-4. **Add Results → Utterances → Aggregated JSONL Writer**
+1. **Add Results → Utterances → Aggregated JSONL Writer**
+
    - Set writer `output_path`
    - Connect outputs in series
 
@@ -117,16 +121,19 @@ Batch processing multiple books:
 ### Debugging Steps
 
 1. **Test Individual Components**
+
    - Run components separately
    - Verify input/output data
    - Check component logs
 
-2. **Validate Data Flow**
+1. **Validate Data Flow**
+
    - Inspect intermediate outputs
    - Verify data transformations
    - Check component status indicators
 
-3. **Check Configuration**
+1. **Check Configuration**
+
    - Verify parameter settings
    - Test with minimal configuration
    - Compare with working examples
@@ -138,6 +145,6 @@ Batch processing multiple books:
 - [Data Schemas](../../02-specifications/data-schemas/README.md) - Data structure definitions
 - [Deterministic Speaker Attribution](SPEAKER_ATTRIBUTION_DETERMINISTIC.md) - Attribution knobs, pronoun blocklist, and orchestrator wiring
 
----
+______________________________________________________________________
 
 *Part of [LangFlow Implementation](README.md) | [Implementation Guide](../README.md)*

@@ -23,19 +23,23 @@ Scope: Upstream (Blocks → Spans → Spans_Cls → Spans_Attr → Spans_Cast; o
 ## Gaps and fixes
 
 - Artifacts/Contracts
+
   - Verify 0‑based indices everywhere; add chapter_number (1‑based) where missing
   - Ensure deterministic hashing is consistent across stages (NFC, lower, collapse WS)
 
 - Attribution path
+
   - Standardize on `abm_span_attribution.py`; keep `abm_speaker_attribution.py` only as deprecated placeholder until legacy flows are archived
   - Confirm output path name (spans_attr.jsonl) and orchestrator wiring
 
 - Legacy cleanup
+
   - Delete or archive stubbed legacy files post‑P0 (two‑agent runner, enhanced loader)
 
 - Small features agreed post‑redesign
+
   - Section Classifier: tail‑only “middle_matter” (deterministic)
-  - Special‑character detection (ai‑system): detection only (<...> lines), in‑place tags
+  - Special‑character detection (ai‑system): detection only (\<...> lines), in‑place tags
 
 ## Risks
 

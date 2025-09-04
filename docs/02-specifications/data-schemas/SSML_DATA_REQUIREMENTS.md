@@ -75,9 +75,9 @@ Target additions for high-quality SSML (to be added by planned components):
 ## Next steps
 
 1. Implement ABMVoiceResolver to attach `voice.*` per utterance using `voice_bank.json` and narrator default.
-2. Implement ABMEmotionClassifier to add `emotion` labels (optional for v1 SSML).
-3. Implement ABMProsodyGenerator to create `segments` and prosody deltas.
-4. Implement ABMSSMLAssembler to produce SSML strings/files with proper escaping.
-5. Add `locale` default (e.g., `en-US`) to env/config and propagate to utterances if not set by voice.
+1. Implement ABMEmotionClassifier to add `emotion` labels (optional for v1 SSML).
+1. Implement ABMProsodyGenerator to create `segments` and prosody deltas.
+1. Implement ABMSSMLAssembler to produce SSML strings/files with proper escaping.
+1. Add `locale` default (e.g., `en-US`) to env/config and propagate to utterances if not set by voice.
 
 This plan keeps current outputs stable and adds SSML fields as non-breaking, optional enrichments.

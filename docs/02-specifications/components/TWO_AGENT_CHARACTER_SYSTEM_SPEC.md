@@ -9,7 +9,7 @@ Last updated: 2025-08-23
 This specification defines a two-agent system that processes text utterances to:
 
 1. **Agent 1 (Dialogue Classifier)**: Distinguish and tag narration vs. dialogue segments
-2. **Agent 2 (Speaker Attribution)**: Determine which character is speaking for dialogue segments
+1. **Agent 2 (Speaker Attribution)**: Determine which character is speaking for dialogue segments
 
 Each new character discovered gets a dedicated database table where all related text (dialogue + surrounding narration context) is collected to build comprehensive character profiles for voice casting.
 
@@ -114,16 +114,19 @@ Analyze each utterance and classify as dialogue vs. narration using multiple det
 ### Processing Logic
 
 1. **Heuristic Detection** (fast first-pass):
+
    - Quote patterns: `"..."`, `'...'`, `"..."`
    - Dialogue tags: "said", "replied", "whispered", "exclaimed"
    - Action interruptions: `"Hello," she said, "how are you?"`
 
-2. **LLM Classification** (when heuristics uncertain):
+1. **LLM Classification** (when heuristics uncertain):
+
    - Context-aware prompt with surrounding utterances
    - Confidence scoring
    - Rationale generation for debugging
 
-3. **Rule Refinement**:
+1. **Rule Refinement**:
+
    - Book-specific quote style detection
    - Nested dialogue handling
    - Internal monologue vs. spoken dialogue
@@ -159,16 +162,19 @@ Output from Agent 1 (dialogue only)
 ### Attribution Processing Logic
 
 1. **Attribution Pattern Matching**:
+
    - Direct tags: `"Hello," said Anna` → Anna
    - Pronoun resolution: `"Yes," she replied` → last mentioned female character
    - Context clues: `Anna turned to face him. "I agree."` → Anna
 
-2. **Character Registry Management**:
+1. **Character Registry Management**:
+
    - Name normalization: "Anna", "Anna Smith", "Ms. Smith" → canonical "Anna Smith"
    - Alias tracking: Store all encountered name variations
    - First appearance recording
 
-3. **Context Collection**:
+1. **Context Collection**:
+
    - Capture surrounding narration for character description
    - Tag emotional context, scene setting
    - Relationship inference from dialogue patterns
@@ -225,17 +231,20 @@ For each character utterance, collect:
 As utterances are processed, automatically extract and store:
 
 1. **Direct Speech Patterns**:
+
    - Vocabulary preferences
    - Sentence structure
    - Emotional expressions
    - Topics they discuss
 
-2. **Character Descriptions** (from narration):
+1. **Character Descriptions** (from narration):
+
    - Physical descriptions when mentioned
    - Actions and behaviors
    - Others' reactions to them
 
-3. **Relationship Mapping**:
+1. **Relationship Mapping**:
+
    - Who they talk to most
    - Tone variations by dialogue partner
    - Power dynamics (formal vs. casual speech)
@@ -281,14 +290,17 @@ As utterances are processed, automatically extract and store:
 ### LangFlow Components
 
 1. **ABMDialogueClassifier** (Agent 1):
+
    - Input: Segmented utterances from existing pipeline
    - Output: Classified utterances with dialogue/narration tags
 
-2. **ABMSpeakerAttributor** (Agent 2):
+1. **ABMSpeakerAttributor** (Agent 2):
+
    - Input: Dialogue utterances from Agent 1
    - Output: Speaker-attributed utterances + character data collection
 
-3. **ABMCharacterProfileBuilder**:
+1. **ABMCharacterProfileBuilder**:
+
    - Background process to analyze collected character data
    - Updates character profiles periodically
    - Generates voice casting recommendations
@@ -359,6 +371,6 @@ Character Data → Profile Analysis → Voice Casting Profiles
 - [Character Data Collector Spec](CHARACTER_DATA_COLLECTOR_SPEC.md) - Original file-based approach
 - [Context Documentation](../../01-project-overview/CONTEXT.md) - Database schema reference
 
----
+______________________________________________________________________
 
 *Part of [Component Specifications](README.md) | [Documentation Index](../../README.md)*

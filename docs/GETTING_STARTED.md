@@ -29,8 +29,8 @@ We're in **Phase 1** of development:
 This project follows KISS principles - Keep It Simple, Simple. You only need:
 
 1. **Python 3.11** and a local virtual environment
-2. **Basic dev tools** for testing and linting
-3. **No heavy dependencies** until you need them
+1. **Basic dev tools** for testing and linting
+1. **No heavy dependencies** until you need them
 
 ```bash
 # Clone and setup
@@ -54,16 +54,16 @@ make test
 Start with these documents in order:
 
 1. **[Project Tenets](01-project-overview/KISS.md)** - Core principles (KISS, local-first, deterministic)
-2. **[System Context](01-project-overview/CONTEXT.md)** - Technical constraints and goals  
-3. **[High-Level Architecture](01-project-overview/ARCHITECTURE.md)** - System overview
-4. **[Current Implementation](03-implementation/langflow/README.md)** - What's working now
+1. **[System Context](01-project-overview/CONTEXT.md)** - Technical constraints and goals
+1. **[High-Level Architecture](01-project-overview/ARCHITECTURE.md)** - System overview
+1. **[Current Implementation](03-implementation/langflow/README.md)** - What's working now
 
 ## Key Concepts
 
 ### Local-First
 
 - Files on disk are the source of truth
-- Works offline by default  
+- Works offline by default
 - No cloud dependencies required
 
 ### Deterministic
@@ -81,9 +81,9 @@ Start with these documents in order:
 ## Development Workflow
 
 1. **Read the specs** - We follow spec-first development
-2. **Write tests first** - TDD approach with pytest
-3. **Implement incrementally** - Small, verifiable changes
-4. **Pass quality gates** - Ruff, mypy, pytest must all pass
+1. **Write tests first** - TDD approach with pytest
+1. **Implement incrementally** - Small, verifiable changes
+1. **Pass quality gates** - Ruff, mypy, pytest must all pass
 
 ## Common Tasks
 
@@ -147,10 +147,10 @@ agent-audiobook-maker/
 Choose your path:
 
 - **📖 Learn More**: [Project Overview](01-project-overview/README.md)
-- **🛠️ Start Coding**: [Implementation Guide](03-implementation/README.md)  
+- **🛠️ Start Coding**: [Implementation Guide](03-implementation/README.md)
 - **🎨 See Visuals**: [Architecture Diagrams](04-diagrams/README.md)
 - **📈 Follow Progress**: See journey updates in [progress-updates](05-development/journey/progress-updates/)
 
----
+______________________________________________________________________
 
 *New to the project? Start with [Project Overview](01-project-overview/README.md)*

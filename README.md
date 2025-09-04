@@ -40,7 +40,7 @@ Source: [docs/diagrams/high_level_architecture.mmd](docs/diagrams/high_level_arc
 
 Full documentation index: [docs/README.md](docs/README.md)
 
-Annotation system: The pipeline now features a hybrid dialogue classifier (heuristic + AI fallback) and deterministic speaker attribution with optional PostgreSQL character database integration. For historical details, see the legacy [Two-Agent System Specification](docs/02-specifications/components/two-agent-dialogue-speaker-system.md).
+Annotation system: The pipeline now features a hybrid dialogue classifier (heuristic + AI fallback) and deterministic speaker attribution with optional PostgreSQL character database integration.
 
 ```mermaid
 flowchart LR

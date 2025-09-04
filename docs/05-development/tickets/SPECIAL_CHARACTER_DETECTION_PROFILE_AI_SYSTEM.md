@@ -13,16 +13,16 @@ Define a minimal, deterministic detection profile for AI-system lines and apply 
 
 - Detection rule: Tag a span as ai_system only if the trimmed line matches `^<[^>\n]+>$` (a single angle-bracket block line like `<Skills>`, `<Stamina: 10>`).
 - Ignore inline `<...>` inside narration; do not tag those.
-- No new files; augment spans in-place: tags includes `ai_system`; optional subtype_tags [`status`, `menu`].
+- No new files; augment spans in-place: tags includes `ai_system`; optional subtype_tags \[`status`, `menu`\].
 - Attribution: If `ai_system` tag present, set speaker_id to `ai_system`. Otherwise, leave speaker_id unset/unknown (no auto narrator).
 - Casting: Deferred — tracked in `AI_SYSTEM_VOICE_CASTING_TODO.md`. No voice wiring in P0.
 
 ## Contract (additive fields)
 
-- tags[]: add `ai_system` when detected
-- subtype_tags[]: optional [`status`, `menu`]
+- tags\[\]: add `ai_system` when detected
+- subtype_tags\[\]: optional \[`status`, `menu`\]
 - ai_system_confidence: 1.0 for matches, otherwise absent
-- ai_system_reasons[]: e.g., ["angle_bracket_block"]
+- ai_system_reasons\[\]: e.g., \["angle_bracket_block"\]
 - ai_system_block_id: optional for grouping adjacent ai_system lines
 
 ## Grouping (optional)
@@ -47,7 +47,7 @@ Define a minimal, deterministic detection profile for AI-system lines and apply 
 
 ## Test Plan
 
-- Tag `<Skills>`, `<Shop>`, `<0 skill points available>`, `<Stamina: 10>` lines with confidence 1.0 and subtypes [`menu`|`status`].
+- Tag `<Skills>`, `<Shop>`, `<0 skill points available>`, `<Stamina: 10>` lines with confidence 1.0 and subtypes \[`menu`|`status`\].
 - Do not tag inline: `switched to the <Skills> tab.`
 - Group consecutive bracket lines into one block_id (optional), retaining per-line spans.
 
@@ -58,8 +58,8 @@ Define a minimal, deterministic detection profile for AI-system lines and apply 
 
 ## Next Steps (proposed)
 
-1) Implement detection in LangFlow preprocessor (regex match + tag injection)
-2) Wire attribution rule (speaker_id = ai_system when tag present)
-3) Wire casting mapping for `ai_system` voice
-4) Add unit tests for detection, attribution, and casting behavior
-5) Optional: add config toggles to pipeline CLI/flow
+1. Implement detection in LangFlow preprocessor (regex match + tag injection)
+1. Wire attribution rule (speaker_id = ai_system when tag present)
+1. Wire casting mapping for `ai_system` voice
+1. Add unit tests for detection, attribution, and casting behavior
+1. Optional: add config toggles to pipeline CLI/flow

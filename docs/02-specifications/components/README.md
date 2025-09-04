@@ -14,12 +14,12 @@ This section contains formal specifications for all major components, following 
 - **[PDF to Text CLI Spec](PDF_TO_TEXT_CLI_SPEC.md)** - Command-line interface
 - **[Text to JSON Spec](TXT_TO_JSON_SPEC.md)** - Text structuring and serialization
 
-### Classification & Structuring  
+### Classification & Structuring
 
 Organize extracted text into meaningful sections; chapter structure is derived from classifier outputs.
 
 - **[Section Classifier Spec](SECTION_CLASSIFIER_SPEC.md)** - TOC detection and section classification
-- (Legacy) **[Chapterizer Spec](CHAPTERIZER_SPEC.md)** - Historical chapter boundary detection and splitting (removed; replaced by classifier-derived chapter structure)
+- (Legacy) Chapterizer Spec (removed; replaced by classifier-derived chapter structure)
 
 ### Quality & Validation
 
@@ -34,12 +34,12 @@ Organize extracted text into meaningful sections; chapter structure is derived f
 Every component specification includes:
 
 1. **Purpose & Scope** - What the component does and boundary conditions
-2. **Requirements** - Numbered, testable functional requirements  
-3. **Interface Specification** - Inputs, outputs, CLI arguments, return codes
-4. **Data Schemas** - Structured input/output formats with examples
-5. **Error Handling** - Expected failure modes and error responses
-6. **Testing Criteria** - Acceptance tests and validation approaches
-7. **Dependencies** - External libraries, system requirements, version constraints
+1. **Requirements** - Numbered, testable functional requirements
+1. **Interface Specification** - Inputs, outputs, CLI arguments, return codes
+1. **Data Schemas** - Structured input/output formats with examples
+1. **Error Handling** - Expected failure modes and error responses
+1. **Testing Criteria** - Acceptance tests and validation approaches
+1. **Dependencies** - External libraries, system requirements, version constraints
 
 ### Quality Standards
 
@@ -50,18 +50,18 @@ Every component specification includes:
 
 ## Current Implementation Status
 
-| Component | Specification | Implementation | Tests | Status |
-|-----------|---------------|----------------|-------|--------|
-| PDF to Text | ✅ Complete | ✅ Complete | ✅ Complete | 🟢 Stable |
-| Section Classifier | ✅ Complete | ✅ Complete | ✅ Complete | 🟢 Stable |  
-| Chapterizer (Legacy) | ✅ Historical | ❌ Removed | ❌ N/A | � Deprecated |
-| Text to JSON | ✅ Complete | ✅ Complete | ✅ Complete | 🟢 Stable |
-| Quality Gate | ✅ Complete | ✅ Complete | ✅ Complete | 🟢 Stable |
-| PDF CLI | ✅ Complete | ✅ Complete | ✅ Complete | 🟢 Stable |
+| Component            | Specification | Implementation | Tests       | Status       |
+| -------------------- | ------------- | -------------- | ----------- | ------------ |
+| PDF to Text          | ✅ Complete   | ✅ Complete    | ✅ Complete | 🟢 Stable    |
+| Section Classifier   | ✅ Complete   | ✅ Complete    | ✅ Complete | 🟢 Stable    |
+| Chapterizer (Legacy) | ✅ Historical | ❌ Removed     | ❌ N/A      | � Deprecated |
+| Text to JSON         | ✅ Complete   | ✅ Complete    | ✅ Complete | 🟢 Stable    |
+| Quality Gate         | ✅ Complete   | ✅ Complete    | ✅ Complete | 🟢 Stable    |
+| PDF CLI              | ✅ Complete   | ✅ Complete    | ✅ Complete | 🟢 Stable    |
 
 ## Architecture Overview
 
-```mermaid
+````mermaid
 graph LR
     subgraph "Ingestion Pipeline"
         PDF[📕 PDF] --> Extract[🔍 PDF to Text]
@@ -135,3 +135,4 @@ graph LR
 ---
 
 *Part of [Specifications](../README.md) | [Documentation Index](../../README.md)*
+````

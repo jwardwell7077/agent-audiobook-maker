@@ -157,8 +157,8 @@ All critical indexes are created as part of the migration:
 Common query patterns to optimize for:
 
 1. **Character lookup by book**: `SELECT * FROM characters WHERE book_id = ?`
-2. **Character dialogue**: `SELECT * FROM character_text_segments WHERE character_id = ? AND segment_type = 'dialogue'`
-3. **Unprocessed utterances**: `SELECT * FROM utterances WHERE processed_by_agents IS NULL`
+1. **Character dialogue**: `SELECT * FROM character_text_segments WHERE character_id = ? AND segment_type = 'dialogue'`
+1. **Unprocessed utterances**: `SELECT * FROM utterances WHERE processed_by_agents IS NULL`
 
 ## Rollback Plan
 
@@ -222,7 +222,7 @@ AND schemaname = 'public';
 ## Migration Execution
 
 1. **Backup Database**: Create full backup before running migration
-2. **Run in Transaction**: Execute all DDL in a single transaction for atomicity
-3. **Validate Schema**: Run validation queries to confirm changes
-4. **Test Queries**: Execute sample queries to verify performance
-5. **Monitor Performance**: Check query execution plans after deployment
+1. **Run in Transaction**: Execute all DDL in a single transaction for atomicity
+1. **Validate Schema**: Run validation queries to confirm changes
+1. **Test Queries**: Execute sample queries to verify performance
+1. **Monitor Performance**: Check query execution plans after deployment

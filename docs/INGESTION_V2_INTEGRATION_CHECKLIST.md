@@ -37,6 +37,6 @@ This checklist helps integrate the updated ingestion pipeline docs into the proj
 - Add a short “troubleshooting” section for common ingestion issues.
 - Expose advanced well-done options (e.g., `split_headings`) via CLI flags and update docs accordingly when implemented.
 
----
+______________________________________________________________________
 
 After updating indices and cross-links, run a quick local smoke test and ensure paths and command examples match the current repository layout.

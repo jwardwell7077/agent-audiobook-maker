@@ -504,57 +504,57 @@ stateDiagram-v2
 
 ### Classification State Transitions
 
-| From State | To State | Condition | Action |
-|------------|----------|-----------|---------|
-| SegmentReady | ClassifyingDialogue | Segment has text content | Initialize context window |
-| HeuristicAnalysis | ClearDialogue | Quotes + dialogue tags detected | Set confidence > 0.9 |
-| HeuristicAnalysis | RequiresAI | No clear patterns | Queue for AI processing |
-| AIProcessing | AIComplete | LLM returns result | Store AI confidence score |
-| DialogueClassified | AttributingSpeaker | Classification = dialogue/mixed | Extract character names |
-| DialogueClassified | CollectingContext | Classification = narration | Analyze character mentions |
+| From State         | To State            | Condition                       | Action                     |
+| ------------------ | ------------------- | ------------------------------- | -------------------------- |
+| SegmentReady       | ClassifyingDialogue | Segment has text content        | Initialize context window  |
+| HeuristicAnalysis  | ClearDialogue       | Quotes + dialogue tags detected | Set confidence > 0.9       |
+| HeuristicAnalysis  | RequiresAI          | No clear patterns               | Queue for AI processing    |
+| AIProcessing       | AIComplete          | LLM returns result              | Store AI confidence score  |
+| DialogueClassified | AttributingSpeaker  | Classification = dialogue/mixed | Extract character names    |
+| DialogueClassified | CollectingContext   | Classification = narration      | Analyze character mentions |
 
 ### Attribution State Transitions
 
-| From State | To State | Condition | Action |
-|------------|----------|-----------|---------|
-| DatabaseLookup | CharacterFound | Exact/alias match found | Load character record |
-| DatabaseLookup | NoCharacterMatch | No matches in database | Prepare character creation |
-| AnalyzingRole | SpeakerIdentified | "said [Name]" pattern | Create speaker association |
-| AnalyzingRole | AddresseeIdentified | "[Name]," within quotes | Create addressee association |
-| AnalyzingRole | AmbiguousRole | Multiple role indicators | Store all possibilities |
+| From State     | To State            | Condition                 | Action                       |
+| -------------- | ------------------- | ------------------------- | ---------------------------- |
+| DatabaseLookup | CharacterFound      | Exact/alias match found   | Load character record        |
+| DatabaseLookup | NoCharacterMatch    | No matches in database    | Prepare character creation   |
+| AnalyzingRole  | SpeakerIdentified   | "said \[Name\]" pattern   | Create speaker association   |
+| AnalyzingRole  | AddresseeIdentified | "\[Name\]," within quotes | Create addressee association |
+| AnalyzingRole  | AmbiguousRole       | Multiple role indicators  | Store all possibilities      |
 
 ### Database State Transitions
 
-| From State | To State | Condition | Action |
-|------------|----------|-----------|---------|
-| ValidateCharacterData | ExecuteCreate | All validations pass | Begin database transaction |
-| ValidateCharacterData | ValidationFailed | Required fields missing | Return validation errors |
-| ExecuteCreate | DatabaseOperationComplete | Transaction commits successfully | Update indexes |
-| ExecuteUpdate | DatabaseOperationComplete | Update transaction succeeds | Refresh character cache |
+| From State            | To State                  | Condition                        | Action                     |
+| --------------------- | ------------------------- | -------------------------------- | -------------------------- |
+| ValidateCharacterData | ExecuteCreate             | All validations pass             | Begin database transaction |
+| ValidateCharacterData | ValidationFailed          | Required fields missing          | Return validation errors   |
+| ExecuteCreate         | DatabaseOperationComplete | Transaction commits successfully | Update indexes             |
+| ExecuteUpdate         | DatabaseOperationComplete | Update transaction succeeds      | Refresh character cache    |
 
 ### Error Recovery Conditions
 
-| Error Type | Recovery Action | Success Condition | Fallback Action |
-|------------|----------------|-------------------|-----------------|
-| Database Connection | Retry connection | Connection restored | Use local cache |
-| AI Service Timeout | Retry with smaller batch | Response received | Use heuristic classification |
-| Validation Failure | Correct data format | Data passes validation | Skip invalid record |
-| Memory Exhaustion | Clear processing cache | Memory usage normal | Reduce batch size |
+| Error Type          | Recovery Action          | Success Condition      | Fallback Action              |
+| ------------------- | ------------------------ | ---------------------- | ---------------------------- |
+| Database Connection | Retry connection         | Connection restored    | Use local cache              |
+| AI Service Timeout  | Retry with smaller batch | Response received      | Use heuristic classification |
+| Validation Failure  | Correct data format      | Data passes validation | Skip invalid record          |
+| Memory Exhaustion   | Clear processing cache   | Memory usage normal    | Reduce batch size            |
 
 ## Performance Considerations
 
 ### State Machine Optimization
 
 1. **Batch State Transitions**: Group similar operations to reduce state machine overhead
-2. **Parallel FSM Execution**: Run multiple FSMs concurrently for different segments
-3. **State Caching**: Cache frequently accessed states to reduce computation
-4. **Early Exit Conditions**: Implement fast paths for common scenarios
+1. **Parallel FSM Execution**: Run multiple FSMs concurrently for different segments
+1. **State Caching**: Cache frequently accessed states to reduce computation
+1. **Early Exit Conditions**: Implement fast paths for common scenarios
 
 ### Memory Management
 
 1. **State Cleanup**: Ensure proper cleanup when exiting states
-2. **Context Window Limits**: Restrict context window size to prevent memory bloat
-3. **Profile Data Pruning**: Limit character profile data growth
-4. **Error State Recovery**: Implement memory recovery in error states
+1. **Context Window Limits**: Restrict context window size to prevent memory bloat
+1. **Profile Data Pruning**: Limit character profile data growth
+1. **Error State Recovery**: Implement memory recovery in error states
 
 This FSM specification provides comprehensive state management for the two-agent dialogue classification and speaker attribution system, ensuring robust and predictable operation under all conditions.

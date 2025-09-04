@@ -17,7 +17,7 @@ Assumptions and constraints
 
 ## Diagrams
 
-```mermaid
+````mermaid
 flowchart LR
   PDF[PDF file] -->|PyMuPDF (fitz)| EXTRACT[Extract pages]
   EXTRACT --> CLEAN[Normalize & clean]
@@ -124,3 +124,4 @@ Coverage/docstrings
 
 - Do we prefer pdfplumber over pdfminer.six as the “fallback” for line ordering? Start with pdfminer.six due to stability.
 - Should we emit a sidecar JSON with page offsets for downstream alignment? Likely yes in the next slice.
+````

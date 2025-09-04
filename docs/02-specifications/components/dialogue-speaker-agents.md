@@ -5,7 +5,7 @@
 This specification defines a two-agent system for audiobook text processing:
 
 1. **Dialogue Classifier Agent** - Distinguishes narration from dialogue
-2. **Speaker Attribution Agent** - Associates dialogue with specific characters
+1. **Speaker Attribution Agent** - Associates dialogue with specific characters
 
 The system builds character profiles by collecting all text segments associated with each character in a database for future analysis and voice casting.
 
@@ -94,17 +94,20 @@ ADD COLUMN processed_by_agents TIMESTAMP;
 #### Classification Rules
 
 1. **Dialogue Indicators**:
+
    - Direct quotations ("Hello," she said)
    - Dialogue tags (said, asked, whispered, etc.)
    - Character speech patterns
 
-2. **Narration Indicators**:
+1. **Narration Indicators**:
+
    - Descriptive text
    - Action sequences
    - Setting descriptions
    - Internal thoughts (when not quoted)
 
-3. **Mixed Content**:
+1. **Mixed Content**:
+
    - Segments containing both dialogue and narration
    - Dialogue with embedded action/description
 
@@ -153,15 +156,18 @@ ADD COLUMN processed_by_agents TIMESTAMP;
 #### Attribution Strategy
 
 1. **Direct Attribution**:
+
    - Explicit dialogue tags ("John said")
    - Speaker identification phrases
 
-2. **Contextual Attribution**:
+1. **Contextual Attribution**:
+
    - Conversation context and turn-taking
    - Character presence in scene
    - Speech patterns and vocabulary
 
-3. **Character Discovery**:
+1. **Character Discovery**:
+
    - New character introduction patterns
    - Name extraction and normalization
    - Alias/nickname detection
@@ -225,10 +231,10 @@ ADD COLUMN processed_by_agents TIMESTAMP;
 #### For Each Character
 
 1. **Direct Dialogue**: All spoken words attributed to the character
-2. **Character Descriptions**: Narrative text describing the character
-3. **Character Actions**: Actions performed by the character
-4. **References**: When other characters mention them
-5. **Context**: Surrounding narrative when character appears
+1. **Character Descriptions**: Narrative text describing the character
+1. **Character Actions**: Actions performed by the character
+1. **References**: When other characters mention them
+1. **Context**: Surrounding narrative when character appears
 
 #### Profile Schema
 
@@ -266,14 +272,14 @@ ADD COLUMN processed_by_agents TIMESTAMP;
 ### Sequential Flow
 
 1. **Input**: Segmented text from existing pipeline
-2. **Agent 1**: Classify dialogue vs narration
+1. **Agent 1**: Classify dialogue vs narration
    - Update `utterances.dialogue_classification`
    - Update `utterances.dialogue_confidence`
-3. **Agent 2**: Attribute speakers to dialogue
+1. **Agent 2**: Attribute speakers to dialogue
    - Create/update `characters` records
    - Create `character_text_segments` associations
    - Update `utterances.speaker_character_id`
-4. **Profile Update**: Aggregate character data
+1. **Profile Update**: Aggregate character data
    - Update `characters.profile` JSONB field
    - Maintain character relationship mappings
 
@@ -374,16 +380,19 @@ ADD COLUMN processed_by_agents TIMESTAMP;
 ## Success Criteria
 
 1. **Functional Success**:
+
    - All dialogue segments classified with >95% accuracy
    - All characters discovered and tracked
    - Complete character profiles generated
 
-2. **Technical Success**:
+1. **Technical Success**:
+
    - System processes target book sizes within performance requirements
    - Database maintains consistency under concurrent load
    - Integration with existing pipeline is seamless
 
-3. **Business Success**:
+1. **Business Success**:
+
    - Character data enables effective voice casting decisions
    - Profile quality supports TTS voice assignment
    - System scales to production book processing volumes

@@ -262,10 +262,10 @@ ADD COLUMN processed_by_agents TIMESTAMP;
 ### 6.1 Sequential Processing Flow
 
 1. **Input Processing**: Receive segmented text from existing pipeline
-2. **Dialogue Classification**: Process segments through Classifier Agent
-3. **Speaker Attribution**: Process dialogue segments through Attribution Agent
-4. **Database Updates**: Persist classification and attribution results
-5. **Profile Building**: Aggregate character data for profile updates
+1. **Dialogue Classification**: Process segments through Classifier Agent
+1. **Speaker Attribution**: Process dialogue segments through Attribution Agent
+1. **Database Updates**: Persist classification and attribution results
+1. **Profile Building**: Aggregate character data for profile updates
 
 ### 6.2 Error Handling Strategy
 

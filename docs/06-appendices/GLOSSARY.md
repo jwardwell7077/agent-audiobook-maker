@@ -10,7 +10,7 @@ This glossary provides clear definitions for all specialized terminology used in
 
 The complete system for converting text content into structured annotations suitable for audiobook production. Consists of ingestion, classification, structuring, and annotation pipelines.
 
-### Annotation Pipeline  
+### Annotation Pipeline
 
 The multi-stage process that transforms raw text into richly annotated content with speaker identification, dialogue/narration classification, and metadata generation.
 
@@ -259,7 +259,7 @@ The performance art of using voice to portray characters and convey narrative co
 ## Acronyms & Abbreviations
 
 - **ABM** - Agent Audiobook Maker
-- **AI** - Artificial Intelligence  
+- **AI** - Artificial Intelligence
 - **API** - Application Programming Interface
 - **CI/CD** - Continuous Integration/Continuous Deployment
 - **CLI** - Command Line Interface
@@ -297,6 +297,6 @@ Technology definitions reflect current versions as of project creation. Some too
 
 Definitions are written for technical contributors but should be accessible to domain experts from audiobook production backgrounds.
 
----
+______________________________________________________________________
 
 *Part of [Appendices](README.md) | [Documentation Index](../README.md)*

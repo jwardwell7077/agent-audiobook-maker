@@ -6,14 +6,14 @@ This section contains all the technical diagrams that illustrate how the Agent A
 
 ## Quick Navigation
 
-| Diagram Type | Purpose | Files |
-|-------------|---------|-------|
-| 🏗️ **Architecture** | System overview and component relationships | `architecture/two-agent-system-architecture.md` (legacy naming) |
-| 🔄 **Data Flow** | Processing pipelines and data movement | `data-flow/two-agent-system-data-flow.md` (legacy naming) |
-| 🤖 **State Machines** | Component behavior and state transitions | `fsm/two-agent-system-fsm.md` (legacy naming) |
-| 📊 **UML Diagrams** | Class structures and relationships | `uml/two-agent-system-uml.md` (legacy naming) |
-| 🗄️ **Database Schema** | Data models and relationships | `database/two-agent-system-database-schema.md` (legacy naming) |
-| 📋 **Early Design Evolution** | Initial concepts and alternative approaches | `supplementary/early-design-diagrams.md` |
+| Diagram Type                  | Purpose                                     | Files                                      |
+| ----------------------------- | ------------------------------------------- | ------------------------------------------ |
+| 🏗️ **Architecture**           | System overview and component relationships | `architecture/high_level_architecture.mmd` |
+| 🔄 **Data Flow**              | Processing pipelines and data movement      | `flows/txt_to_json_spec.mmd`               |
+| 🤖 **State Machines**         | Component behavior and state transitions    | `state-machines/quality_gate_fsm.mmd`      |
+| 📊 **UML Diagrams**           | Class structures and relationships          | `uml/langflow_uml.mmd`                     |
+| 🗄️ **Database Schema**        | Data models and relationships               | `database/schema_overview.md`              |
+| 📋 **Early Design Evolution** | Initial concepts and alternative approaches | `supplementary/early-design-diagrams.md`   |
 
 ## Architecture Diagrams
 
@@ -26,7 +26,7 @@ System overview showing major components and data flow
 - **Level**: 30,000-foot view
 - **Key Elements**: Major subsystems, external dependencies, data stores
 
-```mermaid
+````mermaid
 %%{display}%%
 graph TB
     subgraph "Input Processing"
@@ -253,3 +253,4 @@ These diagrams show the design evolution from file-based storage to the final Po
 ---
 
 *Part of [Documentation Index](../README.md)*
+````

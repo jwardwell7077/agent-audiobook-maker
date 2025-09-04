@@ -11,7 +11,7 @@ Your repository has rich structured data ready for LangFlow integration:
 ### **Current Data Assets:**
 
 - ✅ **Volume Manifest**: `data/clean/mvs/chapters.json` (4,919 lines, full book structured)
-- ✅ **Readable Text**: `data/clean/mvs/chapters_readable.txt` (91,782 lines, formatted chapters)  
+- ✅ **Readable Text**: `data/clean/mvs/chapters_readable.txt` (91,782 lines, formatted chapters)
 - ✅ **Database**: PostgreSQL with character tracking (Great Gatsby sample data)
 - ✅ **JSONL Pipeline**: Existing components for utterance output format
 
@@ -48,7 +48,7 @@ Your chapters contain **bulk text** that needs intelligent segmentation:
 ]
 ```
 
----
+______________________________________________________________________
 
 ## 🧠 **Smart Text Chunking Algorithm**
 
@@ -219,7 +219,7 @@ class EnhancedTextChunker:
             return "mixed"
 ```
 
----
+______________________________________________________________________
 
 ## 🔗 **LangFlow Pipeline Integration**
 
@@ -328,7 +328,7 @@ class ABMSpanIterator(Component):
         })
 ```
 
----
+______________________________________________________________________
 
 ## 🎛️ **LangFlow Component Workflow**
 
@@ -355,7 +355,7 @@ class ABMSpanIterator(Component):
 6. DatabaseUpdater (Persist to PostgreSQL)
 ```
 
----
+______________________________________________________________________
 
 ## 📝 **Configuration Examples**
 
@@ -364,16 +364,19 @@ class ABMSpanIterator(Component):
 #### **Component Settings:**
 
 1. **ABMChapterLoader**:
-    - book_name: `mvs`
-    - chapter_index: `0` (0-based index)
-    - context_sentences: `2`
 
-2. **ABMDialogueClassifier**:
+   - book_name: `mvs`
+   - chapter_index: `0` (0-based index)
+   - context_sentences: `2`
+
+1. **ABMDialogueClassifier**:
+
    - classification_method: `hybrid`
    - confidence_threshold: `0.8`
    - use_context: `true`
 
-3. **ABMSpeakerAttribution**:
+1. **ABMSpeakerAttribution**:
+
    - attribution_method: `comprehensive`
    - create_new_characters: `true` (for Quinn, Vorden, etc.)
    - confidence_threshold: `0.6`
@@ -401,39 +404,39 @@ class ABMSpanIterator(Component):
 }
 ```
 
----
+______________________________________________________________________
 
 ## 🚀 **Implementation Steps**
 
 ### **Phase 1: Basic Integration (Week 1)**
 
 1. ✅ Create enhanced chapter loader component
-2. ✅ Test loading MVS Chapter 1 data
-3. ✅ Validate chunking algorithm with sample text
-4. ✅ Connect to existing Agent 1 → Agent 2 pipeline
+1. ✅ Test loading MVS Chapter 1 data
+1. ✅ Validate chunking algorithm with sample text
+1. ✅ Connect to existing Agent 1 → Agent 2 pipeline
 
 ### **Phase 2: Batch Processing (Week 2)**
 
-1. ✅ Implement block iterator for batch processing  
-2. ✅ Add progress tracking and error handling
-3. ✅ Create results aggregation component
-4. ✅ Test full chapter processing
+1. ✅ Implement block iterator for batch processing
+1. ✅ Add progress tracking and error handling
+1. ✅ Create results aggregation component
+1. ✅ Test full chapter processing
 
 ### **Phase 3: Database Integration (Week 3)**
 
 1. ✅ Connect to PostgreSQL character database
-2. ✅ Implement character persistence and updates
-3. ✅ Add JSONL output with proper metadata
-4. ✅ Create production pipeline validation
+1. ✅ Implement character persistence and updates
+1. ✅ Add JSONL output with proper metadata
+1. ✅ Create production pipeline validation
 
 ### **Phase 4: Multi-Chapter Processing (Week 4)**
 
 1. ✅ Scale to process multiple chapters
-2. ✅ Add character continuity tracking
-3. ✅ Implement quality gates and validation
-4. ✅ Optimize for production workloads
+1. ✅ Add character continuity tracking
+1. ✅ Implement quality gates and validation
+1. ✅ Optimize for production workloads
 
----
+______________________________________________________________________
 
 ## 🔧 **Algorithm Parameters & Tuning**
 
@@ -461,20 +464,20 @@ CHUNKING_CONFIG = {
 ### **Quality Metrics:**
 
 - **Chunk Size Distribution**: 80% chunks between 100-400 words
-- **Dialogue Preservation**: 95%+ complete quotes in single chunks  
+- **Dialogue Preservation**: 95%+ complete quotes in single chunks
 - **Context Accuracy**: 90%+ relevant context windows
-- **Processing Speed**: <100ms per chunk on average
+- **Processing Speed**: \<100ms per chunk on average
 
----
+______________________________________________________________________
 
 ## 💡 **Pro Tips for Your Data**
 
 ### **MVS Book Specific Optimizations:**
 
 1. **Character Names**: Quinn, Vorden, Peter, Layla, Erin are main characters
-2. **Dialogue Patterns**: Heavy use of standard quotes `"text"`
-3. **Attribution Style**: Mix of "X said" and "said X" patterns
-4. **Scene Structure**: School settings, military academy, etc.
+1. **Dialogue Patterns**: Heavy use of standard quotes `"text"`
+1. **Attribution Style**: Mix of "X said" and "said X" patterns
+1. **Scene Structure**: School settings, military academy, etc.
 
 ### **Chunking Strategy for Your Content:**
 

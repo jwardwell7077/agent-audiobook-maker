@@ -5,12 +5,16 @@ Last updated: 2025-08-23 (Documentation synchronized with production components)
 ## Diagrams
 
 - **Architecture**: [../../04-diagrams/architecture/langflow_architecture.mmd](../../04-diagrams/architecture/langflow_architecture.mmd)
-- **UML Class Structure**: [../../04-diagrams/uml/langflow_uml.mmd](../../04-diagrams/uml/langflow_uml.mmd)  
+
+- **UML Class Structure**: [../../04-diagrams/uml/langflow_uml.mmd](../../04-diagrams/uml/langflow_uml.mmd)
+
 - **Finite State Machine**: [../../04-diagrams/flows/langflow_fsm.mmd](../../04-diagrams/flows/langflow_fsm.mmd)
-Source diagrams:
+  Source diagrams:
 
 - [LangFlow Architecture](../../04-diagrams/architecture/langflow_architecture.mmd)
+
 - [LangFlow UML](../../04-diagrams/uml/langflow_uml.mmd)
+
 - [LangFlow FSM](../../04-diagrams/flows/langflow_fsm.mmd)
 
 ## Executive Summary
@@ -24,10 +28,10 @@ This document outlines the strategy for leveraging LangFlow's built-in component
 All components in `src/abm/lf_components/audiobook/` are production-ready (Updated August 2025):
 
 1. `ABMChapterLoader` - **✅ Production Ready** (📚 5 inputs, 3 outputs)
-2. `ABMChapterSelector` - **✅ Production Ready** (🎯 3 inputs, 1 output)
-3. `ABMSegmentDialogueNarration` - **✅ Production Ready** (✂️ 1 input, 1 output)
-4. `ABMUtteranceFilter` - **✅ Production Ready** (🔍 5 inputs, 1 output)
-5. `ABMUtteranceJsonlWriter` - **✅ Production Ready** (💾 2 inputs, 1 output)
+1. `ABMChapterSelector` - **✅ Production Ready** (🎯 3 inputs, 1 output)
+1. `ABMSegmentDialogueNarration` - **✅ Production Ready** (✂️ 1 input, 1 output)
+1. `ABMUtteranceFilter` - **✅ Production Ready** (🔍 5 inputs, 1 output)
+1. `ABMUtteranceJsonlWriter` - **✅ Production Ready** (💾 2 inputs, 1 output)
 
 **Engineering Achievement**: All components successfully converted from broken prototypes to professional LangFlow implementations through systematic documentation-first approach.
 
@@ -60,7 +64,7 @@ All components in `src/abm/lf_components/audiobook/` are production-ready (Updat
 
 **Rationale**: Basic text operations are well-handled by built-in components.
 
-### **LLM Integration**  
+### **LLM Integration**
 
 - **Ollama Component**: Direct integration for speaker attribution and QA agents
 - **Chat Memory**: Maintain context across utterances within chapters
@@ -76,7 +80,7 @@ All components in `src/abm/lf_components/audiobook/` are production-ready (Updat
 
 **Rationale**: Generic data manipulation shouldn't require custom code.
 
----
+______________________________________________________________________
 
 ## ✅ **PRODUCTION READY - Core Audiobook Processing Components**
 
@@ -94,7 +98,7 @@ All components in `src/abm/lf_components/audiobook/` are production-ready (Updat
 
 #### **2. ABMChapterSelector** ✅ **PRODUCTION**
 
-- **Display Name**: 🎯 Chapter Selector  
+- **Display Name**: 🎯 Chapter Selector
 - **Purpose**: Selects chapters based on configurable criteria
 - **Inputs**: `chapters_data` (data), `selection_criteria` (data), `range_config` (data)
 - **Logic**: Multi-criteria selection with flexible configuration
@@ -142,7 +146,7 @@ All components in `src/abm/lf_components/audiobook/` are production-ready (Updat
 - **Logic**: 4-model ensemble system:
   - Rule-based patterns (attribution phrases, action beats)
   - NER + Coreference resolution (SpanBERT-coref)
-  - LLM-based complex attribution (Llama 3.1 8B)  
+  - LLM-based complex attribution (Llama 3.1 8B)
   - Character embedding similarity matching
 - **Output**: Speaker labels + confidence scores + attribution reasoning
 - **Performance Target**: >95% F1 score on test dataset
@@ -161,14 +165,14 @@ All components in `src/abm/lf_components/audiobook/` are production-ready (Updat
 
 #### **7. ABMEmotionClassifier** 🆕 **NEW**
 
-- **Purpose**: Classify emotional tone of utterances  
+- **Purpose**: Classify emotional tone of utterances
 - **Input**: Speaker-attributed utterances
 - **Logic**: Local emotion model (CPU-based) + rule smoothing + context awareness
 - **Output**: Emotion labels + confidence scores
 - **Performance Target**: >65% macro-F1 score
 - **Dependencies**: Local ML model, emotion taxonomy, character emotional profiles
 
-#### **8. ABMQualityAssuranceAgent** 🆕 **NEW**  
+#### **8. ABMQualityAssuranceAgent** 🆕 **NEW**
 
 - **Purpose**: Validate annotation quality and flag issues
 - **Input**: Fully annotated utterances
@@ -232,7 +236,7 @@ All components in `src/abm/lf_components/audiobook/` are production-ready (Updat
 
 - **Purpose**: Monitor and report speaker attribution performance metrics
 - **Input**: Gold standard annotations + predictions
-- **Logic**: Calculate F1, precision, recall by speaker, conversation type, confidence levels  
+- **Logic**: Calculate F1, precision, recall by speaker, conversation type, confidence levels
 - **Output**: Performance metrics dashboard + improvement recommendations
 - **Performance Target**: Track progress toward 95% F1 goal
 - **Dependencies**: Evaluation datasets, statistical analysis tools
@@ -245,13 +249,13 @@ All components in `src/abm/lf_components/audiobook/` are production-ready (Updat
 - **Output**: Cached results or cache miss signals
 - **Dependencies**: File system cache, hash computation
 
----
+______________________________________________________________________
 
 ## 🔄 **Pipeline Workflows**
 
 ### **Workflow 1: Annotation Pipeline**
 
-```mermaid
+````mermaid
 flowchart LR
   A[Built-in File Loader] --> B[ABMChapterLoader]
     B --> C[ABMChapterSelector] 
@@ -366,3 +370,4 @@ flowchart LR
 - Audio pipeline components should be designed with GPU resource management in mind
 
 Last updated: 2025-08-23
+````

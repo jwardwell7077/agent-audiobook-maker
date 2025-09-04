@@ -13,7 +13,7 @@ This index reflects the current upstream components after the redesign (Blocks �
 
 ## Orchestration & Utilities
 
-- abm_artifact_orchestrator.py — Runs upstream stages and writes artifacts to output/\<book\>/chNN
+- abm_artifact_orchestrator.py — Runs upstream stages and writes artifacts to output/\<book>/chNN
 - abm_span_iterator.py — Iterates spans JSONL; surfaces confidence; supports thresholding for UI
 - abm_data_config.py — Handles shared configuration
 - deterministic_confidence.py — Deterministic confidence scorer helper

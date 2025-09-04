@@ -1,8 +1,8 @@
 # Advanced Speaker Attribution Strategy for 95% F1 Score
 
-**Document Purpose:** Technical approach to achieve 95% F1 score for speaker attribution in dialogue  
-**Current Baseline:** Simple heuristic-based segmentation (~60-70% estimated accuracy)  
-**Target Performance:** 95% F1 score on test dataset  
+**Document Purpose:** Technical approach to achieve 95% F1 score for speaker attribution in dialogue\
+**Current Baseline:** Simple heuristic-based segmentation (~60-70% estimated accuracy)\
+**Target Performance:** 95% F1 score on test dataset\
 **Timeline:** 3 weeks (Phase 2 of MVP)
 
 ## Current State Analysis
@@ -17,7 +17,7 @@
 
 ### **Performance Gap Assessment**
 
-```text
+````text
 Current: ~60-70% (estimated, heuristic-based)
 Target:   95% F1 score
 Gap:      25-35 percentage points improvement needed
@@ -368,3 +368,4 @@ dependencies:
 ---
 
 This comprehensive approach combines multiple proven NLP techniques in an ensemble system designed specifically to achieve the ambitious 95% F1 target for speaker attribution. The phased implementation allows for iterative improvement and risk mitigation while maintaining the deterministic, local-first principles of the project.
+````

@@ -14,7 +14,7 @@ Versioning: `schema_version` is a string. Backward-compatible additions bump the
 
 Source: [docs/04-diagrams/flows/structured_json_schema.mmd](../../04-diagrams/flows/structured_json_schema.mmd)
 
-```mermaid
+````mermaid
 classDiagram
   class VolumeManifest {
     +string schema_version
@@ -197,3 +197,4 @@ Example
 
 - Annotation records: [docs/ANNOTATION_SCHEMA.md](ANNOTATION_SCHEMA.md)
 - Architecture overview: [docs/01-project-overview/ARCHITECTURE.md](../../01-project-overview/ARCHITECTURE.md)
+````

@@ -1,8 +1,8 @@
 # Agent 1 Dialogue Classifier - Processing Flow
 
-**Component**: ABMDialogueClassifier  
-**Purpose**: Hybrid dialogue/narration classification for character tracking  
-**Status**: ✅ Production Ready  
+**Component**: ABMDialogueClassifier\
+**Purpose**: Hybrid dialogue/narration classification for character tracking\
+**Status**: ✅ Production Ready\
 **Last Updated**: August 24, 2025
 
 ## Overview
@@ -123,7 +123,7 @@ Input → Heuristic Analysis → Decision Logic → Output
 - Uses only pattern matching and rules
 - Best for clear dialogue/narration cases
 
-### 🤖 "llm_enhanced"  
+### 🤖 "llm_enhanced"
 
 ```
 Input → Heuristic Analysis → AI Enhancement (if conf < threshold) → Use AI Result → Output
@@ -147,21 +147,21 @@ Input → Heuristic Analysis → AI Enhancement (if conf < threshold) → Combin
 
 ### Dialogue Patterns
 
-| Pattern Type | Regex | Confidence | Example |
-|--------------|-------|------------|---------|
-| Standard Quotes | `"[^"]*"` | 0.9 | `"Hello world"` |
-| Single Quotes | `'[^']*'` | 0.7 | `'Hello world'` |
-| Smart Quotes | `"[^"]*"` | 0.9 | `"Hello world"` |
-| Em Dash | `—[^—\n]*` | 0.6 | `—Hello world` |
+| Pattern Type    | Regex      | Confidence | Example         |
+| --------------- | ---------- | ---------- | --------------- |
+| Standard Quotes | `"[^"]*"`  | 0.9        | `"Hello world"` |
+| Single Quotes   | `'[^']*'`  | 0.7        | `'Hello world'` |
+| Smart Quotes    | `"[^"]*"`  | 0.9        | `"Hello world"` |
+| Em Dash         | `—[^—\n]*` | 0.6        | `—Hello world`  |
 
 ### Attribution Patterns
 
-| Pattern Type | Regex | Purpose |
-|--------------|-------|---------|
-| Speaker Names | `\b[A-Z][a-z]+ [A-Z][a-z]+\b` | Character identification |
-| Pronoun Said | `\b(he|she|they|it)\s+(said|asked|replied|answered)\b` | Dialogue tags |
-| Said Pronoun | `\bsaid\s+(he|she|they|it)\b` | Dialogue tags |
-| Character Titles | `\b(Mr|Mrs|Ms|Dr|Professor|Captain|Sir|Lady)\s+[A-Z][a-z]+\b` | Formal characters |
+| Pattern Type     | Regex                         | Purpose                  |
+| ---------------- | ----------------------------- | ------------------------ |
+| Speaker Names    | `\b[A-Z][a-z]+ [A-Z][a-z]+\b` | Character identification |
+| Pronoun Said     | \`\\b(he                      | she                      |
+| Said Pronoun     | \`\\bsaid\\s+(he              | she                      |
+| Character Titles | \`\\b(Mr                      | Mrs                      |
 
 ### Narration Indicators
 
@@ -274,21 +274,20 @@ Output: narration (0.7, "heuristic_narration_indicators")
 ### Graceful Degradation
 
 1. **AI Timeout**: Falls back to "narration" classification with low confidence
-2. **AI Error**: Uses default classification with error logging
-3. **Invalid Response**: Attempts to parse, falls back to safe default
-4. **Component Error**: Returns structured error result with diagnostics
+1. **AI Error**: Uses default classification with error logging
+1. **Invalid Response**: Attempts to parse, falls back to safe default
+1. **Component Error**: Returns structured error result with diagnostics
 
 ### Logging
 
 - Classification decisions at INFO level
-- AI fallbacks at WARNING level  
+- AI fallbacks at WARNING level
 - Errors at ERROR level with full context
 - Performance metrics available for monitoring
 
----
+______________________________________________________________________
 
 **Related Documentation**:
 
-- [Two-Agent System Specification](../../02-specifications/components/two-agent-dialogue-speaker-system.md)
 - [Agent 1 Implementation](../../../src/abm/lf_components/audiobook/abm_dialogue_classifier.py)
 - [Database Schema](../../../database/init/01-init-schema.sql)

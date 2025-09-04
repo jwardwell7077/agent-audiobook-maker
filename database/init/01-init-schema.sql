@@ -1,6 +1,6 @@
 -- ABM Two-Agent System Database Schema
 -- PostgreSQL initialization script for character tracking and dialogue classification
--- Based on documentation: docs/02-specifications/data-schemas/two-agent-database-schema.md
+-- Database schema (initialization). Historical two-agent schema docs removed.
 
 -- Enable extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

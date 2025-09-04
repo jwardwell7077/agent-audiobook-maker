@@ -17,7 +17,7 @@ Thin CLI wrapper around the extractor to keep business logic in the library and 
 
 - --no-dedupe-whitespace (default off): sets options.dedupe_whitespace = False
 - --preserve-form-feeds (default off): sets options.preserve_form_feeds = True
-- --newline (default "\n"): sets options.newline to given value (validated to "\n" or "\r\n")
+- --newline (default "\\n"): sets options.newline to given value (validated to "\\n" or "\\r\\n")
 - --use-blocks / --no-use-blocks (default on): toggle options.use_blocks
 - --insert-blank-line-between-blocks / --no-insert-blank-line-between-blocks (default on): toggle options.insert_blank_line_between_blocks
 - --block-gap-threshold `INT` (default 6): sets options.block_gap_threshold
@@ -37,8 +37,8 @@ Behavior
 ## Requirements
 
 1. R-QUALITY-GATE: Passes quality gate.
-2. R-THIN: No PDF parsing logic in CLI; all logic lives in `src.ingestion.pdf_to_text`.
-3. R-ARGS: Invalid args produce clear usage and nonzero exit.
+1. R-THIN: No PDF parsing logic in CLI; all logic lives in `src.ingestion.pdf_to_text`.
+1. R-ARGS: Invalid args produce clear usage and nonzero exit.
 
 ## Test Plan
 

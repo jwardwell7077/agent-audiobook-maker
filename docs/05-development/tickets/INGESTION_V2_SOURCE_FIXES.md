@@ -107,6 +107,6 @@ Acceptance:
 
 - mypy/pyright clean (informational), no runtime change.
 
----
+______________________________________________________________________
 
 Follow-up: Create an `implementation` branch (e.g., `ingestion-v2-polish`) to carry these edits with focused PRs per module. This doc serves as the checklist.

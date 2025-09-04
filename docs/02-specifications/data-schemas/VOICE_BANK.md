@@ -71,9 +71,9 @@ Notes:
 The planned component `ABMVoiceResolver` will:
 
 1. For each utterance, try `character_id` → `characters[<id>]`.
-2. If missing, try normalized `character_name` → `characters[<lowername>]` (project convention).
-3. If still missing, fall back to `defaults.narrator`.
-4. Attach `voice.*` fields to the utterance payload for SSML assembly.
+1. If missing, try normalized `character_name` → `characters[<lowername>]` (project convention).
+1. If still missing, fall back to `defaults.narrator`.
+1. Attach `voice.*` fields to the utterance payload for SSML assembly.
 
 ## Provider considerations
 
@@ -90,8 +90,8 @@ The planned component `ABMVoiceResolver` will:
 ## How to add a new character voice
 
 1. Choose a `character_id` (preferred) or confirm canonical `character_name`.
-2. Add an entry under `characters` with either an inline `profile` or a reference to a `defaults` profile.
-3. Ensure `locale` and `provider` align with your TTS backend.
+1. Add an entry under `characters` with either an inline `profile` or a reference to a `defaults` profile.
+1. Ensure `locale` and `provider` align with your TTS backend.
 
 ## Relation to SSML assembly
 
@@ -99,5 +99,6 @@ The planned component `ABMVoiceResolver` will:
 - SSML assembler will generate `<voice>` (or provider equivalent) and `<prosody>` using `rate/pitch/volume/style`.
 - If fields are absent, assembler falls back gracefully to the narrator default.
 
----
+______________________________________________________________________
+
 See also: `SSML_DATA_REQUIREMENTS.md` for the full checklist and pipeline placement.

@@ -62,9 +62,9 @@ When configured with `book_name="mvs"`, the component provides:
 A typical processing workflow follows this pattern:
 
 1. **ABMChapterLoader** → Loads `chapters.json` and emits `blocks_data`
-2. **ABMBlockIterator** → Streams blocks as utterance payloads
-3. **ABMDialogueClassifier → ABMSpeakerAttribution → ABMResultsAggregator**
-4. **ABM Results → Utterances → ABMAggregatedJsonlWriter** → Writes JSONL
+1. **ABMBlockIterator** → Streams blocks as utterance payloads
+1. **ABMDialogueClassifier → ABMSpeakerAttribution → ABMResultsAggregator**
+1. **ABM Results → Utterances → ABMAggregatedJsonlWriter** → Writes JSONL
 
 ## Working with Sample Data
 
@@ -115,23 +115,23 @@ Perfect for testing the complete pipeline with realistic data.
 **Component not finding data files:**
 
 1. Verify `.env` file exists and paths are correct
-2. Check file permissions on data directories
-3. Confirm book identifier matches directory name
+1. Check file permissions on data directories
+1. Confirm book identifier matches directory name
 
 **LangFlow can't discover components:**
 
 1. Verify `PYTHONPATH` includes `lf_components` directory
-2. Restart LangFlow after environment changes
-3. Check component loading in LangFlow logs
+1. Restart LangFlow after environment changes
+1. Check component loading in LangFlow logs
 
 ### Testing Configuration
 
 Use the ABMDataConfig component output to verify paths:
 
 1. Add component to workflow
-2. Set book_name to known sample (e.g., "mvs")
-3. Run workflow and check output paths
-4. Verify files exist at reported paths
+1. Set book_name to known sample (e.g., "mvs")
+1. Run workflow and check output paths
+1. Verify files exist at reported paths
 
 ## Related Documentation
 

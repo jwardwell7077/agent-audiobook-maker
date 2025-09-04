@@ -48,7 +48,7 @@ Benefits
 - Output: spans_cls.jsonl + spans_cls.meta.json
 - Responsibilities:
   - Classifier: type (dialogue/narration/mixed as features), lightweight features (optional).
-  - Attribution (dialogue only): speaker (canonical), confidence [0..1], evidence[], provenance (rules used).
+  - Attribution (dialogue only): speaker (canonical), confidence \[0..1\], evidence\[\], provenance (rules used).
   - Deterministic given same inputs.
 
 ### 4. Character Casting
@@ -73,27 +73,32 @@ Downstream starts after this point (TTS, post, mix, QC) and is out of scope for 
 All records should include timestamps and version fields in practice (omitted here for brevity). Sidecar meta.json files report counts, timings, and component versions.
 
 - Block record (blocks.jsonl)
+
   - book_id, chapter_number (1-based), chapter_index (0-based)
   - block_id (0-based), role (if pre-labeled), text_raw, text_norm
   - block_uid (sha1)
 
 - Span record (spans.jsonl)
+
   - book_id, chapter_index, block_id, segment_id (0-based within block)
   - role ∈ {narration, dialogue}, text_raw, text_norm
   - span_uid (sha1)
 
 - Classified span (spans_cls.jsonl)
+
   - span_uid, role, text_norm
   - type (dialogue/narration/mixed as classifier label), features? {}
-  - speaker?, confidence?, evidence[] (dialogue only)
+  - speaker?, confidence?, evidence\[\] (dialogue only)
   - provenance {rules, thresholds}
 
 - Cast span (spans_cast.jsonl)
+
   - span_uid, speaker, voice_id
   - style_defaults {rate, pitch, emotion}
   - casting_provenance
 
 - Styled span (spans_style.jsonl)
+
   - span_uid, voice_id, StylePlan {...}
   - ssml_default_engine? (optional convenience render)
 
@@ -121,20 +126,25 @@ Keep (minimal/no change)
 Tweak to match the new plan
 
 - abm_block_iterator.py → iterate spans (not blocks)
+
   - Inputs: path to spans.jsonl (or Data payload), start_span (0-based), max_spans.
   - Output: per-span Data with ids {chapter_index, block_id, segment_id}, role, text_raw/text_norm, and pass-through meta.
   - Remove any “chunk” compatibility; enforce 0-based indexing.
 
 - abm_dialogue_classifier.py → span-level
+
   - Input: span; Output: label + optional features; deterministic.
 
 - abm_speaker_attribution.py → span-level with evidence/confidence
-  - Input: classified span; Output: {speaker, confidence, evidence[], provenance} (dialogue only).
+
+  - Input: classified span; Output: {speaker, confidence, evidence\[\], provenance} (dialogue only).
 
 - abm_casting_director.py → character casting
+
   - Input: attributed span + voice_bank.json; Output: {voice_id, style_defaults, casting_provenance}.
 
 - abm_utterance_jsonl_writer.py → generalize to spans writer
+
   - Write records-only JSONL plus sidecar meta; ensure schema matches the above.
 
 Defer/replace after new stages land (then remove)
@@ -178,7 +188,7 @@ Defer/replace after new stages land (then remove)
 - Dialogue spans consistently attributed with confidence/evidence and deterministically cast.
 - Clean separation at SSML/style; downstream can swap engines without upstream changes.
 
----
+______________________________________________________________________
 
 Owner: Upstream Text Intelligence (pre-SSML)
 Status: Proposed

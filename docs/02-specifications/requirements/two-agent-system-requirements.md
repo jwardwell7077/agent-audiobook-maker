@@ -153,7 +153,7 @@ The system encompasses:
 **Priority**: Medium
 **Requirements**:
 
-- Memory usage: <8GB for context windows
+- Memory usage: \<8GB for context windows
 - GPU utilization: Batch processing optimization
 - Storage: Sequential I/O optimization for NVMe
 
@@ -276,12 +276,12 @@ The system encompasses:
 #### QR-ACC-001: Classification Precision
 
 **Description**: The system shall minimize false positives in dialogue classification.
-**Target**: <5% false positive rate for dialogue classification
+**Target**: \<5% false positive rate for dialogue classification
 
 #### QR-ACC-002: Attribution Precision
 
 **Description**: The system shall minimize incorrect speaker assignments.
-**Target**: <10% incorrect attribution rate for clear dialogue cases
+**Target**: \<10% incorrect attribution rate for clear dialogue cases
 
 ### 5.2 Completeness Requirements
 
@@ -370,7 +370,7 @@ The system encompasses:
 #### SUCCESS-TECH-002: System Reliability
 
 **Metric**: Maintain system stability under production loads
-**Target**: <1% processing failure rate
+**Target**: \<1% processing failure rate
 
 ### 7.3 Business Success Metrics
 

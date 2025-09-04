@@ -17,9 +17,9 @@ This guide explains our documentation structure, standards, templates, and best 
 ### Documentation-First Approach
 
 1. **Design documents** before coding major features
-2. **Update docs** with every code change that affects user experience
-3. **Test documentation** - ensure examples work and instructions are clear
-4. **Review docs** as part of the code review process
+1. **Update docs** with every code change that affects user experience
+1. **Test documentation** - ensure examples work and instructions are clear
+1. **Review docs** as part of the code review process
 
 ## Documentation Structure
 
@@ -27,7 +27,7 @@ This guide explains our documentation structure, standards, templates, and best 
 
 Our documentation follows a 6-section structure designed for different user types and needs:
 
-```text
+````text
 docs/
 ├── README.md                    # Main documentation index
 ├── GETTING_STARTED.md          # New contributor onboarding
@@ -609,7 +609,7 @@ This project uses Mermaid for diagrams. Follow these rules to avoid GitHub rende
   ```mermaid
   flowchart LR
     A --> B
-  ```
+````
 
 ### GitHub-specific pitfalls and fixes
 
@@ -634,9 +634,10 @@ This project uses Mermaid for diagrams. Follow these rules to avoid GitHub rende
 ### Validation and tests
 
 - We include unit tests to validate Mermaid syntax and catch regressions.
+
   - Run just the Mermaid tests:
 
-    pytest tests/unit_tests/test_mermaid_*.py -q
+    pytest tests/unit_tests/test_mermaid\_\*.py -q
 
 - Locally preview in VS Code with a Mermaid extension, or use the project’s validator where available.
 

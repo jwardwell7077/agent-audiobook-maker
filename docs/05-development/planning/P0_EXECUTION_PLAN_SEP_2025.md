@@ -22,7 +22,7 @@ Deliver the P0 items this week with clear sequencing, concrete tasks, acceptance
 - Day 2 AM: Deterministic confidence v1 implementation with unit tests.
 - Day 2 PM: LangFlow confidence preview + threshold wiring; quick smoke on MVS ch01.
 
----
+______________________________________________________________________
 
 ## 1) Legacy CLI tests stabilization
 
@@ -41,7 +41,7 @@ Tasks
 Touchpoints
 
 - tests/integration/**, tests/unit_tests/** (legacy CLI suites)
-- src/** (ingestion/classifier CLI modules)
+- src/\*\* (ingestion/classifier CLI modules)
 
 Acceptance criteria
 
@@ -54,7 +54,7 @@ Risks & mitigations
 - Hidden import side effects → convert to callable `main()` and import that.
 - Over-constraining tests → prefer behavior-based assertions over string matching.
 
----
+______________________________________________________________________
 
 ## 2) Provisional confidence fields + meta version bump
 
@@ -62,7 +62,7 @@ Goal: Add confidence scaffolding so downstream can consume it before v1 lands.
 
 Tasks
 
-- Define confidence schema: `confidence.score` (float [0,1]), `method` (string), optional `evidence` (list[str]).
+- Define confidence schema: `confidence.score` (float \[0,1\]), `method` (string), optional `evidence` (list\[str\]).
 - Update `ABMSpanAttribution` to emit `confidence.score=0.5`, `method="deterministic_v0"`.
 - Bump artifact version in spans_attr sidecar meta; record `confidence_schema_version`.
 - Update readers (iterator/casting) to accept and pass-through the new fields; no behavior change.
@@ -84,7 +84,7 @@ Risks & mitigations
 
 - Downstream assumptions about schema → treat fields as additive; keep backward compatibility.
 
----
+______________________________________________________________________
 
 ## 3) Deterministic confidence v1
 
@@ -94,7 +94,7 @@ Tasks
 
 - Implement deterministic features: name proximity, continuity, narration cues, quote boundaries, block context, optional character priors.
 - Create a small weights config (JSON/YAML) with sensible defaults; load via component param.
-- Scoring: weighted sum → normalization to [0,1] (logistic or min-max); document choice.
+- Scoring: weighted sum → normalization to \[0,1\] (logistic or min-max); document choice.
 - Tiebreaker: deterministic hash of `(span_uid, book_id)`; unit test tie scenarios.
 - Threshold parameter (default 0.6) surfaced in orchestrator; mark low-confidence spans in meta summary.
 - Tests: feature unit tests, scorer normalization, tie behavior, end-to-end emission of confidence with `method="deterministic_v1"`.
@@ -115,7 +115,7 @@ Risks & mitigations
 
 - Overfitting weights → keep config external; allow quick tuning; plan evaluation in P1.
 
----
+______________________________________________________________________
 
 ## 4) LangFlow confidence preview + threshold wiring
 
@@ -132,7 +132,7 @@ Touchpoints
 
 - src/abm/lf_components/audiobook/abm_artifact_orchestrator.py (threshold param, summary)
 - src/abm/lf_components/audiobook/abm_span_iterator.py (surface confidence fields)
-- examples/langflow/abm_spans_first_pipeline*.json (updated wiring)
+- examples/langflow/abm_spans_first_pipeline\*.json (updated wiring)
 
 Acceptance criteria
 
@@ -140,9 +140,10 @@ Acceptance criteria
 - Iterator outputs include confidence fields for each span.
 
 Risks & mitigations
+
 - UI rendering constraints → prefer text summaries; keep visuals minimal and robust.
 
----
+______________________________________________________________________
 
 ## Deliverables
 

@@ -42,7 +42,7 @@ Agent Audiobook Maker is a local-first, multi-agent system that transforms novel
 
 ## Architecture at a Glance
 
-```mermaid
+````mermaid
 graph LR
     subgraph "Phase 0 ✅"
         PDF[📕 PDF] --> Extract[🔍 Extract]
@@ -77,3 +77,4 @@ graph LR
 ---
 
 *Part of [Documentation Index](../README.md)*
+````

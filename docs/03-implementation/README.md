@@ -20,7 +20,7 @@ Current focus for Phase 1 - rapid prototyping of the annotation pipeline using v
 **Status**: Active development (Phase 1)
 **Use Cases**: Rapid prototyping, visual debugging, stakeholder demos
 
-### 🤖 [Multi-Agent Implementation](multi-agent/README.md)  
+### 🤖 [Multi-Agent Implementation](multi-agent/README.md)
 
 **Sophisticated multi-agent system for production use**
 
@@ -43,7 +43,7 @@ Future implementation approach for Phases 2-3 using specialized AI agents:
 Real-world examples demonstrating:
 
 - Component integration patterns
-- Data transformation examples  
+- Data transformation examples
 - Error handling and recovery
 - Testing and validation approaches
 
@@ -57,7 +57,7 @@ Current examples include:
 
 ### Component Integration
 
-```mermaid
+````mermaid
 graph LR
     subgraph "LangFlow Approach (Phase 1)"
         L1[Volume Loader] --> L2[Segmenter] 
@@ -152,3 +152,4 @@ graph LR
 ---
 
 *Part of [Documentation Index](../README.md)*
+````

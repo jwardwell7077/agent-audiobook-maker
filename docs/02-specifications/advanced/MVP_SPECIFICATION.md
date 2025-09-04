@@ -1,9 +1,9 @@
 # MVP Specification: Audio Book Maker
 
-**Status:** Draft  
-**Owner:** Development Team  
-**Last Updated:** 2025-08-23  
-**Target Completion:** TBD  
+**Status:** Draft\
+**Owner:** Development Team\
+**Last Updated:** 2025-08-23\
+**Target Completion:** TBD
 
 ## Executive Summary
 
@@ -18,7 +18,7 @@ The **Audio Book Maker MVP** delivers a complete, deterministic pipeline that co
 #### 1. PDF Ingestion & Processing
 
 - ✅ **Single PDF upload** via API endpoint
-- ✅ **Structured TOC parsing** with chapter extraction  
+- ✅ **Structured TOC parsing** with chapter extraction
 - ✅ **Deterministic text processing** with hash-based integrity
 - ✅ **Chapter segmentation** into discrete JSON artifacts
 - ✅ **Error handling** for malformed PDFs (graceful degradation)
@@ -43,7 +43,7 @@ The **Audio Book Maker MVP** delivers a complete, deterministic pipeline that co
 
 - 🔄 **LangFlow visual pipeline** for component orchestration
 - 🔄 **Deterministic caching** for reproducible outputs
-- 🔄 **Error recovery** with retry logic and fallback strategies  
+- 🔄 **Error recovery** with retry logic and fallback strategies
 - 🔄 **Progress tracking** and status reporting
 - 🔄 **Local-first storage** (files + lightweight DB)
 
@@ -59,7 +59,7 @@ The **Audio Book Maker MVP** delivers a complete, deterministic pipeline that co
 #### Explicitly Excluded from MVP
 
 - ❌ **Multi-book management** and library features
-- ❌ **Web UI/frontend** (API-only for MVP)  
+- ❌ **Web UI/frontend** (API-only for MVP)
 - ❌ **User authentication** and multi-tenancy
 - ❌ **Cloud deployment** and scaling infrastructure
 - ❌ **Advanced voice cloning** with custom samples
@@ -75,65 +75,70 @@ The **Audio Book Maker MVP** delivers a complete, deterministic pipeline that co
 
 ### **Functional Requirements**
 
-| Requirement | Acceptance Criteria | Priority |
-|------------|-------------------|----------|
-| **F1: PDF Processing** | Single PDF upload → chapter extraction with >95% accuracy for structured books | P0 |
-| **F2: Speaker Attribution** | Identify and consistently attribute dialogue to character names with >95% F1 score | P0 |
-| **F3: Emotion Recognition** | Classify utterance emotions (happy, sad, angry, neutral, etc.) with >65% macro-F1 | P0 |
-| **F4: Voice Consistency** | Same character maintains consistent voice throughout entire book | P0 |
-| **F5: Audio Quality** | Final audiobook meets professional standards (-23 LUFS, no clipping) | P0 |
-| **F6: Processing Speed** | Complete book processing (300 pages) finishes within 4 hours on standard hardware | P1 |
-| **F7: Deterministic Output** | Identical input produces identical audio output (bit-for-bit) | P0 |
-| **F8: Error Recovery** | System gracefully handles and recovers from TTS engine failures | P1 |
+| Requirement                  | Acceptance Criteria                                                                | Priority |
+| ---------------------------- | ---------------------------------------------------------------------------------- | -------- |
+| **F1: PDF Processing**       | Single PDF upload → chapter extraction with >95% accuracy for structured books     | P0       |
+| **F2: Speaker Attribution**  | Identify and consistently attribute dialogue to character names with >95% F1 score | P0       |
+| **F3: Emotion Recognition**  | Classify utterance emotions (happy, sad, angry, neutral, etc.) with >65% macro-F1  | P0       |
+| **F4: Voice Consistency**    | Same character maintains consistent voice throughout entire book                   | P0       |
+| **F5: Audio Quality**        | Final audiobook meets professional standards (-23 LUFS, no clipping)               | P0       |
+| **F6: Processing Speed**     | Complete book processing (300 pages) finishes within 4 hours on standard hardware  | P1       |
+| **F7: Deterministic Output** | Identical input produces identical audio output (bit-for-bit)                      | P0       |
+| **F8: Error Recovery**       | System gracefully handles and recovers from TTS engine failures                    | P1       |
 
 ### **Technical Requirements**
 
-| Requirement | Acceptance Criteria | Priority |
-|------------|-------------------|----------|
-| **T1: Local Deployment** | Runs entirely on single machine with GPU, no cloud dependencies | P0 |
-| **T2: Data Persistence** | All intermediate artifacts stored locally, recoverable after restart | P0 |  
-| **T3: Memory Efficiency** | Peak memory usage <16GB for standard novel processing | P1 |
-| **T4: LangFlow Integration** | Visual pipeline editor works for component configuration | P0 |
-| **T5: API Completeness** | RESTful API covers all core operations with OpenAPI documentation | P1 |
-| **T6: Quality Gates** | Automated testing covers >90% of critical path functionality | P1 |
+| Requirement                  | Acceptance Criteria                                                  | Priority |
+| ---------------------------- | -------------------------------------------------------------------- | -------- |
+| **T1: Local Deployment**     | Runs entirely on single machine with GPU, no cloud dependencies      | P0       |
+| **T2: Data Persistence**     | All intermediate artifacts stored locally, recoverable after restart | P0       |
+| **T3: Memory Efficiency**    | Peak memory usage \<16GB for standard novel processing               | P1       |
+| **T4: LangFlow Integration** | Visual pipeline editor works for component configuration             | P0       |
+| **T5: API Completeness**     | RESTful API covers all core operations with OpenAPI documentation    | P1       |
+| **T6: Quality Gates**        | Automated testing covers >90% of critical path functionality         | P1       |
 
 ### **Quality Requirements**
 
-| Requirement | Acceptance Criteria | Priority |
-|------------|-------------------|----------|
-| **Q1: Reliability** | <5% failure rate on well-formed PDF inputs | P0 |
-| **Q2: Consistency** | Character voices remain recognizable and distinct throughout book | P0 |
-| **Q3: Audio Fidelity** | No audible artifacts, proper pacing, natural prosody | P0 |
-| **Q4: Processing Robustness** | Handles common PDF variations (fonts, layouts, OCR) | P1 |
-| **Q5: Resource Management** | No memory leaks during long-running operations | P1 |
+| Requirement                   | Acceptance Criteria                                               | Priority |
+| ----------------------------- | ----------------------------------------------------------------- | -------- |
+| **Q1: Reliability**           | \<5% failure rate on well-formed PDF inputs                       | P0       |
+| **Q2: Consistency**           | Character voices remain recognizable and distinct throughout book | P0       |
+| **Q3: Audio Fidelity**        | No audible artifacts, proper pacing, natural prosody              | P0       |
+| **Q4: Processing Robustness** | Handles common PDF variations (fonts, layouts, OCR)               | P1       |
+| **Q5: Resource Management**   | No memory leaks during long-running operations                    | P1       |
 
 ## Architecture Overview
 
 ### **Core Components**
 
 1. **PDF Ingestion Service** (✅ Implemented)
+
    - PyMuPDF-based extraction
-   - Structured TOC parsing  
+   - Structured TOC parsing
    - Deterministic chapter hashing
 
-2. **LangFlow Pipeline** (🔄 In Progress)
+1. **LangFlow Pipeline** (🔄 In Progress)
+
    - Visual component orchestration
    - Custom audiobook processing nodes
    - Caching and state management
 
-3. **Text Analysis Agents** (🔄 Planned)
+1. **Text Analysis Agents** (🔄 Planned)
+
    - Utterance segmentation
-   - Speaker attribution  
+   - Speaker attribution
    - Emotion classification
    - Character bible builder
 
-4. **Audio Generation Pipeline** (🔄 Planned)
+1. **Audio Generation Pipeline** (🔄 Planned)
+
    - Prosody generator
    - SSML builder
    - Multi-engine TTS renderer
    - Audio mastering system
 
-5. **System Infrastructure** (🔄 Planned)
+1. **System Infrastructure** (🔄 Planned)
+
    - Progress tracking
    - Error recovery
    - Quality gates
@@ -141,7 +146,7 @@ The **Audio Book Maker MVP** delivers a complete, deterministic pipeline that co
 
 ### **Data Flow**
 
-```text
+````text
 PDF Upload → TOC Parse → Chapter Extract → Utterance Segment → 
 Speaker Identify → Emotion Classify → Character Bible → 
 Prosody Generate → SSML Build → TTS Render → Audio Master → 
@@ -338,3 +343,4 @@ The MVP is considered **complete and ready for release** when:
 ---
 
 **Document Status**: This MVP specification provides the definitive scope and success criteria for the Audio Book Maker MVP release. All development work should align with these requirements, and any scope changes require formal approval and document updates.
+````
