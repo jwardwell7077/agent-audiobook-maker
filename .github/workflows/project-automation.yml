@@ -9,10 +9,21 @@ on:
 
 jobs:
   add-to-project:
-    if: ${{ secrets.PROJECTS_TOKEN != '' }}
     runs-on: ubuntu-latest
     steps:
+      - name: Check token present
+        id: token
+        shell: bash
+        env:
+          TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+        run: |
+          if [ -n "${TOKEN}" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/add-to-project@v1.0.2
+        if: ${{ steps.token.outputs.present == 'true' }}
         with:
           project-url: https://github.com/users/jwardwell7077/projects/3
           github-token: ${{ secrets.PROJECTS_TOKEN }}
@@ -23,9 +34,8 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - name: Count PRs in review
+      - name: Check PRs and warn if too many in review
         uses: actions/github-script@v7
-        id: pr_count
         with:
           script: |
             const { data: prs } = await github.search.issuesAndPullRequests({
@@ -33,20 +43,31 @@ jobs:
             });
             const count = prs?.total_count ?? 0;
             core.notice(`Open PRs requiring review: ${count}`);
-            core.setOutput('count', String(count));
-      - name: Warn if too many in review
-        if: ${{ fromJSON(steps.pr_count.outputs.count || '0') > 5 }}
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          message: |
-            Heads up: More than 5 PRs appear to be in review. Consider reducing WIP to keep flow healthy.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            if (count > 5) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: 'Heads up: More than 5 PRs appear to be in review. Consider reducing WIP to keep flow healthy.'
+              });
+            }
 
   missing-secret-hint:
-    if: ${{ secrets.PROJECTS_TOKEN == '' }}
     runs-on: ubuntu-latest
     steps:
+      - name: Check token present
+        id: token
+        shell: bash
+        env:
+          TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+        run: |
+          if [ -n "${TOKEN}" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Show setup hint
+        if: ${{ steps.token.outputs.present != 'true' }}
         run: |
           echo "PROJECTS_TOKEN secret is not set."
           echo "Create a classic PAT with 'project' and 'repo' scopes under your user, then add it as a repo secret named PROJECTS_TOKEN."
