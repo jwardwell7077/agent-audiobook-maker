@@ -5,9 +5,8 @@ import json
 import os
 import tempfile
 from pathlib import Path
-from typing import Iterable
 
-from .section_classifier import classify_blocks
+from abm.classifier.section_classifier import classify_blocks
 
 
 def _iter_blocks_from_text(text: str) -> list[dict]:

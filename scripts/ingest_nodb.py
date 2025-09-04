@@ -12,6 +12,7 @@ This mirrors dev-mode behavior without invoking any DB insert stub.
 Usage:
   python scripts/ingest_nodb.py <pdf_path> <out_dir>
 """
+
 from __future__ import annotations
 
 import sys

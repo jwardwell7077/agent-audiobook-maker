@@ -1,9 +1,10 @@
 import os
 import tempfile
 
-from components.helpers.master_example import MasterExample
 from langflow.schema.data import Data
 from langflow.schema.message import Message
+
+from components.helpers.master_example import MasterExample
 
 
 def test_build_message_basic():
@@ -58,6 +59,7 @@ def test_file_read_and_tags():
 
 
 message_basic_disabled_short_circuit = None
+
 
 def test_disabled_short_circuit():
     c = MasterExample()

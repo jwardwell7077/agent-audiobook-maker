@@ -1,12 +1,12 @@
 from __future__ import annotations
 
+import runpy
+import sys
 from pathlib import Path
 from typing import Any
 
-import runpy
-import sys
-
 import pytest
+
 from abm.ingestion.pdf_to_raw_text import (
     RawExtractOptions,
     RawPdfTextExtractor,

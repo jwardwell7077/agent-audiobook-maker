@@ -91,7 +91,7 @@ class _CapPsycopg(_MiniPsycopg):
 def test_base_name_from_jsonl_stem_and_options_none(tmp_path: Path) -> None:
     # Arrange: create jsonl and meta without source_well_done or options
     jl = tmp_path / "c.jsonl"
-    jl.write_text("{\"index\":0,\"text\":\"A\"}\n", encoding="utf-8")
+    jl.write_text('{"index":0,"text":"A"}\n', encoding="utf-8")
     meta = tmp_path / "c_meta.json"
     meta.write_text(json.dumps({"block_count": 1, "created_at": "x"}), encoding="utf-8")
 

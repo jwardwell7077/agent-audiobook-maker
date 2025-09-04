@@ -34,9 +34,9 @@ def test_continuity_prev_applies_within_window():
     # 3: dial "..." (no detection, continuity_prev should apply with d_spans=2)
     seq = [
         _mk_span(seg=0, typ="narration", text="Alice said."),
-        _mk_span(seg=1, typ="dialogue", text="\"Hi\""),
+        _mk_span(seg=1, typ="dialogue", text='"Hi"'),
         _mk_span(seg=2, typ="narration", text="She said."),
-        _mk_span(seg=3, typ="dialogue", text="\"...\""),
+        _mk_span(seg=3, typ="dialogue", text='"..."'),
     ]
     comp = ABMSpanAttribution(
         spans_cls=_wrap(seq),
@@ -70,10 +70,10 @@ def test_continuity_prev_gated_by_distance():
     # 4: dial "..." (no detection, continuity should NOT apply → Unknown)
     seq = [
         _mk_span(seg=0, typ="narration", text="Alice said."),
-        _mk_span(seg=1, typ="dialogue", text="\"Hi\""),
+        _mk_span(seg=1, typ="dialogue", text='"Hi"'),
         _mk_span(seg=2, typ="narration", text="She said."),
         _mk_span(seg=3, typ="narration", text="no names here."),
-        _mk_span(seg=4, typ="dialogue", text="\"...\""),
+        _mk_span(seg=4, typ="dialogue", text='"..."'),
     ]
     comp = ABMSpanAttribution(
         spans_cls=_wrap(seq),

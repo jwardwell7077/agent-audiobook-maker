@@ -5,6 +5,7 @@ from datetime import datetime
 from pathlib import Path
 
 import pytest
+
 from abm.ingestion.welldone_to_json import WellDoneToJSONL
 
 

@@ -4,6 +4,7 @@
 Finds Markdown links [text](path) and verifies local paths exist (ignores http/https/mailto).
 Prints a summary and up to 50 missing links.
 """
+
 from __future__ import annotations
 
 import os
@@ -15,15 +16,13 @@ def main() -> int:
     docs_dir = os.path.join(root, "docs")
     md_files: list[str] = []
     for base, _, files in os.walk(docs_dir):
-        for f in files:
-            if f.endswith(".md"):
-                md_files.append(os.path.join(base, f))
+        md_files.extend(os.path.join(base, f) for f in files if f.endswith(".md"))
 
     link_re = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
     missing: list[tuple[str, str]] = []
 
     for path in md_files:
-        with open(path, "r", encoding="utf-8", errors="ignore") as fh:
+        with open(path, encoding="utf-8", errors="ignore") as fh:
             text = fh.read()
         for m in link_re.finditer(text):
             href = m.group(1).strip()

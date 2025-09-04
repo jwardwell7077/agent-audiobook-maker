@@ -39,15 +39,13 @@ class ABMDataConfig(Component):
         ),
     ]
 
-    outputs = [
-        Output(name="config_data", display_name="Configuration Data", method="build_config")
-    ]
+    outputs = [Output(name="config_data", display_name="Configuration Data", method="build_config")]
 
     def build_config(self):
         """Build data configuration for audiobook processing."""
         try:
             data_root = Path(self.data_root)
-            
+
             # Build standard paths
             config = {
                 "data_root": str(data_root),
@@ -58,7 +56,7 @@ class ABMDataConfig(Component):
                 "volume_manifest": str(data_root / "clean" / self.book_id / f"{self.book_id}_volume.json"),
                 "chapters_dir": str(data_root / "clean" / self.book_id),
             }
-            
+
             # Validate paths if requested
             if self.validate_paths:
                 missing_paths = []
@@ -66,16 +64,16 @@ class ABMDataConfig(Component):
                     if key.endswith("_dir") or key == "data_root":
                         if not Path(path_str).exists():
                             missing_paths.append(f"{key}: {path_str}")
-                
+
                 if missing_paths:
                     self.status = f"⚠️ Missing paths: {', '.join(missing_paths)}"
                 else:
                     self.status = "✅ All data paths validated"
             else:
                 self.status = "📁 Configuration built (validation skipped)"
-            
+
             return Data(data=config)
-            
+
         except Exception as e:
             self.status = f"❌ Configuration failed: {str(e)}"
             return Data(data={"error": str(e)})
