@@ -10,9 +10,17 @@ on:
 
 jobs:
   backfill:
-    if: ${{ secrets.PROJECTS_TOKEN != '' }}
     runs-on: ubuntu-latest
     steps:
+      - name: Validate PROJECTS_TOKEN secret
+        shell: bash
+        run: |
+          if [[ -z "${{ secrets.PROJECTS_TOKEN }}" ]]; then
+            echo "PROJECTS_TOKEN secret is not set."
+            echo "Create a classic PAT with 'project' and 'repo' scopes and add it as a repo secret named PROJECTS_TOKEN."
+            echo "Then run this workflow from the Actions tab to backfill the board."
+            exit 1
+          fi
       - name: Backfill open issues (and PRs) into Project v2
         uses: actions/github-script@v7
         with:
@@ -20,7 +28,7 @@ jobs:
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const includePRs = (core.getInput('includePRs') || 'true').toLowerCase() === 'true';
+            const includePRs = String((context?.payload?.inputs?.includePRs ?? 'true')).toLowerCase() === 'true';
 
             // Get Project v2 ID by number
             const { user } = await github.graphql(
@@ -63,12 +71,3 @@ jobs:
                 core.warning(`Failed adding #${it.number}: ${err.message}`);
               }
             }
-
-  missing-secret-hint:
-    if: ${{ secrets.PROJECTS_TOKEN == '' }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "PROJECTS_TOKEN secret is not set."
-          echo "Create a classic PAT with 'project' and 'repo' scopes and add it as a repo secret named PROJECTS_TOKEN."
-          echo "Then run this workflow from the Actions tab to backfill the board."

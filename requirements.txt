@@ -1,0 +1,5 @@
+requests==2.32.5
+# Install psycopg v3 with binary wheels via extras
+psycopg[binary]==3.1.9
+langflow==1.5.0.post2
+PyMuPDF==1.24.9
