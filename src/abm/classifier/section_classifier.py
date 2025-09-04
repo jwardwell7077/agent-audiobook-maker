@@ -73,7 +73,7 @@ def _find_toc_heading(blocks: list[dict[str, Any]]) -> int:
     for i, b in enumerate(blocks):
         if TOC_HEADING_RE.search(b["text"]):
             saw_heading = True
-            ahead = blocks[i + 1:i + 6]
+            ahead = blocks[i + 1 : i + 6]
             # Keep strict lookahead to avoid false positives
             count = sum(1 for a in ahead if TOC_ITEM_RE_STRICT.search(a["text"]))
             if count >= 2:

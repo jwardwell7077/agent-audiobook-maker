@@ -1,6 +1,3 @@
-import pytest
-
-pytest.skip(
-    "Deprecated legacy test skipped: pdf_to_text_cli replaced by ingest_pdf CLI.",
-    allow_module_level=True,
-)
+"""Removed legacy pdf_to_text CLI test; replaced by ingest_pdf CLI.
+This file is intentionally empty to preserve history.
+"""
