@@ -1,5 +1,9 @@
 name: Quality Gate
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
     branches: [ "**" ]
@@ -9,6 +13,7 @@ on:
 jobs:
   quality-gate:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -17,30 +22,28 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: 'requirements-dev.txt'
 
       - name: Install dev dependencies
         run: |
-          python -m venv .venv
-          source .venv/bin/activate
-          pip install -U pip
+          python -m pip install -U pip
           pip install -r requirements-dev.txt
 
       - name: Run quality gate
+        env:
+          PYTHONPATH: src
         run: |
-          source .venv/bin/activate
           make quality_gate COMP_PATH=src || (echo "Quality gate failed" && exit 1)
 
       - name: Docs link check
         run: |
-          source .venv/bin/activate
           make docs_link_check
 
       - name: Docs lint (mdformat + PyMarkdown)
         run: |
-          source .venv/bin/activate
           make docs_lint
 
       - name: pre-commit (selected)
         run: |
-          source .venv/bin/activate
           pre-commit run -a mdformat pymarkdown || (echo "pre-commit docs format/lint failed" && exit 1)
