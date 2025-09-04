@@ -271,7 +271,9 @@ help:
 	@echo 'itest                        - run LangFlow REST flow via tools/run_flow.py'
 	@echo 'docs_link_check              - scan docs/ for broken local links'
 	@echo 'docs_lint                    - run mdformat --check and pymarkdown scan on docs/'
-
+	@echo 'pre_push                     - run quick local checks before pushing'
+	@echo 'install_git_hooks            - install a local pre-push git hook to run checks before push'
+	@echo 'dev_setup_uv                 - create .venv and install dev deps via uv (fast)'
 
 # Lightweight helpers for the components/ tooling pack (removed duplicate alt install/lint/type/itest)
 
@@ -295,3 +297,19 @@ docs_lint:
 	@$(VENV_GUARD)
 	mdformat --check docs/
 	python -m pymarkdown --config=pymarkdown.json scan docs/
+
+.PHONY: pre_push
+pre_push:
+	bash scripts/pre_push.sh
+
+.PHONY: install_git_hooks
+install_git_hooks:
+	bash scripts/install_git_hooks.sh
+
+.PHONY: dev_setup_uv
+
+dev_setup_uv:
+	python3.11 -m venv .venv || python3 -m venv .venv
+	. .venv/bin/activate; python -m pip install -U pip uv
+	. .venv/bin/activate; uv pip install -r requirements-dev.txt
+	@echo 'Activate with: source .venv/bin/activate'
