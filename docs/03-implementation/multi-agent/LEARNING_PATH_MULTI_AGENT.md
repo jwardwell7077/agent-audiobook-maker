@@ -1,14 +1,14 @@
 # Learning Path: Multi‑Agent Systems (Practical, KISS‑aligned)
 
-Last updated: 2025‑08‑21
+Last updated: 2025‑09‑04
 
 Goal: Build intuition and muscle memory across LangFlow, LangChain, LangSmith, LangGraph, and CrewAI while shipping small, verifiable slices inside this repo.
 
 Principles
 
-- Keep it local-first. Prefer toy data and stub models initially.
-- One concept per commit. Leave breadcrumbs in docs/DEVELOPMENT_JOURNEY.md.
-- Make every step reproducible. Cache/seed where non-determinism is involved.
+- Keep it local‑first. Prefer toy data and stub models initially. Cloud QA only with explicit approval and a visible cost estimate.
+- One concept per commit. Leave breadcrumbs in [Development Journey](../../05-development/journey/DEVELOPMENT_JOURNEY.md).
+- Make every step reproducible. Cache/seed where non‑determinism is involved; run per chapter.
 
 Milestones (2–3 hours each)
 
@@ -34,13 +34,13 @@ Milestones (2–3 hours each)
 
 - Create three simple agents: SpeakerAttributionAgent (stub rules), EmotionAgent (stub rules), QAAgent (rule checks).
 - Orchestrate them with a Crew to process the utterances JSONL from Milestone 1.
-- Success: Produce `utterances_speaker_v2.jsonl` with added fields as per docs/ANNOTATION_SCHEMA.md.
+- Success: Produce `utterances_speaker_v2.jsonl` with added fields as per [Annotation Schema](../../02-specifications/data-schemas/ANNOTATION_SCHEMA.md); no "UNKNOWN" speakers. When confidence < 0.90, emit your best guess and add `qa_flags: ["MANDATORY_REVIEW_LLM"]`.
 
 5. LangGraph – deterministic orchestration
 
 - Define a typed state dataclass and nodes for: segmentation → speaker_attribution → emotion → qa.
-- Implement file-based caching keyed by input hash and params.
-- Success: Re-running the graph without changes performs zero work; with change, only affected nodes run.
+- Implement per‑chapter, file‑based caching keyed by `(text_sha256, params_sha256, version)`.
+- Success: Re‑running the graph without changes performs zero work; with change, only affected nodes run.
 
 6. Stitching + tests
 
@@ -56,6 +56,6 @@ Nice-to-haves (later)
 
 Pointers
 
-- Roadmap: docs/MULTI_AGENT_ROADMAP.md
-- Schemas: docs/ANNOTATION_SCHEMA.md, docs/STRUCTURED_JSON_SCHEMA.md
-- Quality gate: docs/design/QUALITY_GATE_SPEC.md
+- Roadmap: ../../05-development/planning/MULTI_AGENT_ROADMAP.md
+- Schemas: ../../02-specifications/data-schemas/ANNOTATION_SCHEMA.md, ../../02-specifications/data-schemas/STRUCTURED_JSON_SCHEMA.md
+- Quality gate: ../../02-specifications/components/QUALITY_GATE_SPEC.md

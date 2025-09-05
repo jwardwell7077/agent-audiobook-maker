@@ -1,4 +1,6 @@
-# MVP Specification: Audio Book Maker
+# MVP Specification: Audio Book Maker (Superseded)
+
+This legacy document has been superseded by the redesigned MVP and Vision:
 
 **Status:** Draft\
 **Owner:** Development Team\
@@ -7,9 +9,11 @@
 
 ## Executive Summary
 
+It remains only as a pointer for old links and will be removed in a future cleanup.
+
 The **Audio Book Maker MVP** delivers a complete, deterministic pipeline that converts a PDF novel into a high-quality audiobook with multiple AI-generated voices, emotion-aware narration, and professional audio mastering.
 
-**Core Value Proposition:** Transform any PDF novel into a professionally-narrated audiobook with character-specific voices and emotional delivery, fully automated from upload to final audio file.
+**Note:** The current MVP is local-first CLI with per‑chapter renders (no mastering) and constrained TTS engines (Parler + Piper). See the redesigned MVP for authoritative scope.
 
 ## MVP Scope Definition
 

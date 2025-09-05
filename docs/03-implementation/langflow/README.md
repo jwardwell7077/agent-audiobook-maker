@@ -167,6 +167,13 @@ This flow adds filtering capabilities after speaker attribution to remove unwant
 - Database integration: Out of scope
 - Next: Casting design note → SSML → TTS (future)
 
+## Redesign (Spans-first) Docs
+
+- [Architecture — Spans-first](ARCHITECTURE_SPANS_FIRST.md)
+- [Components Overview](COMPONENTS_OVERVIEW.md)
+- [Classifier Changes](CLASSIFIER_CHANGES.md)
+- [How to View in LangFlow](WORKFLOW_LANGFLOW.md)
+
 - [LangFlow Components Index](COMPONENTS_INDEX.md) - Catalog of available components
 - [Integration Testing](../../../tests/integration/) - End-to-end testing scenarios
 - [Development Journey](../../05-development/journey/README.md) - Implementation history and lessons learned

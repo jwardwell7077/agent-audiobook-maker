@@ -59,7 +59,7 @@ docs/
 **File Types**:
 
 - `README.md` - Section overview and navigation
-- `VISION.md` - Project purpose, goals, and strategic direction
+- `VISION_REDESIGN.md` - Project purpose, goals, and strategic direction
 - `ARCHITECTURE.md` - System design and component relationships
 - `CONTEXT.md` - Background, history, and decision context
 

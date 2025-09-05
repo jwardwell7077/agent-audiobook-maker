@@ -194,6 +194,6 @@ Example
 
 ## Related
 
-- Annotation records: [docs/ANNOTATION_SCHEMA.md](ANNOTATION_SCHEMA.md)
+- Annotation records: [Annotation Schema](ANNOTATION_SCHEMA.md)
 - Architecture overview: [docs/01-project-overview/ARCHITECTURE.md](../../01-project-overview/ARCHITECTURE.md)
 ````

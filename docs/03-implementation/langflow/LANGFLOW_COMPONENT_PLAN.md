@@ -209,9 +209,9 @@ ______________________________________________________________________
 
 - **Purpose**: Generate audio stems from SSML
 - **Input**: SSML files + voice profile configurations
-- **Logic**: XTTS v2 / Piper integration with GPU management
+- **Logic**: Parler‑TTS (characters) and Piper (narrator) integration with GPU management
 - **Output**: WAV audio stems with metadata
-- **Dependencies**: XTTS v2, Piper, GPU resource management
+- **Dependencies**: Parler‑TTS, Piper, GPU resource management
 
 #### **12. ABMAudioMaster** 🆕 **NEW**
 
@@ -303,7 +303,7 @@ flowchart LR
 ### **Sprint 3: Audio Pipeline**
 
 - **Week 1-2**: Prosody and SSML generation components
-- **Week 3**: TTS integration (XTTS v2 / Piper)
+- **Week 3**: TTS integration (Parler‑TTS / Piper)
 - **Week 4**: Audio mastering and final pipeline testing
 
 ### **Sprint 4: Production Readiness**
@@ -334,7 +334,7 @@ flowchart LR
 ### **Phase 3 Complete**
 
 - [ ] SSML generation producing valid markup
-- [ ] TTS rendering working with XTTS v2/Piper
+- [ ] TTS rendering working with Parler‑TTS/Piper
 - [ ] Audio mastering meeting EBU R128 standards
 - [ ] End-to-end book generation under 2 hours locally
 

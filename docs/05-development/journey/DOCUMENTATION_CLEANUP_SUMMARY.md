@@ -90,7 +90,7 @@ docs/
 ## New Documents Created
 
 1. **[GETTING_STARTED.md](../../GETTING_STARTED.md)** - Comprehensive onboarding guide
-2. **[01-project-overview/VISION.md](../../01-project-overview/VISION.md)** - Project vision, goals, and success criteria
+2. **[01-project-overview/VISION_REDESIGN.md](../../01-project-overview/VISION_REDESIGN.md)** - Project vision, goals, and success criteria
 3. **[01-project-overview/README.md](../../01-project-overview/README.md)** - Project overview index
 4. **[02-specifications/README.md](../../02-specifications/README.md)** - Specifications index
 5. **Main [README.md](../../README.md)** - Completely restructured documentation index

@@ -10,12 +10,12 @@ C4Component
       Component(sec, "SectionClassifier", "Detects TOC; maps chapters; emits sections")
 
       Component(dlg, "DialogueClassifierAgent", "Paragraphs→utterances; dialogue/narration")
-      Component(spk, "SpeakerAttributionAgent", "Assign speakers; UNKNOWN fallback")
+  Component(spk, "SpeakerAttributionAgent", "Assign speakers; best‑guess + QA flag <0.90; no UNKNOWN in output")
       Component(alias, "AliasResolverAgent", "Merge aliases; canonicalization")
       Component(casta, "CastingAssistantAgent", "Builds CharacterProfiles")
       Component(castd, "CastingDirectorAgent", "Maps voices; writes tts_profiles")
       Component(ssml, "SSMLAgent", "SSML per utterance/chapter; deterministic")
-      Component(tts, "TTSAgent", "Synthesize stems; bounded variance")
+  Component(tts, "TTSAgent", "Synthesize stems; Parler‑TTS (characters), Piper (narrator)")
       Component(mast, "MasteringAgent", "Stitch + normalize (EBU R128)")
     }
 

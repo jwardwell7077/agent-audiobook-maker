@@ -23,7 +23,7 @@ python scripts/run_langflow.sh
 - Attribution confidence
 
   - Toggle: `use_deterministic_confidence` (default: true)
-  - Baselines: `base_confidence`, `unknown_confidence`
+  - Baselines: `base_confidence` (dialogue), `narration_confidence` (narration)
 
 - Iterator filtering
 

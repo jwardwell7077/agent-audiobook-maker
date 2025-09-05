@@ -15,7 +15,7 @@ docs/
 │
 ├── 01-project-overview/
 │   ├── README.md                       # Overview index
-│   ├── VISION.md                       # Project vision and goals
+│   ├── VISION_REDESIGN.md              # Project vision and goals
 │   ├── CONTEXT.md                      # Current file - project context
 │   ├── KISS.md                         # Current file - project principles
 │   └── ARCHITECTURE.md                 # Current file - high-level architecture

@@ -8,7 +8,7 @@ flowchart TD
 
   C[ABM Dialogue Classifier<br/>method: heuristic_only, hybrid, llm_enhanced<br/>llm: none, ollama, openai, generic_http] --> D
 
-  D[ABM Speaker Attribution<br/>dialogue: attribute speaker<br/>narration or unknown: narrator/unknown fallback] --> E
+  D[ABM Speaker Attribution<br/>dialogue: attribute speaker<br/>narration: narrator; low-confidence: best-guess + QA flag] --> E
 
   B -->|completion| E
 

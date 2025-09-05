@@ -47,8 +47,8 @@ flowchart TD
     %% Conversation Flow
     CONVERSATION_FLOW["💬 Conversation Flow<br/>Turn-taking analysis<br/>Method: inferred"]
 
-    %% Unknown Speaker
-    UNKNOWN_SPEAKER["❓ Unknown Speaker<br/>Low confidence (0.3)<br/>Method: unknown"]
+  %% Low-Confidence Best Guess
+  LOW_CONF_GUESS["❓ Low-Confidence Best Guess<br/>Best candidate + QA flag<br/>Confidence < 0.90"]
 
     %% Character Management
     CHAR_LOOKUP{"🔍 Character Lookup<br/>Known character?"}
@@ -102,13 +102,13 @@ flowchart TD
     ATTRIBUTION_DECISION -->|"Direct found"| DIRECT_FOUND
     ATTRIBUTION_DECISION -->|"Context clues"| CONTEXTUAL_FOUND
     ATTRIBUTION_DECISION -->|"Flow inference"| CONVERSATION_FLOW
-    ATTRIBUTION_DECISION -->|"No clear speaker"| UNKNOWN_SPEAKER
+  ATTRIBUTION_DECISION -->|"No clear speaker"| LOW_CONF_GUESS
 
     %% Character Management Flow
     DIRECT_FOUND --> CHAR_LOOKUP
     CONTEXTUAL_FOUND --> CHAR_LOOKUP
-    CONVERSATION_FLOW --> CHAR_LOOKUP
-    UNKNOWN_SPEAKER --> CHAR_LOOKUP
+  CONVERSATION_FLOW --> CHAR_LOOKUP
+  LOW_CONF_GUESS --> CHAR_LOOKUP
 
     CHAR_LOOKUP -->|"New"| NEW_CHARACTER
     CHAR_LOOKUP -->|"Existing"| UPDATE_CHARACTER
@@ -147,7 +147,7 @@ flowchart TD
     class ATTRIBUTION_ANALYSIS,DIRECT_METHODS,CONTEXTUAL_METHODS,NAME_EXTRACTION,OUTPUT_GEN,CONFIDENCE_CALC processNode
     class VALIDATION,ATTRIBUTION_DECISION,CHAR_LOOKUP decisionNode
     class DB_LOOKUP,DB_UPDATES dbNode
-    class DIRECT_FOUND,CONTEXTUAL_FOUND,CONVERSATION_FLOW,UNKNOWN_SPEAKER,OUTPUT outputNode
+  class DIRECT_FOUND,CONTEXTUAL_FOUND,CONVERSATION_FLOW,LOW_CONF_GUESS,OUTPUT outputNode
     class SKIP,ERROR_HANDLER errorNode
     class NEW_CHARACTER,UPDATE_CHARACTER,PROFILE_BUILDER,SPEECH_PATTERNS,VOICE_CHARS characterNode
 ```
@@ -202,7 +202,7 @@ Result:
 • Third: Back to first speaker
 ```
 
-### ❓ Unknown Speaker Handling (Confidence: 0.3)
+### ❓ Low-Confidence Best-Guess Handling (Confidence < 0.90)
 
 **Scenarios:**
 
@@ -322,9 +322,9 @@ Name Extraction: No specific name found
   ↓
 Character Lookup: No clear attribution
   ↓
-New Character: Create "Unknown Speaker #3"
+New Character: Create provisional character (e.g., "Speaker #3")
   ↓
-Output: character_id=new, confidence=0.3, method=unknown
+Output: character_id=best_candidate, confidence=0.62, method=best_guess, qa_flags=["MANDATORY_REVIEW_LLM"]
 ```
 
 ## Performance Characteristics
@@ -389,7 +389,7 @@ Output: character_id=new, confidence=0.3, method=unknown
 ### Graceful Degradation
 
 1. **Database Unavailable**: Process in memory, queue for later persistence
-1. **Attribution Failure**: Return unknown speaker with error details
+1. **Attribution Failure**: Return best candidate with QA flag and error details
 1. **Character Creation Error**: Log error, continue with temp character ID
 1. **Profile Update Failure**: Continue processing, log for retry
 

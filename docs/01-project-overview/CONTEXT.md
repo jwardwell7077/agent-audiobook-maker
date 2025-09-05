@@ -39,13 +39,13 @@ ______________________________________________________________________
 - CPU/RAM: AMD Ryzen 7 3700X (8‑core), 32 GB RAM.
 - Storage: Samsung SSD 990 Pro 4TB. High IOPS; large working set OK.
 - Containerization: Docker Desktop (WSL2 backend) with GPU support enabled.
-- Tooling: Python 3.12, Ollama, LangChain/LangGraph, FFmpeg, AI dev tools.
+- Tooling: Python 3.11, Ollama, LangChain/LangGraph, FFmpeg, AI dev tools.
 - Code Style: Ruff + mypy strict; maximum line length set to 120 characters (enforced via `pyproject.toml`).
 - Models (local‑first defaults):
   - LLM Judge: Llama 3.1 8B Q4_K_M via Ollama.
   - Coref: Local Hugging Face coreference model (distil‑/base‑size) CPU.
   - Emotion/Prosody: Distil‑size classifier + rules (CPU).
-  - TTS: XTTS v2 (CUDA) primary; Piper (CPU) fallback.
+  - TTS: Piper (narrator, CPU/GPU optional) and Parler‑TTS (characters, CUDA capable).
 
 ______________________________________________________________________
 
@@ -64,15 +64,15 @@ Pipeline stages (per chapter):
 
 - Segmentation → utterances (LangFlow prototype: Loader → Segmenter → Writer)
 - Coref resolution (HF local model)
-- Speaker attribution (heuristics + LLM judge via Ollama)
+- Speaker attribution (heuristics + local LLM judge via Ollama; no UNKNOWN outputs)
 - Emotion/prosody classification (classifier + rules)
 - QA Agent flags low confidence or inconsistencies
-- Output: per‑chapter JSONL with rich annotations under `data/annotations/` and in Postgres JSONB (current prototype = dialogue/narration only; see `docs/ANNOTATION_SCHEMA.md`).
+- Output: per‑chapter JSONL with rich annotations under `data/annotations/` and in Postgres JSONB (current prototype = dialogue/narration only; see `../02-specifications/data-schemas/ANNOTATION_SCHEMA.md`).
 
 1. Casting & Voices
 
-   - Build Character Bible; map speakers to XTTS v2/Coqui profiles.
-   - Output: character profiles and TTS settings under `data/casting/` and Postgres tables.
+- Build Character Bible; map speakers to Parler/Piper voice profiles.
+- Output: character profiles and TTS settings under `data/casting/` and Postgres tables.
 
 1. Rendering
 
@@ -123,14 +123,14 @@ One JSON object per utterance (lines delimited):
   "text": "...",
   "start_char": 123,
   "end_char": 456,
-  "speaker": "NARRATOR|CHARACTER_NAME|UNKNOWN",
+  "speaker": "NARRATOR|CHARACTER_NAME",
   "speaker_confidence": 0.0,
   "coref_cluster_id": "c12",
   "emotion": "neutral|happy|sad|angry|fear|surprise|disgust|other",
   "prosody": { "pitch": "mid", "rate": "medium", "intensity": "normal" },
   "llm_judge": { "model": "llama3.1:8b-q4_k_m", "rationale": "...", "confidence": 0.0 },
   "qa_flags": ["low_confidence_speaker", "inconsistent_emotion"],
-  "tts_profile_id": "xtts_v2:char_anna",
+  "tts_profile_id": "parler:char_anna|piper:narrator",
   "ssml": "<speak>...</speak>",
   "audio_stem_path": "data/stems/.../000.wav",
   "duration_s": 1.23,
@@ -206,7 +206,7 @@ ______________________________________________________________________
 - Tests cover graph behavior and PDF extraction; (TODO) add tests for casting/SSML/TTS stubs & caching idempotency.
 - Pending next steps:
   1. Partitioned Dagster assets (per chapter) + sensor & retries.
-  1. Real TTS (Piper or XTTS) producing audio; stem stitching + simple WAV render table entries.
+  1. Real TTS (Piper and Parler‑TTS) producing audio; stem stitching + simple WAV render table entries.
   1. SSML enhancements (prosody tags, breaks) + per character voice mapping strategy.
   1. Character enrichment (frequency stats, alias grouping) & selection UI/API.
   1. MLflow integration (params, latency metrics, artifacts).
@@ -271,7 +271,7 @@ ______________________________________________________________________
   - Env: POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD
 - orchestrator (LangGraph workers; CPU)
   - Depends on `db`
-- tts (XTTS v2; CUDA)
+- tts (Parler‑TTS; CUDA)
   - Runtime: `--gpus all`
   - Volume: project `data/`
 - api (FastAPI; CPU)
@@ -294,7 +294,7 @@ ______________________________________________________________________
 - `agent/` – LangGraph graphs and nodes
 - `api/` – FastAPI app
 - `pipeline/` – ingestion, annotation, rendering modules
-- `tts/` – XTTS/Piper integration, SSML utils
+- `tts/` – Parler/Piper integration, SSML utils
 - `ops/` – Dagster jobs/assets, MLflow hooks
 - `configs/` – YAML/TOML config profiles
 - `data/` – clean, annotations, ssml, stems, renders, cache, mlruns

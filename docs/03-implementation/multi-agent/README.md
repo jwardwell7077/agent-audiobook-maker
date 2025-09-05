@@ -1,5 +1,7 @@
 # Multi-Agent Implementation
 
+Note: Phase 2+ roadmap aligned with the redesigned MVP. Keep it local‑first, run per chapter, use Parler‑TTS (characters) and Piper (narrator), never emit "UNKNOWN" speakers (best‑guess + `MANDATORY_REVIEW_LLM` when confidence < 0.90). Any cloud QA is gated behind explicit approval with a visible cost estimate.
+
 > **Purpose**: Future production architecture using CrewAI agents and LangGraph orchestration for the Agent Audiobook Maker.
 
 This represents Phase 2 of our implementation strategy - transitioning from LangFlow prototypes to a production multi-agent system with specialized agents, advanced coordination, and enterprise-grade features.
@@ -31,7 +33,7 @@ This represents Phase 2 of our implementation strategy - transitioning from Lang
 
 ### 📖 Content Analysis Agent
 
-**Understands book structure, genre, and narrative patterns**
+Focus: Understands book structure, genre, and narrative patterns.
 
 **Responsibilities:**
 
@@ -49,7 +51,7 @@ This represents Phase 2 of our implementation strategy - transitioning from Lang
 
 ### ✂️ Segmentation Agent
 
-**Expert in splitting text into meaningful utterances**
+Focus: Expert in splitting text into meaningful utterances.
 
 **Responsibilities:**
 
@@ -67,7 +69,7 @@ This represents Phase 2 of our implementation strategy - transitioning from Lang
 
 ### 🎭 Speaker Identification Agent
 
-**Identifies and tracks characters/speakers throughout book**
+Focus: Identifies and tracks characters/speakers throughout the book.
 
 **Responsibilities:**
 
@@ -85,7 +87,7 @@ This represents Phase 2 of our implementation strategy - transitioning from Lang
 
 ### 📝 Annotation Agent
 
-**Creates rich metadata and classifications for utterances**
+Focus: Creates rich metadata and classifications for utterances.
 
 **Responsibilities:**
 
@@ -103,7 +105,7 @@ This represents Phase 2 of our implementation strategy - transitioning from Lang
 
 ### 🔍 Quality Assurance Agent
 
-**Validates annotations and ensures output quality**
+Focus: Validates annotations and ensures output quality.
 
 **Responsibilities:**
 
@@ -121,7 +123,7 @@ This represents Phase 2 of our implementation strategy - transitioning from Lang
 
 ### 🧭 Orchestration Agent
 
-**Coordinates workflow and manages agent interactions**
+Focus: Coordinates workflow and manages agent interactions.
 
 **Responsibilities:**
 
@@ -347,7 +349,7 @@ graph TD
 
 - 🔧 [LangFlow Implementation](../langflow/README.md) - Current prototype approach
 - 📋 [Multi-Agent Roadmap](../../05-development/planning/MULTI_AGENT_ROADMAP.md) - Detailed transition plan
-- 🧠 [Learning Path](../../05-development/planning/LEARNING_PATH_MULTI_AGENT.md) - Skills and knowledge needed
+- 🧠 [Learning Path](./LEARNING_PATH_MULTI_AGENT.md) - Skills and knowledge needed
 - 🏗️ [Architecture](../../01-project-overview/ARCHITECTURE.md) - System design overview
 
 ---

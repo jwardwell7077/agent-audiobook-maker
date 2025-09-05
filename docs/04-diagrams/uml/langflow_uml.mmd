@@ -221,13 +221,13 @@ classDiagram
 
     class ABMTTSRenderer {
         +display_name: "TTS Renderer"
-        +description: "Render audio stems from SSML using XTTS/Piper"
+    +description: "Render audio stems from SSML using Parler/Piper"
         +icon: "MaterialSymbolsMic"
         +name: "abm_tts_renderer"
         +inputs: [DataInput ssml_documents, StrInput tts_engine, DataInput voice_profiles]
         +outputs: [Output audio_stems]
         -_initialize_tts_engine(engine: str, profiles: dict) object
-        -_render_xtts_batch(ssml_list: list, voice: str) list[bytes]
+    -_render_parler_batch(ssml_list: list, voice: str) list[bytes]
         -_render_piper_fallback(ssml: str, voice: str) bytes
         -_manage_gpu_queue(requests: list) list
         -_validate_audio_quality(audio: bytes) dict

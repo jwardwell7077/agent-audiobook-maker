@@ -35,8 +35,8 @@ This note documents the current deterministic speaker attribution behavior and t
 - Enabled via `use_deterministic_confidence`.
 - Signals: dialogue_tag, proper_noun_proximity, continuity_prev_same (reserved), adjacent_narration_present.
 - Mapping: logistic with clamp, default bounds \[0.35, 0.95\]. Evidence is emitted at `attribution.evidence.confidence`.
-- Unknown or non-dialogue:
-  - Falls back to base/unknown constants; narration can use `narration_confidence` or evidence if enabled.
+- Non-dialogue handling:
+  - For narration spans, use `narration_confidence` or include evidence if enabled. Dialogue spans without sufficient evidence remain candidates for best‑guess labeling at the orchestrator layer with QA flags when confidence is low.
 
 ## Orchestrator Wiring
 
