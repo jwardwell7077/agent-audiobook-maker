@@ -42,7 +42,7 @@ flowchart LR
   subgraph Later["Later (roadmap)"]
     Casting["Casting (character bible)"]
     SSML["SSML Assembly"]
-    TTS["TTS (XTTS/Piper)"]
+  TTS["TTS (Parler — characters; Piper — narrator)"]
     Stems(("data/stems/…"))
     Renders(("data/renders/<book>/<chapter>.wav"))
     Master(("book_master.wav"))
