@@ -15,7 +15,7 @@ This document defines the agent lineup, contracts, data flows, and determinism g
 1. SpeakerAttributionAgent (deterministic-first; AI optional)
 
 - Input: `utterances.jsonl`
-- Output: speaker labels per utterance or UNKNOWN; QA flags
+- Output: speaker labels per utterance (no UNKNOWN); add QA flags when confidence < 0.90
 - DB: Upsert `characters`; Update `annotations` with speaker labels
 
 1. AliasResolverAgent (deterministic)
@@ -45,7 +45,7 @@ This document defines the agent lineup, contracts, data flows, and determinism g
 1. TTSAgent (deterministic-config; bounded variance)
 
 - Input: SSML files, voice ids
-- Output: audio stems on disk
+- Output: audio stems on disk (Parler‑TTS for characters; Piper for narrator)
 - DB: Insert `stems` rows (path, duration, hashes, status)
 
 1. MasteringAgent (deterministic)
@@ -59,12 +59,15 @@ This document defines the agent lineup, contracts, data flows, and determinism g
 - Deterministic: ingestion, section classification, SSML, DB upserts, orchestration.
 - AI/LLM (optional): temp=0, fixed seeds; always cached by (input, model, prompt, version).
 - Audio: accept bounded variance; enforce metric bands (LUFS ±0.1 dB, duration ±5 ms).
+- Speaker attribution: no "UNKNOWN" labels. Use best‑guess labeling with `qa_flags: ["MANDATORY_REVIEW_LLM"]` when confidence < 0.90; prefer local LLM retries before any cloud QA (cloud only with explicit approval and cost estimate).
 
 ## Orchestration & idempotency
 
 - Run per chapter in order: Dialogue → Speaker → Alias → Casting → SSML → TTS → Master.
 - Hash inputs as (text_sha256, params_sha256, version); skip when unchanged.
 - Postgres upserts with unique keys ensure exactly-once semantics for re-runs.
+
+See also: [Learning Path](LEARNING_PATH_MULTI_AGENT.md) for hands‑on steps that mirror this lineup.
 
 ## Diagram
 
