@@ -52,3 +52,10 @@ Configuration (TOML overrides defaults)
 Notes
 
 - MVS content remains local; directories are `.gitignore`d. No copyrighted text/audio is committed.
+
+## Diagram
+
+See the spans-first MVP pipeline diagram:
+
+- docs/04-diagrams/architecture/mvp_spans_first.mmd
+
