@@ -1,6 +1,6 @@
 flowchart TD
   %% MVP - Spans-first pipeline with confidence gating and local-first policy
-  %% - No UNKNOWN labels; best-guess + MANDATORY_REVIEW_LLM when below threshold
+  %% - Unknown allowed before retries; after retry loop, replace with best guess; add MANDATORY_REVIEW_LLM when below threshold
   %% - Local LLM retries (bounded) before any gated cloud QA
   %% - Parler (characters) + Piper (narrator)
 
