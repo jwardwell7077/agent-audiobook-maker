@@ -17,11 +17,11 @@ Confidence rubric and retry
 
 - Span scores: speaker_id_conf, style_match_conf, type_conf; C_span = min(...).
 - Thresholds: default 0.90 per span (TOML-configurable). self_conf_exit=0.90; max_passes=3; ctx_window=5; expand_step=5.
-- If C_span < threshold: run local LLM with chapter lookup context. If still < threshold: LLM picks best guess; tag `MANDATORY_REVIEW_LLM`; add warning; enqueue for cloud review.
+- If C_span < threshold: interim outputs may carry `speaker: null/"Unknown"` prior to retries. Run local LLM with chapter lookup context. After retries, replace Unknown with the best guess; if still < threshold, tag `MANDATORY_REVIEW_LLM`, add warning, and enqueue for optional cloud review.
 
 Artifacts
 
-- JSONL/meta per stage: `spans*.jsonl` + `*.meta.json`.
+- JSONL/meta per stage: `spans*.jsonl` + `*.meta.json`. Early stage files may contain `Unknown` for dialogue spans prior to LLM retries; final post-retry artifacts must not.
 - Character bible: `data/clean/<book>/character_bible.json` + per-chapter snapshot.
 - Per-span MP3 stems (22.05 kHz, 128 kbps, mono, -16 LUFS, -1 dBFS peak).
 - Per-chapter MP3 (22.05 kHz, 192 kbps), normalized, brief crossfades for same-speaker seams.
@@ -30,7 +30,7 @@ Acceptance criteria
 
 - English. 5 chapters rendered end-to-end.
 - After local retries and any approved cloud assists, dialogue spans: median C_span ≥ 0.90, p90 ≥ 0.85; narration type_conf ≥ 0.90.
-- No "unknown" in outputs; low-confidence spans marked `MANDATORY_REVIEW_LLM` with warnings.
+- No "Unknown" in final post-retry outputs; low-confidence spans marked `MANDATORY_REVIEW_LLM` with warnings.
 - External QA: stratified sample manifest produced for ChatGPT5 assessment (cost shown before sending).
 
 Run surface
