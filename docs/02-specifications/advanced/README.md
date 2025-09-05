@@ -19,24 +19,13 @@ A sophisticated approach to identifying speakers in dialogue using:
 
 **Complexity Level**: High - Requires ML expertise and training data **Dependencies**: HuggingFace transformers, local ML models **Target Phase**: Phase 2 (Multi-Agent System)
 
-### 📋 [MVP Specification](MVP_SPECIFICATION.md)
-
-**Minimum viable product definition and acceptance criteria**
-
-Comprehensive definition of what constitutes a successful MVP for the Agent Audiobook Maker:
-
-- Core feature requirements and boundaries
-- Quality thresholds and performance targets
-- Integration test scenarios and validation criteria
-- Success metrics and user acceptance tests
-
-**Complexity Level**: Medium - Cross-cutting system concerns **Dependencies**: All core components **Target Phase**: Phase 1-2 transition
+> For MVP scope and acceptance criteria, see [Redesigned MVP](../MVP_REDESIGN.md).
 
 ## Planned Advanced Features
 
 ### 🎭 Character Voice Casting (Planned - Phase 3)
 
-**Automated character-to-voice profile mapping**
+#### Automated character-to-voice profile mapping
 
 - Character personality analysis from dialogue patterns
 - Voice profile matching based on character traits
@@ -45,7 +34,7 @@ Comprehensive definition of what constitutes a successful MVP for the Agent Audi
 
 ### 🎵 Prosody and Emotional Modeling (Planned - Phase 3)
 
-**Advanced audio rendering with emotional context**
+#### Advanced audio rendering with emotional context
 
 - Emotional state detection from text context
 - Prosodic feature generation (pace, pitch, emphasis)
@@ -54,7 +43,7 @@ Comprehensive definition of what constitutes a successful MVP for the Agent Audi
 
 ### 🔧 Advanced Quality Gates (Planned - Phase 4)
 
-**Sophisticated validation and quality assurance**
+#### Sophisticated validation and quality assurance
 
 - Multi-modal quality assessment (text + audio)
 - Automated regression detection across versions
@@ -82,7 +71,6 @@ Comprehensive definition of what constitutes a successful MVP for the Agent Audi
 
 **Requirements**: System design expertise, multi-component coordination
 
-- MVP Specification
 - Character Voice Casting
 - Advanced Quality Gates
 
