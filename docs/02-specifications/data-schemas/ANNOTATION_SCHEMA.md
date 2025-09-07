@@ -34,7 +34,13 @@ Last updated: 2025-08-14
   "speaker_confidence": 0.93,
   "emotion": "neutral",
   "emotion_confidence": 0.81,
-  "qa_flags": [],
+  "qa_flags": ["MANDATORY_REVIEW_LLM"],
+  "confidence": {
+    "speaker_id_conf": 0.93,
+    "style_match_conf": 0.88,
+    "type_conf": 0.97,
+    "c_span": 0.88
+  },
   "hashes": { "text_sha256": "..." },
   "layer_versions": { "segmentation": 1, "speaker": 1, "emotion": 1 },
   "created_at": "2025-08-14T12:00:00Z"
@@ -43,7 +49,7 @@ Last updated: 2025-08-14
 
 ## Full Target (v4 – Prosody / SSML / TTS)
 
-See `docs/CONTEXT.md` for comprehensive final target record including prosody, ssml, tts_profile_id, audio paths, duration, mastering status.
+See `../../01-project-overview/CONTEXT.md` for comprehensive final target record including prosody, ssml, tts_profile_id, audio paths, duration, mastering status.
 
 ## Field Definitions
 
@@ -55,12 +61,13 @@ See `docs/CONTEXT.md` for comprehensive final target record including prosody, s
 | text                    | string           | segmentation | Raw utterance text                         |
 | is_dialogue             | bool             | segmentation | Heuristic dialogue detection               |
 | start_char / end_char   | int              | segmentation | Character span offsets in chapter text     |
-| speaker                 | string           | speaker      | Resolved speaker label or NARRATOR/UNKNOWN |
+| speaker                 | string           | speaker      | Resolved speaker label (NARRATOR for narration; never UNKNOWN in outputs) |
 | speaker_confidence      | float            | speaker      | Confidence 0..1                            |
 | emotion                 | string           | emotion      | Discrete emotion label                     |
 | emotion_confidence      | float            | emotion      | Confidence 0..1                            |
 | prosody                 | object           | prosody      | Pitch/rate/intensity suggestions           |
 | qa_flags                | list[string]     | qa           | Automated quality issue flags              |
+| confidence              | object           | qa           | Span confidence rubric + aggregate c_span  |
 | ssml                    | string           | ssml         | Renderable SSML snippet                    |
 | tts_profile_id          | string           | tts          | Voice profile mapping id                   |
 | audio_stem_path         | string           | tts          | Path to rendered stem wav                  |
@@ -79,6 +86,7 @@ See `docs/CONTEXT.md` for comprehensive final target record including prosody, s
 | emotion_hash      | speaker_hash + emotion model version               |
 | prosody_hash      | emotion_hash + prosody rules version               |
 | ssml_hash         | prosody_hash + ssml template version               |
+| tts_hash          | ssml_hash + tts engine params + voice profile      |
 
 ## Change Control
 
