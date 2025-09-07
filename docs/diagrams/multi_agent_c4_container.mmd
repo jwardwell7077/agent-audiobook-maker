@@ -12,12 +12,12 @@ C4Container
       Container(struct, "Section Classifier", "Python", "front/toc/chapters/back; updates chapter payload")
 
       Container(dlg, "DialogueClassifierAgent", "Python", "Paragraphs → utterances; dialogue/narration")
-      Container(spk, "SpeakerAttributionAgent", "Python", "Assign speakers; UNKNOWN fallback")
+  Container(spk, "SpeakerAttributionAgent", "Python", "Assign speakers; best‑guess + QA flag <0.90; no UNKNOWN in output")
       Container(alias, "AliasResolverAgent", "Python", "Merge variants; update aliases")
       Container(casta, "CastingAssistantAgent", "Python", "CharacterProfiles from evidence")
       Container(castd, "CastingDirectorAgent", "Python", "Map to voice catalog; upsert tts_profiles")
       Container(ssml, "SSMLAgent", "Python", "Build SSML per utterance/chapter")
-      Container(ttp, "TTSAgent", "Piper/XTTS", "Synthesize stems; bounded variance")
+  Container(ttp, "TTSAgent", "Parler‑TTS (characters) / Piper (narrator)", "Synthesize stems; bounded variance")
       Container(master, "MasteringAgent", "Python", "Stitch + normalize to EBU R128")
     }
 

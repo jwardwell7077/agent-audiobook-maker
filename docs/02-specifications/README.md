@@ -43,7 +43,7 @@ Complex features and system-wide specifications
 **Documents:**
 
 - [Advanced Speaker Attribution](advanced/ADVANCED_SPEAKER_ATTRIBUTION.md) - ML-based speaker identification
-- [MVP Specification](advanced/MVP_SPECIFICATION.md) - Minimum viable product definition
+- [Redesigned MVP](MVP_REDESIGN.md) — Current MVP scope and acceptance criteria
 
 ## Specification Standards
 
