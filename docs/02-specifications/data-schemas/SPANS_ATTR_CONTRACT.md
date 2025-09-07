@@ -24,7 +24,7 @@ Top-level bundle returned by components and written to disk:
 - Required core fields:
   - book_id, chapter_index, chapter_number, block_id, segment_id
   - type: "dialogue" | "narration"
-  - character_name: string ("Narrator" for narration; "Unknown" when no dialogue speaker determined)
+  - character_name: string ("Narrator" for narration; never "Unknown"  choose best candidate and add QA flag when low confidence)
   - attribution: { confidence: number, method: string, evidence: object }
   - provenance: { rules: string, version: string }
 - Optional fields:
@@ -39,7 +39,7 @@ See the JSON Schema for exact types and allowed values.
   - dialogue_tag (explicit pattern like "... , Quinn said")
   - proper_noun_proximity (nearest proper noun in adjacent narration)
   - continuity_prev (opt-in fallback: previous dialogue speaker within a short window)
-  - unknown (no speaker detected)
+  - unknown (no speaker detected)  internal marker only; still emit best-guess speaker and add `MANDATORY_REVIEW_LLM`
 - evidence: object with optional sub-objects
   - detection: { location, pattern, method, excerpt, distance }
   - confidence: scorer-specific details when deterministic scoring is enabled

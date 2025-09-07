@@ -32,7 +32,7 @@ flowchart TD
     %% Decision Outcomes
     HIGH_DIALOGUE[📢 High Confidence Dialogue<br/>confidence > 0.5]
     NARRATION_DETECTED[📖 Narration Detected<br/>narration_score > 0]
-    UNKNOWN[❓ Unknown Classification<br/>confidence = 0.3]
+  LOW_CONFIDENCE[❓ Low-Confidence Classification<br/>confidence = 0.3]
 
     %% Mixed Content Check
     MIXED_CHECK{Narration Score > 2?}
@@ -70,7 +70,7 @@ flowchart TD
 
     DECISION -->|confidence > 0.5| HIGH_DIALOGUE
     DECISION -->|narration_score > 0| NARRATION_DETECTED
-    DECISION -->|else| UNKNOWN
+  DECISION -->|else| LOW_CONFIDENCE
 
     HIGH_DIALOGUE --> MIXED_CHECK
     MIXED_CHECK -->|Yes| DIALOGUE_REDUCED
@@ -80,7 +80,7 @@ flowchart TD
     DIALOGUE_FULL --> AI_CHECK
     DIALOGUE_REDUCED --> AI_CHECK
     NARRATION_RESULT --> AI_CHECK
-    UNKNOWN --> AI_CHECK
+  LOW_CONFIDENCE --> AI_CHECK
 
     AI_CHECK -->|Yes| AI_PROCESS
     AI_CHECK -->|No| OUTPUT
@@ -108,16 +108,16 @@ flowchart TD
     class HEURISTIC,DIALOGUE_PATTERNS,ATTRIBUTION_BOOST,NARRATION_INDICATORS processNode
     class DECISION,MIXED_CHECK,AI_CHECK,AI_SUCCESS,HYBRID_CHECK decisionNode
     class AI_PROCESS,AI_FALLBACK,LLM_ENHANCED,HYBRID_COMBINE aiNode
-    class OUTPUT,HIGH_DIALOGUE,NARRATION_DETECTED,UNKNOWN,DIALOGUE_FULL,DIALOGUE_REDUCED,NARRATION_RESULT outputNode
-```
+  class OUTPUT,HIGH_DIALOGUE,NARRATION_DETECTED,LOW_CONFIDENCE,DIALOGUE_FULL,DIALOGUE_REDUCED,NARRATION_RESULT outputNode
+```text
 
 ## Classification Methods
 
 ### 🔧 "heuristic_only"
 
-```
+```text
 Input → Heuristic Analysis → Decision Logic → Output
-```
+```text
 
 - Fastest method (no AI calls)
 - Uses only pattern matching and rules
@@ -125,9 +125,9 @@ Input → Heuristic Analysis → Decision Logic → Output
 
 ### 🤖 "llm_enhanced"
 
-```
+```text
 Input → Heuristic Analysis → AI Enhancement (if conf < threshold) → Use AI Result → Output
-```
+```text
 
 - AI result completely replaces heuristic when triggered
 - Higher accuracy for ambiguous cases
@@ -135,7 +135,7 @@ Input → Heuristic Analysis → AI Enhancement (if conf < threshold) → Use AI
 
 ### ⚖️ "hybrid" (Default)
 
-```
+```text
 Input → Heuristic Analysis → AI Enhancement (if conf < threshold) → Combine Results → Output
 ```
 
@@ -190,7 +190,7 @@ Output: dialogue (0.95, "heuristic_standard_quotes")
 ```
 Input: He thought about it carefully.
   ↓
-Heuristic: No clear patterns → unknown (0.3)
+Heuristic: No clear patterns → low-confidence (0.3)
   ↓
 Threshold Check: 0.3 < 0.8 → Trigger AI
   ↓
