@@ -58,4 +58,3 @@ Notes
 See the spans-first MVP pipeline diagram:
 
 - docs/04-diagrams/architecture/mvp_spans_first.mmd
-
