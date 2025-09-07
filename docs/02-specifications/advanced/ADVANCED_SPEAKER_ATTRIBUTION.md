@@ -301,7 +301,9 @@ def evaluate_speaker_attribution(predictions: List[Dict],
 
 ### **Quality Assurance**
 
-- Confidence thresholding: mark uncertain attributions as UNKNOWN
+- Confidence thresholding: compute span-level scores (e.g., speaker_id_conf, style_match_conf, type_conf) and aggregate C_span = min(...). If below threshold, select the best guess and tag `MANDATORY_REVIEW_LLM`; never emit `UNKNOWN` in outputs.
+- Local-first retry: attempt local LLM reprocessing before any cloud call; cache results by hash.
+- Cloud-gated review: Only send flagged samples for external review after explicit user approval and cost estimate.
 - Cross-validation across different book genres/styles  
 - A/B testing of individual model components
 - Human-in-the-loop verification for edge cases
@@ -341,7 +343,7 @@ dependencies:
 ### **Fallback Strategies**
 
 - **High Confidence Threshold**: Only commit to predictions >90% confidence
-- **UNKNOWN Classification**: Mark ambiguous cases rather than guessing
+- **Best-guess + QA**: Never emit "UNKNOWN"; choose the best candidate and tag `MANDATORY_REVIEW_LLM` when confidence < 0.90
 - **Human Review Pipeline**: Flag edge cases for manual annotation
 
 ## Success Metrics & Validation

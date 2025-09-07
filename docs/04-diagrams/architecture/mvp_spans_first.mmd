@@ -1,0 +1,47 @@
+flowchart TD
+  %% MVP - Spans-first pipeline with confidence gating and local-first policy
+  %% - Unknown allowed before retries; after retry loop, replace with best guess; add MANDATORY_REVIEW_LLM when below threshold
+  %% - Local LLM retries (bounded) before any gated cloud QA
+  %% - Parler (characters) + Piper (narrator)
+
+  PDF["Structured PDF (TOC)"]
+  CHL["Chapter Loader"]
+  BSV["Block Schema Validator"]
+  MBR["Mixed Block Resolver"]
+  SCLS["Span Classifier (dialogue / narration)"]
+  SATT["Span Attribution (no UNKNOWN)"]
+  QA["Confidence QA (C_span >= 0.90)"]
+  LLM["Local LLM Retry (temp=0.3, max_passes=3)"]
+  CAST["Casting (Character Bible)"]
+  SSML["SSML Builder (escapes, pauses, prosody)"]
+  ROUTER["TTS Router"]
+  PIPER["Piper (Narrator)"]
+  PARLER["Parler-TTS (Characters)"]
+  MASTER["Mastering & Combine (EBU R128, crossfades)"]
+  OUT["Per-chapter MP3"]
+
+  %% Flow
+  PDF --> CHL --> BSV --> MBR --> SCLS --> SATT --> QA
+  QA -- "C_span < 0.90" --> LLM --> QA
+  QA -- "pass" --> CAST --> SSML --> ROUTER
+  ROUTER -- "Narration" --> PIPER --> MASTER --> OUT
+  ROUTER -- "Dialogue" --> PARLER --> MASTER --> OUT
+
+  %% Artifacts (JSONL + meta)
+  A0["chapters.json + .meta"]
+  A1["spans_cls.jsonl + .meta"]
+  A2["spans_attr.jsonl + .meta"]
+  A3["character_bible.json"]
+  A4["ssml/*.xml"]
+  A5["stems/narrator/*.mp3"]
+  A6["stems/characters/*.mp3"]
+  A7["chapter_XX.mp3 + .meta"]
+
+  CHL -.-> A0
+  SCLS -.-> A1
+  SATT -.-> A2
+  CAST -.-> A3
+  SSML -.-> A4
+  PIPER -.-> A5
+  PARLER -.-> A6
+  MASTER -.-> A7

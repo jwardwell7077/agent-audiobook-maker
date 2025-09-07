@@ -8,7 +8,7 @@ Agent Audiobook Maker is a local-first, multi-agent system that transforms novel
 
 ## Documents in This Section
 
-### 🎯 [Project Vision & Goals](VISION.md)
+### 🎯 [Project Vision & Goals](VISION_REDESIGN.md)
 
 **New document** - The "why" behind this project
 
@@ -63,7 +63,7 @@ graph LR
 
 ## How to Navigate
 
-- **New to the project?** → Start with [Project Vision](VISION.md)
+- **New to the project?** → Start with [Project Vision](VISION_REDESIGN.md)
 - **Setting up development?** → Read [System Context](CONTEXT.md)
 - **Understanding principles?** → Review [KISS Policy](KISS.md)
 - **Ready for technical details?** → Dive into [Architecture](ARCHITECTURE.md)
