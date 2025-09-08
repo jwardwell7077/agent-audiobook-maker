@@ -12,7 +12,6 @@ This component consumes the outputs of the heuristic stage (spans_attr) and prod
 
 ## Scope and Goals
 
- 
 - Resolve speaker for dialogue spans marked unknown or low-confidence by the heuristic pass.
 - Enforce strict outputs: no "Unknown" speakers after this stage.
 - Keep everything local by default; allow pluggable LLM backend (Ollama first).
@@ -20,43 +19,42 @@ This component consumes the outputs of the heuristic stage (spans_attr) and prod
 - Artifact IO via JSONL to support headless runs and downstream tools.
 
 Non-goals:
- 
+
 - Not responsible for full conversation consistency across chapters (that belongs to Finalizer/Normalization).
 - Not responsible for building a canonical character roster (but can hint probable names).
 
 ## Contracts
 
 Inputs
- 
+
 - spans_attr.jsonl or in-memory payload from the heuristic component containing an array of records with keys such as: book_id, chapter_index, block_id, segment_id, text_norm/text_raw, type/role, attribution { speaker?, confidence, method, evidence }.
 - Config knobs: model name, temperature, context radius (spans or characters), max retries, cache directory, min confidence to skip LLM (if heuristic already high), timeouts.
 
 Outputs
- 
+
 - spans_attr_llm.jsonl (updated): same records with attribution replaced/filled where needed. Every dialogue span must have a non-empty speaker string.
 - meta.json (optional): counts, method histogram, retry stats, cache hits/misses, errors (if any), config snapshot.
 - In LangFlow, outputs also provided via Data ports for chaining.
 
 Error modes
- 
+
 - LLM returns non-JSON or malformed JSON: retry with stricter extractor rules up to N times; if still failing, apply conservative fallback (continuity_prev or heuristic evidence), mark qa_flags in evidence.
 - Backend unavailable: if cache has entry, use it; else mark fallback path and continue (never crash the pipeline by default).
 
 ## Data Shapes
 
 Input record (abbreviated):
- 
+
 - {..., type: "dialogue"|"narration", text_norm: str, attribution: { speaker?: str|null, confidence: float, method: str, evidence: dict }, ...}
 
 Output record (dialogue):
- 
+
 - attribution: { speaker: str, confidence: float, method: "llm|llm_fallback|continuity_prev|heuristic_passthrough", evidence: { prompt_version, backend, cache_key, llm: { raw_text?, parsed_json? }, rationale?, qa_flags?: [..] } }
 
 Note: method should include a clear prefix when the LLM was used, e.g., "llm_dialogue_tag", "llm_proximity", or "llm_fallback".
 
 ## Decision Logic
 
- 
 1. Span selection
 
 - Target only dialogue spans where: attribution.speaker is null/empty OR attribution.method == "unknown" OR attribution.confidence < min_conf_for_skip.
@@ -129,7 +127,7 @@ Note: method should include a clear prefix when the LLM was used, e.g., "llm_dia
 Name: ABMLLMAttribution
 
 - Inputs:
-   
+
   - DataInput spans_attr (required)
   - StrInput model_name (default: llama3.1:8b-instruct)
   - StrInput base_url (default: <http://localhost:11434>)
@@ -145,7 +143,7 @@ Name: ABMLLMAttribution
   - BoolInput re_attribute_all (false)
 
 - Outputs:
-   
+
   - Output spans_attr_llm (Data: { spans_attr: [...] })
   - Output meta (Data)
 

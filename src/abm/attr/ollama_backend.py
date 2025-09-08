@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+import urllib.error
+import urllib.request
 from dataclasses import dataclass
 from typing import Any
 
@@ -22,12 +25,27 @@ class OllamaBackend:
     def __init__(self, config: OllamaConfig | None = None) -> None:
         self.config = config or OllamaConfig()
 
-    def generate(self, payload: dict[str, Any]) -> str:
-        """Return raw model text for a given payload (placeholder).
+    def generate(self, prompt: str) -> str:
+        """Call Ollama /api/generate and return the response text.
 
-        In v1, this will issue an HTTP request to the Ollama API and return
-        the model response text. For now, return a minimal JSON string to
-        keep integration surfaces stable.
+        Sends a non-streaming request with temperature and timeout.
+        Raises URLError/HTTPError on transport issues.
         """
-        # Placeholder deterministic output for tests/no-op wiring
-        return '{"speaker": "", "confidence": 0.0, "rationale": "noop"}'
+        url = f"{self.config.base_url.rstrip('/')}/api/generate"
+        body = {
+            "model": self.config.model_name,
+            "prompt": prompt,
+            "stream": False,
+            "options": {"temperature": self.config.temperature},
+        }
+        data = json.dumps(body).encode("utf-8")
+        req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"}, method="POST")
+        with urllib.request.urlopen(req, timeout=self.config.timeout_s) as resp:  # nosec B310
+            raw = resp.read().decode("utf-8", errors="replace")
+        # Ollama returns a JSON object with a 'response' field
+        try:
+            parsed: dict[str, Any] = json.loads(raw)
+            return str(parsed.get("response") or "")
+        except Exception:
+            # If the API returns plain text (unlikely), pass it through as string
+            return str(raw)

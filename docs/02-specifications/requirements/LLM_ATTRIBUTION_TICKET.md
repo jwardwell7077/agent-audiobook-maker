@@ -95,4 +95,3 @@ Reference spec: docs/02-specifications/components/LLM_ATTRIBUTION_SPEC.md
 
 - Phase 1: Implement with feature flag; keep off by default in flows.
 - Phase 2: Enable in default pipeline after heuristic pass once validated on 1–2 books.
-
