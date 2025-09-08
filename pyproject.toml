@@ -62,7 +62,7 @@ ignore_errors = true
 [tool.pytest.ini_options]
 addopts = "-q"
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "."]
 filterwarnings = ["default"]
 
 [tool.interrogate]
