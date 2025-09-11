@@ -6,7 +6,7 @@ Branch: feature/llm-attribution-v1
 
 ## Summary
 
-Implement the “LLM Attribution (open-world, local)” stage as a new LangFlow component that resolves dialogue spans left unknown or low-confidence by the heuristic pass, with a strict no-Unknown guarantee.
+Implement the “LLM Attribution (open-world, local)” stage as a new LangFlow component that resolves dialogue spans left unknown or low-confidence by the heuristic pass. Best-effort attribution; "Unknown" allowed when evidence is insufficient.
 
 Reference spec: docs/02-specifications/components/LLM_ATTRIBUTION_SPEC.md
 
@@ -16,7 +16,7 @@ Reference spec: docs/02-specifications/components/LLM_ATTRIBUTION_SPEC.md
   - Selects target dialogue spans needing attribution.
   - Builds compact local context and calls a local LLM (Ollama default).
   - Validates JSON-only responses, normalizes speaker names, clamps confidence.
-  - Applies deterministic caching and robust fallbacks to avoid “Unknown”.
+  - Applies deterministic caching and fallbacks; may return "Unknown" only when context is insufficient.
 - Provide JSONL IO for headless runs; expose outputs via LangFlow ports.
 
 ## Deliverables
@@ -30,7 +30,7 @@ Reference spec: docs/02-specifications/components/LLM_ATTRIBUTION_SPEC.md
 
 ## Acceptance Criteria
 
-- No dialogue span remains with speaker "Unknown" or empty after this stage.
+- Dialogue spans have a speaker string; may be "Unknown" only when local narration/continuity provide no reasonable candidate (assert proportion below threshold in tests if practical).
 - Heuristic high-confidence spans (>= min_conf_for_skip, default 0.85) pass through untouched.
 - Deterministic cache: identical payloads hit the same cache key; cache hit ratio reported in meta.
 - Strict JSON validation; malformed responses trigger retries, then fallbacks; pipeline does not crash.
@@ -82,7 +82,7 @@ Reference spec: docs/02-specifications/components/LLM_ATTRIBUTION_SPEC.md
 ## Tests
 
 - Unit: cache key stability, selection logic, JSON validation, fallbacks.
-- Integration: small chapter fixture; verify counts and no-Unknown guarantee.
+- Integration: small chapter fixture; verify counts and limited, justified use of "Unknown".
 - Backend mock: return canned JSON and malformed variants to exercise retries.
 
 ## Risks
