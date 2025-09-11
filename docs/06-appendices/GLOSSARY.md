@@ -80,9 +80,7 @@ A Python framework for building and orchestrating multi-agent systems, designed 
 
 A framework for developing applications powered by language models, providing tools for chains, agents, and memory systems.
 
-### LangFlow
-
-A visual, low-code platform for building LangChain applications through a drag-and-drop interface, used for rapid prototyping.
+<!-- Removed LangFlow (deprecated in project scope) -->
 
 ### LangGraph
 

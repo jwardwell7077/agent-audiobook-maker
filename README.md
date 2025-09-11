@@ -349,7 +349,7 @@ These are documented here to set clear boundaries: the MVP will ship once the si
 
 | Phase                   | Exit Criteria                                           | Risks Controlled                                  |
 | ----------------------- | ------------------------------------------------------- | ------------------------------------------------- |
-| LangFlow Prototype      | Deterministic segmentation → JSONL                      | Scope creep; enforce hash guardrails              |
+| Ingestion Prototype     | Deterministic segmentation → JSONL                      | Scope creep; enforce hash guardrails              |
 | CrewAI Layer            | Role agents (Speaker, QA) produce enriched utterances   | Non‑deterministic LLM drift – snapshot key fields |
 | LangGraph Orchestration | Graph executes multi-stage annotation + TTS with resume | State divergence – typed state + version pinning  |
 | Full Rendering          | XTTS/Piper stems + loudness normalized chapters         | GPU saturation – queued TTS jobs                  |
