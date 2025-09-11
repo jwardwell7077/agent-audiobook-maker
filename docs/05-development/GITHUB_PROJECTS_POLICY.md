@@ -17,7 +17,7 @@ Default board: <https://github.com/users/jwardwell7077/projects/3>
 - Type: `type:feature`, `type:bug`, `type:infra`, `type:doc`
 - Priority: `prio:high`, `prio:med`, `prio:low`
 - Flow: `agent-task`, `blocked`
-- Scope (parallelization): `scope:ingestion`, `scope:langflow`, `scope:tests`, `scope:docs`, `scope:infra`
+- Scope (parallelization): `scope:ingestion`, `scope:tests`, `scope:docs`, `scope:infra`
 
 Guidance:
 
@@ -56,7 +56,7 @@ Tie each PR/issue to a milestone. Keep PRs < 300 LOC when possible and green on 
 Use scopes to run work in parallel without collisions:
 
 - `scope:ingestion`: CLI, meta sidecars, converters.
-- `scope:langflow`: custom components and example flows.
+ 
 - `scope:tests`: unit/integration tests and fixtures.
 - `scope:docs`: docs, diagrams, policies.
 - `scope:infra`: CI, automation, linting, dependencies.

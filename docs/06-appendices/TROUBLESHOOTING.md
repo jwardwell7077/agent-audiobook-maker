@@ -316,7 +316,7 @@ pip list
 
 1. **Check existing issues**: GitHub repository issues
 1. **Search documentation**: This documentation set
-1. **Community resources**: LangFlow Discord, Stack Overflow
+1. **Community resources**: Stack Overflow
 1. **Create new issue**: GitHub with detailed information
 
 ## Prevention Tips

@@ -2,7 +2,7 @@
 
 Last updated: 2025‑09‑04
 
-Goal: Build intuition and muscle memory across LangFlow, LangChain, LangSmith, LangGraph, and CrewAI while shipping small, verifiable slices inside this repo.
+Goal: Build intuition and muscle memory across LangChain, LangSmith, LangGraph, and CrewAI while shipping small, verifiable slices inside this repo.
 
 Principles
 
@@ -12,17 +12,16 @@ Principles
 
 Milestones (2–3 hours each)
 
-1. LangFlow – visual prototyping
+1. Visual prototyping (optional)
 
-- Install LangFlow locally and run a minimal “Segmentation flow”: Input text → sentence split → JSONL writer.
+ 
 - Export the flow as JSON; commit under `docs/flows/segmentation_v1.json`.
 - Success: Running the flow writes `data/annotations/utterances_v1.jsonl` deterministically for a sample file.
 
 2. LangChain – components as reusable tools
 
 - Wrap the sentence splitter and JSONL writer as LangChain tools/chains.
-- Write a tiny script `src/demos/langchain_segmentation.py` that mirrors the LangFlow behavior.
-- Success: Same output JSONL as LangFlow for identical inputs (hash match).
+– Success: Same output JSONL across implementations for identical inputs (hash match).
 
 3. LangSmith – tracing and evaluation (local/dev)
 

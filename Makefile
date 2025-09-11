@@ -223,31 +223,7 @@ classify_well_done:
 ingest_and_classify: ingest_pdf classify_well_done
 
 
-######################
-# LANGFLOW
-######################
-
-.PHONY: langflow
-langflow:
-	@$(VENV_GUARD)
-	./scripts/run_langflow.sh
-
-.PHONY: langflow_start_bg
-langflow_start_bg:
-	@$(VENV_GUARD)
-	chmod +x scripts/langflow_start_bg.sh; ./scripts/langflow_start_bg.sh
-
-.PHONY: langflow_stop
-langflow_stop:
-	chmod +x scripts/langflow_stop.sh; ./scripts/langflow_stop.sh
-
-.PHONY: langflow-import-segments
-langflow-import-segments:
-	./scripts/import_segments_flow.sh
-
-.PHONY: segment
-segment:
-	@echo "segment target deprecated: langflow_runner removed. Use LangFlow UI or tools/run_flow.py."
+ 
 
 
 ######################
@@ -268,7 +244,7 @@ help:
 	@echo 'test TEST_FILE=<test_file>   - run all tests in file'
 	@echo 'test_watch                   - run unit tests in watch mode'
 	@echo 'type                         - mypy checks'
-	@echo 'itest                        - run LangFlow REST flow via tools/run_flow.py'
+	@echo 'itest                        - (reserved)'
 	@echo 'docs_link_check              - scan docs/ for broken local links'
 	@echo 'docs_lint                    - run mdformat --check and pymarkdown scan on docs/'
 	@echo 'pre_push                     - run quick local checks before pushing'

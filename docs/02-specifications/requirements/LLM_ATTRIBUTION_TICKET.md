@@ -1,4 +1,4 @@
-# Ticket: Implement LLM Attribution as a LangFlow Component
+# Ticket: Implement LLM Attribution (CLI/Library)
 
 Status: Proposed
 Owner: ABM Team
@@ -6,22 +6,21 @@ Branch: feature/llm-attribution-v1
 
 ## Summary
 
-Implement the “LLM Attribution (open-world, local)” stage as a new LangFlow component that resolves dialogue spans left unknown or low-confidence by the heuristic pass. Best-effort attribution; "Unknown" allowed when evidence is insufficient.
+Implement the “LLM Attribution (open-world, local)” stage as a Python library + optional CLI that resolves dialogue spans left unknown or low-confidence by the heuristic pass. Best-effort attribution; "Unknown" allowed when evidence is insufficient.
 
 Reference spec: docs/02-specifications/components/LLM_ATTRIBUTION_SPEC.md
 
 ## Goals
 
-- Add a new component ABMLLMAttribution that:
+- Add new library entrypoints that:
   - Selects target dialogue spans needing attribution.
   - Builds compact local context and calls a local LLM (Ollama default).
   - Validates JSON-only responses, normalizes speaker names, clamps confidence.
   - Applies deterministic caching and fallbacks; may return "Unknown" only when context is insufficient.
-- Provide JSONL IO for headless runs; expose outputs via LangFlow ports.
+- Provide JSONL IO for headless runs via a thin CLI; primary surface is Python API.
 
 ## Deliverables
 
-- Component: `src/abm/lf_components/audiobook/abm_llm_attribution.py` (name may vary slightly per conventions).
 - Backend adapter: `src/abm/attr/ollama_backend.py` (simple HTTP client w/ retries, timeouts).
 - Orchestrator: `src/abm/attr/llm_attribution.py` (selection, prompt, validation, caching, fallbacks).
 - CLI wrapper (optional, thin): `tools/llm_attr_cli.py` to run on artifacts.
@@ -37,7 +36,7 @@ Reference spec: docs/02-specifications/components/LLM_ATTRIBUTION_SPEC.md
 - Artifacts written when enabled:
   - `spans_attr_llm.jsonl` with updated attribution fields.
   - `spans_attr_llm.meta.json` with counters, config snapshot, cache stats, retry stats.
-- Component configurable in LangFlow with inputs defined in spec.
+ 
 
 ## Non-Goals
 
