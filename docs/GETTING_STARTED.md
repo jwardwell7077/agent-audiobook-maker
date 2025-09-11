@@ -20,7 +20,7 @@ graph LR
 We're in **Phase 1** of development:
 
 - ✅ **Phase 0**: PDF ingestion with deterministic chapter extraction (COMPLETE)
-- 🚧 **Phase 1**: Deterministic segmentation library + CLI (IN PROGRESS)
+- 🚧 **Phase 1**: Script authoring + deterministic segmentation (IN PROGRESS)
 - ⏳ **Phase 2**: Multi-agent speaker attribution and emotion analysis (PLANNED)
 - ⏳ **Phase 3**: TTS rendering with voice casting (PLANNED)
 
@@ -76,7 +76,7 @@ Start with these documents in order:
 
 - Different AI agents handle specific tasks
 - Speaker identification, emotion analysis, quality assurance
-- Prototyping deterministic components; evolving to CrewAI for orchestration
+- Currently building pure Python authoring modules, evolving to CrewAI
 
 ## Development Workflow
 
@@ -94,12 +94,7 @@ Start with these documents in order:
 python -m abm.ingestion.ingest_pdf input.pdf --mode both
 ```
 
-### Running CLI tools
-
-```bash
-# Example: Dialogue classifier demo
-python -m abm.classifier.demo --help
-```
+<!-- Removed LangFlow components section (deprecated) -->
 
 ### Testing
 
@@ -122,7 +117,7 @@ agent-audiobook-maker/
 │   ├── ingestion/           # PDF → text extraction
 │   ├── classifier/          # Section classification  
 │   ├── structuring/         # Chapter organization
-│   └── structuring/         # Text structuring helpers
+│   └── authoring/           # Authoring modules (script/scene/dialogue)
 ├── tests/                   # Test suite
 ├── docs/                    # Documentation (you are here)
 ├── data/                    # Working directory (gitignored)
@@ -135,7 +130,7 @@ agent-audiobook-maker/
 - **Issues**: Check existing GitHub issues or create a new one
 - **Questions**: Read the Development Journey summaries:
   - [Documentation Cleanup Summary](05-development/journey/DOCUMENTATION_CLEANUP_SUMMARY.md)
-  - [Documentation Cleanup Summary](05-development/journey/DOCUMENTATION_CLEANUP_SUMMARY.md)
+  <!-- Removed LangFlow lessons link (deprecated) -->
 
 ## Next Steps
 
