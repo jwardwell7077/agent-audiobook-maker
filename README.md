@@ -3,7 +3,7 @@
 
 > AI‑generated, Copilot‑assisted project
 > This repo is an experiment in co‑creating software with GitHub Copilot to force‑multiply design and development. Most content is AI‑generated and evolves quickly—expect rapid iteration and rough edges.
-> Multi‑agent, local‑first audiobook production pipeline. Current focus: rock‑solid deterministic ingestion + prototype annotation flow (LangFlow) as a stepping stone to CrewAI then LangChain/LangGraph orchestration.
+> Multi‑agent, local‑first audiobook production pipeline. New direction: deterministic ingestion feeding a script writing & revision workflow (LLM‑assisted), deprecating prior LangFlow prototype components.
 > KISS branch scope
 > This branch is documentation‑first. Keep it simple: only set up a local Python `.venv` and minimal dev tools. Sections below that mention Docker, Postgres, LangGraph runtime, or API endpoints are roadmap/design notes, not required to get started on this branch. See `docs/KISS.md`.
 
@@ -86,7 +86,7 @@ Structured JSON schema: [docs/02-specifications/data-schemas/STRUCTURED_JSON_SCH
 | Layer                           | State                       | Notes                                                                           |
 | ------------------------------- | --------------------------- | ------------------------------------------------------------------------------- |
 | Ingestion                       | Stable + deterministic      | Structured TOC only; per‑chapter JSON + volume manifest; hash regression tests. |
-| Annotation (LangFlow prototype) | Loader → Segmenter → Writer | Produces dialogue/narration utterances JSONL.                                   |
+| Annotation (prototype) | Loader → Segmenter → Writer | Produces dialogue/narration utterances JSONL. (Former LangFlow UI removed)      |
 | LangGraph Graph                 | Minimal sample              | Will be replaced by chapter annotation / casting graph.                         |
 | Casting                         | Planned                     | Character bible + voice mapping next phase.                                     |
 | TTS Rendering                   | Prototype stubs             | Real XTTS/Piper integration upcoming.                                           |
@@ -95,7 +95,7 @@ Structured JSON schema: [docs/02-specifications/data-schemas/STRUCTURED_JSON_SCH
 
 ## Multi‑Agent Migration Path
 
-1. LangFlow (rapid prototyping / visual wiring of segmentation + writer) – CURRENT
+1. Script Authoring Loop (LLM‑assisted scene + dialogue drafting) – CURRENT
 1. CrewAI (role / task abstraction for speaker attribution & QA agents)
 1. LangChain + LangGraph (deterministic state machine orchestration, resumability, devtools)
 
@@ -215,41 +215,21 @@ Artifacts (structured-only):
 langgraph dev
 ```
 
-For LangFlow component prototyping with ABM custom components:
+Previous LangFlow visual prototype has been fully removed (components, sample flows, and diagrams). The pipeline now progresses via CLI + forthcoming script authoring modules.
 
-```bash
-# Launch LangFlow with custom components auto-discovery
-scripts/run_langflow.sh
-```
+## Script Authoring (New Direction)
 
-This script automatically:
+Upcoming modules:
 
-- Loads configuration from `.env` file (including `LANGFLOW_COMPONENTS_PATH`)
-- Sets up Python path for component imports
-- Launches LangFlow with custom ABM components visible in "Audiobook" category
+| Module                | Purpose                                             | Status   |
+| --------------------- | --------------------------------------------------- | -------- |
+| SceneSegmenter        | Coarse scene boundary detection from chapters       | Planned  |
+| SceneOutlineGenerator | Summarize + outline scenes                          | Planned  |
+| DialogueDraftAgent    | Draft multi‑speaker dialogue with style controls    | Planned  |
+| AttributionRefiner    | Assign / refine speakers in drafted dialogue        | Planned  |
+| RevisionLoopCLI       | Iterative accept / regenerate lines via CLI prompts | Planned  |
 
-The custom components are located at `src/abm/lf_components/audiobook/` and include:
-
-- **ABM Chapter Selector** - Selects chapters from volumes
-- **ABM Chapter Volume Loader** - Loads volume data for processing
-- **ABM Segment Dialogue Narration** - Segments dialogue and narration
-- **ABM Utterance Filter** - Filters utterances by criteria
-- **ABM Utterance JSONL Writer** - Writes utterances to JSONL format
-
-Import the sample flow (`examples/langflow/sample_volume_segmentation_flow.json`) and adjust the `book_id` + manifest path fields.
-
-> **Note**: If components don't appear, ensure `LANGFLOW_COMPONENTS_PATH` is properly set in `.env`. See `docs/LANGFLOW_COMPONENT_DISCOVERY.md` for troubleshooting.
-
-## Prototype LangFlow Components
-
-| Component                | Purpose                                       | Key Inputs                                  | Outputs                                        |
-| ------------------------ | --------------------------------------------- | ------------------------------------------- | ---------------------------------------------- |
-| ChapterVolumeLoader      | Load volume manifest + selected chapter JSON  | data_root, book_id, pdf_stem, chapter_index | chapters_index (list), selected_chapter (dict) |
-| SegmentDialogueNarration | Heuristic sentence split + dialogue detection | selected_chapter                            | utterances_payload (dict)                      |
-| UtteranceJSONLWriter     | Persist utterances + header                   | utterances_payload                          | paths (dict)                                   |
-| PayloadLogger (debug)    | Inspect payload structure                     | any                                         | passthrough                                    |
-
-All outputs are plain Python (dict/list) for interop with future CrewAI / LangGraph nodes.
+All modules will expose pure Python functions + CLI entry points (no visual builder).
 
 ### Planned Near-Term Components
 

@@ -6,22 +6,23 @@ This section bridges the gap between specifications and working code. It provide
 
 ## Implementation Approaches
 
-### 🎨 [LangFlow Implementation](langflow/README.md)
+### ✍️ Script Authoring Loop (New Phase 1)
 
-**Visual workflow prototyping for annotation pipeline**
+LLM‑assisted chapter → scene → dialogue drafting & iterative revision. Replaces prior visual LangFlow prototype (now removed).
 
-Current focus for Phase 1 - rapid prototyping of the annotation pipeline using visual workflows:
+Initial goals:
 
-- Custom LangFlow components for audiobook processing
-- Visual workflow design and testing
-- Component integration and data flow validation
-- Transition strategy to production multi-agent system
+- Deterministic scene boundary detection
+- Scene outline summarization (context windows)
+- Dialogue draft generation with style & speaker controls
+- Attribution refinement + confidence scoring
+- Interactive CLI revision loop (accept / regenerate / edit)
 
-**Status**: Active development (Phase 1) **Use Cases**: Rapid prototyping, visual debugging, stakeholder demos
+Status: Active (Phase 1). Use Cases: Fast narrative iteration, structured script artifacts feeding later casting + TTS.
 
 ### 🤖 [Multi-Agent Implementation](multi-agent/README.md)
 
-**Sophisticated multi-agent system for production use**
+#### Sophisticated multi-agent system for production use
 
 Future implementation approach for Phases 2-3 using specialized AI agents:
 
@@ -36,7 +37,7 @@ Future implementation approach for Phases 2-3 using specialized AI agents:
 
 ### 📁 [Examples](examples/)
 
-**Working code samples and integration patterns**
+#### Working code samples and integration patterns
 
 Real-world examples demonstrating:
 
@@ -48,7 +49,7 @@ Real-world examples demonstrating:
 Current examples include:
 
 - Classifier output samples (front matter, TOC, chapters, back matter)
-- LangFlow workflow definitions
+- Prototype attribution & script drafting stubs
 - Integration test scenarios
 
 ## Architecture Patterns
@@ -57,10 +58,10 @@ Current examples include:
 
 ```mermaid
 graph LR
-    subgraph "LangFlow Approach (Phase 1)"
-        L1[Volume Loader] --> L2[Segmenter]
-        L2 --> L3[JSONL Writer]
-        L3 --> L4[Visual Validation]
+    subgraph "Authoring Loop (Phase 1)"
+        L1[Scene Detector] --> L2[Outline Builder]
+        L2 --> L3[Dialogue Draft]
+        L3 --> L4[Revision Cycle]
     end
 
     subgraph "Multi-Agent Approach (Phase 2+)"
@@ -90,9 +91,9 @@ graph LR
 
 ### Current Stack (Phase 1)
 
-- **LangFlow**: Visual workflow design and prototyping
-- **Python**: Core processing logic and components
+- **Python**: Core processing & authoring modules
 - **PyMuPDF**: PDF text extraction
+- **Ollama / Local LLM**: Scene & dialogue generation
 - **JSON Schema**: Data validation and contracts
 
 ### Future Stack (Phase 2+)  
@@ -106,13 +107,14 @@ graph LR
 
 ## Development Workflow
 
-### Phase 1 - LangFlow Prototyping
+### Phase 1 - Script Authoring Loop
 
-1. **Design workflows** visually in LangFlow UI
-2. **Create custom components** for domain-specific processing
-3. **Test data flow** with real PDF samples
-4. **Validate outputs** against expected schemas
-5. **Document lessons learned** for production transition
+1. Implement deterministic scene segmentation
+2. Generate scene outlines (summaries + key entities)
+3. Draft dialogue with prompts & speaker scaffolds
+4. Apply attribution refinement + confidence model
+5. Provide interactive CLI revision interface
+6. Persist versioned script JSONL (scenes + lines)
 
 ### Phase 2+ - Multi-Agent Development
 
