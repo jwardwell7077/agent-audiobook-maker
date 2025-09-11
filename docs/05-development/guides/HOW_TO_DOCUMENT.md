@@ -100,7 +100,7 @@ docs/
 
 **Subsections**:
 
-- `langflow/` - Current LangFlow-based implementation
+ 
 - `multi-agent/` - Future multi-agent system approach
 - `examples/` - Working code samples and integration examples
 
@@ -113,7 +113,7 @@ docs/
 
 **Examples**:
 
-- How to set up LangFlow components
+ 
 - Code organization patterns
 - Implementation decisions and trade-offs
 - Working examples and tutorials
@@ -646,7 +646,7 @@ This project uses Mermaid for diagrams. Follow these rules to avoid GitHub rende
 - Place flow/process diagrams under `docs/04-diagrams/flows/`.
 - Place UML class diagrams under `docs/04-diagrams/uml/`.
 - Architecture/system overviews under `docs/04-diagrams/architecture/`.
-- Use `snake_case` filenames that reflect content, e.g., `pdf_to_text_flow.mmd`, `langflow_uml.mmd`.
+- Use `snake_case` filenames that reflect content, e.g., `pdf_to_text_flow.mmd`.
 
 ### Quick checklist (before committing)
 

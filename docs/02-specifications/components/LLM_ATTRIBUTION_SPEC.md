@@ -34,7 +34,7 @@ Outputs
 
 - spans_attr_llm.jsonl (updated): same records with attribution replaced/filled where needed. Every dialogue span must have a non-empty speaker string.
 - meta.json (optional): counts, method histogram, retry stats, cache hits/misses, errors (if any), config snapshot.
-- In LangFlow, outputs also provided via Data ports for chaining.
+  
 
 Error modes
 
@@ -122,32 +122,14 @@ Note: method should include a clear prefix when the LLM was used, e.g., "llm_dia
 - Meta: output/{book_id}/ch{chapter:02d}/spans_attr_llm.meta.json
 - Cache: .cache/abm/llm_attr/<sharded_key>.json
 
-## LangFlow Component Design
+## CLI/Library Design
 
-Name: ABMLLMAttribution
+Provide a library function and thin CLI wrapper instead of a visual component:
 
-- Inputs:
+- Python: abm.attr.llm_attribution.LLMAttributor with LLMAttrConfig
+- CLI: tools/llm_attr_cli.py that reads spans_attr.jsonl, writes spans_attr_llm.jsonl and meta.json
 
-  - DataInput spans_attr (required)
-  - StrInput model_name (default: llama3.1:8b-instruct)
-  - StrInput base_url (default: <http://localhost:11434>)
-  - FloatInput temperature (0.4)
-  - FloatInput min_conf_for_skip (0.85)
-  - FloatInput context_radius (4)
-  - IntInput max_json_retries (2)
-  - StrInput prompt_version ("v1")
-  - BoolInput write_to_disk (false)
-  - StrInput output_dir (optional; derive if empty)
-  - StrInput cache_dir (".cache/abm")
-  - FloatInput timeout_s (30)
-  - BoolInput re_attribute_all (false)
-
-- Outputs:
-
-  - Output spans_attr_llm (Data: { spans_attr: [...] })
-  - Output meta (Data)
-
-Implementation note: There is no existing component that calls an LLM for attribution. We will implement a new component, reusing patterns from `ABMSpanAttribution` for grouping and IO, and introducing a small backend adapter for Ollama.
+Implementation note: Reuse deterministic confidence helper and strict JSON validation. Keep the CLI optional; primary surface is the Python API.
 
 ## Prompt (v1, sketch)
 

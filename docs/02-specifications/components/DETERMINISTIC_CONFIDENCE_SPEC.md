@@ -137,7 +137,7 @@ Future: allow override from component inputs or YAML config; persist chosen conf
 
 ## 11. Migration & Rollout
 
-- Default on (use_deterministic_confidence = true) for LangFlow attribution node
+ 
 - Backward compatible: disabling restores prior behavior
 - Monitor artifact diffs on sample chapters; document any baseline changes
 
@@ -149,4 +149,4 @@ Future: allow override from component inputs or YAML config; persist chosen conf
 
 ## 13. Downstream Consumption (Filtering)
 
-While scoring is upstream and deterministic, consumers may choose to filter dialogue by confidence. The LangFlow `ABMSpanIterator` supports an optional `min_confidence_pct` input (0–100). When set (>0), dialogue spans with `attribution.confidence` below the threshold are filtered out; non-dialogue spans are unaffected. This enables simple preview modes (e.g., show only ≥75% confident dialogue) without changing the artifacts.
+While scoring is upstream and deterministic, consumers may choose to filter dialogue by confidence in downstream tools. When set (>0), dialogue spans with `attribution.confidence` below the threshold can be filtered out; non-dialogue spans are unaffected. This enables simple preview modes (e.g., show only ≥75% confident dialogue) without changing the artifacts.

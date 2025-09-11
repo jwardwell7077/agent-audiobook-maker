@@ -75,7 +75,7 @@ make lint
 This document tracks the major phases of project development:
 
 - **Phase 0**: Initial concept and prototyping
-- **Phase 1**: LangFlow implementation and validation
+ 
 - **Phase 2**: Multi-agent architecture design (planned)
 - **Key decisions**: Technology choices and architectural pivots
 - **Lessons learned**: What worked, what didn't, and why
@@ -207,7 +207,7 @@ Core design philosophy guiding all technical decisions:
 **Contribution Areas:**
 
 - Core engine development (Python)
-- LangFlow component creation
+ 
 - Multi-agent system design
 - Documentation and examples
 - Testing and quality assurance
