@@ -27,7 +27,7 @@ def _make_doc() -> dict:
 def test_runner_run_basic() -> None:
     runner = AnnotateRunner()
     doc = _make_doc()
-    out = runner.run(doc)
+    out = runner.run_streaming(doc, out_dir=None, metrics=None, status_mode="none")
     chapter = out["chapters"][0]
     assert isinstance(chapter["roster"], dict)
     assert any(s["type"] == "Dialogue" for s in chapter["spans"])
@@ -36,7 +36,7 @@ def test_runner_run_basic() -> None:
 def test_runner_run_only_indices_skips() -> None:
     runner = AnnotateRunner()
     doc = _make_doc()
-    out = runner.run(doc, only_indices=[99])
+    out = runner.run_streaming(doc, out_dir=None, metrics=None, status_mode="none", only_indices=[99])
     ch = out["chapters"][0]
     assert "spans" not in ch
 
