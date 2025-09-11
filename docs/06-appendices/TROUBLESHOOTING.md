@@ -6,14 +6,12 @@ This guide is organized by problem area to help you quickly find solutions. Chec
 
 ## Quick Problem Identification
 
-| Symptom                           | Likely Area       | See Section                                           |
-| --------------------------------- | ----------------- | ----------------------------------------------------- |
-| Import errors, missing modules    | Environment Setup | [Python Environment](#python-environment)             |
-| LangFlow UI won't start           | LangFlow Issues   | [LangFlow Problems](#langflow-problems)               |
-| Components don't appear           | Component Loading | [Component Loading Issues](#component-loading-issues) |
-| Processing fails on certain books | Data Quality      | [Text Processing](#text-processing)                   |
-| Slow processing, memory errors    | Performance       | [Performance Issues](#performance-issues)             |
-| Tests failing, build errors       | Development       | [Development Issues](#development-issues)             |
+| Symptom                           | Likely Area       | See Section                               |
+| --------------------------------- | ----------------- | ----------------------------------------- |
+| Import errors, missing modules    | Environment Setup | [Python Environment](#python-environment) |
+| Processing fails on certain books | Data Quality      | [Text Processing](#text-processing)       |
+| Slow processing, memory errors    | Performance       | [Performance Issues](#performance-issues) |
+| Tests failing, build errors       | Development       | [Development Issues](#development-issues) |
 
 ## Python Environment
 
@@ -85,64 +83,15 @@ python --version  # Should be 3.11+
 1. Update virtual environment to use correct Python
 1. Use `pyenv` for Python version management
 
-## LangFlow Problems
+<!-- Removed deprecated LangFlow troubleshooting section -->
 
-### UI Won't Start
-
-**Problem**: LangFlow server fails to start
-
-```bash
-Error starting LangFlow server
-```
-
-**Diagnostic steps**:
-
-```bash
-# Check if port is in use
-lsof -i :7860
-
-# Try different port
-langflow run --port 7861
-
-# Check LangFlow installation
-langflow --version
-```
-
-**Solutions**:
-
-1. Kill existing LangFlow processes: `pkill -f langflow`
-1. Try different port: `langflow run --port 8080`
-1. Clear LangFlow cache: `rm -rf ~/.cache/langflow`
-1. Reinstall LangFlow: `pip uninstall langflow && pip install langflow`
-
-### Component Loading Issues
+<!-- Removed deprecated LangFlow component loading issues -->
 
 **Problem**: Custom components don't appear in UI
 
 **Check component structure**:
 
-```bash
-# Components must be in proper package structure
-src/abm/lf_components/
-├── __init__.py
-├── audiobook/
-│   ├── __init__.py
-│   └── your_component.py
-```
-
-**Diagnostic steps**:
-
-1. Check component inherits from `Component`
-1. Verify `__init__.py` files exist
-1. Check component imports don't fail
-1. Restart LangFlow after changes
-
-**Solutions**:
-
-1. Add missing `__init__.py` files
-1. Fix import errors in component files
-1. Check component class name matches file name
-1. Verify component directory is in Python path
+<!-- Removed details specific to LangFlow component directory layout -->
 
 ### Workflow Execution Failures
 
