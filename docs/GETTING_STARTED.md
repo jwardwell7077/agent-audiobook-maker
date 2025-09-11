@@ -20,7 +20,7 @@ graph LR
 We're in **Phase 1** of development:
 
 - ✅ **Phase 0**: PDF ingestion with deterministic chapter extraction (COMPLETE)
-- 🚧 **Phase 1**: LangFlow prototype for dialogue/narration segmentation (IN PROGRESS)
+- 🚧 **Phase 1**: Deterministic segmentation library + CLI (IN PROGRESS)
 - ⏳ **Phase 2**: Multi-agent speaker attribution and emotion analysis (PLANNED)
 - ⏳ **Phase 3**: TTS rendering with voice casting (PLANNED)
 
@@ -56,7 +56,7 @@ Start with these documents in order:
 1. **[Project Tenets](01-project-overview/KISS.md)** - Core principles (KISS, local-first, deterministic)
 1. **[System Context](01-project-overview/CONTEXT.md)** - Technical constraints and goals
 1. **[High-Level Architecture](01-project-overview/ARCHITECTURE.md)** - System overview
-1. **[Current Implementation](03-implementation/langflow/README.md)** - What's working now
+1. **[Current Implementation](03-implementation/README.md)** - What's working now
 
 ## Key Concepts
 
@@ -76,7 +76,7 @@ Start with these documents in order:
 
 - Different AI agents handle specific tasks
 - Speaker identification, emotion analysis, quality assurance
-- Currently prototyping with LangFlow, evolving to CrewAI
+- Prototyping deterministic components; evolving to CrewAI for orchestration
 
 ## Development Workflow
 
@@ -94,14 +94,11 @@ Start with these documents in order:
 python -m abm.ingestion.ingest_pdf input.pdf --mode both
 ```
 
-### Working with LangFlow Components
+### Running CLI tools
 
 ```bash
-# Install LangFlow (optional - only for visual prototyping)
-pip install langflow
-
-# Run LangFlow with custom components
-./scripts/run_langflow.sh
+# Example: Dialogue classifier demo
+python -m abm.classifier.demo --help
 ```
 
 ### Testing
@@ -125,7 +122,7 @@ agent-audiobook-maker/
 │   ├── ingestion/           # PDF → text extraction
 │   ├── classifier/          # Section classification  
 │   ├── structuring/         # Chapter organization
-│   └── lf_components/       # LangFlow components
+│   └── structuring/         # Text structuring helpers
 ├── tests/                   # Test suite
 ├── docs/                    # Documentation (you are here)
 ├── data/                    # Working directory (gitignored)
@@ -138,7 +135,7 @@ agent-audiobook-maker/
 - **Issues**: Check existing GitHub issues or create a new one
 - **Questions**: Read the Development Journey summaries:
   - [Documentation Cleanup Summary](05-development/journey/DOCUMENTATION_CLEANUP_SUMMARY.md)
-  - [LangFlow Lessons Learned](05-development/journey/LANGFLOW_LESSONS_LEARNED.md)
+  - [Documentation Cleanup Summary](05-development/journey/DOCUMENTATION_CLEANUP_SUMMARY.md)
 
 ## Next Steps
 

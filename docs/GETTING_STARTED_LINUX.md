@@ -5,7 +5,7 @@ This guide lets you spin up the repo on a fresh Linux machine and continue devel
 ## Prerequisites
 
 - OS: Ubuntu/Debian (or similar)
-- RAM: 8–16GB recommended for LangFlow + tests
+- RAM: 8–16GB recommended for tests
 - Tools: git, Python 3.10+ (3.11 tested), venv, pip, ffmpeg
 
 Install base packages (Ubuntu/Debian):
@@ -61,22 +61,7 @@ pytest -q tests/unit_tests/test_span_attribution_continuity.py
 pytest -q tests/unit_tests/test_artifact_orchestrator_style_toggle.py
 ```
 
-## Run LangFlow locally
-
-Foreground:
-
-```bash
-./scripts/run_langflow.sh
-```
-
-Background helpers:
-
-```bash
-./scripts/langflow_start_bg.sh
-./scripts/langflow_stop.sh
-```
-
-Spans-first example flows live under `examples/langflow/*.v15.json`. You can import them in the UI or try the orchestrator sample:
+## Run demo scripts
 
 ```bash
 python scripts/demo_confidence_orchestrator.py
@@ -105,18 +90,17 @@ DB init scripts live under `database/init/`.
 - spans_attr schema: `docs/02-specifications/data-schemas/spans_attr.schema.json`
 - Contract overview: `docs/02-specifications/data-schemas/SPANS_ATTR_CONTRACT.md`
 - Deterministic attribution behavior and knobs:
-  - `docs/03-implementation/langflow/SPEAKER_ATTRIBUTION_DETERMINISTIC.md`
-  - `docs/03-implementation/langflow/SPANS_FIRST_CONFIDENCE.md`
+  - See specs in `docs/02-specifications/components/`
 
 ## Troubleshooting
 
 - Exit code 137: Usually OOM. Close other apps or increase RAM/swap.
-- Port conflicts: Stop any prior LangFlow instances (`./scripts/langflow_stop.sh`).
+- Port conflicts: Ensure required ports are free.
 - Python build deps: If wheels fail, install `build-essential libffi-dev libssl-dev`.
 - ffmpeg missing: Install via `apt` as shown above.
 
 ## Next steps
 
-- Import and run `examples/langflow/abm_spans_first_pipeline.v15.json`.
+- Explore the CLI demos under `scripts/` and `src/abm/*`.
 - Validate `spans_attr.jsonl` against the schema (optional if you install `jsonschema`).
 - Start downstream work against the spans_attr contract (fields/methods documented in the contract doc).

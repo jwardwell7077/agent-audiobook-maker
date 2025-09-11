@@ -9,7 +9,7 @@
     "terminal.integrated.env.linux": {
         "VIRTUAL_ENV": "${workspaceFolder}/.venv",
         "PATH": "${workspaceFolder}/scripts/dev-bin:${workspaceFolder}/.venv/bin:/usr/bin:/bin:/usr/local/bin",
-    "REMOVED_LANGFLOW_URL": "deprecated"
+        "REMOVED_LANGFLOW_URL": "deprecated"
     },
     "python.terminal.activateEnvironment": true,
     "makefile.configureOnOpen": false,

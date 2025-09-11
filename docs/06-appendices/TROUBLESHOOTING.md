@@ -42,7 +42,7 @@ which python
 **Problem**: Import errors despite packages being installed
 
 ```python
-ModuleNotFoundError: No module named 'langflow'
+ModuleNotFoundError: No module named 'some_module'
 ```
 
 **Solutions**:
@@ -103,7 +103,7 @@ Component execution failed: [Component Name]
 
 **Debugging steps**:
 
-1. Check component logs in LangFlow UI
+1. Inspect logs for the failing component or script
 1. Test component with minimal input
 1. Verify input/output data types match
 1. Check for missing required inputs
@@ -210,7 +210,7 @@ MemoryError: Unable to allocate array
 
 **Solutions**:
 
-1. Clean temporary files: `rm -rf /tmp/langflow_*`
+1. Clean temporary files: `rm -rf /tmp/abm_*`
 1. Archive or delete old output files
 1. Process books individually rather than batches
 1. Monitor disk usage: `df -h`
@@ -307,9 +307,9 @@ git status
 git branch
 make test
 
-# LangFlow diagnostics  
-langflow --version
-ps aux | grep langflow
+# Python & environment
+python --version
+pip list
 ```
 
 ### Where to Ask
