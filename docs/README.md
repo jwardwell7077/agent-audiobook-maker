@@ -56,8 +56,7 @@ AI‑generated, Copilot‑assisted. Categorized reference for fast navigation.
 ## Roadmap
 
 - Multi‑agent roadmap: [05-development/planning/MULTI_AGENT_ROADMAP.md](05-development/planning/MULTI_AGENT_ROADMAP.md)
-- LangFlow component plan: [LANGFLOW_COMPONENT_PLAN.md](LANGFLOW_COMPONENT_PLAN.md)
-- Learning path (LangFlow/LangChain/LangSmith/LangGraph/CrewAI): [03-implementation/multi-agent/LEARNING_PATH_MULTI_AGENT.md](03-implementation/multi-agent/LEARNING_PATH_MULTI_AGENT.md)
+- Learning path (LangGraph/CrewAI): [03-implementation/multi-agent/LEARNING_PATH_MULTI_AGENT.md](03-implementation/multi-agent/LEARNING_PATH_MULTI_AGENT.md)
 
 ## Templates
 
