@@ -1,0 +1,88 @@
+from __future__ import annotations
+
+"""SQLite-based cache for LLM decisions."""
+
+import hashlib
+import json
+import sqlite3
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict, Optional
+
+
+@dataclass
+class LLMCache:
+    """Tiny SQLite cache mapping prompt hashes to JSON results.
+
+    Attributes:
+        path: Location of the SQLite database file.
+    """
+
+    path: Path
+
+    def __post_init__(self) -> None:
+        """Create the database file and table if needed."""
+
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self._db = sqlite3.connect(self.path)
+        self._db.execute(
+            "CREATE TABLE IF NOT EXISTS cache (key TEXT PRIMARY KEY, value TEXT NOT NULL)"
+        )
+        self._db.commit()
+
+    def _key(
+        self,
+        *,
+        roster: Dict[str, list],
+        left: str,
+        mid: str,
+        right: str,
+        span_type: str,
+        model: str,
+    ) -> str:
+        """Generate a deterministic hash for the given prompt context."""
+
+        h = hashlib.sha256()
+        h.update(model.encode())
+        h.update(json.dumps(sorted(roster.keys()), ensure_ascii=False).encode())
+        h.update(span_type.encode())
+        h.update(left.encode())
+        h.update(mid.encode())
+        h.update(right.encode())
+        return h.hexdigest()
+
+    def get(self, **kwargs: Any) -> Optional[Dict[str, Any]]:
+        """Retrieve a cached result if present.
+
+        Returns:
+            Optional[Dict[str, Any]]: Parsed JSON result or ``None`` if missing.
+        """
+
+        k = self._key(**kwargs)
+        cur = self._db.execute("SELECT value FROM cache WHERE key=?", (k,))
+        row = cur.fetchone()
+        if not row:
+            return None
+        try:
+            return json.loads(row[0])
+        except Exception:
+            return None
+
+    def set(self, value: Dict[str, Any], **kwargs: Any) -> None:
+        """Store a result in the cache."""
+
+        k = self._key(**kwargs)
+        self._db.execute(
+            "INSERT OR REPLACE INTO cache (key, value) VALUES (?, ?)",
+            (k, json.dumps(value, ensure_ascii=False)),
+        )
+        self._db.commit()
+
+    def close(self) -> None:
+        """Close the underlying database connection."""
+
+        try:
+            self._db.close()
+        except Exception:
+            pass
+
