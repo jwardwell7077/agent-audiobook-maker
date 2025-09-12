@@ -138,3 +138,73 @@ Entry module: [`annotate_cli.py`](../../../src/abm/annotate/annotate_cli.py).
 ---
 
 *Part of [Implementation](../README.md)*
+
+## End-to-end pipeline with BookNLP fuse and voice casting
+
+Example command sequence using full-doc parse, optional BookNLP fusion, LLM refinement, and voice casting.
+
+1) Stage A (heuristic attribution, doc-mode)
+
+```bash
+python -m abm.annotate.annotate_cli \
+	--in data/clean/mvs/classified/chapters.json \
+	--out-json data/ann/mvs/combined.json \
+	--out-roster data/ann/mvs/book_roster.json \
+	--out-dir data/ann/mvs/chapters \
+	--out-md data/ann/mvs/review.md \
+	--metrics-jsonl data/ann/mvs/metrics.jsonl \
+	--status rich \
+	--mode high \
+	--parse-mode doc \
+	--doc-cache data/.doccache \
+	--pipe-batch-size 8 \
+	--treat-single-as-thought \
+	--roster-scope book \
+	--verbose
+```
+
+2) Stage A+ (BookNLP fuse)
+
+```bash
+python -m abm.annotate.bnlp_refine \
+	--tagged data/ann/mvs/combined.json \
+	--out    data/ann/mvs/combined_bnlp.json \
+	--verbose
+```
+
+3) Stage B (LLM refine). First prepare candidates from the BNLP-fused JSON, then run the refiner. Note this points Stage‑B at `combined_bnlp.json`.
+
+```bash
+# Prepare candidates JSONL
+python -m abm.annotate.llm_prep_cli \
+	--in  data/ann/mvs/combined_bnlp.json \
+	--out data/ann/mvs/spans_for_llm.jsonl
+
+# Refine with local OpenAI-compatible endpoint (e.g., Ollama)
+python -m abm.annotate.llm_refine \
+	--tagged     data/ann/mvs/combined_bnlp.json \
+	--candidates data/ann/mvs/spans_for_llm.jsonl \
+	--out-json   data/ann/mvs/combined_refined.json \
+	--out-md     data/ann/mvs/review_refined.md \
+	--endpoint   http://127.0.0.1:11434/v1 \
+	--model      llama3.1:8b-instruct-q6_K \
+	--votes      3 \
+	--accept-margin 0.05
+```
+
+4) Voice casting (profiles + casting plan)
+
+```bash
+python -m abm.voice.voicecasting_cli \
+	--combined      data/ann/mvs/combined_refined.json \
+	--out-profiles  data/ann/mvs/speaker_profile.json \
+	--out-cast      data/ann/mvs/casting_plan.json \
+	--top-k 16 --minor-pool 6 \
+	--verbose
+```
+
+Outputs:
+
+- `combined_bnlp.json`: Stage‑A JSON with BookNLP suggestions fused where helpful.
+- `combined_refined.json`: LLM‑cleaned final attributions.
+- `speaker_profile.json` and `casting_plan.json`: inputs for multi‑voice TTS.

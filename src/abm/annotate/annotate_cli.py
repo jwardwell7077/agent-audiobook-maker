@@ -49,11 +49,18 @@ class AnnotateRunner:
         stages: Sequence[str] | None = None,
         roster_scope: str = "book",
         roster_use_ner: bool = True,
+        parse_mode: str = "doc",
+        doc_cache_dir: Path | None = None,
+        pipe_batch_size: int = 8,
     ) -> None:
         self.verbose = verbose
         self.stages = list(stages or ["normalize", "roster", "segment", "attribute"])
         self.roster_scope = roster_scope
         self.roster_use_ner = roster_use_ner
+        self.parse_mode = parse_mode
+        self.doc_cache_dir = doc_cache_dir or Path("data/.doccache")
+        self.pipe_batch_size = pipe_batch_size
+        self.spacy_model = spacy_model
         self.normalizer = ChapterNormalizer(NormalizerConfig(treat_heading_as_removable=remove_heading))
         self.segmenter = Segmenter(
             SegmenterConfig(
@@ -124,6 +131,34 @@ class AnnotateRunner:
             RosterConfig(use_spacy=self.roster_use_ner),
             nlp=self.engine.ner_nlp if self.roster_use_ner else None,
         )
+
+        # Optional: prepare full-doc parse cache before chapter loop
+        use_doc = self.parse_mode == "doc"
+        doc_by_idx: dict[int, Any] = {}
+        if use_doc:
+            try:
+                from abm.parse.cache import DocCache, DocCacheConfig
+
+                model = self.spacy_model or "en_core_web_trf"
+                dcache = DocCache(
+                    DocCacheConfig(cache_dir=self.doc_cache_dir, model_name=model, batch_size=self.pipe_batch_size),
+                    verbose=self.verbose,
+                )
+
+                # Ensure text exists for every chapter
+                chapters_for_parse: list[dict[str, Any]] = []
+                for ch in normalized:
+                    if not ch.get("text"):
+                        ch["text"] = "\n".join(ch.get("paragraphs", []))
+                    chapters_for_parse.append(ch)
+
+                ch_docs = dcache.load_or_parse(chapters_for_parse)
+                doc_by_idx = {int(ch.get("chapter_index", -1)): doc for ch, doc in ch_docs}
+            except Exception as e:
+                if self.verbose:
+                    print(f"[parse] doc cache unavailable, falling back to window mode: {e}")
+                use_doc = False
+                doc_by_idx = {}
 
         # ROSTER (book) stage
         if "roster" in self.stages:
@@ -228,18 +263,22 @@ class AnnotateRunner:
                                 print(f"[ch {idx}] attribute: start")
 
                             # Prepare lightweight neighbor extractor
-                            def _lite(span: SegSpan):
+                            def _lite(span: SegSpan) -> dict[str, int | str]:
                                 return {"start": span.start, "end": span.end, "type": span.type.value}
 
                             for i, s in enumerate(seg_spans):
                                 prev_s = _lite(seg_spans[i - 1]) if i > 0 else None
                                 next_s = _lite(seg_spans[i + 1]) if i + 1 < len(seg_spans) else None
+                                doc = doc_by_idx.get(idx) if use_doc else None
+                                kwargs: dict[str, Any] = {"neighbors": (prev_s, next_s)}
+                                if doc is not None:
+                                    kwargs["doc"] = doc
                                 speaker, method, conf = self.engine.attribute_span(
                                     ch_norm["text"],
                                     (s.start, s.end),
                                     s.type.value,
                                     roster,
-                                    neighbors=(prev_s, next_s),
+                                    **kwargs,
                                 )
                                 spans_out.append(
                                     SpanOut(
@@ -405,6 +444,24 @@ def _parse_args() -> argparse.Namespace:
         action="store_true",
         help="Disable spaCy NER during roster building (use heuristics only).",
     )
+    # Full-doc parse mode options
+    ap.add_argument(
+        "--parse-mode",
+        choices=["window", "doc"],
+        default="doc",
+        help="Use per-span window parses (legacy) or full-doc parse per chapter.",
+    )
+    ap.add_argument(
+        "--doc-cache",
+        default="data/.doccache",
+        help="Directory to store .spacy DocBin caches for full-doc mode.",
+    )
+    ap.add_argument(
+        "--pipe-batch-size",
+        type=int,
+        default=8,
+        help="spaCy nlp.pipe batch size for full-doc mode.",
+    )
     return ap.parse_args()
 
 
@@ -432,6 +489,9 @@ def main() -> None:
         stages=[s.strip() for s in str(args.stages).split(",") if s.strip()],
         roster_scope=args.roster_scope,
         roster_use_ner=(not args.no_roster_ner),
+        parse_mode=args.parse_mode,
+        doc_cache_dir=Path(args.doc_cache),
+        pipe_batch_size=args.pipe_batch_size,
     )
 
     doc = _load_json(in_path)

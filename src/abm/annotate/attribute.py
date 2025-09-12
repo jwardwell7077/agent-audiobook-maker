@@ -5,16 +5,16 @@ import os
 import re
 import warnings
 from dataclasses import dataclass
+from typing import Any, cast
 
 # --- Optional deps (handled gracefully) ---
 try:
-    import spacy  # type: ignore
-    from spacy.matcher import DependencyMatcher  # type: ignore
+    import spacy as spacy_mod
 
     _HAS_SPACY = True
 except Exception:
-    spacy = None  # type: ignore
-    DependencyMatcher = object  # type: ignore
+    # Fall back to dummy object; guarded by _HAS_SPACY checks elsewhere
+    spacy_mod = None  # type: ignore
     _HAS_SPACY = False
 
 # Avoid optional torchvision import path inside Transformers (not needed for NLP)
@@ -183,16 +183,16 @@ class AttributeEngine:
         self.use_coref = use_coref
 
         # Pipelines
-        self.ner_nlp = None
-        self.dep_nlp = None
-        self.dep_matcher = None
-        self.coref_nlp = None
+        self.ner_nlp: Any | None = None
+        self.dep_nlp: Any | None = None
+        self.dep_matcher: Any | None = None
+        self.coref_nlp: Any | None = None
 
         if _HAS_SPACY:
             # Prefer GPU if available (spaCy/transformers will leverage torch CUDA)
             self.on_gpu = False
             try:
-                import torch as _torch  # type: ignore
+                import torch as _torch
 
                 cuda_ok = bool(_torch.cuda.is_available())
                 print(f"[attribute] CUDA available: {cuda_ok}")
@@ -201,7 +201,9 @@ class AttributeEngine:
                 self.on_gpu = False
             # Prefer GPU when present, but don't hard-require CuPy
             try:
-                spacy.prefer_gpu()  # type: ignore[attr-defined]
+                _pref = getattr(spacy_mod, "prefer_gpu", None)
+                if callable(_pref):
+                    _pref()
             except Exception:
                 pass
             model_name = self.force_spacy_model or (
@@ -213,7 +215,13 @@ class AttributeEngine:
             self.dep_nlp = self.ner_nlp
             if self.verbose:
                 print("[attribute] building dependency matcher")
-            self.dep_matcher = DependencyMatcher(self.dep_nlp.vocab)  # type: ignore[call-arg]
+            # Import here to avoid top-level type assignment and ease optionality
+            from spacy.matcher import DependencyMatcher as _DM  # type: ignore
+
+            DM: Any = cast(Any, _DM)
+            assert self.dep_nlp is not None
+            vocab_any = cast(Any, self.dep_nlp).vocab
+            self.dep_matcher = DM(vocab_any)
             self._init_dep_patterns()
         else:
             if self.verbose:
@@ -227,16 +235,18 @@ class AttributeEngine:
                 if self.verbose:
                     print("[attribute] loading fastcoref pipeline")
 
-                self.coref_nlp = spacy.load("en_core_web_sm", exclude=["ner", "lemmatizer", "textcat"])  # type: ignore
+                sp: Any = cast(Any, spacy_mod)
+                cnlp = sp.load("en_core_web_sm", exclude=["ner", "lemmatizer", "textcat"])
                 add_cfg = {}
                 try:
-                    import torch as _torch  # type: ignore
+                    import torch as _torch
 
                     add_cfg = {"device": "cuda:0" if _torch.cuda.is_available() else "cpu"}
                 except Exception:
                     add_cfg = {"device": "cpu"}
                 # device config is best-effort; component will default to torch device
-                self.coref_nlp.add_pipe("fastcoref", config=add_cfg)  # type: ignore
+                cnlp.add_pipe("fastcoref", config=add_cfg)
+                self.coref_nlp = cnlp
             except Exception as e:
                 if self.verbose:
                     print(f"[attribute] fastcoref unavailable: {e}")
@@ -259,7 +269,7 @@ class AttributeEngine:
 
         # Clear if already present (defensive for hot-reloads)
         try:
-            self.dep_matcher.remove("REPORT_VERB_SUBJ")  # type: ignore[attr-defined]
+            self.dep_matcher.remove("REPORT_VERB_SUBJ")
         except Exception:
             pass
 
@@ -276,7 +286,7 @@ class AttributeEngine:
             },
         ]
 
-        self.dep_matcher.add("REPORT_VERB_SUBJ", [pattern])  # type: ignore[arg-type]
+        self.dep_matcher.add("REPORT_VERB_SUBJ", [pattern])
 
     def attribute_span(
         self,
@@ -284,7 +294,8 @@ class AttributeEngine:
         span_chars: tuple[int, int],
         span_type: str,
         roster: dict[str, list[str]],
-        neighbors: tuple[dict[str, int | str] | None, dict[str, int | str] | None] | None = None,
+        neighbors: tuple[dict[str, int] | None, dict[str, int] | None] | None = None,
+        doc: Any | None = None,
     ) -> tuple[str, str, float]:
         # Non-dialogue is handled by caller; be defensive anyway
         if span_type in {"System"}:
@@ -303,6 +314,46 @@ class AttributeEngine:
         speaker, method, conf = self._try_descriptor(text, span_chars)
         if speaker:
             return speaker, method, conf
+
+        # If we have a full-doc parse, try sentence-bounded dependency first
+        if doc is not None:
+            try:
+                a, b = span_chars
+                # Find containing sentences for start and end
+                sents = list(getattr(doc, "sents", []))
+                sent_a = next(
+                    (s for s in sents if getattr(s, "start_char", -1) <= a < getattr(s, "end_char", -1)),
+                    None,
+                )
+                sent_b = next(
+                    (s for s in sents if getattr(s, "start_char", -1) < b <= getattr(s, "end_char", -1)),
+                    None,
+                )
+                regions: list[tuple[int, int]] = []
+                if sent_b is not None:
+                    # forward region: from quote end to end of next sentence (max clamp)
+                    try:
+                        next_sent = sent_b.nbor(1)
+                    except Exception:
+                        next_sent = None
+                    f_end = getattr(next_sent, "end_char", getattr(sent_b, "end_char", b))
+                    regions.append((b, min(len(text), f_end, b + self.cfg.max_context_chars)))
+                if sent_a is not None:
+                    # backward region: from start of previous sentence to quote start (max clamp)
+                    try:
+                        prev_sent = sent_a.nbor(-1)
+                    except Exception:
+                        prev_sent = None
+                    _start = getattr(prev_sent, "start_char", getattr(sent_a, "start_char", a))
+                    regions.append((max(0, a - self.cfg.max_context_chars), a))
+
+                for ra, rb in regions:
+                    speaker, method, conf = self._dep_in_window(text, ra, rb, b, roster)
+                    if speaker:
+                        return speaker, method, conf
+            except Exception:
+                # Fall through to window-based approach
+                pass
 
         # Dependency subject (bounded windows if neighbors are provided)
         if neighbors is not None:
@@ -383,7 +434,7 @@ class AttributeEngine:
         rel_end_char = max(0, min(len(ctx) - 1, quote_end - a))
         rel_end_tok = min(range(len(doc)), key=lambda i: abs(doc[i].idx - rel_end_char)) if len(doc) else 0
 
-        matches = self.dep_matcher(doc) if self.dep_matcher is not None else []  # type: ignore[misc]
+        matches = self.dep_matcher(doc) if self.dep_matcher is not None else []
         if not matches:
             # fall back to phrasal rule in this window
             return self._try_phrasal_dep(doc, rel_end_tok, roster, a)
@@ -413,13 +464,13 @@ class AttributeEngine:
         text: str,
         s: int,
         e: int,
-        prev_lite: dict[str, int | str] | None,
-        next_lite: dict[str, int | str] | None,
+        prev_lite: dict[str, int] | None,
+        next_lite: dict[str, int] | None,
     ) -> list[tuple[int, int]]:
         """Return candidate [a:b] absolute windows (forward first, then backward) with dynamic sizes."""
         sizes = (self.cfg.min_context_chars, self.cfg.mid_context_chars, self.cfg.max_context_chars)
-        forward_limit = next_lite["start"] if next_lite else len(text)
-        backward_limit = prev_lite["end"] if prev_lite else 0
+        forward_limit = int(next_lite["start"]) if next_lite is not None else len(text)
+        backward_limit = int(prev_lite["end"]) if prev_lite is not None else 0
 
         windows: list[tuple[int, int]] = []
         # forward tries
@@ -478,7 +529,7 @@ class AttributeEngine:
         rel_end_char = e - a
         rel_end_tok = min(range(len(doc)), key=lambda i: abs(doc[i].idx - rel_end_char)) if len(doc) > 0 else 0
 
-        matches = self.dep_matcher(doc) if self.dep_matcher is not None else []  # type: ignore[misc]
+        matches = self.dep_matcher(doc) if self.dep_matcher is not None else []
         if not matches:
             return self._try_phrasal_dep(doc, rel_end_tok, roster, a)
 
@@ -502,10 +553,16 @@ class AttributeEngine:
                 return (canon or name), "rule:coref", 0.86 if canon else 0.84
         return None, "", 0.0
 
-    def _try_phrasal_dep(self, doc, rel_end_tok: int, roster: dict[str, list[str]], base_offset: int):
+    def _try_phrasal_dep(
+        self,
+        doc: Any,
+        rel_end_tok: int,
+        roster: dict[str, list[str]],
+        base_offset: int,
+    ) -> tuple[str | None, str, float]:
         if not _HAS_SPACY:
             return None, "", 0.0
-        best = None
+        best: tuple[int, int, int] | None = None
         for i in range(len(doc) - 1):
             bigram = f"{doc[i].lemma_.lower()} {doc[i + 1].lemma_.lower()}"
             if bigram in PHRASAL_SPEECH_VERBS:
@@ -530,7 +587,8 @@ class AttributeEngine:
             canon = self._canonical_from_roster(subj_token.text, roster)
             return (canon or subj_token.text), "rule:dep_phrasal", 0.90 if canon else 0.88
 
-        name = self._resolve_pronoun_coref(doc.text, (subj_token.idx, subj_token.idx + len(subj_token)))
+        # Otherwise, try pronoun coref within this window
+        name = self._resolve_pronoun_coref(cast(Any, doc).text, (subj_token.idx, subj_token.idx + len(subj_token)))
         if name:
             canon = self._canonical_from_roster(name, roster)
             return (canon or name), "rule:coref", 0.84 if canon else 0.82
@@ -567,12 +625,12 @@ class AttributeEngine:
         return None
 
     @staticmethod
-    def _safe_load_spacy(model: str):
+    def _safe_load_spacy(model: str) -> object:
         assert _HAS_SPACY
         try:
-            return spacy.load(model)  # type: ignore
+            return cast(Any, spacy_mod).load(model)
         except Exception:
-            return spacy.load("en_core_web_sm")  # type: ignore
+            return cast(Any, spacy_mod).load("en_core_web_sm")
 
     # --------------------------- LLM hook ---------------------------
 
