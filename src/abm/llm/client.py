@@ -31,7 +31,14 @@ class OpenAICompatClient:
     timeout_s: int = 120
 
     def _headers(self) -> Dict[str, str]:
-        """Return authorization headers for a request."""
+        """Return authorization headers for a request.
+
+        Returns:
+            Dict[str, str]: Mapping with the ``Authorization`` header.
+
+        Raises:
+            None: This helper does not raise exceptions.
+        """
 
         return {"Authorization": f"Bearer {self.api_key}"}
 

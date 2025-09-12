@@ -42,6 +42,9 @@ class LLMBackend:
         Returns:
             Dict[str, str]: Authorization header carrying an API key.  Ollama
             ignores the value but remote services may require it.
+
+        Raises:
+            None: This helper does not raise exceptions.
         """
 
         # OpenAI-compatible header (Ollama ignores the key)
@@ -62,6 +65,11 @@ class LLMService:
 
         Args:
             backend: Configuration describing the target endpoint.
+        Returns:
+            None
+
+        Raises:
+            None
         """
 
         self.backend = backend
@@ -72,6 +80,9 @@ class LLMService:
 
         Returns:
             bool: ``True`` if a 200 OK response is received, ``False`` otherwise.
+
+        Raises:
+            None: Network errors are caught and treated as ``False``.
         """
 
         try:
@@ -85,6 +96,9 @@ class LLMService:
 
         Args:
             timeout_s: Maximum time in seconds to wait for the endpoint.
+
+        Returns:
+            None
 
         Raises:
             TimeoutError: If the endpoint does not respond before ``timeout_s``.
@@ -107,7 +121,17 @@ class LLMService:
         self._wait_ready(timeout_s)
 
     def _wait_ready(self, timeout_s: float) -> None:
-        """Poll the endpoint until it responds or ``timeout_s`` elapses."""
+        """Poll the endpoint until it responds or ``timeout_s`` elapses.
+
+        Args:
+            timeout_s: Seconds to wait for the service to become ready.
+
+        Returns:
+            None
+
+        Raises:
+            TimeoutError: If the endpoint does not respond within the timeout.
+        """
 
         t0 = time.time()
         while time.time() - t0 < timeout_s:
@@ -121,6 +145,12 @@ class LLMService:
 
         Args:
             timeout_s: Seconds to wait for graceful shutdown.
+
+        Returns:
+            None
+
+        Raises:
+            None: Errors during termination are suppressed.
         """
 
         if not self._proc:
@@ -140,6 +170,12 @@ class LLMService:
 
         Args:
             model: Optional model name; defaults to :attr:`LLMBackend.model`.
+
+        Returns:
+            None
+
+        Raises:
+            subprocess.CalledProcessError: If ``ollama pull`` exits non-zero.
         """
 
         if self.backend.kind != "ollama":

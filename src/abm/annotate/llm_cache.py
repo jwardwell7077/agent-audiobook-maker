@@ -21,7 +21,14 @@ class LLMCache:
     path: Path
 
     def __post_init__(self) -> None:
-        """Create the database file and table if needed."""
+        """Create the database file and table if needed.
+
+        Returns:
+            None
+
+        Raises:
+            sqlite3.Error: If the database cannot be initialized.
+        """
 
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self._db = sqlite3.connect(self.path)
@@ -40,7 +47,22 @@ class LLMCache:
         span_type: str,
         model: str,
     ) -> str:
-        """Generate a deterministic hash for the given prompt context."""
+        """Generate a deterministic hash for the given prompt context.
+
+        Args:
+            roster: Mapping of speaker names to aliases.
+            left: Text immediately preceding the span.
+            mid: The span text itself.
+            right: Text immediately following the span.
+            span_type: Type of span being attributed.
+            model: Model identifier used for the request.
+
+        Returns:
+            str: Hex digest uniquely identifying the prompt.
+
+        Raises:
+            None
+        """
 
         h = hashlib.sha256()
         h.update(model.encode())
@@ -54,8 +76,14 @@ class LLMCache:
     def get(self, **kwargs: Any) -> Optional[Dict[str, Any]]:
         """Retrieve a cached result if present.
 
+        Args:
+            **kwargs: Components of the prompt used to compute the cache key.
+
         Returns:
             Optional[Dict[str, Any]]: Parsed JSON result or ``None`` if missing.
+
+        Raises:
+            None
         """
 
         k = self._key(**kwargs)
@@ -69,7 +97,18 @@ class LLMCache:
             return None
 
     def set(self, value: Dict[str, Any], **kwargs: Any) -> None:
-        """Store a result in the cache."""
+        """Store a result in the cache.
+
+        Args:
+            value: JSON-serializable result to persist.
+            **kwargs: Components of the prompt used to compute the cache key.
+
+        Returns:
+            None
+
+        Raises:
+            sqlite3.Error: If the insert fails.
+        """
 
         k = self._key(**kwargs)
         self._db.execute(
@@ -79,7 +118,14 @@ class LLMCache:
         self._db.commit()
 
     def close(self) -> None:
-        """Close the underlying database connection."""
+        """Close the underlying database connection.
+
+        Returns:
+            None
+
+        Raises:
+            None: Errors during close are ignored.
+        """
 
         try:
             self._db.close()

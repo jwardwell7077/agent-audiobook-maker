@@ -32,6 +32,9 @@ def speaker_user_prompt(
 
     Returns:
         str: A formatted prompt ready to send to the LLM.
+
+    Raises:
+        None
     """
 
     roster_flat = sorted(roster.keys()) if roster else []
