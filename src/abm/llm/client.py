@@ -8,10 +8,14 @@ to return JSON content.
 """
 
 import json
+import logging
 from dataclasses import dataclass
 from typing import Any, Dict
 
 import requests
+
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -62,7 +66,8 @@ class OpenAICompatClient:
 
         Returns:
             Dict[str, Any]: Parsed JSON response.  If parsing fails, a fallback
-            object with ``speaker``, ``confidence`` and raw content is returned.
+            object with ``speaker``, ``confidence`` and ``raw`` fields is
+            returned.
 
         Raises:
             requests.HTTPError: If the HTTP request fails.
@@ -89,7 +94,8 @@ class OpenAICompatClient:
         content = r.json()["choices"][0]["message"]["content"]
         try:
             return json.loads(content)
-        except Exception:
+        except Exception as exc:
+            logger.debug("Failed to parse JSON content: %s", exc)
             # Return a best-effort structure to avoid crashing callers.
             return {"speaker": "Unknown", "confidence": 0.0, "raw": content}
 

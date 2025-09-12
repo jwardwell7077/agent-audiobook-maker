@@ -8,6 +8,7 @@ service and :class:`LLMService` helpers for starting, stopping and probing the
 server.
 """
 
+import logging
 import os
 import signal
 import subprocess
@@ -18,6 +19,8 @@ from typing import Optional
 import requests
 
 DEFAULT_ENDPOINT = "http://127.0.0.1:11434/v1"
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -150,19 +153,19 @@ class LLMService:
             None
 
         Raises:
-            None: Errors during termination are suppressed.
+            None: Errors during termination are logged and suppressed.
         """
 
         if not self._proc:
             return
         try:
             os.killpg(os.getpgid(self._proc.pid), signal.SIGINT)
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("Failed to signal LLM process: %s", exc)
         try:
             self._proc.wait(timeout=timeout_s)
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("LLM process did not exit cleanly: %s", exc)
         self._proc = None
 
     def pull_model(self, model: str | None = None) -> None:
