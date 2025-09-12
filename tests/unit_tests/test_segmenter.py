@@ -7,7 +7,7 @@ def test_segmenter_basic_spans() -> None:
         "paragraphs": [
             "Chapter 1: Start",
             "You gained <Skill>!",
-            "He said, \"Hello.\"",
+            'He said, "Hello."',
             "She thought, 'Hmm.'",
             "***",
             "<Status>.",

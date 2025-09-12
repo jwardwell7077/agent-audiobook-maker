@@ -1,3 +1,4 @@
+# ruff: noqa: I001
 """Annotation utilities for processing chapters.
 
 This subpackage provides helpers for normalizing chapter text, segmenting it

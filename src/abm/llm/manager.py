@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Utilities to manage a local or remote LLM service.
 
 This module provides a small wrapper around an OpenAI-compatible endpoint
@@ -8,13 +6,14 @@ service and :class:`LLMService` helpers for starting, stopping and probing the
 server.
 """
 
+from __future__ import annotations
+
 import logging
 import os
 import signal
 import subprocess
 import time
 from dataclasses import dataclass
-from typing import Optional
 
 import requests
 
@@ -76,7 +75,8 @@ class LLMService:
         """
 
         self.backend = backend
-        self._proc: Optional[subprocess.Popen] = None
+        # Handle to a spawned local LLM process (ollama); None when not managing
+        self._proc: subprocess.Popen[bytes] | None = None
 
     def is_alive(self) -> bool:
         """Check whether the LLM endpoint responds to ``/models``.
@@ -185,4 +185,3 @@ class LLMService:
             return
         name = model or self.backend.model
         subprocess.run(["ollama", "pull", name], check=True)
-

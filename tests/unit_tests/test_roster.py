@@ -4,11 +4,7 @@ from abm.annotate.roster import build_chapter_roster, merge_book_roster
 
 
 def test_build_chapter_roster_extracts_heuristic_names() -> None:
-    text = (
-        '"Thanks, Bob!" Alice said.\n'
-        "Captain Holt arrived.\n"
-        "<User: Quinn>"
-    )
+    text = '"Thanks, Bob!" Alice said.\nCaptain Holt arrived.\n<User: Quinn>'
 
     roster = build_chapter_roster(text)
 
@@ -64,4 +60,3 @@ def test_build_chapter_roster_spacy(monkeypatch) -> None:
     canon = next(iter(roster))
     assert "John" in roster[canon]
     assert "Smith" in roster[canon]
-

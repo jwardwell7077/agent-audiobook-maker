@@ -1,9 +1,6 @@
-from __future__ import annotations
-
 """Prompt helpers for LLM speaker attribution."""
 
-from typing import Dict, List
-
+from __future__ import annotations
 
 SYSTEM_SPEAKER = (
     "You are a careful literary annotator. "
@@ -15,7 +12,7 @@ SYSTEM_SPEAKER = (
 
 
 def speaker_user_prompt(
-    roster: Dict[str, List[str]],
+    roster: dict[str, list[str]],
     left: str,
     mid: str,
     right: str,
@@ -48,4 +45,3 @@ def speaker_user_prompt(
         "Choose the SPEAKER from ROSTER or 'Unknown'. "
         'Return JSON: {"speaker": <string>, "confidence": <0..1>}.'
     )
-

@@ -154,13 +154,15 @@ class Segmenter:
             ch = ptext[i]
             if ch in self._OPEN_D:
                 j, note = self._scan_until(ptext, i + 1, self._CLOSE_D)
-                yield Span(abs_start + i, abs_start + j + 1, SpanType.DIALOGUE, ptext[i:j + 1], para_index, notes=note)
+                yield Span(
+                    abs_start + i, abs_start + j + 1, SpanType.DIALOGUE, ptext[i : j + 1], para_index, notes=note
+                )
                 i = j + 1
                 continue
             if ch in self._OPEN_S and not self._is_apostrophe(ptext, i):
                 j, note = self._scan_until(ptext, i + 1, self._CLOSE_S)
                 span_type = SpanType.THOUGHT if self.config.treat_single_quotes_as_thought else SpanType.DIALOGUE
-                yield Span(abs_start + i, abs_start + j + 1, span_type, ptext[i:j + 1], para_index, notes=note)
+                yield Span(abs_start + i, abs_start + j + 1, span_type, ptext[i : j + 1], para_index, notes=note)
                 i = j + 1
                 continue
             i += 1
