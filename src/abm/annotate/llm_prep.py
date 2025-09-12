@@ -1,135 +1,77 @@
 from __future__ import annotations
 
-import hashlib
-import json
-from dataclasses import asdict, dataclass
-from pathlib import Path
-from typing import Any
+"""Candidate extractor for Stage B LLM refinement."""
+
+from dataclasses import dataclass
+from typing import Any, Dict, List
 
 
 @dataclass
 class LLMCandidateConfig:
-    """Config for selecting spans that should go to the LLM."""
+    """Configuration for selecting spans that require LLM refinement.
+
+    Attributes:
+        conf_threshold: Confidence above which spans are skipped.
+        types: Span types eligible for refinement.
+    """
 
     conf_threshold: float = 0.90
-    consider_methods: tuple[str, ...] = (
-        "rule:unknown",
-        "rule:coref",
-        "rule:turn_taking",
-        "rule:descriptor",
-    )
-    window_chars_before: int = 360
-    window_chars_after: int = 360
-    include_roster: bool = True
-
-
-@dataclass
-class LLMCandidate:
-    """Serializable record for one span that needs LLM refinement."""
-
-    chapter_index: int
-    chapter_title: str
-    span_id: int
-    span_type: str
-    baseline_speaker: str
-    baseline_method: str
-    baseline_confidence: float
-    text: str
-    context_before: str
-    context_after: str
-    roster: list[str]
-    notes: str | None = None
-    fingerprint: str | None = None
+    types: frozenset[str] = frozenset({"Dialogue", "Thought"})
 
 
 class LLMCandidatePreparer:
-    """Extract low-confidence spans into a JSONL for a separate LLM stage."""
+    """Collect spans that need LLM help (Unknown or low-confidence).
 
-    def __init__(self, config: LLMCandidateConfig | None = None) -> None:
-        self.cfg = config or LLMCandidateConfig()
+    Attributes:
+        cfg: Selection policy for candidate spans.
+    """
 
-    # ------------------------------ Public API ------------------------------
+    def __init__(self, cfg: LLMCandidateConfig) -> None:
+        """Initialize the preparer with a configuration.
 
-    def prepare(self, chapters_doc: dict[str, Any]) -> list[LLMCandidate]:
-        """Return a list of LLM candidates from an annotated chapters document."""
-        out: list[LLMCandidate] = []
-        chapters: list[dict[str, Any]] = list(chapters_doc.get("chapters") or [])
+        Args:
+            cfg: Selection policy for candidate spans.
+        Returns:
+            None
 
-        for ch in chapters:
-            ch_idx = int(ch.get("chapter_index", -1))
-            title = str(ch.get("title") or "")
-            text = str(ch.get("text") or "")
-            roster_map: dict[str, list[str]] = dict(ch.get("roster") or {})
-            roster = sorted(roster_map.keys())
+        Raises:
+            None
+        """
 
+        self.cfg = cfg
+
+    def prepare(self, combined_doc: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Return spans requiring refinement.
+
+        Args:
+            combined_doc: Parsed ``combined.json`` document from Stage A.
+
+        Returns:
+            List[Dict[str, Any]]: Candidate span descriptors.
+
+        Raises:
+            None
+        """
+
+        out: List[Dict[str, Any]] = []
+        for ch in combined_doc.get("chapters", []):
+            text = ch.get("text", "")
+            roster = ch.get("roster", {}) or {}
             for s in ch.get("spans", []):
-                stype = str(s.get("type"))
-                if stype not in {"Dialogue", "Thought"}:
+                if s.get("type") not in self.cfg.types:
                     continue
-                speaker = str(s.get("speaker") or "Unknown")
-                method = str(s.get("method") or "")
                 conf = float(s.get("confidence", 0.0))
-                notes = s.get("notes")
-
-                if self._needs_llm(stype, speaker, method, conf, notes):
-                    start, end = int(s.get("start", 0)), int(s.get("end", 0))
-                    cbeg = max(0, start - self.cfg.window_chars_before)
-                    cend = min(len(text), end + self.cfg.window_chars_after)
-                    cand = LLMCandidate(
-                        chapter_index=ch_idx,
-                        chapter_title=title,
-                        span_id=int(s.get("id", 0)),
-                        span_type=stype,
-                        baseline_speaker=speaker,
-                        baseline_method=method,
-                        baseline_confidence=conf,
-                        text=str(s.get("text") or ""),
-                        context_before=text[cbeg:start],
-                        context_after=text[end:cend],
-                        roster=roster if self.cfg.include_roster else [],
-                        notes=str(notes) if notes else None,
-                    )
-                    cand.fingerprint = self._fingerprint(cand)
-                    out.append(cand)
-
+                if s.get("speaker") != "Unknown" and conf >= self.cfg.conf_threshold:
+                    continue
+                out.append({
+                    "chapter_index": ch.get("chapter_index"),
+                    "title": ch.get("title"),
+                    "start": s["start"],
+                    "end": s["end"],
+                    "type": s["type"],
+                    "speaker": s.get("speaker"),
+                    "confidence": conf,
+                    "roster": roster,
+                })
         return out
 
-    def write_jsonl(self, path: Path, candidates: list[LLMCandidate]) -> None:
-        """Write candidates to a JSONL file."""
-        with path.open("w", encoding="utf-8") as f:
-            for c in candidates:
-                f.write(json.dumps(asdict(c), ensure_ascii=False) + "\n")
-
-    # ------------------------------ Internals ------------------------------
-
-    def _needs_llm(
-        self,
-        stype: str,
-        speaker: str,
-        method: str,
-        conf: float,
-        notes: Any,
-    ) -> bool:
-        if speaker == "Unknown":
-            return True
-        if conf < self.cfg.conf_threshold:
-            return True
-        if method in self.cfg.consider_methods:
-            return True
-        if notes == "quote_mismatch":
-            return True
-        return False
-
-    @staticmethod
-    def _fingerprint(c: LLMCandidate) -> str:
-        """Create a stable key for caching LLM results."""
-        h = hashlib.sha256()
-        key = {
-            "span_id": c.span_id,
-            "text": c.text,
-            "before": c.context_before[-280:],
-            "after": c.context_after[:280],
-            "roster": c.roster,
-        }
-        h.update(json.dumps(key, sort_keys=True).encode("utf-8"))
-        return h.hexdigest()
