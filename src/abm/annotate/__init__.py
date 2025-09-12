@@ -4,6 +4,9 @@ This subpackage provides helpers for normalizing chapter text, segmenting it
 into labeled spans, and running attribution utilities.
 """
 
+# Ensure noisy warnings are filtered before importing submodules
+from abm import _warnings as _abm_warnings  # noqa: F401
+
 from abm.annotate.annotate_cli import AnnotateRunner
 from abm.annotate.attribute import AttributeEngine
 from abm.annotate.llm_prep import (
