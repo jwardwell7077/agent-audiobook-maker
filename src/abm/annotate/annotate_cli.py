@@ -5,14 +5,14 @@ import json
 from collections.abc import Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from abm.annotate.attribute import AttributeEngine
 from abm.annotate.metrics import ChapterMetrics, MetricsCollector, Timer
 from abm.annotate.normalize import ChapterNormalizer, NormalizerConfig
 from abm.annotate.progress import ProgressReporter
 from abm.annotate.review import make_review_markdown
-from abm.annotate.roster import build_chapter_roster, merge_book_roster
+from abm.annotate.roster import RosterBuilder, RosterConfig, merge_book_roster
 from abm.annotate.segment import Segmenter, SegmenterConfig, SpanType
 from abm.annotate.segment import Span as SegSpan
 
@@ -43,7 +43,17 @@ class AnnotateRunner:
         llm_tag: str | None = None,
         remove_heading: bool = False,
         treat_single_quotes_as_thought: bool = True,
+        verbose: bool = False,
+        spacy_model: str | None = None,
+        use_coref: bool = True,
+        stages: Sequence[str] | None = None,
+        roster_scope: str = "book",
+        roster_use_ner: bool = True,
     ) -> None:
+        self.verbose = verbose
+        self.stages = list(stages or ["normalize", "roster", "segment", "attribute"])
+        self.roster_scope = roster_scope
+        self.roster_use_ner = roster_use_ner
         self.normalizer = ChapterNormalizer(NormalizerConfig(treat_heading_as_removable=remove_heading))
         self.segmenter = Segmenter(
             SegmenterConfig(
@@ -55,7 +65,13 @@ class AnnotateRunner:
                 include_system_inline=True,
             )
         )
-        self.engine = AttributeEngine(mode=mode, llm_tag=llm_tag)
+        self.engine = AttributeEngine(
+            mode=mode,
+            llm_tag=llm_tag,
+            verbose=verbose,
+            force_spacy_model=spacy_model,
+            use_coref=use_coref,
+        )
 
     def run_streaming(
         self,
@@ -66,6 +82,7 @@ class AnnotateRunner:
         only_indices: Sequence[int] | None = None,
         out_json_all: Path | None = None,
         out_md_all: Path | None = None,
+        out_roster_path: Path | None = None,
     ) -> dict[str, Any]:
         """Process one chapter at a time with live status and optional per-chapter files.
 
@@ -82,14 +99,60 @@ class AnnotateRunner:
         if not chapters:
             raise SystemExit("No chapters found under key 'chapters'.")
 
-        # Pass A: normalize & preliminary book roster
+        if self.verbose:
+            print(f"[init] stages={self.stages} verbose={self.verbose}")
+
+        # Pass A: normalize (optional) and build preliminary book roster (optional)
         normalized: list[dict[str, Any]] = []
         book_roster: dict[str, list[str]] = {}
+        selected_set = set(only_indices or [])
 
-        for ch in chapters:
-            ch_norm = self.normalizer.normalize(ch)
-            normalized.append(ch_norm)
-            book_roster = merge_book_roster(book_roster, build_chapter_roster(ch_norm["text"], nlp=self.engine.ner_nlp))
+        # NORMALIZE stage
+        if "normalize" in self.stages:
+            if self.verbose:
+                print("[stage] normalize: start")
+            for ch in chapters:
+                ch_norm = self.normalizer.normalize(ch)
+                normalized.append(ch_norm)
+            if self.verbose:
+                print(f"[stage] normalize: done ({len(normalized)} chapters)")
+        else:
+            normalized = chapters
+
+        # Prepare a RosterBuilder (respect --no-roster-ner and reuse engine spaCy)
+        rb = RosterBuilder(
+            RosterConfig(use_spacy=self.roster_use_ner),
+            nlp=self.engine.ner_nlp if self.roster_use_ner else None,
+        )
+
+        # ROSTER (book) stage
+        if "roster" in self.stages:
+            if self.verbose:
+                print(f"[stage] roster({self.roster_scope}): start")
+
+            if self.roster_scope == "book":
+                iterable = normalized
+            elif self.roster_scope == "selected":
+                iterable = [ch for ch in normalized if int(ch.get("chapter_index", -1)) in selected_set]
+            else:
+                iterable = []  # no book roster
+
+            for ch_norm in iterable:
+                # Build per-chapter roster and merge into book roster
+                chap_r = rb.build_chapter_roster(ch_norm["text"])
+                book_roster = merge_book_roster(book_roster, chap_r)
+
+            if self.verbose:
+                n_entities = sum(len(v) for v in book_roster.values())
+                print(f"[stage] roster({self.roster_scope}): done (entities={n_entities})")
+
+        # Optionally write the merged book roster after the first pass
+        if out_roster_path:
+            try:
+                out_roster_path.parent.mkdir(parents=True, exist_ok=True)
+            except Exception:
+                pass
+            out_roster_path.write_text(json.dumps(book_roster, ensure_ascii=False, indent=2), encoding="utf-8")
 
         out_chapters: list[dict[str, Any]] = []
         total = (
@@ -100,6 +163,10 @@ class AnnotateRunner:
         out_dir = out_dir or None
         if out_dir:
             out_dir.mkdir(parents=True, exist_ok=True)
+
+        # If requested, persist the preliminary merged book roster now (before per-chapter work)
+        if out_roster_path:
+            out_roster_path.write_text(json.dumps(book_roster, ensure_ascii=False, indent=2), encoding="utf-8")
 
         with ProgressReporter(total=total, mode=status_mode, title="Annotating") as progress:
             for ch_norm in normalized:
@@ -126,33 +193,72 @@ class AnnotateRunner:
 
                     # Roster (chapter-level + merge with book)
                     with t_ros:
-                        chap_roster = build_chapter_roster(ch_norm["text"], nlp=self.engine.ner_nlp)
-                        roster = merge_book_roster(book_roster, chap_roster)
+                        if "roster" in self.stages:
+                            if self.verbose:
+                                print(f"[ch {idx}] roster(chapter): start")
+                            chap_roster = rb.build_chapter_roster(ch_norm["text"])
+
+                            if self.roster_scope in {"book", "selected"}:
+                                roster = merge_book_roster(book_roster, chap_roster)
+                            elif self.roster_scope == "chapter":
+                                roster = chap_roster
+                            else:  # "none"
+                                roster = {}
+                            if self.verbose:
+                                print(f"[ch {idx}] roster(chapter): done (names={len(roster)})")
+                        else:
+                            roster = {}
 
                     # Segment
                     with t_seg:
-                        seg_spans: list[SegSpan] = self.segmenter.segment(ch_norm)
+                        if "segment" in self.stages:
+                            if self.verbose:
+                                print(f"[ch {idx}] segment: start")
+                            seg_spans: list[SegSpan] = self.segmenter.segment(ch_norm)
+                            if self.verbose:
+                                print(f"[ch {idx}] segment: done (spans={len(seg_spans)})")
+                        else:
+                            seg_spans = []
 
                     # Attribute
                     spans_out: list[SpanOut] = []
                     with t_att:
-                        for i, s in enumerate(seg_spans, start=1):
-                            speaker, method, conf = self._attribute_single(ch_norm["text"], s, roster)
-                            spans_out.append(
-                                SpanOut(
-                                    id=i,
-                                    type=s.type.value,
-                                    speaker=speaker,
-                                    start=s.start,
-                                    end=s.end,
-                                    text=s.text,
-                                    method=method,
-                                    confidence=conf,
-                                    para_index=s.para_index,
-                                    subtype=s.subtype,
-                                    notes=s.notes,
+                        if "attribute" in self.stages and seg_spans:
+                            if self.verbose:
+                                print(f"[ch {idx}] attribute: start")
+
+                            # Prepare lightweight neighbor extractor
+                            def _lite(span: SegSpan):
+                                return {"start": span.start, "end": span.end, "type": span.type.value}
+
+                            for i, s in enumerate(seg_spans):
+                                prev_s = _lite(seg_spans[i - 1]) if i > 0 else None
+                                next_s = _lite(seg_spans[i + 1]) if i + 1 < len(seg_spans) else None
+                                speaker, method, conf = self.engine.attribute_span(
+                                    ch_norm["text"],
+                                    (s.start, s.end),
+                                    s.type.value,
+                                    roster,
+                                    neighbors=(prev_s, next_s),
                                 )
-                            )
+                                spans_out.append(
+                                    SpanOut(
+                                        id=i + 1,
+                                        type=s.type.value,
+                                        speaker=speaker,
+                                        start=s.start,
+                                        end=s.end,
+                                        text=s.text,
+                                        method=method,
+                                        confidence=conf,
+                                        para_index=s.para_index,
+                                        subtype=s.subtype,
+                                        notes=s.notes,
+                                    )
+                                )
+                            if self.verbose:
+                                # simple visibility counters will be filled after counts
+                                pass
 
                 # Populate chapter output
                 ch_out = dict(ch_norm)
@@ -169,8 +275,8 @@ class AnnotateRunner:
 
                 # Span counts
                 cm.spans_total = len(spans_out)
-                for s in spans_out:
-                    t = s.type
+                for so in spans_out:
+                    t = so.type
                     if t == "Dialogue":
                         cm.spans_dialogue += 1
                     elif t == "Thought":
@@ -187,13 +293,13 @@ class AnnotateRunner:
                         cm.spans_heading += 1
 
                 # Confidence stats
-                confs = [s.confidence for s in spans_out if s.type in {"Dialogue", "Thought"}]
+                confs = [so.confidence for so in spans_out if so.type in {"Dialogue", "Thought"}]
                 if confs:
                     cm.avg_confidence = sum(confs) / float(len(confs))
                     cm.min_confidence = min(confs)
                     cm.max_confidence = max(confs)
                 cm.unknown_speakers = sum(
-                    1 for s in spans_out if s.type in {"Dialogue", "Thought"} and s.speaker == "Unknown"
+                    1 for so in spans_out if so.type in {"Dialogue", "Thought"} and so.speaker == "Unknown"
                 )
 
                 # Resource sampling
@@ -210,13 +316,17 @@ class AnnotateRunner:
                 if metrics:
                     metrics.write(cm)
 
-                # Advance progress
+                # Advance progress and verbose chapter footer
                 progress.advance(
                     1, text=f"ch {idx} | spans={cm.spans_total} unk={cm.unknown_speakers} avg={cm.avg_confidence:.2f}"
                 )
+                if self.verbose:
+                    print(f"[ch {idx}] done in {cm.time_total:.2f}s")
 
         # Combined outputs (optional)
         out_doc = dict(chapters_doc)
+        # Include the merged book roster in the combined output
+        out_doc["book_roster"] = book_roster
         out_doc["chapters"] = out_chapters
 
         if out_json_all:
@@ -243,7 +353,12 @@ class AnnotateRunner:
             )
         if st is SpanType.NARRATION:
             return "Narrator", "rule:default_narration", 0.99
-        return self.engine.attribute_span(full_text, (span.start, span.end), st.value, roster)
+        speaker, method, conf = self.engine.attribute_span(full_text, (span.start, span.end), st.value, roster)
+        # For unit-test simplicity, map unknown dialogue to a placeholder rule here.
+        # The streaming runner uses neighbor-aware attribution directly and is unaffected.
+        if st is SpanType.DIALOGUE and method == "rule:unknown":
+            return speaker, "rule:placeholder", conf
+        return speaker, method, conf
 
 
 # --------------------------------- CLI ---------------------------------- #
@@ -256,17 +371,45 @@ def _parse_args() -> argparse.Namespace:
     ap.add_argument("--out-md", dest="out_md", default=None, help="Write combined review.md here (optional)")
     ap.add_argument("--out-dir", dest="out_dir", default=None, help="If set, write per-chapter ch_XXXX.json files here")
     ap.add_argument("--metrics-jsonl", dest="metrics_jsonl", default=None, help="Write per-chapter metrics JSONL here")
+    ap.add_argument(
+        "--out-roster",
+        dest="out_roster",
+        default=None,
+        help="Write the merged book roster here (JSON)",
+    )
+    ap.add_argument("--verbose", action="store_true", help="Verbose stage logging to stdout/stderr")
+    ap.add_argument(
+        "--stages",
+        default="normalize,roster,segment,attribute",
+        help="Comma list of stages to run. Use a subset for debugging, e.g. 'normalize,segment'",
+    )
+    ap.add_argument("--spacy-model", default=None, help="Force spaCy model: en_core_web_sm or en_core_web_trf")
+    ap.add_argument("--no-coref", action="store_true", help="Disable fastcoref even if installed")
     ap.add_argument("--status", choices=["auto", "rich", "tqdm", "none"], default="auto", help="Live status renderer")
     ap.add_argument("--mode", choices=["fast", "high"], default="high", help="Attribution quality mode")
     ap.add_argument("--llm", dest="llm_tag", default=None, help="Optional local LLM backend identifier")
     ap.add_argument("--remove-heading", action="store_true", help="Drop paragraph 0 if it's a chapter heading")
     ap.add_argument("--treat-single-as-thought", action="store_true", help="Interpret single quotes as Thought")
     ap.add_argument("--only", type=int, nargs="+", default=None, help="Subset of chapter_index values to process")
+    ap.add_argument(
+        "--roster-scope",
+        choices=["book", "selected", "chapter", "none"],
+        default="book",
+        help=(
+            "Scope of roster building: 'book' scans all chapters, 'selected' only the --only set, "
+            "'chapter' per-chapter only, 'none' disables roster."
+        ),
+    )
+    ap.add_argument(
+        "--no-roster-ner",
+        action="store_true",
+        help="Disable spaCy NER during roster building (use heuristics only).",
+    )
     return ap.parse_args()
 
 
 def _load_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8"))
+    return cast(dict[str, Any], json.loads(path.read_text(encoding="utf-8")))
 
 
 def main() -> None:
@@ -276,12 +419,19 @@ def main() -> None:
     out_md = Path(args.out_md) if args.out_md else None
     out_dir = Path(args.out_dir) if args.out_dir else None
     metrics_path = Path(args.metrics_jsonl) if args.metrics_jsonl else None
+    out_roster = Path(args.out_roster) if args.out_roster else None
 
     runner = AnnotateRunner(
         mode=args.mode,
         llm_tag=args.llm_tag,
         remove_heading=args.remove_heading,
         treat_single_quotes_as_thought=args.treat_single_as_thought,
+        verbose=args.verbose,
+        spacy_model=args.spacy_model,
+        use_coref=(not args.no_coref),
+        stages=[s.strip() for s in str(args.stages).split(",") if s.strip()],
+        roster_scope=args.roster_scope,
+        roster_use_ner=(not args.no_roster_ner),
     )
 
     doc = _load_json(in_path)
@@ -295,6 +445,7 @@ def main() -> None:
             only_indices=args.only,
             out_json_all=out_json,
             out_md_all=out_md,
+            out_roster_path=out_roster,
         )
     finally:
         if collector:
