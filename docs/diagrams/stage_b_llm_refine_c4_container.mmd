@@ -1,0 +1,23 @@
+C4Container
+    title Stage B LLM Refinement – Container Diagram
+
+    Person(operator, "Operator", "Runs CLI")
+
+    Container_Boundary(stageb, "Stage B LLM Refinement") {
+        Container(prep, "LLMCandidatePreparer", "Python", "Selects low-confidence spans")
+        Container(cache, "LLMCache", "SQLite", "Stores decisions")
+        Container(refine, "llm_refine.py", "Python", "Applies votes and updates JSON")
+        Container(client, "OpenAICompatClient", "Python", "Chat API")
+        Container(manager, "LLMService", "Python", "Start/stop local server")
+    }
+
+    System_Ext(ollama, "LLM Service", "Ollama daemon")
+
+    Rel(operator, refine, "invokes")
+    Rel(refine, prep, "uses")
+    Rel(refine, cache, "reads/writes")
+    Rel(refine, client, "queries")
+    Rel(client, ollama, "HTTP")
+    Rel(refine, manager, "optional start/stop")
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
