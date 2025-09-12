@@ -424,6 +424,8 @@ def _parse_args() -> argparse.Namespace:
     )
     ap.add_argument("--spacy-model", default=None, help="Force spaCy model: en_core_web_sm or en_core_web_trf")
     ap.add_argument("--no-coref", action="store_true", help="Disable fastcoref even if installed")
+    # Accept --coref (enabled by default) to avoid argparse errors in docs/scripts
+    ap.add_argument("--coref", action="store_true", help="Enable fastcoref (default on)")
     ap.add_argument("--status", choices=["auto", "rich", "tqdm", "none"], default="auto", help="Live status renderer")
     ap.add_argument("--mode", choices=["fast", "high"], default="high", help="Attribution quality mode")
     ap.add_argument("--llm", dest="llm_tag", default=None, help="Optional local LLM backend identifier")

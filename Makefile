@@ -250,6 +250,7 @@ help:
 	@echo 'pre_push                     - run quick local checks before pushing'
 	@echo 'install_git_hooks            - install a local pre-push git hook to run checks before push'
 	@echo 'dev_setup_uv                 - create .venv and install dev deps via uv (fast)'
+	@echo 'prod_run_mvs                 - run full production pipeline for mvs'
 
 # Lightweight helpers for the components/ tooling pack (removed duplicate alt install/lint/type/itest)
 
@@ -289,3 +290,8 @@ dev_setup_uv:
 	. .venv/bin/activate; python -m pip install -U pip uv
 	. .venv/bin/activate; uv pip install -r requirements-dev.txt
 	@echo 'Activate with: source .venv/bin/activate'
+
+.PHONY: prod_run_mvs
+prod_run_mvs:
+	@$(VENV_GUARD)
+	@bash scripts/production_run.sh mvs
