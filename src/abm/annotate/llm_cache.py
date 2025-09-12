@@ -5,9 +5,10 @@ from __future__ import annotations
 import hashlib
 import json
 import sqlite3
+import threading
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 
 @dataclass
@@ -31,14 +32,16 @@ class LLMCache:
         """
 
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        self._db = sqlite3.connect(self.path)
+        # Allow access from multiple threads; protect with a lock.
+        self._db = sqlite3.connect(self.path, check_same_thread=False)
+        self._lock = threading.Lock()
         self._db.execute("CREATE TABLE IF NOT EXISTS cache (key TEXT PRIMARY KEY, value TEXT NOT NULL)")
         self._db.commit()
 
     def _key(
         self,
         *,
-        roster: dict[str, list],
+    roster: dict[str, list[str]],
         left: str,
         mid: str,
         right: str,
@@ -85,12 +88,13 @@ class LLMCache:
         """
 
         k = self._key(**kwargs)
-        cur = self._db.execute("SELECT value FROM cache WHERE key=?", (k,))
+        with self._lock:
+            cur = self._db.execute("SELECT value FROM cache WHERE key=?", (k,))
         row = cur.fetchone()
         if not row:
             return None
         try:
-            return json.loads(row[0])
+            return cast(dict[str, Any], json.loads(row[0]))
         except Exception:
             return None
 
@@ -109,11 +113,12 @@ class LLMCache:
         """
 
         k = self._key(**kwargs)
-        self._db.execute(
-            "INSERT OR REPLACE INTO cache (key, value) VALUES (?, ?)",
-            (k, json.dumps(value, ensure_ascii=False)),
-        )
-        self._db.commit()
+        with self._lock:
+            self._db.execute(
+                "INSERT OR REPLACE INTO cache (key, value) VALUES (?, ?)",
+                (k, json.dumps(value, ensure_ascii=False)),
+            )
+            self._db.commit()
 
     def close(self) -> None:
         """Close the underlying database connection.

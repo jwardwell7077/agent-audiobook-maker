@@ -89,7 +89,16 @@ class LLMService:
         """
 
         try:
+            # Try OpenAI v1-compatible route first.
             r = requests.get(f"{self.backend.endpoint}/models", timeout=2)
+            if r.status_code == 200:
+                return True
+        except Exception:
+            pass
+        try:
+            # Fallback: Ollama native models route (strip trailing /v1 if present).
+            base = self.backend.endpoint[:-3] if self.backend.endpoint.endswith("/v1") else self.backend.endpoint
+            r = requests.get(f"{base}/api/tags", timeout=2)
             return r.status_code == 200
         except Exception:
             return False
