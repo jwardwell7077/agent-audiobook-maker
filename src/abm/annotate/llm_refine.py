@@ -38,7 +38,20 @@ class LLMRefineConfig:
 
 
 def _ctx(text: str, start: int, end: int, n: int) -> Tuple[str, str, str]:
-    """Return text surrounding a span with ``n`` characters of context."""
+    """Return text surrounding a span with ``n`` characters of context.
+
+    Args:
+        text: Source text containing the span.
+        start: Index of the first character of the span.
+        end: Index one past the last character of the span.
+        n: Number of context characters to include on each side.
+
+    Returns:
+        Tuple[str, str, str]: Left context, span text, and right context.
+
+    Raises:
+        None
+    """
 
     return text[max(0, start - n): start], text[start:end], text[end: min(len(text), end + n)]
 
@@ -63,6 +76,9 @@ def refine_document(
         cfg: Refinement policy settings.
         manage_service: If ``True``, start/stop the service automatically.
         cache_path: Optional SQLite cache file path.
+
+    Returns:
+        None
 
     Raises:
         TimeoutError: If ``manage_service`` is ``True`` and the service fails to
@@ -158,6 +174,9 @@ def _parse_args() -> argparse.Namespace:
 
     Returns:
         argparse.Namespace: Parsed arguments.
+
+    Raises:
+        SystemExit: If argument parsing fails.
     """
 
     ap = argparse.ArgumentParser(description="Stage B: LLM refinement for low-confidence/Unknown spans.")
@@ -174,7 +193,14 @@ def _parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
-    """Entry point for the ``llm_refine`` command-line interface."""
+    """Entry point for the ``llm_refine`` command-line interface.
+
+    Returns:
+        None
+
+    Raises:
+        None
+    """
 
     args = _parse_args()
     backend = LLMBackend(kind="ollama", endpoint=args.endpoint, model=args.model)

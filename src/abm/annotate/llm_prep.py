@@ -27,6 +27,17 @@ class LLMCandidatePreparer:
     """
 
     def __init__(self, cfg: LLMCandidateConfig) -> None:
+        """Initialize the preparer with a configuration.
+
+        Args:
+            cfg: Selection policy for candidate spans.
+        Returns:
+            None
+
+        Raises:
+            None
+        """
+
         self.cfg = cfg
 
     def prepare(self, combined_doc: Dict[str, Any]) -> List[Dict[str, Any]]:
@@ -37,6 +48,9 @@ class LLMCandidatePreparer:
 
         Returns:
             List[Dict[str, Any]]: Candidate span descriptors.
+
+        Raises:
+            None
         """
 
         out: List[Dict[str, Any]] = []
