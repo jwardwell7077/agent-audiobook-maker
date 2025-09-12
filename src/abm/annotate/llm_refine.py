@@ -21,6 +21,8 @@ class LLMRefineConfig:
     Attributes:
         min_conf_for_skip: Spans at or above this confidence are not refined.
         accept_min_conf: Minimum confidence to accept a non-``Unknown`` result.
+        unknown_min_conf: Minimum confidence assigned when the result speaker is
+            ``"Unknown"``.
         votes: Number of LLM queries per span for majority voting.
         context_chars: Characters of left/right context sent to the model.
         temperature: Sampling temperature passed to the LLM.
@@ -30,6 +32,7 @@ class LLMRefineConfig:
 
     min_conf_for_skip: float = 0.90
     accept_min_conf: float = 0.70
+    unknown_min_conf: float = 0.50
     votes: int = 3
     context_chars: int = 480
     temperature: float = 0.2
@@ -144,7 +147,10 @@ def refine_document(
                 if cached["speaker"] != s.get("speaker") or cached["confidence"] > old_conf:
                     s["speaker"] = cached["speaker"]
                     s["method"] = "llm"
-                    s["confidence"] = max(cached["confidence"], cfg.accept_min_conf if cached["speaker"] != "Unknown" else 0.50)
+                    s["confidence"] = max(
+                        cached["confidence"],
+                        cfg.accept_min_conf if cached["speaker"] != "Unknown" else cfg.unknown_min_conf,
+                    )
                     changed += 1
                 break
 
