@@ -178,18 +178,12 @@ python -m abm.annotate.bnlp_refine \
 	--verbose
 ```
 
-3) Stage B (LLM refine). First prepare candidates from the BNLP-fused JSON, then run the refiner. Note this points Stage‑B at `combined_bnlp.json`.
+3) Stage B (LLM refine). Run the refiner directly on the BNLP‑fused JSON. It will select candidates internally. Note this points Stage‑B at `combined_bnlp.json`.
 
 ```bash
-# Prepare candidates JSONL
-python -m abm.annotate.llm_prep_cli \
-	--in  data/ann/mvs/combined_bnlp.json \
-	--out data/ann/mvs/spans_for_llm.jsonl
-
 # Refine with local OpenAI-compatible endpoint (e.g., Ollama)
 python -m abm.annotate.llm_refine \
 	--tagged     data/ann/mvs/combined_bnlp.json \
-	--candidates data/ann/mvs/spans_for_llm.jsonl \
 	--out-json   data/ann/mvs/combined_refined.json \
 	--out-md     data/ann/mvs/review_refined.md \
 	--endpoint   http://127.0.0.1:11434/v1 \

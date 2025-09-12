@@ -1,9 +1,9 @@
-from __future__ import annotations
-
 """Candidate extractor for Stage B LLM refinement."""
 
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any
 
 
 @dataclass
@@ -40,22 +40,21 @@ class LLMCandidatePreparer:
 
         self.cfg = cfg
 
-    def prepare(self, combined_doc: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def prepare(self, combined_doc: dict[str, Any]) -> list[dict[str, Any]]:
         """Return spans requiring refinement.
 
         Args:
             combined_doc: Parsed ``combined.json`` document from Stage A.
 
         Returns:
-            List[Dict[str, Any]]: Candidate span descriptors.
+            list[dict[str, Any]]: Candidate span descriptors.
 
         Raises:
             None
         """
 
-        out: List[Dict[str, Any]] = []
+        out: list[dict[str, Any]] = []
         for ch in combined_doc.get("chapters", []):
-            text = ch.get("text", "")
             roster = ch.get("roster", {}) or {}
             for s in ch.get("spans", []):
                 if s.get("type") not in self.cfg.types:
@@ -63,15 +62,16 @@ class LLMCandidatePreparer:
                 conf = float(s.get("confidence", 0.0))
                 if s.get("speaker") != "Unknown" and conf >= self.cfg.conf_threshold:
                     continue
-                out.append({
-                    "chapter_index": ch.get("chapter_index"),
-                    "title": ch.get("title"),
-                    "start": s["start"],
-                    "end": s["end"],
-                    "type": s["type"],
-                    "speaker": s.get("speaker"),
-                    "confidence": conf,
-                    "roster": roster,
-                })
+                out.append(
+                    {
+                        "chapter_index": ch.get("chapter_index"),
+                        "title": ch.get("title"),
+                        "start": s["start"],
+                        "end": s["end"],
+                        "type": s["type"],
+                        "speaker": s.get("speaker"),
+                        "confidence": conf,
+                        "roster": roster,
+                    }
+                )
         return out
-

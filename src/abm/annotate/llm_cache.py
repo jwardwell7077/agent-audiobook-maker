@@ -1,13 +1,13 @@
-from __future__ import annotations
-
 """SQLite-based cache for LLM decisions."""
+
+from __future__ import annotations
 
 import hashlib
 import json
 import sqlite3
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 
 @dataclass
@@ -32,15 +32,13 @@ class LLMCache:
 
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self._db = sqlite3.connect(self.path)
-        self._db.execute(
-            "CREATE TABLE IF NOT EXISTS cache (key TEXT PRIMARY KEY, value TEXT NOT NULL)"
-        )
+        self._db.execute("CREATE TABLE IF NOT EXISTS cache (key TEXT PRIMARY KEY, value TEXT NOT NULL)")
         self._db.commit()
 
     def _key(
         self,
         *,
-        roster: Dict[str, list],
+        roster: dict[str, list],
         left: str,
         mid: str,
         right: str,
@@ -73,14 +71,14 @@ class LLMCache:
         h.update(right.encode())
         return h.hexdigest()
 
-    def get(self, **kwargs: Any) -> Optional[Dict[str, Any]]:
+    def get(self, **kwargs: Any) -> dict[str, Any] | None:
         """Retrieve a cached result if present.
 
         Args:
             **kwargs: Components of the prompt used to compute the cache key.
 
         Returns:
-            Optional[Dict[str, Any]]: Parsed JSON result or ``None`` if missing.
+            dict[str, Any] | None: Parsed JSON result or ``None`` if missing.
 
         Raises:
             None
@@ -96,7 +94,7 @@ class LLMCache:
         except Exception:
             return None
 
-    def set(self, value: Dict[str, Any], **kwargs: Any) -> None:
+    def set(self, value: dict[str, Any], **kwargs: Any) -> None:
         """Store a result in the cache.
 
         Args:
@@ -131,4 +129,3 @@ class LLMCache:
             self._db.close()
         except Exception:
             pass
-

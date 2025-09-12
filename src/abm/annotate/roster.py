@@ -312,4 +312,3 @@ def merge_book_roster(book: dict[str, list[str]], chap: dict[str, list[str]]) ->
 
     rb = RosterBuilder()
     return rb.merge_book_roster(book, chap)
-

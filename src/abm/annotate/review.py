@@ -163,4 +163,3 @@ def make_review_markdown(chapters: list[dict[str, Any]]) -> str:
     """Functional wrapper used by :mod:`annotate_cli` to emit a report."""
 
     return Reviewer().make_markdown(chapters)
-

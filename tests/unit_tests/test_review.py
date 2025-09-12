@@ -37,4 +37,3 @@ def test_make_review_markdown_produces_sections() -> None:
     assert "## Method breakdown" in md
     assert "| 0 | 1 | Dialogue | Alice" in md
     assert "| manual | 1 |" in md
-

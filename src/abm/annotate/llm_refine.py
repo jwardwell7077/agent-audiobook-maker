@@ -1,17 +1,18 @@
 """Stage B LLM refinement CLI and helper functions."""
+
 from __future__ import annotations
 
 import argparse
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
-from abm.llm.manager import LLMBackend, LLMService
-from abm.llm.client import OpenAICompatClient
-from abm.annotate.prompts import SYSTEM_SPEAKER, speaker_user_prompt
 from abm.annotate.llm_cache import LLMCache
 from abm.annotate.llm_prep import LLMCandidateConfig, LLMCandidatePreparer
+from abm.annotate.prompts import SYSTEM_SPEAKER, speaker_user_prompt
+from abm.llm.client import OpenAICompatClient
+from abm.llm.manager import LLMBackend, LLMService
 
 
 @dataclass
@@ -40,7 +41,7 @@ class LLMRefineConfig:
     max_tokens: int = 128
 
 
-def _ctx(text: str, start: int, end: int, n: int) -> Tuple[str, str, str]:
+def _ctx(text: str, start: int, end: int, n: int) -> tuple[str, str, str]:
     """Return text surrounding a span with ``n`` characters of context.
 
     Args:
@@ -56,7 +57,7 @@ def _ctx(text: str, start: int, end: int, n: int) -> Tuple[str, str, str]:
         None
     """
 
-    return text[max(0, start - n): start], text[start:end], text[end: min(len(text), end + n)]
+    return text[max(0, start - n) : start], text[start:end], text[end : min(len(text), end + n)]
 
 
 def refine_document(
@@ -68,7 +69,7 @@ def refine_document(
     *,
     manage_service: bool = False,
     cache_path: Path | None = None,
-    ) -> None:
+) -> None:
     """Refine low-confidence spans in ``combined.json`` using an LLM.
 
     Args:
@@ -102,9 +103,8 @@ def refine_document(
     total = 0
 
     # Index chapters by idx for quick lookup
-    chapters_by_idx: Dict[int, Dict[str, Any]] = {
-        int(ch["chapter_index"]): ch for ch in doc.get("chapters", [])
-        if "chapter_index" in ch
+    chapters_by_idx: dict[int, dict[str, Any]] = {
+        int(ch["chapter_index"]): ch for ch in doc.get("chapters", []) if "chapter_index" in ch
     }
 
     for c in cand:
@@ -113,16 +113,14 @@ def refine_document(
         if not ch:
             continue
         text: str = ch.get("text", "")
-        roster: Dict[str, List[str]] = c["roster"] or {}
+        roster: dict[str, list[str]] = c["roster"] or {}
         left, mid, right = _ctx(text, c["start"], c["end"], cfg.context_chars)
 
         # Cache first: avoids re-querying identical contexts.
-        cached = cache.get(
-            roster=roster, left=left, mid=mid, right=right, span_type=c["type"], model=backend.model
-        )
+        cached = cache.get(roster=roster, left=left, mid=mid, right=right, span_type=c["type"], model=backend.model)
         if cached is None:
             # Majority vote
-            votes: Dict[str, float] = {}
+            votes: dict[str, float] = {}
             uprompt = speaker_user_prompt(roster, left, mid, right, c["type"])
             for _ in range(cfg.votes):
                 obj = client.chat_json(
@@ -224,4 +222,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

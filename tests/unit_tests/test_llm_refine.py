@@ -2,10 +2,10 @@
 
 import json
 
-from abm.annotate.llm_refine import LLMRefineConfig, refine_document
-from abm.llm.manager import LLMBackend
-from abm.llm.client import OpenAICompatClient
 from abm.annotate.llm_cache import LLMCache
+from abm.annotate.llm_refine import LLMRefineConfig, refine_document
+from abm.llm.client import OpenAICompatClient
+from abm.llm.manager import LLMBackend
 
 
 def test_refine_document_updates_span(tmp_path, monkeypatch) -> None:
@@ -76,4 +76,3 @@ def test_llm_cache_roundtrip(tmp_path) -> None:
     cache.set({"speaker": "A", "confidence": 0.9}, **key_args)
     assert cache.get(**key_args) == {"speaker": "A", "confidence": 0.9}
     cache.close()
-

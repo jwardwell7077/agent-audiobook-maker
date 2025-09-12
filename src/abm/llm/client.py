@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Thin OpenAI-compatible JSON chat client.
 
 This module intentionally implements only the minimal pieces required for the
@@ -7,13 +5,14 @@ refinement pipeline.  It sends a chat completion request and expects the model
 to return JSON content.
 """
 
+from __future__ import annotations
+
 import json
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
 
 import requests
-
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +33,7 @@ class OpenAICompatClient:
     model: str = "llama3.1:8b-instruct-q6_K"
     timeout_s: int = 120
 
-    def _headers(self) -> Dict[str, str]:
+    def _headers(self) -> dict[str, str]:
         """Return authorization headers for a request.
 
         Returns:
@@ -54,7 +53,7 @@ class OpenAICompatClient:
         temperature: float = 0.2,
         top_p: float = 0.9,
         max_tokens: int = 128,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Send prompts and parse JSON reply from the model.
 
         Args:
@@ -98,4 +97,3 @@ class OpenAICompatClient:
             logger.debug("Failed to parse JSON content: %s", exc)
             # Return a best-effort structure to avoid crashing callers.
             return {"speaker": "Unknown", "confidence": 0.0, "raw": content}
-

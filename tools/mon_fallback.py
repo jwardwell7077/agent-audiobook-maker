@@ -160,7 +160,6 @@ def main() -> None:
             # CPU
             _, cpu1 = read_proc_stat_cpu()
             delta = [b - a for a, b in zip(cpu0, cpu1, strict=False)]
-            total = sum(delta) or 1
             # user nice system idle iowait irq softirq steal guest guest_nice
             user, nice, system, idle, iowait, irq, softirq, steal = delta[:8]
             cpu_f.write(f"{ts:.3f},{user},{nice},{system},{idle},{iowait},{irq},{softirq},{steal}\n")
@@ -169,7 +168,8 @@ def main() -> None:
             # Memory
             mem = read_meminfo()
             mem_f.write(
-                f"{ts:.3f},{mem.get('MemTotal', 0)},{mem.get('MemFree', 0)},{mem.get('MemAvailable', 0)},{mem.get('Buffers', 0)},{mem.get('Cached', 0)},{mem.get('SwapTotal', 0)},{mem.get('SwapFree', 0)}\n"
+                f"{ts:.3f},{mem.get('MemTotal', 0)},{mem.get('MemFree', 0)},{mem.get('MemAvailable', 0)},"
+                f"{mem.get('Buffers', 0)},{mem.get('Cached', 0)},{mem.get('SwapTotal', 0)},{mem.get('SwapFree', 0)}\n"
             )
 
             # Disk

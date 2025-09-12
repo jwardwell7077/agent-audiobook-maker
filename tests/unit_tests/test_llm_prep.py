@@ -52,4 +52,3 @@ def test_prepare_selects_low_confidence_and_unknown() -> None:
     spans = {(c["start"], c["end"]) for c in cands}
     assert spans == {(0, 5), (6, 11)}
     assert cands[0]["roster"] == {"Alice": ["Alice"], "Bob": ["Bob"]}
-
