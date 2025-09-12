@@ -1,0 +1,21 @@
+C4Context
+    title Stage B LLM Refinement – System Context
+
+    Person(operator, "Operator", "Runs refinement CLI")
+
+    System_Boundary(refine, "Stage B LLM Refinement") {
+        System(cli, "llm_refine.py", "Applies roster-constrained attribution")
+    }
+
+    System_Ext(stagea, "Stage A Output", "combined.json")
+    System_Ext(ollama, "LLM Service", "Ollama or OpenAI-compatible")
+    System_Ext(outjson, "Refined JSON", "combined_refined.json")
+    System_Ext(reviewmd, "Review Markdown", "review_refined.md")
+
+    Rel(operator, cli, "invokes")
+    Rel(cli, stagea, "reads")
+    Rel(cli, ollama, "HTTP chat completions")
+    Rel(cli, outjson, "writes")
+    Rel(cli, reviewmd, "writes")
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")

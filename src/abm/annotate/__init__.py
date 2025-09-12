@@ -9,12 +9,8 @@ from abm import _warnings as _abm_warnings  # noqa: F401
 
 from abm.annotate.annotate_cli import AnnotateRunner
 from abm.annotate.attribute import AttributeEngine
-from abm.annotate.llm_prep import (
-    LLMCandidate,
-    LLMCandidateConfig,
-    LLMCandidatePreparer,
-)
-from abm.annotate.llm_refine import LLMRefineConfig, LLMRefiner
+from abm.annotate.llm_prep import LLMCandidateConfig, LLMCandidatePreparer
+from abm.annotate.llm_refine import LLMRefineConfig, refine_document
 from abm.annotate.normalize import (
     ChapterNormalizer,
     InlineTag,
@@ -53,9 +49,8 @@ __all__ = [
     "Span",
     "SpanType",
     "segment_spans",
-    "LLMCandidate",
     "LLMCandidateConfig",
     "LLMCandidatePreparer",
     "LLMRefineConfig",
-    "LLMRefiner",
+    "refine_document",
 ]
