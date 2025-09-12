@@ -84,31 +84,37 @@ Implementation: [`attribute.py`](../../../src/abm/annotate/attribute.py).
 
 ## 5. LLM Refinement (Optional)
 
-### Candidate Preparation
+Stage B revisits low-confidence spans using a roster-constrained LLM
+query and writes a refined JSON + optional review markdown.
+
+### Candidate Extraction
 
 ```python
 from abm.annotate.llm_prep import LLMCandidatePreparer
 
 prep = LLMCandidatePreparer()
-cands = prep.prepare(tagged_doc)
+candidates = prep.prepare(tagged_doc)
 ```
 
-### Consensus Refinement
+### Refinement CLI
 
-```python
-from abm.annotate.llm_refine import LLMRefiner
-
-ref = LLMRefiner()
-ref.refine(Path("chapters_tagged.json"), Path("spans_for_llm.jsonl"), Path("chapters_tagged_refined.json"))
+```bash
+PYTHONPATH=src python -m abm.annotate.llm_refine \
+  --tagged data/annotations/book/combined.json \
+  --out-json data/annotations/book/combined_refined.json \
+  --out-md data/annotations/book/review_refined.md \
+  --endpoint http://127.0.0.1:11434/v1 \
+  --model llama3.1:8b-instruct-q6_K \
+  --manage-llm
 ```
 
 Features:
 
 - Selects low-confidence dialogue/thought spans with context windows and roster info.
-- Calls a local OpenAI-compatible endpoint with multiple prompt variants and caches results.
+- Caches LLM decisions in SQLite keyed by prompt hash.
 - Accepts only improvements that beat the baseline confidence by a configurable margin.
 
-Modules: [`llm_prep.py`](../../../src/abm/annotate/llm_prep.py), [`llm_refine.py`](../../../src/abm/annotate/llm_refine.py).
+Modules: [`llm_prep.py`](../../../src/abm/annotate/llm_prep.py), [`llm_refine.py`](../../../src/abm/annotate/llm_refine.py). See [`llm_refine/README.md`](llm_refine/README.md) for details and CLI options.
 
 ## 6. Review Generation
 

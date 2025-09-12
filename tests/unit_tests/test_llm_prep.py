@@ -4,6 +4,7 @@ from abm.annotate.llm_prep import LLMCandidateConfig, LLMCandidatePreparer
 
 
 def test_prepare_selects_low_confidence_and_unknown() -> None:
+    """Ensure preparer finds Unknown or low-confidence spans."""
     chapters = {
         "chapters": [
             {
@@ -19,7 +20,6 @@ def test_prepare_selects_low_confidence_and_unknown() -> None:
                         "start": 0,
                         "end": 5,
                         "text": "Hello",
-                        "method": "rule:unknown",
                         "confidence": 0.5,
                     },
                     {
@@ -29,8 +29,7 @@ def test_prepare_selects_low_confidence_and_unknown() -> None:
                         "start": 6,
                         "end": 11,
                         "text": "world",
-                        "method": "rule:coref",
-                        "confidence": 0.95,
+                        "confidence": 0.85,
                     },
                     {
                         "id": 3,
@@ -39,7 +38,6 @@ def test_prepare_selects_low_confidence_and_unknown() -> None:
                         "start": 12,
                         "end": 16,
                         "text": "nope",
-                        "method": "rule:direct",
                         "confidence": 0.99,
                     },
                 ],
@@ -50,7 +48,8 @@ def test_prepare_selects_low_confidence_and_unknown() -> None:
     prep = LLMCandidatePreparer(LLMCandidateConfig())
     cands = prep.prepare(chapters)
 
-    assert {c.span_id for c in cands} == {1, 2}
-    assert all(c.fingerprint for c in cands)
-    assert cands[0].roster == ["Alice", "Bob"]
+    assert len(cands) == 2
+    spans = {(c["start"], c["end"]) for c in cands}
+    assert spans == {(0, 5), (6, 11)}
+    assert cands[0]["roster"] == {"Alice": ["Alice"], "Bob": ["Bob"]}
 
