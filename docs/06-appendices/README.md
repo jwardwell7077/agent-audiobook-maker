@@ -21,7 +21,7 @@ This section provides supplementary information that supports the main documenta
 Essential terminology for the Agent Audiobook Maker project:
 
 - **Core concepts**: Utterances, segmentation, annotation pipeline
-- **Technical terms**: Multi-agent systems, LangFlow, CrewAI, LangGraph
+- **Technical terms**: Multi-agent systems, CrewAI, LangGraph
 - **Domain vocabulary**: Audiobook production, text-to-speech, dialogue/narration
 - **Acronyms and abbreviations**: Common project shorthand
 
@@ -34,7 +34,7 @@ Essential terminology for the Agent Audiobook Maker project:
 Practical problem-solving guide organized by area:
 
 - **Environment setup**: Python, dependencies, virtual environments
-- **LangFlow issues**: Component loading, workflow execution, UI problems
+<!-- Removed deprecated LangFlow issues -->
 - **Data processing**: File format issues, text quality, segmentation errors
 - **Performance problems**: Memory usage, processing speed, optimization
 - **Integration issues**: Component compatibility, data flow problems
