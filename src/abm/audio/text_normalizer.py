@@ -26,6 +26,8 @@ _SMALL = {
     18: "eighteen",
     19: "nineteen",
     20: "twenty",
+    100: "one hundred",
+    1000: "one thousand",
 }
 _TENS = {
     30: "thirty",
@@ -36,6 +38,18 @@ _TENS = {
     80: "eighty",
     90: "ninety",
 }
+
+_ABBR = re.compile(
+    r"(?:Mr|Mrs|Ms|Dr|Prof|Sr|Jr|St|vs|etc|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\."
+)
+_SENT_BOUNDARY = re.compile(
+    r"""
+    (?<=[.!?…])
+    ["'\)\]\u2019\u201D\u2014]*\s+
+    (?=[A-Z"'\u201C\u2018])
+    """,
+    re.VERBOSE,
+)
 
 
 class TextNormalizer:
@@ -95,7 +109,7 @@ class TextNormalizer:
     def _num_to_words(n: int) -> str:
         """Convert some small integers to words, otherwise return digits.
 
-        Supports 0..20 and tens multiples up to 90.
+        Supports 0..20, tens multiples up to 90, and 100/1000.
         """
         if n in _SMALL:
             return _SMALL[n]
@@ -123,8 +137,17 @@ class Chunker:
         cap = int(max_chars or defaults.get(engine, 600))
 
         # First pass: conservative sentence split, keeping "..." intact.
-        parts = re.split(r"(?<=[.!?])\s+(?=(?:[A-Z\"']))", text.strip())
+        parts = _SENT_BOUNDARY.split(text.strip())
         parts = [p.strip() for p in parts if p.strip()]
+
+        # Merge pieces that were split after abbreviations
+        merged: list[str] = []
+        for p in parts:
+            if merged and _ABBR.search(merged[-1].split()[-1]):
+                merged[-1] = f"{merged[-1]} {p}"
+            else:
+                merged.append(p)
+        parts = merged
 
         # Second pass: pack sentences without exceeding cap; hard-wrap if needed.
         chunks: list[str] = []
@@ -163,5 +186,5 @@ class Chunker:
                 out.append(" ".join(buf))
                 buf, cur = [w], len(w)
         if buf:
-            out.append(" ".join(buf))
+            out.append(" ".join(buf).strip(" ,;"))
         return out

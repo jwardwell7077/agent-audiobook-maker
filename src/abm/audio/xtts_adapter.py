@@ -3,7 +3,8 @@
 - Uses the `TTS` library at runtime if available.
 - Supports dry-run via env ABM_XTTS_DRYRUN=1 to emit a short sine WAV for tests.
 
-This module registers itself into EngineRegistry under the key "xtts".
+Registration happens via :func:`abm.audio.register_builtins` under the key
+``"xtts"``.
 """
 
 from __future__ import annotations
@@ -14,12 +15,11 @@ import wave
 from pathlib import Path
 from typing import Any
 
-from abm.audio.engine_registry import EngineRegistry
 from abm.audio.tts_base import SynthesisError, TTSAdapter, TTSTask
 
 
 def _write_sine_wav(
-    path: Path, duration_ms: int = 300, sr: int = 22050, freq: float = 220.0
+    path: Path, duration_ms: int = 300, sr: int = 22050, freq: float = 440.0
 ) -> None:
     """Write a short 16-bit PCM mono sine WAV for dry-run tests."""
     nframes = int(sr * (duration_ms / 1000.0))
@@ -40,8 +40,10 @@ class XTTSAdapter(TTSAdapter):
     """Adapter for Coqui XTTS v2 (speaker cloning).
 
     Args:
-        model_name: Model identifier; defaults to XTTS v2 canonical id.
-        device: 'cuda' or 'cpu'.
+        model_name: Model identifier. Defaults to ``DEFAULT_MODEL`` or
+            ``ABM_XTTS_MODEL`` env var if set.
+        device: Execution device. Defaults to ``ABM_XTTS_DEVICE`` env var or
+            ``'cuda'``.
         denoiser_strength: Optional denoiser parameter passed through to TTS.
 
     Attributes:
@@ -58,11 +60,13 @@ class XTTSAdapter(TTSAdapter):
         self,
         model_name: str | None = None,
         *,
-        device: str = "cuda",
+        device: str | None = None,
         denoiser_strength: float | None = None,
     ) -> None:
-        self.model_name = model_name or self.DEFAULT_MODEL
-        self.device = device
+        env_model = os.environ.get("ABM_XTTS_MODEL")
+        env_device = os.environ.get("ABM_XTTS_DEVICE")
+        self.model_name = model_name or env_model or self.DEFAULT_MODEL
+        self.device = device or env_device or "cuda"
         self.denoiser_strength = denoiser_strength
         self._dryrun = os.environ.get("ABM_XTTS_DRYRUN", "") == "1"
         self._tts: Any | None = None
@@ -109,7 +113,7 @@ class XTTSAdapter(TTSAdapter):
 
         text = task.text.strip()
         if not text:
-            _write_sine_wav(task.out_path, duration_ms=50, freq=0.0)
+            _write_sine_wav(task.out_path, duration_ms=50)
             return task.out_path
 
         speaker_args = self._speaker_kwargs(task)
@@ -124,7 +128,3 @@ class XTTSAdapter(TTSAdapter):
         if not task.out_path.exists() or task.out_path.stat().st_size < 200:
             raise SynthesisError("XTTS produced an empty or missing file.")
         return task.out_path
-
-
-# Auto-register on import
-EngineRegistry.register("xtts", lambda **kw: XTTSAdapter(**kw))
