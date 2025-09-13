@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
+import importlib.util
 import logging
 import shutil
 import subprocess
 import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING
-
-import soundfile as sf
 
 __all__ = [
     "export_mp3",
@@ -144,24 +143,61 @@ def export_mp3(
         None: This function does not return anything.
 
     Raises:
-        RuntimeError: If :mod:`pydub`/FFmpeg is unavailable or export fails.
+        RuntimeError: If neither :mod:`pydub` nor ``ffmpeg`` is available or
+            if the export command fails.
     """
 
-    AudioSegment = _require_pydub()
-    try:
-        segment = AudioSegment.from_wav(str(in_wav))
-        tags = {
-            "title": title,
-            "artist": artist,
-            "album": album,
-            "track": str(track),
-            "tracknumber": str(track),
-        }
-        segment.export(out_mp3, format="mp3", tags=tags)
-    except Exception as exc:  # pragma: no cover - ffmpeg error
-        raise RuntimeError(
-            f"ffmpeg failed to export {in_wav} -> {out_mp3} (codec mp3)"
-        ) from exc
+    out_mp3.parent.mkdir(parents=True, exist_ok=True)
+    ffmpeg = shutil.which("ffmpeg")
+    spec = importlib.util.find_spec("pydub")
+
+    if spec and ffmpeg:
+        AudioSegment = _require_pydub()
+        try:
+            segment = AudioSegment.from_wav(str(in_wav))
+            tags = {
+                "title": title,
+                "artist": artist,
+                "album": album,
+                "track": str(track),
+                "tracknumber": str(track),
+            }
+            segment.export(out_mp3, format="mp3", tags=tags)
+            return
+        except Exception as exc:  # pragma: no cover - ffmpeg error
+            raise RuntimeError(
+                f"ffmpeg failed to export {in_wav} -> {out_mp3} (codec mp3)"
+            ) from exc
+
+    if ffmpeg:
+        cmd = [
+            "ffmpeg",
+            "-y",
+            "-i",
+            str(in_wav),
+            "-codec:a",
+            "libmp3lame",
+            "-qscale:a",
+            "2",
+            "-metadata",
+            f"title={title}",
+            "-metadata",
+            f"artist={artist}",
+            "-metadata",
+            f"album={album}",
+            "-metadata",
+            f"track={track}",
+            "-metadata",
+            f"tracknumber={track}",
+            str(out_mp3),
+        ]
+        proc = subprocess.run(cmd, capture_output=True, text=True)
+        if proc.returncode != 0:
+            tail = "\n".join(proc.stderr.splitlines()[-10:])
+            raise RuntimeError(f"ffmpeg failed to export {in_wav} -> {out_mp3}: {tail}")
+        return
+
+    raise RuntimeError("pydub/ffmpeg required for packaging")
 
 
 def export_opus(
@@ -187,24 +223,63 @@ def export_opus(
         None: This function does not return anything.
 
     Raises:
-        RuntimeError: If :mod:`pydub`/FFmpeg is unavailable or export fails.
+        RuntimeError: If neither :mod:`pydub` nor ``ffmpeg`` is available or
+            if the export command fails.
     """
 
-    AudioSegment = _require_pydub()
-    try:
-        segment = AudioSegment.from_wav(str(in_wav))
-        tags = {
-            "title": title,
-            "artist": artist,
-            "album": album,
-            "track": str(track),
-            "tracknumber": str(track),
-        }
-        segment.export(out_opus, format="opus", tags=tags)
-    except Exception as exc:  # pragma: no cover
-        raise RuntimeError(
-            f"ffmpeg failed to export {in_wav} -> {out_opus} (codec opus)"
-        ) from exc
+    out_opus.parent.mkdir(parents=True, exist_ok=True)
+    ffmpeg = shutil.which("ffmpeg")
+    spec = importlib.util.find_spec("pydub")
+
+    if spec and ffmpeg:
+        AudioSegment = _require_pydub()
+        try:
+            segment = AudioSegment.from_wav(str(in_wav))
+            tags = {
+                "title": title,
+                "artist": artist,
+                "album": album,
+                "track": str(track),
+                "tracknumber": str(track),
+            }
+            segment.export(out_opus, format="opus", tags=tags)
+            return
+        except Exception as exc:  # pragma: no cover
+            raise RuntimeError(
+                f"ffmpeg failed to export {in_wav} -> {out_opus} (codec opus)"
+            ) from exc
+
+    if ffmpeg:
+        cmd = [
+            "ffmpeg",
+            "-y",
+            "-i",
+            str(in_wav),
+            "-c:a",
+            "libopus",
+            "-b:a",
+            "96k",
+            "-metadata",
+            f"title={title}",
+            "-metadata",
+            f"artist={artist}",
+            "-metadata",
+            f"album={album}",
+            "-metadata",
+            f"track={track}",
+            "-metadata",
+            f"tracknumber={track}",
+            str(out_opus),
+        ]
+        proc = subprocess.run(cmd, capture_output=True, text=True)
+        if proc.returncode != 0:
+            tail = "\n".join(proc.stderr.splitlines()[-10:])
+            raise RuntimeError(
+                f"ffmpeg failed to export {in_wav} -> {out_opus}: {tail}"
+            )
+        return
+
+    raise RuntimeError("pydub/ffmpeg required for packaging")
 
 
 def make_chaptered_m4b(
@@ -311,6 +386,8 @@ def write_chapter_cue(
 
     if len(chapter_wavs) != len(titles):
         raise ValueError("chapter_wavs and titles length mismatch")
+
+    import soundfile as sf  # local import to keep module import-safe
 
     start = 0.0
     lines: list[str] = []
