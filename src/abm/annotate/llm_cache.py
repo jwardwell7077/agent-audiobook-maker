@@ -41,7 +41,7 @@ class LLMCache:
     def _key(
         self,
         *,
-    roster: dict[str, list[str]],
+        roster: dict[str, list[str]],
         left: str,
         mid: str,
         right: str,
