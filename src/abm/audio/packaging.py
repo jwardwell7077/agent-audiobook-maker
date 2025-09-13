@@ -69,6 +69,9 @@ def export_mp3(
         album: Album/collection name.
         track: Track number within the album.
 
+    Returns:
+        None: This function does not return anything.
+
     Raises:
         RuntimeError: If :mod:`pydub`/FFmpeg is unavailable or export fails.
     """
@@ -109,6 +112,9 @@ def export_opus(
         album: Album/collection name.
         track: Track number within the album.
 
+    Returns:
+        None: This function does not return anything.
+
     Raises:
         RuntimeError: If :mod:`pydub`/FFmpeg is unavailable or export fails.
     """
@@ -148,6 +154,9 @@ def make_chaptered_m4b(
         album: Album name.
         artist: Artist/author name.
         cover_jpeg: Optional cover image to embed.
+
+    Returns:
+        None: This function does not return anything.
 
     Raises:
         ValueError: If ``chapter_wavs`` and ``chapter_titles`` lengths differ.
@@ -194,6 +203,9 @@ def write_chapter_cue(
         chapter_wavs: Ordered list of chapter WAV files.
         out_cue: Destination cue sheet path.
         titles: Titles matching ``chapter_wavs``.
+
+    Returns:
+        None: This function does not return anything.
 
     Raises:
         ValueError: If ``chapter_wavs`` and ``titles`` lengths differ.

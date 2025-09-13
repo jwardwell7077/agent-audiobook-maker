@@ -88,6 +88,12 @@ def apply_album_gain(
         The audio is processed in ``float32`` while preserving channels and
         sample rate.  If the scaled audio would clip, it is reduced so the peak
         stays below ``peak_ceiling_dbfs``.
+
+    Returns:
+        None: This function does not return anything.
+
+    Raises:
+        OSError: If reading or writing ``wav_path`` fails.
     """
 
     data, sr = sf.read(wav_path, dtype="float32")
@@ -107,6 +113,9 @@ def write_album_manifest(manifest_path: Path, offset_db: float) -> None:
     Args:
         manifest_path: Destination path for the manifest JSON.
         offset_db: Gain offset that was applied (in dB).
+
+    Returns:
+        None: This function does not return anything.
     """
 
     manifest = {"album_gain_db": offset_db}

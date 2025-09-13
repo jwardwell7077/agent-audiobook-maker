@@ -63,7 +63,14 @@ def _discover_scripts(
 
 
 def _load_qc(qc_path: Path) -> dict:
-    """Load a QC report from ``qc_path``."""
+    """Load a QC report from ``qc_path``.
+
+    Args:
+        qc_path: Path to the QC JSON file.
+
+    Returns:
+        dict: Parsed QC report.
+    """
 
     with qc_path.open("r", encoding="utf-8") as f:
         return json.load(f)
@@ -72,7 +79,18 @@ def _load_qc(qc_path: Path) -> dict:
 def _build_entry(
     idx: int, title: str | None, qc: dict, wav_rel: Path, qc_rel: Path
 ) -> dict:
-    """Construct a manifest entry for a single chapter."""
+    """Construct a manifest entry for a single chapter.
+
+    Args:
+        idx: Chapter index.
+        title: Optional chapter title.
+        qc: QC statistics dictionary.
+        wav_rel: Path to the WAV file relative to the manifest base.
+        qc_rel: Path to the QC file relative to the manifest base.
+
+    Returns:
+        dict: Manifest entry for the chapter.
+    """
 
     return {
         "index": idx,
@@ -94,6 +112,9 @@ def _write_manifest(
         manifest_path: Destination manifest path.
         base_dir: Base directory used for relative paths.
         entries: Iterable of chapter manifest entries.
+
+    Returns:
+        None: This function does not return anything.
     """
 
     manifest = {"base_dir": str(base_dir), "chapters": list(entries)}
