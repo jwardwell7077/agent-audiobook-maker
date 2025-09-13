@@ -106,7 +106,9 @@ class CharacterProfilesDB:
             data.get("map", {}),
             data.get("fallbacks", {}),
         )
-        db.validate(data)
+        issues = db.validate(data)
+        if issues:
+            raise ValueError("; ".join(issues))
         return db
 
     # ------------------------------------------------------------------
@@ -122,18 +124,46 @@ class CharacterProfilesDB:
             json.dump(data, f, indent=2, sort_keys=True)
 
     # ------------------------------------------------------------------
-    def validate(self, data: dict[str, Any] | None = None) -> None:
-        """Validate the database via :mod:`jsonschema` if available."""
+    def validate(self, data: dict[str, Any] | None = None) -> list[str]:
+        """Validate the database structure.
 
-        if jsonschema is None:  # pragma: no cover - handled above
-            return
+        Returns a list of human-readable issues. If :mod:`jsonschema` is
+        available, it is used; otherwise a few structural checks are performed.
+        """
+
         if data is None:
             data = {
                 "profiles": [asdict(p) for p in self.profiles.values()],
                 "map": self.speaker_map,
                 "fallbacks": self.fallbacks,
             }
-        jsonschema.validate(data, DB_SCHEMA)
+
+        issues: list[str] = []
+        if jsonschema is not None:  # pragma: no cover - straightforward
+            validator = jsonschema.Draft7Validator(DB_SCHEMA)
+            issues.extend(err.message for err in validator.iter_errors(data))
+            return issues
+
+        profiles = data.get("profiles")
+        if not isinstance(profiles, list):
+            issues.append("profiles must be a list")
+            profiles = []
+        required = ["id", "label", "engine", "voice", "refs", "style"]
+        ids = set()
+        for p in profiles:
+            issues.extend(f"profile missing {k}: {p}" for k in required if k not in p)
+            ids.add(p.get("id"))
+        for spk, pid in data.get("map", {}).items():
+            if pid not in ids:
+                issues.append(
+                    f"map references unknown profile '{pid}' for speaker '{spk}'"
+                )
+        for eng, pid in data.get("fallbacks", {}).items():
+            if pid not in ids:
+                issues.append(
+                    f"fallback for '{eng}' references unknown profile '{pid}'"
+                )
+        return issues
 
     # ------------------------------------------------------------------
     def get(self, profile_id: str) -> Profile:

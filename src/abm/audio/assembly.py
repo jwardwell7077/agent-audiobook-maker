@@ -45,6 +45,7 @@ def assemble(
     *,
     crossfade_ms: int = 15,
     sr_hint: int | None = None,
+    allow_resample: bool = False,
 ) -> tuple[np.ndarray, int]:
     """Stitch a sequence of span WAVs with pauses and crossfades.
 
@@ -52,8 +53,10 @@ def assemble(
         span_paths: Ordered list of WAV files to concatenate.
         pauses_ms: Silence duration to insert after each span; must have the
             same length as ``span_paths``.
-        crossfade_ms: Duration of the linear crossfade at joins.
+        crossfade_ms: Duration of the equal-power crossfade at joins.
         sr_hint: If provided, enforce that all input files use this sample rate.
+        allow_resample: Resample mismatched inputs if ``True`` and ``scipy`` is
+            available; otherwise raise a ``ValueError``.
 
     Returns:
         Tuple ``(y, sr)`` where ``y`` is the assembled mono signal.
@@ -64,31 +67,43 @@ def assemble(
     if not span_paths:
         raise ValueError("No spans provided")
 
+    def _maybe_resample(y: np.ndarray, sr_in: int, sr_out: int) -> np.ndarray:
+        if sr_in == sr_out:
+            return y
+        if not allow_resample:
+            raise ValueError("Sample rate mismatch; pass allow_resample=True")
+        try:  # pragma: no cover - optional dependency
+            from scipy import signal  # type: ignore
+
+            y = signal.resample_poly(y, sr_out, sr_in).astype(np.float32)
+            return y
+        except Exception as exc:  # pragma: no cover - scipy missing
+            raise ValueError("Sample rate mismatch and scipy unavailable") from exc
+
     first, sr0 = load_wav(span_paths[0])
     sr = sr_hint or sr0
-    if sr0 != sr:
-        raise ValueError("Sample rate mismatch")
+    first = _maybe_resample(first, sr0, sr)
     out = ensure_mono(first)
 
     crossfade_samples = int(round(sr * crossfade_ms / 1000))
 
     for idx in range(len(span_paths) - 1):
         pause = pauses_ms[idx]
-        if pause > 0:
-            out = np.concatenate([out, silence(pause, sr)])
-
         nxt, sr2 = load_wav(span_paths[idx + 1])
-        if sr2 != sr:
-            raise ValueError("Sample rate mismatch")
+        nxt = _maybe_resample(nxt, sr2, sr)
         nxt = ensure_mono(nxt)
+
+        if pause > 0:
+            out = np.concatenate([out, silence(pause, sr), nxt])
+            continue
 
         if (
             crossfade_samples > 0
             and len(out) >= crossfade_samples
             and len(nxt) >= crossfade_samples
         ):
-            fade_out = np.linspace(1.0, 0.0, crossfade_samples, endpoint=False)
-            fade_in = np.linspace(0.0, 1.0, crossfade_samples, endpoint=False)
+            fade_out = np.sqrt(np.linspace(1.0, 0.0, crossfade_samples, endpoint=False))
+            fade_in = np.sqrt(np.linspace(0.0, 1.0, crossfade_samples, endpoint=False))
             tail = out[-crossfade_samples:]
             head = nxt[:crossfade_samples]
             cross = tail * fade_out + head * fade_in

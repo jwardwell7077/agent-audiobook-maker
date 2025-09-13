@@ -22,10 +22,19 @@ def _parse_only(spec: str | None) -> set[int]:
         if not part:
             continue
         if "-" in part:
-            start, end = part.split("-", 1)
-            result.update(range(int(start), int(end) + 1))
+            try:
+                start_s, end_s = part.split("-", 1)
+                start, end = int(start_s), int(end_s)
+            except ValueError:
+                continue
+            if start > end:
+                start, end = end, start
+            result.update(range(start, end + 1))
         else:
-            result.add(int(part))
+            try:
+                result.add(int(part))
+            except ValueError:
+                continue
     return result
 
 

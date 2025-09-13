@@ -20,9 +20,13 @@ def _load_json(path: Path) -> Any:
 
 def _cmd_validate(path: Path) -> int:
     try:
-        CharacterProfilesDB.load(path)
+        db = CharacterProfilesDB.load(path)
+        issues = db.validate()
     except Exception as exc:  # pragma: no cover - validation details
         print(f"Validation failed: {exc}", file=sys.stderr)
+        return 1
+    if issues:
+        print("Validation failed: " + "; ".join(issues), file=sys.stderr)
         return 1
     print("OK")
     return 0
@@ -38,12 +42,12 @@ def _cmd_audit(roster_path: Path, profiles_path: Path) -> int:
     orphan_ids = sorted(set(db.profiles.keys()) - referenced)
 
     if unmapped:
-        print("Unmapped speakers:" + ", ".join(unmapped))
+        print("unmapped=" + ",".join(unmapped))
     if orphan_ids:
-        print("Orphan profiles:" + ", ".join(orphan_ids))
+        print("orphan=" + ",".join(orphan_ids))
     if unmapped or orphan_ids:
         return 1
-    print("All speakers mapped")
+    print("ok")
     return 0
 
 

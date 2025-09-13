@@ -19,7 +19,13 @@ class TTSManager:
 
     The manager deduplicates synthesis requests using a content-addressable
     cache. Audio is rendered concurrently via a thread pool and progress can be
-    displayed using ``tqdm`` if available.
+    displayed using ``tqdm`` if available. Cached files are stored as::
+
+        cache/<engine>/<sha[:2]>/<sha>.wav
+
+    where ``sha`` is a SHA-256 fingerprint over engine name, adapter and
+    normalizer versions, normalized text, voice, style, profile id, references
+    and engine-specific parameters.
 
     Attributes:
         adapter: Concrete :class:`TTSAdapter` used for synthesis.
@@ -40,16 +46,7 @@ class TTSManager:
         self.max_workers = int(max_workers)
         self.cache_dir = cache_dir
         self.show_progress = show_progress
-
-        if show_progress:
-            try:  # pragma: no cover - import guard
-                from tqdm import tqdm  # type: ignore
-
-                self._tqdm = tqdm
-            except Exception:  # pragma: no cover - fallback when tqdm missing
-                self._tqdm = None
-        else:
-            self._tqdm = None
+        self._tqdm = None  # lazily imported
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -60,16 +57,27 @@ class TTSManager:
             return Path()
 
         norm_text = TextNormalizer.normalize(task.text)
+        tn_ver = getattr(TextNormalizer, "version", lambda: "0")()
+        adapter_ver = getattr(self.adapter, "version", lambda: "0")()
+        seed = getattr(task, "seed", "")
+        params = getattr(task, "engine_params", None) or getattr(task, "params", None)
         parts: list[str] = [
-            self.adapter.__class__.__name__,
             task.engine or "",
-            task.voice or "",
-            task.profile_id or "",
+            adapter_ver,
+            tn_ver,
             norm_text,
+            task.voice or "",
+            task.style or "",
+            task.profile_id or "",
+            seed or "",
         ]
         if task.refs:
             parts.extend(sorted(Path(r).name for r in task.refs))
-        digest = hashlib.sha1("|".join(parts).encode("utf-8")).hexdigest()
+        if params:
+            parts.extend(f"{k}={v}" for k, v in sorted(params.items()))
+        h = hashlib.sha256()
+        h.update("|".join(parts).encode("utf-8"))
+        digest = h.hexdigest()
         return self.cache_dir / task.engine / digest[:2] / f"{digest}.wav"
 
     def _link_or_copy(self, src: Path, dst: Path) -> None:
@@ -81,7 +89,7 @@ class TTSManager:
         try:
             os.link(src, dst)
         except OSError:
-            shutil.copyfile(src, dst)
+            shutil.copy2(src, dst)
 
     # ------------------------------------------------------------------
     # Public API
@@ -105,17 +113,27 @@ class TTSManager:
             self._link_or_copy(cache_path, out_path)
             return out_path
 
-        out_path.parent.mkdir(parents=True, exist_ok=True)
-        result = self.adapter.synth(task)
-
         if self.cache_dir:
             cache_path.parent.mkdir(parents=True, exist_ok=True)
-            if not cache_path.exists():
-                try:
-                    os.link(result, cache_path)
-                except OSError:
-                    shutil.copyfile(result, cache_path)
-        return result
+            tmp = cache_path.with_suffix(".tmp.wav")
+            tmp_task = TTSTask(
+                text=task.text,
+                speaker=task.speaker,
+                engine=task.engine,
+                voice=task.voice,
+                profile_id=task.profile_id,
+                refs=task.refs,
+                out_path=tmp,
+                pause_ms=task.pause_ms,
+                style=task.style,
+            )
+            result = self.adapter.synth(tmp_task)
+            os.replace(result, cache_path)
+            self._link_or_copy(cache_path, out_path)
+            return out_path
+
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        return self.adapter.synth(task)
 
     def render_batch(self, tasks: list[TTSTask]) -> list[Path]:
         """Render many tasks concurrently.
@@ -134,6 +152,14 @@ class TTSManager:
             return []
 
         self.adapter.preload()
+
+        if self.show_progress and self._tqdm is None:  # pragma: no cover - import guard
+            try:
+                from tqdm import tqdm  # type: ignore
+
+                self._tqdm = tqdm
+            except Exception:  # pragma: no cover
+                self._tqdm = None
 
         results: list[Path] = [Path()] * len(tasks)
         with ThreadPoolExecutor(max_workers=self.max_workers) as ex:

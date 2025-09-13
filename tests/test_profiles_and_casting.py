@@ -45,6 +45,12 @@ def test_cast_speaker_mapped_unmapped(tmp_path: Path) -> None:
     assert info2["profile_id"] == "narrator"
 
 
+def test_cast_speaker_narrator_like(tmp_path: Path) -> None:
+    db = _make_db(tmp_path)
+    info = cast_speaker("System message", db, preferred_engine="piper")
+    assert info["profile_id"] == "narrator"
+
+
 def test_spans_to_tasks(tmp_path: Path) -> None:
     db = _make_db(tmp_path)
     spans = [

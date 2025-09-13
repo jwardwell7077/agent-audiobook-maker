@@ -57,7 +57,11 @@ def master(
     head_ms: int = 700,
     tail_ms: int = 900,
 ) -> np.ndarray:
-    """Master audio to target loudness and peak limits."""
+    """Master audio to target loudness and peak limits.
+
+    Note that adding tail silence after loudness normalisation can slightly
+    shift integrated LUFS, which is an accepted trade-off for audiobooks.
+    """
 
     loud = measure_loudness(y, sr)
     if np.isfinite(loud):

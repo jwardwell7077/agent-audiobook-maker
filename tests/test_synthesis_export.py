@@ -30,7 +30,17 @@ def _write_tagged(path: Path) -> None:
             "index": 1,
             "title": "Ch1",
             "spans": [{"type": "Narration", "speaker": "Narrator", "text": "Hi"}],
-        }
+        },
+        {
+            "index": 2,
+            "title": "Ch2",
+            "spans": [{"type": "Narration", "speaker": "Narrator", "text": "Yo"}],
+        },
+        {
+            "index": 3,
+            "title": "Ch3",
+            "spans": [{"type": "Narration", "speaker": "Narrator", "text": "Hey"}],
+        },
     ]
     path.write_text(json.dumps(data), encoding="utf-8")
 
@@ -50,12 +60,18 @@ def test_synthesis_export(tmp_path: Path) -> None:
             str(profiles_path),
             "--out-dir",
             str(out_dir),
+            "--only",
+            "1,3-5",
         ]
     )
 
-    script_path = out_dir / "scripts" / "ch_001.synth.json"
+    script1 = out_dir / "scripts" / "ch_001.synth.json"
+    script2 = out_dir / "scripts" / "ch_002.synth.json"
+    script3 = out_dir / "scripts" / "ch_003.synth.json"
     manifest_path = out_dir / "synth_manifest.json"
-    assert script_path.exists()
+    assert script1.exists()
+    assert not script2.exists()
+    assert script3.exists()
     assert manifest_path.exists()
-    items = json.loads(script_path.read_text(encoding="utf-8"))
+    items = json.loads(script1.read_text(encoding="utf-8"))
     assert items[0]["text"] == "Hi"

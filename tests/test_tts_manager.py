@@ -19,6 +19,9 @@ class DummyAdapter(TTSAdapter):
         sf.write(task.out_path, y, sr, subtype="PCM_16")
         return task.out_path
 
+    def version(self) -> str:  # pragma: no cover - trivial
+        return "1"
+
 
 def make_tasks(out_dir: Path) -> list[TTSTask]:
     return [
@@ -49,6 +52,8 @@ def test_render_batch_uses_cache(tmp_path, monkeypatch):
     manager.render_batch(tasks1)
     for t in tasks1:
         assert t.out_path.exists()
+    cache_files = list((cache_dir / "dummy").rglob("*.wav"))
+    assert cache_files and len(cache_files[0].stem) == 64
 
     tasks2 = make_tasks(out2)
     calls = {"n": 0}

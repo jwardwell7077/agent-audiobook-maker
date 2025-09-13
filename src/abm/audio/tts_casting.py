@@ -28,12 +28,14 @@ def cast_speaker(
     """
 
     profile: Profile | None = db.by_speaker(speaker)
+    lower = speaker.lower()
     if profile is None:
-        lower = speaker.lower()
         for candidate in db.profiles.values():
             if any(tag.lower() in lower for tag in candidate.tags):
                 profile = candidate
                 break
+    if profile is None and any(x in lower for x in {"narrator", "system", "ui"}):
+        profile = db.fallback(preferred_engine or "piper")
     if profile is None and preferred_engine:
         profile = db.fallback(preferred_engine)
     if profile is None:

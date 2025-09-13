@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -16,6 +17,11 @@ from abm.audio.mastering import master
 from abm.audio.qc_report import qc_report, write_qc_json
 from abm.audio.tts_base import TTSTask
 from abm.audio.tts_manager import TTSManager
+
+try:  # pragma: no cover - optional dependency
+    from pydub.exceptions import CouldntDecodeError
+except Exception:  # pragma: no cover
+    CouldntDecodeError = None  # type: ignore
 
 __all__ = ["main"]
 
@@ -43,6 +49,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--peak", type=float, default=-3.0)
     parser.add_argument("--crossfade-ms", type=int, default=15)
     parser.add_argument("--engine-workers", type=str, default="{}")
+    parser.add_argument(
+        "--workers",
+        action="append",
+        default=[],
+        help="Override workers per engine (engine=N). Can be repeated.",
+    )
     parser.add_argument(
         "--show-progress", action=argparse.BooleanOptionalAction, default=True
     )
@@ -85,6 +97,10 @@ def main(argv: list[str] | None = None) -> int:
         )
 
     engine_workers = json.loads(args.engine_workers or "{}")
+    for w in args.workers:
+        if "=" in w:
+            eng, n = w.split("=", 1)
+            engine_workers[eng] = int(n)
     managers: dict[str, TTSManager] = {}
     grouped: dict[str, list[TTSTask]] = {}
     for task in tasks:
@@ -98,7 +114,9 @@ def main(argv: list[str] | None = None) -> int:
             cache_dir=cache_dir,
             show_progress=args.show_progress,
         )
-        managers[engine].render_batch(eng_tasks)
+        to_render = [t for t in eng_tasks if not t.out_path.exists()]
+        if to_render:
+            managers[engine].render_batch(to_render)
 
     span_paths = [t.out_path for t in tasks]
     pauses = [t.pause_ms for t in tasks]
@@ -117,8 +135,15 @@ def main(argv: list[str] | None = None) -> int:
 
             mp3_path = out_dir / "chapters" / f"{chapter_id}.mp3"
             AudioSegment.from_wav(str(wav_path)).export(mp3_path, format="mp3")
-        except Exception:  # pragma: no cover - skip gracefully
+        except (ImportError, OSError) as exc:  # pragma: no cover
             mp3_path = None
+            logging.getLogger(__name__).warning("MP3 export skipped: %s", exc)
+        except Exception as exc:  # pragma: no cover
+            if CouldntDecodeError is not None and isinstance(exc, CouldntDecodeError):
+                mp3_path = None
+                logging.getLogger(__name__).warning("MP3 export skipped: %s", exc)
+            else:
+                raise
 
     report = qc_report(y, sr)
     qc_path = out_dir / "qc" / f"{chapter_id}.qc.json"
@@ -130,6 +155,13 @@ def main(argv: list[str] | None = None) -> int:
             manifest = json.load(f)
     else:
         manifest = {"chapters": []}
+    manifest["provenance"] = {
+        "crossfade_ms": args.crossfade_ms,
+        "target_lufs": args.lufs,
+        "peak_dbfs": args.peak,
+        "engine_workers": engine_workers,
+        "cache_dir": str(cache_dir),
+    }
     entry = {
         "index": chapter_index,
         "title": chapter_title,
