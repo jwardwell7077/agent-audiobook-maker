@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+import pytest
 import soundfile as sf
 
 from abm.audio.album_norm import (
@@ -11,7 +12,13 @@ from abm.audio.album_norm import (
     write_album_manifest,
 )
 from abm.audio.engine_registry import EngineRegistry
-from abm.audio.packaging import export_mp3, export_opus, write_chapter_cue
+from abm.audio.packaging import (
+    export_mp3,
+    export_opus,
+    format_ts,
+    make_chaptered_m4b,
+    write_chapter_cue,
+)
 from abm.audio.render_book import main as render_book_main
 from abm.audio.tts_base import TTSAdapter, TTSTask
 
@@ -53,7 +60,7 @@ def test_render_book_with_resume(tmp_path, monkeypatch):
     out_dir = tmp_path / "out"
 
     argv = [
-        "--scripts",
+        "--scripts-dir",
         str(scripts_dir),
         "--out-dir",
         str(out_dir),
@@ -78,8 +85,37 @@ def test_render_book_with_resume(tmp_path, monkeypatch):
     manifest_path = out_dir / "manifests" / "book_manifest.json"
     manifest = json.loads(manifest_path.read_text())
     assert len(manifest["chapters"]) == 2
+    assert manifest["base_dir"] == str(out_dir)
 
     EngineRegistry.unregister("dummy")
+
+
+def test_render_book_cli_args(capsys):
+    with pytest.raises(SystemExit):
+        render_book_main(["--help"])
+    out = capsys.readouterr().out
+    assert "--scripts-dir" in out
+    assert "--log-level" in out
+
+
+def test_render_book_no_scripts(tmp_path, caplog):
+    scripts_dir = tmp_path / "scripts"
+    scripts_dir.mkdir()
+    out_dir = tmp_path / "out"
+    argv = [
+        "--scripts-dir",
+        str(scripts_dir),
+        "--out-dir",
+        str(out_dir),
+        "--engine-workers",
+        "{}",
+    ]
+    with caplog.at_level("WARNING"):
+        ret = render_book_main(argv)
+    assert ret == 0
+    manifest = json.loads((out_dir / "manifests" / "book_manifest.json").read_text())
+    assert manifest["chapters"] == []
+    assert manifest["base_dir"] == str(out_dir)
 
 
 def test_album_normalization(tmp_path):
@@ -104,10 +140,11 @@ def test_album_normalization(tmp_path):
     )
 
     manifest = {
+        "base_dir": str(tmp_path),
         "chapters": [
             {"index": 0, "qc_path": f"qc/{qc0.name}", "wav_path": wav0.name},
             {"index": 1, "qc_path": f"qc/{qc1.name}", "wav_path": wav1.name},
-        ]
+        ],
     }
     manif_dir = tmp_path / "manifests"
     manif_dir.mkdir()
@@ -127,33 +164,112 @@ def test_album_normalization(tmp_path):
     write_album_manifest(tmp_path / "album.json", offset)
 
 
-def test_packaging_exports(tmp_path):
-    sr = 16000
-    t = np.linspace(0, 0.1, int(sr * 0.1), endpoint=False)
-    y = np.sin(2 * np.pi * 440 * t)
-    in_wav = tmp_path / "in.wav"
-    sf.write(in_wav, y, sr)
-
-    try:
-        export_mp3(
-            in_wav,
-            tmp_path / "out.mp3",
-            title="t",
-            artist="a",
-            album="b",
-            track=1,
+def test_collect_stats_without_base_dir(tmp_path):
+    wav = tmp_path / "ch_000.wav"
+    sf.write(wav, np.zeros(10), 16000)
+    qc = tmp_path / "ch_000.qc.json"
+    qc.write_text(json.dumps({"duration_s": 0.1, "integrated_lufs": -20}))
+    manifest_path = tmp_path / "book_manifest.json"
+    manifest_path.write_text(
+        json.dumps(
+            {"chapters": [{"index": 0, "qc_path": qc.name, "wav_path": wav.name}]}
         )
-        export_opus(
-            in_wav,
-            tmp_path / "out.opus",
-            title="t",
-            artist="a",
-            album="b",
-            track=1,
-        )
-    except RuntimeError as exc:
-        # Missing ffmpeg; ensure message is informative
-        assert "ffmpeg" in str(exc) or "pydub" in str(exc)
+    )
+    stats = collect_chapter_stats(manifest_path)
+    assert stats[0]["duration_s"] == 0.1
 
-    write_chapter_cue([in_wav], tmp_path / "chapters.cue", ["One"])
-    assert (tmp_path / "chapters.cue").exists()
+
+def test_compute_album_offset_trim():
+    stats = [{"integrated_lufs": v} for v in [-10, -10, -10, -100, 0]]
+    offset = compute_album_offset(stats, target_lufs=-20.0, trim_percent=0.2)
+    assert offset == pytest.approx(-10.0)
+    small = [{"integrated_lufs": -20.0}, {"integrated_lufs": -10.0}]
+    offset2 = compute_album_offset(small, target_lufs=-18.0, trim_percent=0.1)
+    assert offset2 == pytest.approx(-3.0)
+
+
+@pytest.mark.parametrize(
+    "seconds, expected",
+    [
+        (0.0, "00:00:00.000"),
+        (59.999, "00:00:59.999"),
+        (3600.5, "01:00:00.500"),
+    ],
+)
+def test_format_ts(seconds, expected):
+    assert format_ts(seconds) == expected
+
+
+def test_write_chapter_cue(tmp_path):
+    sr = 48000
+    wav0 = tmp_path / "0.wav"
+    wav1 = tmp_path / "1.wav"
+    sf.write(wav0, np.zeros(int(sr * 0.5)), sr)
+    sf.write(wav1, np.zeros(int(sr * 0.25)), sr)
+    out_cue = tmp_path / "c.cue"
+    write_chapter_cue([wav0, wav1], out_cue, ["A", "B"])
+    lines = out_cue.read_text().strip().splitlines()
+    assert lines[0].startswith("00:00:00.000")
+    assert lines[1].startswith("00:00:00.500")
+
+
+def test_packaging_requires_ffmpeg(tmp_path, monkeypatch):
+    def boom():  # pragma: no cover - simulated missing dep
+        raise RuntimeError("pydub missing")
+
+    monkeypatch.setattr("abm.audio.packaging._require_pydub", boom)
+    wav = tmp_path / "in.wav"
+    sf.write(wav, np.zeros(10), 16000)
+    with pytest.raises(RuntimeError):
+        export_mp3(wav, tmp_path / "o.mp3", title="t", artist="a", album="b", track=1)
+    with pytest.raises(RuntimeError):
+        export_opus(wav, tmp_path / "o.opus", title="t", artist="a", album="b", track=1)
+    with pytest.raises(RuntimeError):
+        make_chaptered_m4b([wav], tmp_path / "o.m4b", ["One"], album="a", artist="b")
+
+
+def test_make_chaptered_m4b_errors(tmp_path):
+    wav = tmp_path / "c.wav"
+    sf.write(wav, np.zeros(10), 16000)
+    with pytest.raises(ValueError):
+        make_chaptered_m4b([wav], tmp_path / "o.m4b", [], album="a", artist="b")
+    with pytest.raises(FileNotFoundError):
+        make_chaptered_m4b(
+            [wav],
+            tmp_path / "o.m4b",
+            ["One"],
+            album="a",
+            artist="b",
+            cover_jpeg=tmp_path / "missing.jpg",
+        )
+
+
+def test_packaging_success_paths(tmp_path, monkeypatch):
+    class DummySeg:
+        def __init__(self, duration: float = 0.1) -> None:
+            self.duration_seconds = duration
+
+        @classmethod
+        def from_wav(cls, path: str) -> "DummySeg":  # pragma: no cover - simple
+            return cls()
+
+        @staticmethod
+        def silent(ms: int) -> "DummySeg":  # pragma: no cover - simple
+            return DummySeg(ms / 1000)
+
+        def export(self, out_path, format, tags=None, cover=None) -> None:  # noqa: D401
+            Path(out_path).touch()
+
+        def __add__(self, other: "DummySeg") -> "DummySeg":  # pragma: no cover
+            return DummySeg(self.duration_seconds + other.duration_seconds)
+
+    monkeypatch.setattr("abm.audio.packaging._require_pydub", lambda: DummySeg)
+
+    wav = tmp_path / "in.wav"
+    sf.write(wav, np.zeros(10), 16000)
+    export_mp3(wav, tmp_path / "o.mp3", title="t", artist="a", album="b", track=1)
+    export_opus(wav, tmp_path / "o.opus", title="t", artist="a", album="b", track=1)
+    make_chaptered_m4b(
+        [wav, wav], tmp_path / "out.m4b", ["A", "B"], album="a", artist="b"
+    )
+    assert (tmp_path / "out.chapters.txt").exists()
