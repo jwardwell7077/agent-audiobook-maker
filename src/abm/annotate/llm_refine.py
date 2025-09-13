@@ -1,5 +1,3 @@
-"""Stage B LLM refinement CLI and helper functions."""
-
 from __future__ import annotations
 
 import argparse
@@ -62,7 +60,11 @@ def _ctx(text: str, start: int, end: int, n: int) -> tuple[str, str, str]:
         None
     """
 
-    return text[max(0, start - n) : start], text[start:end], text[end : min(len(text), end + n)]
+    return (
+        text[max(0, start - n) : start],
+        text[start:end],
+        text[end : min(len(text), end + n)],
+    )
 
 
 def _fuzzy_match(name: str, roster: dict[str, list[str]]) -> str | None:
@@ -149,7 +151,14 @@ def refine_document(
         roster: dict[str, list[str]] = c.get("roster") or {}
         left, mid, right = _ctx(text, c["start"], c["end"], cfg.context_chars)
 
-        cached = cache.get(roster=roster, left=left, mid=mid, right=right, span_type=c["type"], model=backend.model)
+        cached = cache.get(
+            roster=roster,
+            left=left,
+            mid=mid,
+            right=right,
+            span_type=c["type"],
+            model=backend.model,
+        )
         if cached is None:
             votes_map: dict[str, float] = {}
             uprompt = speaker_user_prompt(roster, left, mid, right, c["type"])
@@ -188,7 +197,15 @@ def refine_document(
 
             speaker, conf = max(votes_map.items(), key=lambda kv: kv[1])
             cached = {"speaker": speaker, "confidence": conf}
-            cache.set(cached, roster=roster, left=left, mid=mid, right=right, span_type=c["type"], model=backend.model)
+            cache.set(
+                cached,
+                roster=roster,
+                left=left,
+                mid=mid,
+                right=right,
+                span_type=c["type"],
+                model=backend.model,
+            )
         return (int(c["start"]), int(c["end"]), cached)
 
     results: list[tuple[int, int, dict[str, Any] | None]] = []
@@ -199,7 +216,10 @@ def refine_document(
                 res = process_one(c)
                 results.append(res)
                 total += 1
-                pr.advance(1, text=f"ch {c.get('chapter_index')} @ {c.get('start')}-{c.get('end')}")
+                pr.advance(
+                    1,
+                    text=f"ch {c.get('chapter_index')} @ {c.get('start')}-{c.get('end')}",
+                )
         else:
             with futures.ThreadPoolExecutor(max_workers=int(cfg.max_concurrency)) as ex:
                 futs = [ex.submit(process_one, c) for c in cand]
@@ -223,7 +243,7 @@ def refine_document(
                     s["method"] = "llm"
                     s["confidence"] = max(
                         cached["confidence"],
-                        cfg.accept_min_conf if cached["speaker"] != "Unknown" else cfg.unknown_min_conf,
+                        (cfg.accept_min_conf if cached["speaker"] != "Unknown" else cfg.unknown_min_conf),
                     )
                     changed += 1
 
@@ -262,16 +282,34 @@ def _parse_args() -> argparse.Namespace:
     ap.add_argument("--tagged", required=True, help="Path to Stage A combined.json")
     ap.add_argument("--out-json", required=True, help="Path to write refined JSON")
     ap.add_argument("--out-md", default=None, help="Optional summary markdown")
-    ap.add_argument("--endpoint", default="http://127.0.0.1:11434/v1", help="OpenAI-compatible base URL")
+    ap.add_argument(
+        "--endpoint",
+        default="http://127.0.0.1:11434/v1",
+        help="OpenAI-compatible base URL",
+    )
     ap.add_argument("--model", default="llama3.1:8b-instruct-q6_K", help="Model id/name")
-    ap.add_argument("--manage-llm", action="store_true", help="Start/stop local LLM service automatically (Ollama)")
-    ap.add_argument("--skip-threshold", type=float, default=0.90, help="Skip spans with conf >= this")
+    ap.add_argument(
+        "--manage-llm",
+        action="store_true",
+        help="Start/stop local LLM service automatically (Ollama)",
+    )
+    ap.add_argument(
+        "--skip-threshold",
+        type=float,
+        default=0.90,
+        help="Skip spans with conf >= this",
+    )
     ap.add_argument("--votes", type=int, default=3, help="Majority vote count per span")
     ap.add_argument("--cache", default=None, help="Optional path to SQLite cache file")
     ap.add_argument("--max-concurrency", type=int, default=4, help="Max parallel LLM requests")
     ap.add_argument("--cache-dir", default=None, help="Directory for cache DB (overrides --cache)")
     ap.add_argument("--verbose", action="store_true", help="Verbose refinement logs")
-    ap.add_argument("--status", choices=["auto", "rich", "tqdm", "none"], default="auto", help="Live status renderer")
+    ap.add_argument(
+        "--status",
+        choices=["auto", "rich", "tqdm", "none"],
+        default="auto",
+        help="Live status renderer",
+    )
     return ap.parse_args()
 
 
