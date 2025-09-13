@@ -12,8 +12,8 @@ from typing import Any, cast
 
 from abm.annotate.llm_cache import LLMCache
 from abm.annotate.llm_prep import LLMCandidateConfig, LLMCandidatePreparer
-from abm.annotate.prompts import SYSTEM_SPEAKER, speaker_user_prompt
 from abm.annotate.progress import ProgressReporter
+from abm.annotate.prompts import SYSTEM_SPEAKER, speaker_user_prompt
 from abm.llm.client import OpenAICompatClient
 from abm.llm.manager import LLMBackend, LLMService
 
@@ -157,9 +157,7 @@ def refine_document(
             prev_speaker = None
             try:
                 spans = ch.get("spans", []) or []
-                idx = next(
-                    i for i, s in enumerate(spans) if s.get("start") == c["start"] and s.get("end") == c["end"]
-                )
+                idx = next(i for i, s in enumerate(spans) if s.get("start") == c["start"] and s.get("end") == c["end"])
                 if idx > 0:
                     ps = spans[idx - 1]
                     if ps.get("speaker") not in (None, "Unknown") and float(ps.get("confidence", 0.0)) >= 0.90:
@@ -171,11 +169,11 @@ def refine_document(
                 obj = cast(
                     dict[str, Any],
                     client.chat_json(
-                    system_prompt=SYSTEM_SPEAKER,
-                    user_prompt=uprompt,
-                    temperature=cfg.temperature,
-                    top_p=cfg.top_p,
-                    max_tokens=cfg.max_tokens,
+                        system_prompt=SYSTEM_SPEAKER,
+                        user_prompt=uprompt,
+                        temperature=cfg.temperature,
+                        top_p=cfg.top_p,
+                        max_tokens=cfg.max_tokens,
                     ),
                 )
                 spk = str(obj.get("speaker", "Unknown")).strip() or "Unknown"
@@ -303,9 +301,7 @@ def main() -> None:
         cfg=cfg,
         manage_service=args.manage_llm,
         cache_path=(
-            Path(args.cache)
-            if args.cache
-            else (Path(args.cache_dir) / "llm.cache.sqlite" if args.cache_dir else None)
+            Path(args.cache) if args.cache else (Path(args.cache_dir) / "llm.cache.sqlite" if args.cache_dir else None)
         ),
     )
 
