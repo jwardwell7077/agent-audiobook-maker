@@ -12,6 +12,36 @@ authors = [{ name = "jon" }]
 license = { file = "LICENSE" }
 keywords = ["audiobook", "pdf", "tts", "langgraph", "crewai"]
 
+# Feature-scoped optional dependencies (install with: pip install .[group])
+[project.optional-dependencies]
+coref = [
+	"fastcoref>=2.1.7",
+]
+spacy-trf = [
+	"spacy-transformers>=1.3,<1.4",
+]
+ui = [
+	"rich>=13.7",
+	"tqdm>=4.66",
+]
+metrics = [
+	"psutil>=5.9",
+	"pynvml>=11.5",
+]
+db = [
+	"psycopg[binary]==3.1.9",
+]
+booknlp = [
+	"booknlp>=1.0; python_version >= '3.10'",
+]
+tts = [
+	"TTS>=0.22.0",
+]
+# Convenience meta-extras
+all-optional = [
+	"agent-audiobook-maker[coref,spacy-trf,ui,metrics,db,booknlp,tts]",
+]
+
 [tool.setuptools]
 package-dir = {"" = "src"}
 

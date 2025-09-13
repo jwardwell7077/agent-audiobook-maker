@@ -1,4 +1,4 @@
 requests==2.32.5
-# Install psycopg v3 with binary wheels via extras
-psycopg[binary]==3.1.9
 PyMuPDF==1.24.9
+# Stage-A uses spaCy for full-document parsing
+spacy>=3.7,<3.8
