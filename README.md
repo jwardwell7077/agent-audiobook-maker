@@ -162,6 +162,44 @@ docker compose up -d api
 pytest -q
 ```
 
+## Dependencies
+
+This repo keeps the base runtime light and pushes heavier/optional features into extras. Use Python 3.11.
+
+- Base (required to run the ingestion/annotation CLIs): installed via `requirements.txt` and included in `requirements-dev.txt`.
+- Dev tools: linters, tests, docs formatters via `requirements-dev.txt`.
+- Optional features (install as needed):
+  - Coref: `pip install -e .[coref]`
+  - spaCy Transformers: `pip install -e .[spacy-trf]`
+  - UI niceties (rich/tqdm): `pip install -e .[ui]`
+  - Metrics (psutil/pynvml): `pip install -e .[metrics]`
+  - Database (psycopg[binary]): `pip install -e .[db]`
+  - BookNLP sidecar: `pip install -e .[booknlp]`
+  - TTS stack (XTTS/Piper helpers): `pip install -e .[tts]`
+  - All optional (convenience): `pip install -e .[all-optional]`
+
+Quick dev install:
+
+```bash
+python3.11 -m venv .venv && source .venv/bin/activate
+pip install -U pip
+pip install -r requirements-dev.txt  # brings in base + tooling
+# optionally add extras, e.g.:
+pip install -e .[spacy-trf,coref,ui]
+```
+
+Alternative: a flat list is provided in `requirements-optional.txt` to mirror common optional packages for non-editable installs.
+
+### spaCy model note
+
+If you run annotation with the transformer pipeline, install a compatible English model:
+
+```bash
+python -m spacy download en_core_web_trf
+```
+
+Or point `--spacy-model` to another compatible model. For CPU-only machines, consider `en_core_web_md` and disable `--coref` unless installed with `[coref]`.
+
 ### Optional: Local mvs dev flow (kept out of git)
 
 If you have the MyVampireSystem PDF at `data/books/mvs/source_pdfs/MyVampireSystem_CH0001_0700.pdf`, you can run the whole pipeline locally and generate readable artifacts:
