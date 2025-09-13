@@ -49,10 +49,9 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass
+from importlib import import_module
 from pathlib import Path
 from typing import Any
-from importlib import import_module
-from types import ModuleType
 
 yaml: Any | None = None
 try:  # pragma: no cover - optional dependency
@@ -347,4 +346,3 @@ def validate_profiles(cfg: ProfileConfig) -> list[str]:
                     f"speaker '{sp.name}' fallback voice '{voice}' unknown for engine '{eng}'"
                 )
     return issues
-    

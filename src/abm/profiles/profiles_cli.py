@@ -24,8 +24,6 @@ try:  # pragma: no cover - optional dependency
 except Exception:  # pragma: no cover - YAML not installed
     HAVE_YAML = False
 
- 
-
 __all__ = ["main"]
 
 
@@ -59,10 +57,17 @@ def _cmd_audit(ns: Any) -> int:
                 if spk:
                     speakers.add(spk)
 
-    decisions = [pick_voice(cfg, spk, preferred_engine=ns.prefer_engine) for spk in sorted(speakers)]
-    unmapped = [d.speaker for d in decisions if d.method == "default" and d.reason == "unknown"]
+    decisions = [
+        pick_voice(cfg, spk, preferred_engine=ns.prefer_engine)
+        for spk in sorted(speakers)
+    ]
+    unmapped = [
+        d.speaker for d in decisions if d.method == "default" and d.reason == "unknown"
+    ]
     method_counts = Counter(d.method for d in decisions)
-    alias_pct = method_counts.get("alias", 0) / len(decisions) * 100 if decisions else 0.0
+    alias_pct = (
+        method_counts.get("alias", 0) / len(decisions) * 100 if decisions else 0.0
+    )
     summary = {
         "total": len(decisions),
         "unmapped": unmapped,
@@ -85,14 +90,20 @@ def _cmd_audit(ns: Any) -> int:
     else:
         if unmapped:
             print("Unmapped speakers: " + ", ".join(unmapped))
-        print(f"total={summary['total']} unmapped={len(unmapped)} alias%={alias_pct:.1f}")
+        print(
+            f"total={summary['total']} unmapped={len(unmapped)} alias%={alias_pct:.1f}"
+        )
     return 2 if unmapped else 0
 
 
 def _scan_voices(voices_dir: Path | None) -> list[str]:
     """Return available voice IDs from a directory or a small default set."""
 
-    voices = [p.name for p in voices_dir.iterdir()] if voices_dir and voices_dir.exists() else []
+    voices = (
+        [p.name for p in voices_dir.iterdir()]
+        if voices_dir and voices_dir.exists()
+        else []
+    )
     voices = sorted(set(voices))
     if not voices:
         voices = ["en_US/ryan-high", "en_US/lessac-medium", "en_GB/callan-medium"]
@@ -136,7 +147,9 @@ def _cmd_generate(ns: Any) -> int:
     top = [s for s, _ in counts.most_common(ns.n_top)]
     voice_ids = _scan_voices(Path(ns.voices_dir) if ns.voices_dir else None)
     narrator_voice = voice_ids[0] if voice_ids else "base"
-    speakers: dict[str, dict[str, str]] = {"Narrator": {"engine": ns.engine, "voice": narrator_voice}}
+    speakers: dict[str, dict[str, str]] = {
+        "Narrator": {"engine": ns.engine, "voice": narrator_voice}
+    }
 
     narr_norms = {
         normalize_speaker_name("Narrator"),
@@ -162,9 +175,6 @@ def _cmd_generate(ns: Any) -> int:
     assert yaml is not None  # for type checkers; guarded by HAVE_YAML above
     out_path.write_text(yaml.safe_dump(cfg, sort_keys=False), encoding="utf-8")
     return 0
-
-
- 
 
 
 def main(argv: list[str] | None = None) -> int:
