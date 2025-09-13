@@ -106,6 +106,12 @@ class TextNormalizer:
         return s
 
     @staticmethod
+    def version() -> str:
+        """Return a version string for cache keying."""
+
+        return "1"
+
+    @staticmethod
     def _num_to_words(n: int) -> str:
         """Convert some small integers to words, otherwise return digits.
 

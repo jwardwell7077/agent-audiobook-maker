@@ -1,0 +1,77 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from abm.audio.synthesis_export import main as synth_main
+
+
+def _write_profiles(path: Path) -> None:
+    data = {
+        "profiles": [
+            {
+                "id": "narrator",
+                "label": "Narrator",
+                "engine": "piper",
+                "voice": "en_US",
+                "refs": [],
+                "style": "neutral",
+                "tags": ["narrator"],
+            }
+        ],
+        "fallbacks": {"piper": "narrator"},
+    }
+    path.write_text(json.dumps(data), encoding="utf-8")
+
+
+def _write_tagged(path: Path) -> None:
+    data = [
+        {
+            "index": 1,
+            "title": "Ch1",
+            "spans": [{"type": "Narration", "speaker": "Narrator", "text": "Hi"}],
+        },
+        {
+            "index": 2,
+            "title": "Ch2",
+            "spans": [{"type": "Narration", "speaker": "Narrator", "text": "Yo"}],
+        },
+        {
+            "index": 3,
+            "title": "Ch3",
+            "spans": [{"type": "Narration", "speaker": "Narrator", "text": "Hey"}],
+        },
+    ]
+    path.write_text(json.dumps(data), encoding="utf-8")
+
+
+def test_synthesis_export(tmp_path: Path) -> None:
+    profiles_path = tmp_path / "profiles.json"
+    tagged_path = tmp_path / "combined.json"
+    out_dir = tmp_path / "out"
+    _write_profiles(profiles_path)
+    _write_tagged(tagged_path)
+
+    synth_main(
+        [
+            "--tagged",
+            str(tagged_path),
+            "--profiles",
+            str(profiles_path),
+            "--out-dir",
+            str(out_dir),
+            "--only",
+            "1,3-5",
+        ]
+    )
+
+    script1 = out_dir / "scripts" / "ch_001.synth.json"
+    script2 = out_dir / "scripts" / "ch_002.synth.json"
+    script3 = out_dir / "scripts" / "ch_003.synth.json"
+    manifest_path = out_dir / "synth_manifest.json"
+    assert script1.exists()
+    assert not script2.exists()
+    assert script3.exists()
+    assert manifest_path.exists()
+    items = json.loads(script1.read_text(encoding="utf-8"))
+    assert items[0]["text"] == "Hi"

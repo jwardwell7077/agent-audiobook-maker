@@ -51,13 +51,14 @@ import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
+from importlib import import_module
+from types import ModuleType
 
+yaml: Any | None = None
 try:  # pragma: no cover - optional dependency
-    import yaml  # type: ignore
-
+    yaml = import_module("yaml")
     HAVE_YAML = True
 except Exception:  # pragma: no cover - YAML not installed
-    yaml = None  # type: ignore
     HAVE_YAML = False
 
 __all__ = [
@@ -186,9 +187,9 @@ def load_profiles(path: str | Path) -> ProfileConfig:
         raise RuntimeError(f"unable to read profiles file: {p}") from exc
 
     data: dict[str, Any]
-    if HAVE_YAML:
+    if HAVE_YAML and yaml is not None:
         try:  # pragma: no cover - exercised when yaml installed
-            data = yaml.safe_load(text)  # type: ignore
+            data = yaml.safe_load(text)
         except Exception:
             data = json.loads(text)
     else:
@@ -346,3 +347,4 @@ def validate_profiles(cfg: ProfileConfig) -> list[str]:
                     f"speaker '{sp.name}' fallback voice '{voice}' unknown for engine '{eng}'"
                 )
     return issues
+    

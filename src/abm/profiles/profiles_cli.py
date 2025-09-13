@@ -1,4 +1,4 @@
-"""Command line utilities for profile files."""
+"""Command line utilities for YAML-based profile files."""
 
 # isort: skip_file
 
@@ -11,22 +11,23 @@ from argparse import ArgumentParser
 from collections import Counter
 from dataclasses import asdict
 from pathlib import Path
+from abm.profiles import Style, load_profiles, normalize_speaker_name
+from abm.voice.tts_casting import pick_voice
+from typing import Any, cast
+from collections.abc import Callable
+from importlib import import_module
 
+yaml: Any | None = None
 try:  # pragma: no cover - optional dependency
-    import yaml  # type: ignore
-
+    yaml = import_module("yaml")
     HAVE_YAML = True
 except Exception:  # pragma: no cover - YAML not installed
-    yaml = None  # type: ignore
     HAVE_YAML = False
-
-from abm.profiles import Style, load_profiles, normalize_speaker_name
-from abm.voice import pick_voice
 
 __all__ = ["main"]
 
 
-def _cmd_audit(ns) -> int:
+def _cmd_audit(ns: Any) -> int:
     """Audit profiles against annotation speakers.
 
     Args:
@@ -109,7 +110,7 @@ def _scan_voices(voices_dir: Path | None) -> list[str]:
     return voices
 
 
-def _cmd_generate(ns) -> int:
+def _cmd_generate(ns: Any) -> int:
     """Generate a starter profiles YAML from annotations.
 
     Args:
@@ -127,12 +128,14 @@ def _cmd_generate(ns) -> int:
         )
         return 1
 
+    # Load annotations JSON
     try:
         data = json.loads(Path(ns.annotations).read_text(encoding="utf-8"))
     except Exception as exc:  # pragma: no cover - IO errors
         print(f"failed to load annotations: {exc}", file=sys.stderr)
         return 1
 
+    # Count speaker occurrences across dialogue/narration
     counts: Counter[str] = Counter()
     for ch in data.get("chapters", []):
         for span in ch.get("spans", []):
@@ -143,7 +146,7 @@ def _cmd_generate(ns) -> int:
 
     top = [s for s, _ in counts.most_common(ns.n_top)]
     voice_ids = _scan_voices(Path(ns.voices_dir) if ns.voices_dir else None)
-    narrator_voice = voice_ids[0]
+    narrator_voice = voice_ids[0] if voice_ids else "base"
     speakers: dict[str, dict[str, str]] = {
         "Narrator": {"engine": ns.engine, "voice": narrator_voice}
     }
@@ -169,6 +172,7 @@ def _cmd_generate(ns) -> int:
         "speakers": speakers,
     }
     out_path = Path(ns.out)
+    assert yaml is not None  # for type checkers; guarded by HAVE_YAML above
     out_path.write_text(yaml.safe_dump(cfg, sort_keys=False), encoding="utf-8")
     return 0
 
@@ -197,7 +201,8 @@ def main(argv: list[str] | None = None) -> int:
     p_gen.set_defaults(func=_cmd_generate)
 
     ns = parser.parse_args(argv)
-    return ns.func(ns)
+    func = cast(Callable[[Any], int], ns.func)
+    return func(ns)
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
