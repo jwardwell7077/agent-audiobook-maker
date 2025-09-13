@@ -27,6 +27,10 @@ Organize extracted text into meaningful sections; chapter structure is derived f
 
 - **[Quality Gate Spec](QUALITY_GATE_SPEC.md)** - Validation checks and quality assurance
 
+### Annotation & LLM
+
+- **[Stage B LLM Refinement Spec](STAGE_B_REFINEMENT_SPEC.md)** - Roster-constrained speaker correction using a local LLM and SQLite cache
+
 ## Specification Standards
 
 ### Required Sections

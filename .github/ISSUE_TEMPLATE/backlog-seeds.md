@@ -12,17 +12,17 @@ Create these issues and assign milestone/labels:
 
    - Acceptance: root README updated; legacy docs moved to docs/\_deprecated; link check passes
 
-1. Docs: KISS quickstart + LangFlow how-to refresh
+1. Docs: KISS quickstart refresh (remove LangFlow)
 
-   - Acceptance: KISS.md and LANGFLOW_COMPONENT_DISCOVERY.md reflect Python 3.11, components path, sample flow import
+   - Acceptance: KISS.md reflects Python 3.11; no LangFlow references remain
 
 1. CI: add workflow + smoke test for ABM components
 
    - Acceptance: CI runs on 3.11/3.12; tests include component import smoke
 
-1. Makefile: dev_setup / test_quick / langflow targets
+1. Makefile: dev_setup / test_quick targets (remove deprecated LangFlow targets)
 
-   - Acceptance: targets exist; run in CI or locally documented
+   - Acceptance: LangFlow targets removed; CI/local docs updated
 
 1. Casting design note stub (future milestone), no code
 

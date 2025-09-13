@@ -30,7 +30,7 @@ This principle is fundamental to all project development:
 - ✅ Verify inheritance, imports, and component discovery
 - ❌ **Never**: "Hope it works" deployments
 
-**Reference**: See `/docs/LANGFLOW_COMPONENT_SUCCESS_CLEAN.md` for the complete success story demonstrating these principles.
+<!-- Removed deprecated LangFlow success reference -->
 
 ______________________________________________________________________
 
