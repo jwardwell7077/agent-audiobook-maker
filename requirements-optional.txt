@@ -1,0 +1,32 @@
+# Optional dependencies grouped by feature. Install with:
+#   pip install -r requirements-optional.txt
+
+# --- Stage-A Coref (optional) ---
+# Enables fast coreference with --coref; guarded import.
+fastcoref>=2.1.7
+
+# --- spaCy transformers pipeline (optional) ---
+# Needed when using --spacy-model en_core_web_trf. Install the model wheel separately.
+spacy-transformers>=1.3,<1.4
+
+# --- CLI status renderers (optional) ---
+# Pretty progress when --status rich or tqdm; otherwise we print.
+rich>=13.7
+tqdm>=4.66
+
+# --- GPU metrics (optional) ---
+# Used only if present; we suppress deprecation warnings from pynvml.
+psutil>=5.9
+pynvml>=11.5
+
+# --- Database ingestion (optional) ---
+# Only used by abm.ingestion.db_insert when configured.
+psycopg[binary]==3.1.9
+
+# --- BookNLP experiments (optional) ---
+# Used by sidecar adapter if installed; otherwise skipped.
+booknlp>=1.0 ; python_version >= '3.10'
+
+# --- TTS (optional) ---
+# XTTS / Coqui; heavy ML dependency, not needed for core pipeline.
+TTS>=0.22.0
