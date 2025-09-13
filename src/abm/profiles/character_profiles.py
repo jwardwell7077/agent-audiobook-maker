@@ -1,6 +1,8 @@
 """Character profile loading and resolution utilities.
 
-Profiles are stored as YAML or JSON files with the following schema::
+Profiles describe available voices, default rendering parameters, and
+per-speaker overrides. They are stored as YAML or JSON files with the
+following schema::
 
     version: 1
     defaults:
@@ -14,6 +16,7 @@ Profiles are stored as YAML or JSON files with the following schema::
     voices:
       piper:
         - en_US/ryan-high
+        - en_US/lessac-medium
       xtts:
         - qn_01
     speakers:
@@ -21,14 +24,25 @@ Profiles are stored as YAML or JSON files with the following schema::
         engine: piper
         voice: en_US/ryan-high
         aliases: [System, UI]
+      Alice:
+        engine: piper
+        voice: en_US/lessac-medium
         fallback:
-          xtts: narrator_clone
+          xtts: qn_01
+      Bob:
+        engine: piper
+        voice: en_US/lessac-medium
 
-The loader accepts YAML via :func:`yaml.safe_load` when PyYAML is available
-and falls back to JSON. Speaker names are normalized using
-:func:`normalize_speaker_name` which trims whitespace and performs a casefold
-comparison key. ``resolve_speaker`` can resolve canonical names, aliases, or
-narrator-like terms such as "System" or "UI".
+The loader accepts YAML via :func:`yaml.safe_load` when PyYAML is
+available and falls back to JSON. Speaker names are normalized using
+:func:`normalize_speaker_name`. :func:`resolve_with_reason` resolves
+canonical names, aliases, or narrator-like terms such as ``System`` or
+``UI`` and returns a reason code describing the match. Reason codes are:
+
+``"exact"`` – exact name match
+``"alias"`` – resolved via alias
+``"narrator-fallback"`` – narrator/system/UI fallback
+``"unknown"`` – no matching speaker
 """
 
 from __future__ import annotations
@@ -45,6 +59,7 @@ __all__ = [
     "load_profiles",
     "validate_profiles",
     "normalize_speaker_name",
+    "resolve_with_reason",
     "resolve_speaker",
     "available_voices",
 ]
@@ -219,9 +234,21 @@ def available_voices(cfg: ProfileConfig, engine: str) -> list[str]:
 # resolution & validation
 
 
-def _resolve_with_reason(
+def resolve_with_reason(
     cfg: ProfileConfig, speaker: str
 ) -> tuple[SpeakerProfile | None, str]:
+    """Resolve a speaker name and return the match reason.
+
+    Args:
+        cfg: Loaded profile configuration.
+        speaker: Name to resolve.
+
+    Returns:
+        Tuple of ``(profile, reason)`` where *profile* is the matching
+        :class:`SpeakerProfile` or ``None`` and *reason* is one of
+        ``{"exact", "alias", "narrator-fallback", "unknown"}``.
+    """
+
     normalized = normalize_speaker_name(speaker)
     if normalized in cfg.speakers:
         return cfg.speakers[normalized], "exact"
@@ -235,9 +262,17 @@ def _resolve_with_reason(
 
 
 def resolve_speaker(cfg: ProfileConfig, speaker: str) -> SpeakerProfile | None:
-    """Resolve ``speaker`` to a profile using canonical names or aliases."""
+    """Resolve ``speaker`` to a profile using canonical names or aliases.
 
-    return _resolve_with_reason(cfg, speaker)[0]
+    Args:
+        cfg: Loaded profile configuration.
+        speaker: Name to resolve.
+
+    Returns:
+        Matching :class:`SpeakerProfile` or ``None``.
+    """
+
+    return resolve_with_reason(cfg, speaker)[0]
 
 
 def validate_profiles(cfg: ProfileConfig) -> list[str]:
@@ -259,18 +294,38 @@ def validate_profiles(cfg: ProfileConfig) -> list[str]:
     if not cfg.defaults_narrator_voice:
         issues.append("defaults.narrator_voice missing")
 
+    if resolve_speaker(cfg, "Narrator") is None:
+        issues.append("narrator profile missing")
+
     canonical = set(cfg.speakers.keys())
-    seen_aliases: set[str] = set()
+    alias_map: dict[str, str] = {}
     for sp in cfg.speakers.values():
         if not sp.engine:
-            issues.append(f"speaker {sp.name} missing engine")
+            issues.append(f"speaker '{sp.name}' missing engine")
         if not sp.voice:
-            issues.append(f"speaker {sp.name} missing voice")
+            issues.append(f"speaker '{sp.name}' missing voice")
+        if sp.engine not in cfg.voices:
+            issues.append(
+                f"speaker '{sp.name}' references unknown engine '{sp.engine}'"
+            )
+        elif sp.voice not in cfg.voices.get(sp.engine, []):
+            issues.append(
+                f"speaker '{sp.name}' references unknown voice '{sp.voice}' for engine '{sp.engine}'"
+            )
         for alias in sp.aliases:
             norm = normalize_speaker_name(alias)
             if norm in canonical:
                 issues.append(f"alias '{alias}' conflicts with existing speaker")
-            if norm in seen_aliases:
-                issues.append(f"alias '{alias}' duplicated")
-            seen_aliases.add(norm)
+            if norm in alias_map:
+                issues.append(
+                    f"alias '{alias}' claimed by '{alias_map[norm]}' and '{sp.name}'"
+                )
+            alias_map[norm] = sp.name
+        for eng, voice in sp.fallback.items():
+            if eng not in cfg.voices:
+                issues.append(f"speaker '{sp.name}' fallback engine '{eng}' unknown")
+            elif voice not in cfg.voices[eng]:
+                issues.append(
+                    f"speaker '{sp.name}' fallback voice '{voice}' unknown for engine '{eng}'"
+                )
     return issues

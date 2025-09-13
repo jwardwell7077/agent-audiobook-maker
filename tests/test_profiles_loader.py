@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+# isort: skip_file
+
 import textwrap
 from pathlib import Path
 
@@ -9,6 +11,7 @@ from abm.profiles import (
     Style,
     load_profiles,
     resolve_speaker,
+    resolve_with_reason,
     validate_profiles,
 )
 
@@ -29,6 +32,8 @@ def test_load_and_resolve(tmp_path: Path) -> None:
         defaults:
           engine: piper
           narrator_voice: base
+        voices:
+          piper: [base, bob_voice]
         speakers:
           Narrator:
             engine: piper
@@ -44,8 +49,12 @@ def test_load_and_resolve(tmp_path: Path) -> None:
     assert cfg.version == 1
     assert cfg.defaults_engine == "piper"
     assert "narrator" in cfg.speakers
+    prof, reason = resolve_with_reason(cfg, "Bobby")
+    assert prof and prof.name == "Bob" and reason == "alias"
+    prof, reason = resolve_with_reason(cfg, "ui")
+    assert prof and prof.name == "Narrator" and reason == "narrator-fallback"
+    assert resolve_with_reason(cfg, "Ghost")[1] == "unknown"
     assert resolve_speaker(cfg, "Bobby").name == "Bob"
-    assert resolve_speaker(cfg, "system").name == "Narrator"
     assert validate_profiles(cfg) == []
 
 
@@ -69,3 +78,99 @@ def test_validate_profiles_errors() -> None:
     )
     issues = validate_profiles(bad)
     assert issues
+
+
+def test_validate_unknown_engine_and_voice() -> None:
+    cfg = ProfileConfig(
+        version=1,
+        defaults_engine="piper",
+        defaults_narrator_voice="base",
+        defaults_style=Style(),
+        voices={"piper": ["base"]},
+        speakers={
+            "bad_engine": SpeakerProfile(
+                name="BadE",
+                engine="ghost",
+                voice="v",
+                style=Style(),
+                aliases=[],
+                fallback={},
+            ),
+            "bad_voice": SpeakerProfile(
+                name="BadV",
+                engine="piper",
+                voice="nope",
+                style=Style(),
+                aliases=[],
+                fallback={},
+            ),
+        },
+    )
+    issues = validate_profiles(cfg)
+    assert any("unknown engine" in i for i in issues)
+    assert any("unknown voice" in i for i in issues)
+
+
+def test_validate_alias_collision() -> None:
+    cfg = ProfileConfig(
+        version=1,
+        defaults_engine="piper",
+        defaults_narrator_voice="base",
+        defaults_style=Style(),
+        voices={"piper": ["base"]},
+        speakers={
+            "a": SpeakerProfile(
+                name="A",
+                engine="piper",
+                voice="base",
+                style=Style(),
+                aliases=["Sam"],
+                fallback={},
+            ),
+            "b": SpeakerProfile(
+                name="B",
+                engine="piper",
+                voice="base",
+                style=Style(),
+                aliases=["Sam"],
+                fallback={},
+            ),
+        },
+    )
+    issues = validate_profiles(cfg)
+    assert any("alias 'Sam'" in i for i in issues)
+
+
+def test_validate_missing_narrator() -> None:
+    cfg = ProfileConfig(
+        version=1,
+        defaults_engine="piper",
+        defaults_narrator_voice="base",
+        defaults_style=Style(),
+        voices={"piper": ["base"]},
+        speakers={},
+    )
+    issues = validate_profiles(cfg)
+    assert any("narrator profile missing" in i for i in issues)
+
+
+def test_validate_invalid_fallback() -> None:
+    cfg = ProfileConfig(
+        version=1,
+        defaults_engine="piper",
+        defaults_narrator_voice="base",
+        defaults_style=Style(),
+        voices={"piper": ["base"], "xtts": ["good"]},
+        speakers={
+            "a": SpeakerProfile(
+                name="A",
+                engine="piper",
+                voice="base",
+                style=Style(),
+                aliases=[],
+                fallback={"xtts": "bad"},
+            ),
+        },
+    )
+    issues = validate_profiles(cfg)
+    assert any("fallback voice 'bad'" in i for i in issues)

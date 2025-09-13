@@ -1,5 +1,7 @@
 """Command line utilities for profile files."""
 
+# isort: skip_file
+
 # ruff: noqa: I001
 from __future__ import annotations
 
@@ -10,11 +12,19 @@ from collections import Counter
 from dataclasses import asdict
 from pathlib import Path
 
-from abm.profiles.character_profiles import (
+try:  # pragma: no cover - optional dependency
+    import yaml  # type: ignore
+
+    HAS_YAML = True
+except Exception:  # pragma: no cover - YAML not installed
+    yaml = None  # type: ignore
+    HAS_YAML = False
+
+from abm.profiles import (
     Style,
-    _resolve_with_reason,
     load_profiles,
     normalize_speaker_name,
+    resolve_with_reason,
 )
 
 __all__ = ["main"]
@@ -46,7 +56,7 @@ def _cmd_audit(ns) -> int:
     alias_hits = 0
     fallback_hits = 0
     for spk in sorted(speakers):
-        prof, reason = _resolve_with_reason(cfg, spk)
+        prof, reason = resolve_with_reason(cfg, spk)
         if prof is None:
             unmapped.append(spk)
         else:
@@ -129,11 +139,9 @@ def _cmd_generate(ns) -> int:
         "speakers": speakers,
     }
     out_path = Path(ns.out)
-    try:
-        import yaml  # type: ignore
-
+    if HAS_YAML:
         out_path.write_text(yaml.safe_dump(cfg, sort_keys=False), encoding="utf-8")
-    except Exception:  # pragma: no cover - YAML missing
+    else:  # pragma: no cover - YAML missing
         out_path.write_text(json.dumps(cfg, indent=2), encoding="utf-8")
     return 0
 
