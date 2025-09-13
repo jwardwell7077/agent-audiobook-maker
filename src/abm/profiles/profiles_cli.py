@@ -15,23 +15,27 @@ from pathlib import Path
 try:  # pragma: no cover - optional dependency
     import yaml  # type: ignore
 
-    HAS_YAML = True
+    HAVE_YAML = True
 except Exception:  # pragma: no cover - YAML not installed
     yaml = None  # type: ignore
-    HAS_YAML = False
+    HAVE_YAML = False
 
-from abm.profiles import (
-    Style,
-    load_profiles,
-    normalize_speaker_name,
-    resolve_with_reason,
-)
+from abm.profiles import Style, load_profiles, normalize_speaker_name
+from abm.voice import pick_voice
 
 __all__ = ["main"]
 
 
 def _cmd_audit(ns) -> int:
-    """Audit profiles against annotation speakers."""
+    """Audit profiles against annotation speakers.
+
+    Args:
+        ns: Parsed argparse namespace with ``profiles`` and ``annotations`` paths.
+
+    Returns:
+        Exit code: ``0`` if all speakers are mapped, ``2`` if any are
+        unmapped, ``1`` on IO errors.
+    """
 
     try:
         cfg = load_profiles(ns.profiles)
@@ -52,31 +56,48 @@ def _cmd_audit(ns) -> int:
                 if spk:
                     speakers.add(spk)
 
-    unmapped: list[str] = []
-    alias_hits = 0
-    fallback_hits = 0
-    for spk in sorted(speakers):
-        prof, reason = resolve_with_reason(cfg, spk)
-        if prof is None:
-            unmapped.append(spk)
+    decisions = [
+        pick_voice(cfg, spk, preferred_engine=ns.prefer_engine)
+        for spk in sorted(speakers)
+    ]
+    unmapped = [
+        d.speaker for d in decisions if d.method == "default" and d.reason == "unknown"
+    ]
+    method_counts = Counter(d.method for d in decisions)
+    alias_pct = (
+        method_counts.get("alias", 0) / len(decisions) * 100 if decisions else 0.0
+    )
+    summary = {
+        "total": len(decisions),
+        "unmapped": unmapped,
+        "alias_percent": alias_pct,
+        "methods": dict(method_counts),
+    }
+    if ns.out:
+        out_path = Path(ns.out)
+        if out_path.suffix == ".json":
+            out_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
         else:
-            if reason == "alias":
-                alias_hits += 1
-            if ns.prefer_engine and ns.prefer_engine in prof.fallback:
-                fallback_hits += 1
-
-    if unmapped:
-        print("Unmapped speakers: " + ", ".join(unmapped))
-    total = len(speakers)
-    alias_pct = (alias_hits / total * 100) if total else 0.0
-    summary = f"total={total} unmapped={len(unmapped)} alias%={alias_pct:.1f}"
-    if ns.prefer_engine:
-        summary += f" fallback.{ns.prefer_engine}={fallback_hits}"
-    print(summary)
+            lines = [
+                f"total: {summary['total']}",
+                f"unmapped: {len(unmapped)}",
+                f"alias%: {alias_pct:.1f}",
+            ]
+            for m, c in method_counts.items():
+                lines.append(f"{m}: {c}")
+            out_path.write_text("\n".join(lines), encoding="utf-8")
+    else:
+        if unmapped:
+            print("Unmapped speakers: " + ", ".join(unmapped))
+        print(
+            f"total={summary['total']} unmapped={len(unmapped)} alias%={alias_pct:.1f}"
+        )
     return 2 if unmapped else 0
 
 
 def _scan_voices(voices_dir: Path | None) -> list[str]:
+    """Return available voice IDs from a directory or a small default set."""
+
     voices = (
         [p.name for p in voices_dir.iterdir()]
         if voices_dir and voices_dir.exists()
@@ -89,7 +110,22 @@ def _scan_voices(voices_dir: Path | None) -> list[str]:
 
 
 def _cmd_generate(ns) -> int:
-    """Generate a starter profiles YAML from annotations."""
+    """Generate a starter profiles YAML from annotations.
+
+    Args:
+        ns: Parsed argparse namespace containing ``annotations`` path and
+            output options.
+
+    Returns:
+        Exit code ``0`` on success, ``1`` on missing dependencies or IO errors.
+    """
+
+    if not HAVE_YAML:
+        print(
+            "PyYAML required for generate; install with 'pip install pyyaml'",
+            file=sys.stderr,
+        )
+        return 1
 
     try:
         data = json.loads(Path(ns.annotations).read_text(encoding="utf-8"))
@@ -112,7 +148,6 @@ def _cmd_generate(ns) -> int:
         "Narrator": {"engine": ns.engine, "voice": narrator_voice}
     }
 
-    idx = 1
     narr_norms = {
         normalize_speaker_name("Narrator"),
         normalize_speaker_name("System"),
@@ -121,12 +156,7 @@ def _cmd_generate(ns) -> int:
     for spk in top:
         if normalize_speaker_name(spk) in narr_norms:
             continue
-        voice = voice_ids[idx % len(voice_ids)]
-        if voice == narrator_voice and len(voice_ids) > 1:
-            idx += 1
-            voice = voice_ids[idx % len(voice_ids)]
-        speakers[spk] = {"engine": ns.engine, "voice": voice}
-        idx += 1
+        speakers[spk] = {"engine": ns.engine, "voice": ""}
 
     cfg = {
         "version": 1,
@@ -139,10 +169,7 @@ def _cmd_generate(ns) -> int:
         "speakers": speakers,
     }
     out_path = Path(ns.out)
-    if HAS_YAML:
-        out_path.write_text(yaml.safe_dump(cfg, sort_keys=False), encoding="utf-8")
-    else:  # pragma: no cover - YAML missing
-        out_path.write_text(json.dumps(cfg, indent=2), encoding="utf-8")
+    out_path.write_text(yaml.safe_dump(cfg, sort_keys=False), encoding="utf-8")
     return 0
 
 
@@ -156,6 +183,7 @@ def main(argv: list[str] | None = None) -> int:
     p_audit.add_argument("--profiles", required=True, type=Path)
     p_audit.add_argument("--annotations", required=True, type=Path)
     p_audit.add_argument("--prefer-engine")
+    p_audit.add_argument("--out", type=Path)
     p_audit.set_defaults(func=_cmd_audit)
 
     p_gen = sub.add_parser(

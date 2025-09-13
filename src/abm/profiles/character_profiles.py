@@ -35,7 +35,7 @@ following schema::
 
 The loader accepts YAML via :func:`yaml.safe_load` when PyYAML is
 available and falls back to JSON. Speaker names are normalized using
-:func:`normalize_speaker_name`. :func:`resolve_with_reason` resolves
+:func:`normalize_speaker_name`. :func:`resolve_speaker_ex` resolves
 canonical names, aliases, or narrator-like terms such as ``System`` or
 ``UI`` and returns a reason code describing the match. Reason codes are:
 
@@ -60,6 +60,7 @@ __all__ = [
     "validate_profiles",
     "normalize_speaker_name",
     "resolve_with_reason",
+    "resolve_speaker_ex",
     "resolve_speaker",
     "available_voices",
 ]
@@ -234,20 +235,10 @@ def available_voices(cfg: ProfileConfig, engine: str) -> list[str]:
 # resolution & validation
 
 
-def resolve_with_reason(
+def _resolve_with_reason(
     cfg: ProfileConfig, speaker: str
 ) -> tuple[SpeakerProfile | None, str]:
-    """Resolve a speaker name and return the match reason.
-
-    Args:
-        cfg: Loaded profile configuration.
-        speaker: Name to resolve.
-
-    Returns:
-        Tuple of ``(profile, reason)`` where *profile* is the matching
-        :class:`SpeakerProfile` or ``None`` and *reason* is one of
-        ``{"exact", "alias", "narrator-fallback", "unknown"}``.
-    """
+    """Internal helper returning a profile and match reason."""
 
     normalized = normalize_speaker_name(speaker)
     if normalized in cfg.speakers:
@@ -261,18 +252,36 @@ def resolve_with_reason(
     return None, "unknown"
 
 
-def resolve_speaker(cfg: ProfileConfig, speaker: str) -> SpeakerProfile | None:
-    """Resolve ``speaker`` to a profile using canonical names or aliases.
+def resolve_speaker_ex(
+    cfg: ProfileConfig, speaker: str
+) -> tuple[SpeakerProfile | None, str]:
+    """Return the resolved profile and reason for ``speaker``.
 
     Args:
         cfg: Loaded profile configuration.
         speaker: Name to resolve.
 
     Returns:
-        Matching :class:`SpeakerProfile` or ``None``.
+        Tuple ``(profile, reason)`` where *profile* is the matching
+        :class:`SpeakerProfile` or ``None`` and *reason* is one of
+        ``{"exact", "alias", "narrator-fallback", "unknown"}``.
     """
 
-    return resolve_with_reason(cfg, speaker)[0]
+    return _resolve_with_reason(cfg, speaker)
+
+
+def resolve_with_reason(
+    cfg: ProfileConfig, speaker: str
+) -> tuple[SpeakerProfile | None, str]:
+    """Backward compatible wrapper around :func:`resolve_speaker_ex`."""
+
+    return resolve_speaker_ex(cfg, speaker)
+
+
+def resolve_speaker(cfg: ProfileConfig, speaker: str) -> SpeakerProfile | None:
+    """Resolve ``speaker`` to a profile using canonical names or aliases."""
+
+    return resolve_speaker_ex(cfg, speaker)[0]
 
 
 def validate_profiles(cfg: ProfileConfig) -> list[str]:

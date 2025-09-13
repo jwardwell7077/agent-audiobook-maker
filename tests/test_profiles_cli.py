@@ -43,12 +43,34 @@ def _write_annotations(tmp_path: Path, include_unknown: bool) -> Path:
 def test_audit_cli(tmp_path: Path) -> None:
     profiles = _write_profiles(tmp_path)
     ann_bad = _write_annotations(tmp_path, True)
-    rc = main(["audit", "--profiles", str(profiles), "--annotations", str(ann_bad)])
+    out = tmp_path / "report.json"
+    rc = main(
+        [
+            "audit",
+            "--profiles",
+            str(profiles),
+            "--annotations",
+            str(ann_bad),
+            "--out",
+            str(out),
+        ]
+    )
     assert rc == 2
 
     ann_good = _write_annotations(tmp_path, False)
-    rc = main(["audit", "--profiles", str(profiles), "--annotations", str(ann_good)])
-    assert rc == 0
+    out2 = tmp_path / "report.md"
+    rc = main(
+        [
+            "audit",
+            "--profiles",
+            str(profiles),
+            "--annotations",
+            str(ann_good),
+            "--out",
+            str(out2),
+        ]
+    )
+    assert rc == 0 and out2.exists()
 
 
 def test_generate_cli(tmp_path: Path) -> None:

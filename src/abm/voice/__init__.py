@@ -3,7 +3,7 @@ from __future__ import annotations
 # isort: skip_file
 
 # ruff: noqa: I001
-from abm.voice.tts_casting import CastingDecision, cast_speaker, merge_style
+from abm.voice.tts_casting import CastDecision, merge_style, pick_voice
 from abm.voice.voicecasting import (
     CastingPlan,
     SpeakerProfile,
@@ -16,7 +16,7 @@ __all__ = [
     "SpeakerProfile",
     "VoiceHints",
     "CastingPlan",
-    "CastingDecision",
-    "cast_speaker",
+    "CastDecision",
+    "pick_voice",
     "merge_style",
 ]

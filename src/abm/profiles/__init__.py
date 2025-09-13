@@ -13,6 +13,7 @@ from abm.profiles.character_profiles import (
     load_profiles,
     normalize_speaker_name,
     resolve_speaker,
+    resolve_speaker_ex,
     resolve_with_reason,
     validate_profiles,
 )
@@ -24,6 +25,7 @@ __all__ = [
     "load_profiles",
     "validate_profiles",
     "normalize_speaker_name",
+    "resolve_speaker_ex",
     "resolve_with_reason",
     "resolve_speaker",
     "available_voices",

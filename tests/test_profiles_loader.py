@@ -2,6 +2,7 @@ from __future__ import annotations
 
 # isort: skip_file
 
+import json
 import textwrap
 from pathlib import Path
 
@@ -11,7 +12,7 @@ from abm.profiles import (
     Style,
     load_profiles,
     resolve_speaker,
-    resolve_with_reason,
+    resolve_speaker_ex,
     validate_profiles,
 )
 
@@ -24,7 +25,20 @@ def _write(tmp_path: Path, content: str) -> Path:
     return p
 
 
-def test_load_and_resolve(tmp_path: Path) -> None:
+def test_load_json(tmp_path: Path) -> None:
+    data = {
+        "version": 1,
+        "defaults": {"engine": "piper", "narrator_voice": "base"},
+        "speakers": {"Narrator": {"engine": "piper", "voice": "base"}},
+    }
+    p = tmp_path / "cfg.json"
+    p.write_text(json.dumps(data))
+    cfg = load_profiles(p)
+    assert cfg.version == 1
+    assert resolve_speaker(cfg, "Narrator") is not None
+
+
+def test_load_and_resolve_yaml(tmp_path: Path) -> None:
     path = _write(
         tmp_path,
         """
@@ -49,11 +63,11 @@ def test_load_and_resolve(tmp_path: Path) -> None:
     assert cfg.version == 1
     assert cfg.defaults_engine == "piper"
     assert "narrator" in cfg.speakers
-    prof, reason = resolve_with_reason(cfg, "Bobby")
+    prof, reason = resolve_speaker_ex(cfg, "Bobby")
     assert prof and prof.name == "Bob" and reason == "alias"
-    prof, reason = resolve_with_reason(cfg, "ui")
+    prof, reason = resolve_speaker_ex(cfg, "ui")
     assert prof and prof.name == "Narrator" and reason == "narrator-fallback"
-    assert resolve_with_reason(cfg, "Ghost")[1] == "unknown"
+    assert resolve_speaker_ex(cfg, "Ghost")[1] == "unknown"
     assert resolve_speaker(cfg, "Bobby").name == "Bob"
     assert validate_profiles(cfg) == []
 
