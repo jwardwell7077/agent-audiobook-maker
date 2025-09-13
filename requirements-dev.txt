@@ -7,7 +7,7 @@ pytest==8.3.4
 pre-commit==3.8.0
 pytest-cov==5.0.0
 interrogate==1.7.0
-mdformat==0.7.17
+mdformat==0.7.22
 mdformat-gfm==0.3.6
 mdformat-frontmatter==2.0.8
 pymarkdownlnt==0.9.32
