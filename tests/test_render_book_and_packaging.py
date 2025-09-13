@@ -193,6 +193,7 @@ def test_compute_album_offset_trim():
     [
         (0.0, "00:00:00.000"),
         (59.999, "00:00:59.999"),
+        (60.0, "00:01:00.000"),
         (3600.5, "01:00:00.500"),
     ],
 )
@@ -215,16 +216,16 @@ def test_write_chapter_cue(tmp_path):
 
 def test_packaging_requires_ffmpeg(tmp_path, monkeypatch):
     def boom():  # pragma: no cover - simulated missing dep
-        raise RuntimeError("pydub missing")
+        raise RuntimeError("pydub/ffmpeg required for packaging")
 
     monkeypatch.setattr("abm.audio.packaging._require_pydub", boom)
     wav = tmp_path / "in.wav"
     sf.write(wav, np.zeros(10), 16000)
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError, match="pydub/ffmpeg"):
         export_mp3(wav, tmp_path / "o.mp3", title="t", artist="a", album="b", track=1)
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError, match="pydub/ffmpeg"):
         export_opus(wav, tmp_path / "o.opus", title="t", artist="a", album="b", track=1)
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError, match="pydub/ffmpeg"):
         make_chaptered_m4b([wav], tmp_path / "o.m4b", ["One"], album="a", artist="b")
 
 
@@ -245,6 +246,8 @@ def test_make_chaptered_m4b_errors(tmp_path):
 
 
 def test_packaging_success_paths(tmp_path, monkeypatch):
+    exports: list[tuple[str, dict | None]] = []
+
     class DummySeg:
         def __init__(self, duration: float = 0.1) -> None:
             self.duration_seconds = duration
@@ -259,6 +262,7 @@ def test_packaging_success_paths(tmp_path, monkeypatch):
 
         def export(self, out_path, format, tags=None, cover=None) -> None:  # noqa: D401
             Path(out_path).touch()
+            exports.append((format, tags))
 
         def __add__(self, other: "DummySeg") -> "DummySeg":  # pragma: no cover
             return DummySeg(self.duration_seconds + other.duration_seconds)
@@ -273,3 +277,5 @@ def test_packaging_success_paths(tmp_path, monkeypatch):
         [wav, wav], tmp_path / "out.m4b", ["A", "B"], album="a", artist="b"
     )
     assert (tmp_path / "out.chapters.txt").exists()
+    assert exports[0][1]["tracknumber"] == "1"
+    assert exports[1][1]["tracknumber"] == "1"
