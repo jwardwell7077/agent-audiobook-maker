@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import logging
+import shutil
+import subprocess
+import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -20,6 +24,9 @@ if TYPE_CHECKING:  # pragma: no cover - only for type checking
     from pydub import AudioSegment
 
 
+logger = logging.getLogger(__name__)
+
+
 def _require_pydub() -> type[AudioSegment]:  # pragma: no cover - simple helper
     """Return :class:`~pydub.AudioSegment` or raise a helpful error."""
 
@@ -28,6 +35,70 @@ def _require_pydub() -> type[AudioSegment]:  # pragma: no cover - simple helper
     except Exception as exc:  # pragma: no cover - pydub missing
         raise RuntimeError("pydub/ffmpeg required for packaging") from exc
     return AudioSegment
+
+
+def _have_ffmpeg() -> bool:
+    """Return ``True`` if :command:`ffmpeg` is available on ``PATH``."""
+
+    return shutil.which("ffmpeg") is not None
+
+
+def _write_ffmetadata_chapters(
+    chapters: list[tuple[float, float, str]], out_path: Path
+) -> None:
+    """Write an ``FFMETADATA1`` file with chapter entries.
+
+    Args:
+        chapters: Sequence of ``(start_s, end_s, title)`` tuples.
+        out_path: Destination metadata file path.
+    """
+
+    lines = [";FFMETADATA1"]
+    for start, end, title in chapters:
+        lines.extend(
+            [
+                "[CHAPTER]",
+                "TIMEBASE=1/1000",
+                f"START={int(start * 1000)}",
+                f"END={int(end * 1000)}",
+                f"title={title.replace(chr(10), ' ')}",
+            ]
+        )
+    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _mux_m4b_with_chapters(input_m4a: Path, ffmeta: Path, out_m4b: Path) -> None:
+    """Mux ``input_m4a`` with chapter metadata into ``out_m4b``.
+
+    Args:
+        input_m4a: Source M4A file.
+        ffmeta: Path to ``FFMETADATA1`` file produced by
+            :func:`_write_ffmetadata_chapters`.
+        out_m4b: Destination M4B path.
+
+    Raises:
+        RuntimeError: If ``ffmpeg`` fails.
+    """
+
+    cmd = [
+        "ffmpeg",
+        "-y",
+        "-i",
+        str(input_m4a),
+        "-i",
+        str(ffmeta),
+        "-map_metadata",
+        "0",
+        "-map_chapters",
+        "1",
+        "-codec",
+        "copy",
+        str(out_m4b),
+    ]
+    proc = subprocess.run(cmd, capture_output=True, text=True)
+    if proc.returncode != 0:
+        tail = "\n".join(proc.stderr.splitlines()[-10:])
+        raise RuntimeError(f"ffmpeg chapter mux failed: {tail}")
 
 
 def format_ts(seconds: float) -> str:
@@ -164,9 +235,9 @@ def make_chaptered_m4b(
         RuntimeError: If :mod:`pydub`/FFmpeg is unavailable.
 
     Notes:
-        This writes a sidecar ``.chapters.txt`` file describing chapter starts.
-        TODO: replace with a mutagen-based implementation that embeds chapters
-        and cover art directly in the container.
+        If :command:`ffmpeg` is unavailable, this falls back to writing a
+        sidecar ``.chapters.txt`` and produces an ``.m4b`` without embedded
+        chapter atoms.
     """
 
     if len(chapter_wavs) != len(chapter_titles):
@@ -175,23 +246,50 @@ def make_chaptered_m4b(
         raise FileNotFoundError(cover_jpeg)
 
     AudioSegment = _require_pydub()
-
     segments = [AudioSegment.from_wav(str(p)) for p in chapter_wavs]
     joined = sum(segments[1:], segments[0]) if segments else AudioSegment.silent(1)
     tags = {"album": album, "artist": artist}
     out_m4b.parent.mkdir(parents=True, exist_ok=True)
-    joined.export(
-        out_m4b, format="mp4", tags=tags, cover=str(cover_jpeg) if cover_jpeg else None
-    )
 
-    # Write simple sidecar with chapter start times
-    cue_path = out_m4b.with_suffix(".chapters.txt")
-    start = 0.0
-    lines: list[str] = []
-    for seg, title in zip(segments, chapter_titles, strict=True):
-        lines.append(f"{format_ts(start)}\t{title}")
-        start += seg.duration_seconds
-    cue_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_m4a = Path(tmpdir) / "temp.m4a"
+        joined.export(
+            tmp_m4a,
+            format="mp4",
+            tags=tags,
+            cover=str(cover_jpeg) if cover_jpeg else None,
+        )
+
+        if cover_jpeg:
+            try:
+                from mutagen.mp4 import MP4, MP4Cover
+
+                audio = MP4(str(tmp_m4a))
+                audio["covr"] = [
+                    MP4Cover(cover_jpeg.read_bytes(), imageformat=MP4Cover.FORMAT_JPEG)
+                ]
+                audio.save()
+            except Exception:  # pragma: no cover - mutagen missing
+                logger.warning("mutagen not available; cover art not embedded")
+
+        durations = [seg.duration_seconds for seg in segments]
+        chapters: list[tuple[float, float, str]] = []
+        start = 0.0
+        for dur, title in zip(durations, chapter_titles, strict=True):
+            end = start + dur
+            chapters.append((start, end, title))
+            start = end
+
+        if _have_ffmpeg():
+            ffmeta = Path(tmpdir) / "chapters.txt"
+            _write_ffmetadata_chapters(chapters, ffmeta)
+            _mux_m4b_with_chapters(tmp_m4a, ffmeta, out_m4b)
+        else:  # pragma: no cover - depends on environment
+            logger.warning("ffmpeg not found; writing sidecar chapters")
+            shutil.move(tmp_m4a, out_m4b)
+            write_chapter_cue(
+                chapter_wavs, out_m4b.with_suffix(".chapters.txt"), chapter_titles
+            )
 
 
 def write_chapter_cue(
