@@ -1,0 +1,40 @@
+<frozen runpy>:128: RuntimeWarning: 'abm.annotate.llm_refine' found in sys.modules after import of package 'abm.annotate', but prior to execution of 'abm.annotate.llm_refine'; this may result in unpredictable behaviour
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/jon/repos/agent-audiobook-maker/src/abm/annotate/llm_refine.py", line 224, in <module>
+    main()
+  File "/home/jon/repos/agent-audiobook-maker/src/abm/annotate/llm_refine.py", line 212, in main
+    refine_document(
+  File "/home/jon/repos/agent-audiobook-maker/src/abm/annotate/llm_refine.py", line 126, in refine_document
+    obj = client.chat_json(
+          ^^^^^^^^^^^^^^^^^
+  File "/home/jon/repos/agent-audiobook-maker/src/abm/llm/client.py", line 92, in chat_json
+    r.raise_for_status()
+  File "/home/jon/repos/agent-audiobook-maker/.venv/lib/python3.11/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 404 Client Error: Not Found for url: http://127.0.0.1:11434/v1/chat/completions
+Command exited with non-zero status 1
+	Command being timed: "python -m abm.annotate.llm_refine --tagged data/ann/mvs/combined_bnlp.json --out-json data/ann/mvs/combined_refined.json --out-md data/ann/mvs/llm_summary.md --skip-threshold 0.90 --votes 3 --model llama3.1:8b-instruct-q6_K --endpoint http://127.0.0.1:11434/v1"
+	User time (seconds): 6.99
+	System time (seconds): 1.71
+	Percent of CPU this job got: 134%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:06.45
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1026864
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 222954
+	Voluntary context switches: 265
+	Involuntary context switches: 251
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 72
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 1

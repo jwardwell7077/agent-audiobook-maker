@@ -6,14 +6,12 @@ This guide is organized by problem area to help you quickly find solutions. Chec
 
 ## Quick Problem Identification
 
-| Symptom                           | Likely Area       | See Section                                           |
-| --------------------------------- | ----------------- | ----------------------------------------------------- |
-| Import errors, missing modules    | Environment Setup | [Python Environment](#python-environment)             |
-| LangFlow UI won't start           | LangFlow Issues   | [LangFlow Problems](#langflow-problems)               |
-| Components don't appear           | Component Loading | [Component Loading Issues](#component-loading-issues) |
-| Processing fails on certain books | Data Quality      | [Text Processing](#text-processing)                   |
-| Slow processing, memory errors    | Performance       | [Performance Issues](#performance-issues)             |
-| Tests failing, build errors       | Development       | [Development Issues](#development-issues)             |
+| Symptom                           | Likely Area       | See Section                               |
+| --------------------------------- | ----------------- | ----------------------------------------- |
+| Import errors, missing modules    | Environment Setup | [Python Environment](#python-environment) |
+| Processing fails on certain books | Data Quality      | [Text Processing](#text-processing)       |
+| Slow processing, memory errors    | Performance       | [Performance Issues](#performance-issues) |
+| Tests failing, build errors       | Development       | [Development Issues](#development-issues) |
 
 ## Python Environment
 
@@ -44,7 +42,7 @@ which python
 **Problem**: Import errors despite packages being installed
 
 ```python
-ModuleNotFoundError: No module named 'langflow'
+ModuleNotFoundError: No module named 'some_module'
 ```
 
 **Solutions**:
@@ -85,64 +83,15 @@ python --version  # Should be 3.11+
 1. Update virtual environment to use correct Python
 1. Use `pyenv` for Python version management
 
-## LangFlow Problems
+<!-- Removed deprecated LangFlow troubleshooting section -->
 
-### UI Won't Start
-
-**Problem**: LangFlow server fails to start
-
-```bash
-Error starting LangFlow server
-```
-
-**Diagnostic steps**:
-
-```bash
-# Check if port is in use
-lsof -i :7860
-
-# Try different port
-langflow run --port 7861
-
-# Check LangFlow installation
-langflow --version
-```
-
-**Solutions**:
-
-1. Kill existing LangFlow processes: `pkill -f langflow`
-1. Try different port: `langflow run --port 8080`
-1. Clear LangFlow cache: `rm -rf ~/.cache/langflow`
-1. Reinstall LangFlow: `pip uninstall langflow && pip install langflow`
-
-### Component Loading Issues
+<!-- Removed deprecated LangFlow component loading issues -->
 
 **Problem**: Custom components don't appear in UI
 
 **Check component structure**:
 
-```bash
-# Components must be in proper package structure
-src/abm/lf_components/
-├── __init__.py
-├── audiobook/
-│   ├── __init__.py
-│   └── your_component.py
-```
-
-**Diagnostic steps**:
-
-1. Check component inherits from `Component`
-1. Verify `__init__.py` files exist
-1. Check component imports don't fail
-1. Restart LangFlow after changes
-
-**Solutions**:
-
-1. Add missing `__init__.py` files
-1. Fix import errors in component files
-1. Check component class name matches file name
-1. Verify component directory is in Python path
+<!-- Removed details specific to LangFlow component directory layout -->
 
 ### Workflow Execution Failures
 
@@ -154,7 +103,7 @@ Component execution failed: [Component Name]
 
 **Debugging steps**:
 
-1. Check component logs in LangFlow UI
+1. Inspect logs for the failing component or script
 1. Test component with minimal input
 1. Verify input/output data types match
 1. Check for missing required inputs
@@ -261,7 +210,7 @@ MemoryError: Unable to allocate array
 
 **Solutions**:
 
-1. Clean temporary files: `rm -rf /tmp/langflow_*`
+1. Clean temporary files: `rm -rf /tmp/abm_*`
 1. Archive or delete old output files
 1. Process books individually rather than batches
 1. Monitor disk usage: `df -h`
@@ -358,16 +307,16 @@ git status
 git branch
 make test
 
-# LangFlow diagnostics  
-langflow --version
-ps aux | grep langflow
+# Python & environment
+python --version
+pip list
 ```
 
 ### Where to Ask
 
 1. **Check existing issues**: GitHub repository issues
 1. **Search documentation**: This documentation set
-1. **Community resources**: LangFlow Discord, Stack Overflow
+1. **Community resources**: Stack Overflow
 1. **Create new issue**: GitHub with detailed information
 
 ## Prevention Tips

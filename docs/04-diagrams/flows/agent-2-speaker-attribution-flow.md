@@ -366,7 +366,7 @@ Output: character_id=best_candidate, confidence=0.62, method=best_guess, qa_flag
 ### Dependencies
 
 - Stage 1 output format compatibility
-- LangFlow runtime environment
+ 
 
 ## Configuration
 
