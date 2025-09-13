@@ -1,10 +1,12 @@
 from pathlib import Path
 
+from abm.audio import register_builtins
 from abm.audio.engine_registry import EngineRegistry
 from abm.audio.tts_base import TTSTask
 
 
 def test_xtts_dryrun_writes_wav(tmp_path, monkeypatch):
+    register_builtins()
     monkeypatch.setenv("ABM_XTTS_DRYRUN", "1")
     ad = EngineRegistry.create("xtts")
     ad.preload()

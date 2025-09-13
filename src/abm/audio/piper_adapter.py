@@ -3,7 +3,8 @@
 Supports a dry-run mode (env ABM_PIPER_DRYRUN=1) that writes a short silence WAV
 so unit tests can run without Piper installed.
 
-This module registers itself into EngineRegistry under the key "piper".
+Registration happens via :func:`abm.audio.register_builtins` under the key
+``"piper"``.
 """
 
 from __future__ import annotations
@@ -15,7 +16,6 @@ import tempfile
 import wave
 from pathlib import Path
 
-from abm.audio.engine_registry import EngineRegistry
 from abm.audio.tts_base import SynthesisError, TTSAdapter, TTSTask
 
 
@@ -116,13 +116,16 @@ class PiperAdapter(TTSAdapter):
 
         try:
             cmd = self._build_cmd(text_file, task.out_path)
-            proc = subprocess.run(cmd, capture_output=True, text=True)
+            try:
+                proc = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+            except subprocess.TimeoutExpired as exc:
+                raise SynthesisError(f"Piper timed out after {exc.timeout}s") from exc
             if (
                 proc.returncode != 0
                 or not task.out_path.exists()
                 or task.out_path.stat().st_size < 64
             ):
-                err = proc.stderr.strip() or proc.stdout.strip() or "unknown error"
+                err = (proc.stderr or proc.stdout or "").strip() or "unknown error"
                 raise SynthesisError(f"Piper failed (rc={proc.returncode}): {err}")
             return task.out_path
         finally:
@@ -130,7 +133,3 @@ class PiperAdapter(TTSAdapter):
                 text_file.unlink(missing_ok=True)
             except Exception:
                 pass
-
-
-# Auto-register on import
-EngineRegistry.register("piper", lambda **kw: PiperAdapter(**kw))

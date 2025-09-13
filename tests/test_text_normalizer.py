@@ -1,3 +1,5 @@
+import pytest
+
 from abm.audio.text_normalizer import Chunker, TextNormalizer
 
 
@@ -15,3 +17,15 @@ def test_chunker_caps_and_boundaries():
     assert all(len(c) <= 20 for c in chunks)
     # Should not return empty chunks
     assert all(c.strip() for c in chunks)
+
+
+@pytest.mark.parametrize(
+    "txt,expected",
+    [
+        ("Dr. Smith waved. 'Hello.'", ["Dr. Smith waved.", "'Hello.'"]),
+        ('He paused... "Okay."', ["He paused...", '"Okay."']),
+    ],
+)
+def test_chunker_edge_cases(txt, expected):
+    chunks = Chunker.split(txt, engine="piper", max_chars=18)
+    assert chunks == expected
