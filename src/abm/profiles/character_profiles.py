@@ -1,193 +1,349 @@
-"""Character profile database utilities."""
+"""Character profile loading and resolution utilities.
+
+Profiles describe available voices, default rendering parameters, and
+per-speaker overrides. They are stored as YAML or JSON files with the
+following schema::
+
+        version: 1
+        defaults:
+            engine: piper
+            narrator_voice: en_US/ryan-high
+            style:
+                pace: 1.0
+                energy: 0.9
+                pitch: 0.0
+                emotion: neutral
+        voices:
+            piper:
+                - en_US/ryan-high
+                - en_US/lessac-medium
+            xtts:
+                - qn_01
+        speakers:
+            Narrator:
+                engine: piper
+                voice: en_US/ryan-high
+                aliases: [System, UI]
+            Alice:
+                engine: piper
+                voice: en_US/lessac-medium
+                fallback:
+                    xtts: qn_01
+            Bob:
+                engine: piper
+                voice: en_US/lessac-medium
+
+The loader accepts YAML via :func:`yaml.safe_load` when PyYAML is
+available and falls back to JSON. Speaker names are normalized using
+:func:`normalize_speaker_name`. :func:`resolve_speaker_ex` resolves
+canonical names, aliases, or narrator-like terms such as ``System`` or
+``UI`` and returns a reason code describing the match. Reason codes are:
+
+``"exact"`` – exact name match
+``"alias"`` – resolved via alias
+``"narrator-fallback"`` – narrator/system/UI fallback
+``"unknown"`` – no matching speaker
+"""
 
 from __future__ import annotations
 
 import json
-import logging
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
 try:  # pragma: no cover - optional dependency
-    import jsonschema
-except Exception:  # pragma: no cover - graceful fallback
-    jsonschema = None  # type: ignore
-    logging.getLogger(__name__).warning(
-        "jsonschema not available; profile validation skipped"
-    )
+    import yaml  # type: ignore
+
+    HAVE_YAML = True
+except Exception:  # pragma: no cover - YAML not installed
+    yaml = None
+    HAVE_YAML = False
+
+__all__ = [
+    "Style",
+    "SpeakerProfile",
+    "ProfileConfig",
+    "load_profiles",
+    "validate_profiles",
+    "normalize_speaker_name",
+    "resolve_with_reason",
+    "resolve_speaker_ex",
+    "resolve_speaker",
+    "available_voices",
+]
 
 
-@dataclass
-class Profile:
-    """Description of a character's TTS profile.
+@dataclass(slots=True)
+class Style:
+    """Prosody style parameters for a voice.
 
     Attributes:
-        id: Unique profile identifier.
-        label: Human-friendly name.
-        engine: TTS engine key.
-        voice: Voice identifier for the engine.
-        refs: Reference audio filenames.
-        style: Optional style token for the engine.
-        gender: Gender descriptor.
-        age: Age descriptor.
-        accent: Accent descriptor.
-        notes: Freeform notes.
-        tags: Arbitrary tags used for heuristics.
+        pace: Speech pace multiplier.
+        energy: Vocal energy multiplier.
+        pitch: Pitch offset in semitones.
+        emotion: Optional emotion tag.
     """
 
-    id: str
-    label: str
+    pace: float = 1.0
+    energy: float = 0.9
+    pitch: float = 0.0
+    emotion: str = "neutral"
+
+
+@dataclass(slots=True)
+class SpeakerProfile:
+    """Configuration for a single character voice.
+
+    Attributes:
+        name: Display name of the speaker.
+        engine: Preferred TTS engine.
+        voice: Voice identifier for the engine.
+        style: Prosody style overrides.
+        aliases: Alternative speaker names mapping to this profile.
+        fallback: Mapping of engine name to fallback voice identifiers.
+    """
+
+    name: str
     engine: str
     voice: str
-    refs: list[str]
-    style: str = ""
-    gender: str | None = None
-    age: str | None = None
-    accent: str | None = None
-    notes: str | None = None
-    tags: list[str] = field(default_factory=list)
+    style: Style
+    aliases: list[str]
+    fallback: dict[str, str]
 
 
-PROFILE_SCHEMA: dict[str, Any] = {
-    "type": "object",
-    "properties": {
-        "id": {"type": "string"},
-        "label": {"type": "string"},
-        "engine": {"type": "string"},
-        "voice": {"type": "string"},
-        "refs": {"type": "array", "items": {"type": "string"}},
-        "style": {"type": "string"},
-        "gender": {"type": ["string", "null"]},
-        "age": {"type": ["string", "null"]},
-        "accent": {"type": ["string", "null"]},
-        "notes": {"type": ["string", "null"]},
-        "tags": {"type": "array", "items": {"type": "string"}},
-    },
-    "required": ["id", "label", "engine", "voice", "refs", "style"],
-}
+@dataclass(slots=True)
+class ProfileConfig:
+    """Container for all profiles and defaults.
+
+    Attributes:
+        version: Schema version number.
+        defaults_engine: Default TTS engine.
+        defaults_narrator_voice: Default narrator voice identifier.
+        defaults_style: Default style applied to all speakers.
+        voices: Registry of available voices per engine.
+        speakers: Mapping of normalized speaker names to profiles.
+    """
+
+    version: int
+    defaults_engine: str
+    defaults_narrator_voice: str
+    defaults_style: Style
+    voices: dict[str, list[str]]
+    speakers: dict[str, SpeakerProfile]
 
 
-DB_SCHEMA: dict[str, Any] = {
-    "type": "object",
-    "properties": {
-        "profiles": {"type": "array", "items": PROFILE_SCHEMA},
-        "map": {"type": "object", "additionalProperties": {"type": "string"}},
-        "fallbacks": {
-            "type": "object",
-            "additionalProperties": {"type": "string"},
-        },
-    },
-    "required": ["profiles"],
-}
+# ---------------------------------------------------------------------------
+# helpers
 
 
-class CharacterProfilesDB:
-    """In-memory database of character profiles."""
+def normalize_speaker_name(name: str) -> str:
+    """Normalize a speaker name to a comparison key.
 
-    def __init__(
-        self,
-        profiles: dict[str, Profile],
-        speaker_map: dict[str, str] | None = None,
-        fallbacks: dict[str, str] | None = None,
-    ) -> None:
-        self.profiles = profiles
-        self.speaker_map = speaker_map or {}
-        self.fallbacks = fallbacks or {}
+    The function trims leading/trailing whitespace, collapses internal
+    whitespace, and returns the casefolded result.
 
-    # ------------------------------------------------------------------
-    @classmethod
-    def load(cls, path: Path) -> CharacterProfilesDB:
-        """Load profiles from JSON file."""
+    Args:
+        name: Raw speaker name.
 
-        with path.open("r", encoding="utf-8") as f:
-            data = json.load(f)
-        db = cls(
-            {p["id"]: Profile(**p) for p in data.get("profiles", [])},
-            data.get("map", {}),
-            data.get("fallbacks", {}),
+    Returns:
+        Normalized comparison key.
+    """
+
+    return " ".join(name.strip().split()).casefold()
+
+
+def _style_from_dict(base: Style, data: dict[str, Any] | None) -> Style:
+    base_d = asdict(base)
+    if data:
+        for k, v in data.items():
+            if k in base_d:
+                base_d[k] = v
+    return Style(**base_d)
+
+
+def load_profiles(path: str | Path) -> ProfileConfig:
+    """Load a profile configuration file.
+
+    The file may be YAML (preferred) or JSON. Names are normalized and stored
+    by casefolded key.
+
+    Args:
+        path: Path to the YAML/JSON configuration.
+
+    Returns:
+        Parsed :class:`ProfileConfig` instance.
+
+    Raises:
+        RuntimeError: If the file cannot be read.
+        ValueError: If the file content cannot be parsed.
+    """
+
+    p = Path(path)
+    try:
+        text = p.read_text(encoding="utf-8")
+    except OSError as exc:  # pragma: no cover - rare
+        raise RuntimeError(f"unable to read profiles file: {p}") from exc
+
+    data: dict[str, Any]
+    if HAVE_YAML:
+        assert yaml is not None  # for type checkers
+        try:  # pragma: no cover - exercised when yaml installed
+            data = yaml.safe_load(text)
+        except Exception:
+            data = json.loads(text)
+    else:
+        data = json.loads(text)
+
+    if not isinstance(data, dict):
+        raise ValueError("profiles file must contain a mapping")
+
+    defaults = data.get("defaults", {}) or {}
+    defaults_style = Style(**(defaults.get("style") or {}))
+    speakers_cfg = data.get("speakers", {}) or {}
+
+    speakers: dict[str, SpeakerProfile] = {}
+    for raw_name, info in speakers_cfg.items():
+        display = " ".join(str(raw_name).strip().split())
+        key = normalize_speaker_name(display)
+        engine = str(info.get("engine", defaults.get("engine", "")))
+        voice = str(info.get("voice", defaults.get("narrator_voice", "")))
+        style = _style_from_dict(defaults_style, info.get("style"))
+        aliases = [" ".join(str(a).strip().split()) for a in info.get("aliases", [])]
+        fallback = {str(k): str(v) for k, v in (info.get("fallback") or {}).items()}
+        speakers[key] = SpeakerProfile(
+            name=display,
+            engine=engine,
+            voice=voice,
+            style=style,
+            aliases=aliases,
+            fallback=fallback,
         )
-        issues = db.validate(data)
-        if issues:
-            raise ValueError("; ".join(issues))
-        return db
 
-    # ------------------------------------------------------------------
-    def save(self, path: Path) -> None:
-        """Write profiles to JSON file."""
+    cfg = ProfileConfig(
+        version=int(data.get("version", 0)),
+        defaults_engine=str(defaults.get("engine", "")),
+        defaults_narrator_voice=str(defaults.get("narrator_voice", "")),
+        defaults_style=defaults_style,
+        voices={
+            str(k): [str(v) for v in vs]
+            for k, vs in (data.get("voices", {}) or {}).items()
+        },
+        speakers=speakers,
+    )
+    return cfg
 
-        data = {
-            "profiles": [asdict(p) for p in self.profiles.values()],
-            "map": self.speaker_map,
-            "fallbacks": self.fallbacks,
-        }
-        with path.open("w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, sort_keys=True)
 
-    # ------------------------------------------------------------------
-    def validate(self, data: dict[str, Any] | None = None) -> list[str]:
-        """Validate the database structure.
+def available_voices(cfg: ProfileConfig, engine: str) -> list[str]:
+    """Return the declared voices for an engine."""
 
-        Returns a list of human-readable issues. If :mod:`jsonschema` is
-        available, it is used; otherwise a few structural checks are performed.
-        """
+    return list(cfg.voices.get(engine, []))
 
-        if data is None:
-            data = {
-                "profiles": [asdict(p) for p in self.profiles.values()],
-                "map": self.speaker_map,
-                "fallbacks": self.fallbacks,
-            }
 
-        issues: list[str] = []
-        if jsonschema is not None:  # pragma: no cover - straightforward
-            validator = jsonschema.Draft7Validator(DB_SCHEMA)
-            issues.extend(err.message for err in validator.iter_errors(data))
-            return issues
+# ---------------------------------------------------------------------------
+# resolution & validation
 
-        profiles = data.get("profiles")
-        if not isinstance(profiles, list):
-            issues.append("profiles must be a list")
-            profiles = []
-        required = ["id", "label", "engine", "voice", "refs", "style"]
-        ids = set()
-        for p in profiles:
-            issues.extend(f"profile missing {k}: {p}" for k in required if k not in p)
-            ids.add(p.get("id"))
-        for spk, pid in data.get("map", {}).items():
-            if pid not in ids:
+
+def _resolve_with_reason(
+    cfg: ProfileConfig, speaker: str
+) -> tuple[SpeakerProfile | None, str]:
+    """Internal helper returning a profile and match reason."""
+
+    normalized = normalize_speaker_name(speaker)
+    if normalized in cfg.speakers:
+        return cfg.speakers[normalized], "exact"
+    for sp in cfg.speakers.values():
+        if any(normalize_speaker_name(a) == normalized for a in sp.aliases):
+            return sp, "alias"
+    narrator_key = normalize_speaker_name("Narrator")
+    if normalized in {"narrator", "system", "ui"} and narrator_key in cfg.speakers:
+        return cfg.speakers[narrator_key], "narrator-fallback"
+    return None, "unknown"
+
+
+def resolve_speaker_ex(
+    cfg: ProfileConfig, speaker: str
+) -> tuple[SpeakerProfile | None, str]:
+    """Return the resolved profile and reason for ``speaker``.
+
+    Args:
+        cfg: Loaded profile configuration.
+        speaker: Name to resolve.
+
+    Returns:
+        Tuple ``(profile, reason)`` where *profile* is the matching
+        :class:`SpeakerProfile` or ``None`` and *reason* is one of
+        ``{"exact", "alias", "narrator-fallback", "unknown"}``.
+    """
+
+    return _resolve_with_reason(cfg, speaker)
+
+
+def resolve_with_reason(
+    cfg: ProfileConfig, speaker: str
+) -> tuple[SpeakerProfile | None, str]:
+    """Backward compatible wrapper around :func:`resolve_speaker_ex`."""
+
+    return resolve_speaker_ex(cfg, speaker)
+
+
+def resolve_speaker(cfg: ProfileConfig, speaker: str) -> SpeakerProfile | None:
+    """Resolve ``speaker`` to a profile using canonical names or aliases."""
+
+    return resolve_speaker_ex(cfg, speaker)[0]
+
+
+def validate_profiles(cfg: ProfileConfig) -> list[str]:
+    """Validate a profile configuration.
+
+    Args:
+        cfg: Loaded profile configuration.
+
+    Returns:
+        A list of human readable issues. The list is empty when the
+        configuration is valid.
+    """
+
+    issues: list[str] = []
+    if cfg.version != 1:
+        issues.append("version must be 1")
+    if not cfg.defaults_engine:
+        issues.append("defaults.engine missing")
+    if not cfg.defaults_narrator_voice:
+        issues.append("defaults.narrator_voice missing")
+
+    if resolve_speaker(cfg, "Narrator") is None:
+        issues.append("narrator profile missing")
+
+    canonical = set(cfg.speakers.keys())
+    alias_map: dict[str, str] = {}
+    for sp in cfg.speakers.values():
+        if not sp.engine:
+            issues.append(f"speaker '{sp.name}' missing engine")
+        if not sp.voice:
+            issues.append(f"speaker '{sp.name}' missing voice")
+        if sp.engine not in cfg.voices:
+            issues.append(
+                f"speaker '{sp.name}' references unknown engine '{sp.engine}'"
+            )
+        elif sp.voice not in cfg.voices.get(sp.engine, []):
+            issues.append(
+                f"speaker '{sp.name}' references unknown voice '{sp.voice}' for engine '{sp.engine}'"
+            )
+        for alias in sp.aliases:
+            norm = normalize_speaker_name(alias)
+            if norm in canonical:
+                issues.append(f"alias '{alias}' conflicts with existing speaker")
+            if norm in alias_map:
                 issues.append(
-                    f"map references unknown profile '{pid}' for speaker '{spk}'"
+                    f"alias '{alias}' claimed by '{alias_map[norm]}' and '{sp.name}'"
                 )
-        for eng, pid in data.get("fallbacks", {}).items():
-            if pid not in ids:
+            alias_map[norm] = sp.name
+        for eng, voice in sp.fallback.items():
+            if eng not in cfg.voices:
+                issues.append(f"speaker '{sp.name}' fallback engine '{eng}' unknown")
+            elif voice not in cfg.voices[eng]:
                 issues.append(
-                    f"fallback for '{eng}' references unknown profile '{pid}'"
+                    f"speaker '{sp.name}' fallback voice '{voice}' unknown for engine '{eng}'"
                 )
-        return issues
-
-    # ------------------------------------------------------------------
-    def get(self, profile_id: str) -> Profile:
-        """Return profile by identifier."""
-
-        return self.profiles[profile_id]
-
-    # ------------------------------------------------------------------
-    def by_speaker(self, speaker: str) -> Profile | None:
-        """Return profile mapped to ``speaker`` if any."""
-
-        pid = self.speaker_map.get(speaker)
-        if pid:
-            return self.profiles.get(pid)
-        return None
-
-    # ------------------------------------------------------------------
-    def fallback(self, engine: str) -> Profile | None:
-        """Return the fallback narrator profile for ``engine`` if defined."""
-
-        pid = self.fallbacks.get(engine)
-        if pid:
-            return self.profiles.get(pid)
-        return None
-
-
-__all__ = ["Profile", "CharacterProfilesDB", "PROFILE_SCHEMA"]
+    return issues

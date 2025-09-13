@@ -1,137 +1,205 @@
-"""CLI helpers for character profile management."""
+"""Command line utilities for profile files."""
 
+# isort: skip_file
+
+# ruff: noqa: I001
 from __future__ import annotations
 
-import argparse
 import json
-import logging
-import subprocess
 import sys
+from argparse import ArgumentParser
+from collections import Counter
+from dataclasses import asdict
 from pathlib import Path
-from typing import Any
 
-from abm.profiles.character_profiles import CharacterProfilesDB
+try:  # pragma: no cover - optional dependency
+    import yaml  # type: ignore
 
-logger = logging.getLogger(__name__)
+    HAVE_YAML = True
+except Exception:  # pragma: no cover - YAML not installed
+    yaml = None  # type: ignore
+    HAVE_YAML = False
+
+from abm.profiles import Style, load_profiles, normalize_speaker_name
+from abm.voice import pick_voice
 
 __all__ = ["main"]
 
 
-def _load_json(path: Path) -> Any:
-    with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
+def _cmd_audit(ns) -> int:
+    """Audit profiles against annotation speakers.
 
+    Args:
+        ns: Parsed argparse namespace with ``profiles`` and ``annotations`` paths.
 
-def _cmd_validate(path: Path) -> int:
-    try:
-        db = CharacterProfilesDB.load(path)
-        issues = db.validate()
-    except Exception as exc:  # pragma: no cover - validation details
-        print(f"Validation failed: {exc}", file=sys.stderr)
-        return 1
-    if issues:
-        print("Validation failed: " + "; ".join(issues), file=sys.stderr)
-        return 1
-    print("OK")
-    return 0
-
-
-def _cmd_audit(roster_path: Path, profiles_path: Path) -> int:
-    roster = _load_json(roster_path)
-    speakers = set(roster.get("speakers", roster))
-    db = CharacterProfilesDB.load(profiles_path)
-    mapped = set(db.speaker_map.keys())
-    unmapped = sorted(speakers - mapped)
-    referenced = set(db.speaker_map.values())
-    orphan_ids = sorted(set(db.profiles.keys()) - referenced)
-
-    if unmapped:
-        print("unmapped=" + ",".join(unmapped))
-    if orphan_ids:
-        print("orphan=" + ",".join(orphan_ids))
-    if unmapped or orphan_ids:
-        return 1
-    print("ok")
-    return 0
-
-
-def _run_alias_resolver(args: argparse.Namespace) -> None:
-    """Invoke the alias resolver CLI if the user requested it.
-
-    The resolver is optional and only executed when ``--resolve-aliases`` is
-    provided together with the necessary paths.  Errors are propagated to the
-    caller so that CI surfaces them as failures.
+    Returns:
+        Exit code: ``0`` if all speakers are mapped, ``2`` if any are
+        unmapped, ``1`` on IO errors.
     """
 
-    if not getattr(args, "resolve_aliases", False):
-        return
-    if not args.annotations or not args.out_dir:
-        raise SystemExit("--annotations and --out-dir required with --resolve-aliases")
-    from . import alias_cli
+    try:
+        cfg = load_profiles(ns.profiles)
+    except Exception as exc:  # pragma: no cover - IO errors
+        print(f"failed to load profiles: {exc}", file=sys.stderr)
+        return 1
+    try:
+        data = json.loads(Path(ns.annotations).read_text(encoding="utf-8"))
+    except Exception as exc:  # pragma: no cover - IO errors
+        print(f"failed to load annotations: {exc}", file=sys.stderr)
+        return 1
 
-    alias_cli.main(
-        [
-            "run",
-            "--annotations",
-            str(args.annotations),
-            "--profiles",
-            str(args.profiles),
-            "--out-dir",
-            str(args.out_dir),
-        ]
+    speakers: set[str] = set()
+    for ch in data.get("chapters", []):
+        for span in ch.get("spans", []):
+            if span.get("type") in {"Dialogue", "Thought", "Narration"}:
+                spk = span.get("speaker")
+                if spk:
+                    speakers.add(spk)
+
+    decisions = [
+        pick_voice(cfg, spk, preferred_engine=ns.prefer_engine)
+        for spk in sorted(speakers)
+    ]
+    unmapped = [
+        d.speaker for d in decisions if d.method == "default" and d.reason == "unknown"
+    ]
+    method_counts = Counter(d.method for d in decisions)
+    alias_pct = (
+        method_counts.get("alias", 0) / len(decisions) * 100 if decisions else 0.0
     )
+    summary = {
+        "total": len(decisions),
+        "unmapped": unmapped,
+        "alias_percent": alias_pct,
+        "methods": dict(method_counts),
+    }
+    if ns.out:
+        out_path = Path(ns.out)
+        if out_path.suffix == ".json":
+            out_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+        else:
+            lines = [
+                f"total: {summary['total']}",
+                f"unmapped: {len(unmapped)}",
+                f"alias%: {alias_pct:.1f}",
+            ]
+            for m, c in method_counts.items():
+                lines.append(f"{m}: {c}")
+            out_path.write_text("\n".join(lines), encoding="utf-8")
+    else:
+        if unmapped:
+            print("Unmapped speakers: " + ", ".join(unmapped))
+        print(
+            f"total={summary['total']} unmapped={len(unmapped)} alias%={alias_pct:.1f}"
+        )
+    return 2 if unmapped else 0
+
+
+def _scan_voices(voices_dir: Path | None) -> list[str]:
+    """Return available voice IDs from a directory or a small default set."""
+
+    voices = (
+        [p.name for p in voices_dir.iterdir()]
+        if voices_dir and voices_dir.exists()
+        else []
+    )
+    voices = sorted(set(voices))
+    if not voices:
+        voices = ["en_US/ryan-high", "en_US/lessac-medium", "en_GB/callan-medium"]
+    return voices
+
+
+def _cmd_generate(ns) -> int:
+    """Generate a starter profiles YAML from annotations.
+
+    Args:
+        ns: Parsed argparse namespace containing ``annotations`` path and
+            output options.
+
+    Returns:
+        Exit code ``0`` on success, ``1`` on missing dependencies or IO errors.
+    """
+
+    if not HAVE_YAML:
+        print(
+            "PyYAML required for generate; install with 'pip install pyyaml'",
+            file=sys.stderr,
+        )
+        return 1
+
+    try:
+        data = json.loads(Path(ns.annotations).read_text(encoding="utf-8"))
+    except Exception as exc:  # pragma: no cover - IO errors
+        print(f"failed to load annotations: {exc}", file=sys.stderr)
+        return 1
+
+    counts: Counter[str] = Counter()
+    for ch in data.get("chapters", []):
+        for span in ch.get("spans", []):
+            if span.get("type") in {"Dialogue", "Thought", "Narration"}:
+                spk = span.get("speaker")
+                if spk:
+                    counts[spk] += 1
+
+    top = [s for s, _ in counts.most_common(ns.n_top)]
+    voice_ids = _scan_voices(Path(ns.voices_dir) if ns.voices_dir else None)
+    narrator_voice = voice_ids[0]
+    speakers: dict[str, dict[str, str]] = {
+        "Narrator": {"engine": ns.engine, "voice": narrator_voice}
+    }
+
+    narr_norms = {
+        normalize_speaker_name("Narrator"),
+        normalize_speaker_name("System"),
+        normalize_speaker_name("UI"),
+    }
+    for spk in top:
+        if normalize_speaker_name(spk) in narr_norms:
+            continue
+        speakers[spk] = {"engine": ns.engine, "voice": ""}
+
+    cfg = {
+        "version": 1,
+        "defaults": {
+            "engine": ns.engine,
+            "narrator_voice": narrator_voice,
+            "style": asdict(Style()),
+        },
+        "voices": {ns.engine: voice_ids},
+        "speakers": speakers,
+    }
+    out_path = Path(ns.out)
+    assert yaml is not None  # for type checkers
+    out_path.write_text(yaml.safe_dump(cfg, sort_keys=False), encoding="utf-8")
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Entry point for the ``profiles`` CLI."""
+    """Entry point for the profiles CLI."""
 
-    parser = argparse.ArgumentParser(prog="profiles")
+    parser = ArgumentParser(prog="profiles")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
-    p_val = sub.add_parser("validate")
-    p_val.add_argument("--file", type=Path, required=True)
+    p_audit = sub.add_parser("audit", help="Audit profiles against annotations")
+    p_audit.add_argument("--profiles", required=True, type=Path)
+    p_audit.add_argument("--annotations", required=True, type=Path)
+    p_audit.add_argument("--prefer-engine")
+    p_audit.add_argument("--out", type=Path)
+    p_audit.set_defaults(func=_cmd_audit)
 
-    p_audit = sub.add_parser("audit")
-    p_audit.add_argument("--roster", type=Path, required=True)
-    p_audit.add_argument("--profiles", type=Path, required=True)
+    p_gen = sub.add_parser(
+        "generate", help="Generate starter profiles from annotations"
+    )
+    p_gen.add_argument("--annotations", required=True, type=Path)
+    p_gen.add_argument("--out", required=True, type=Path)
+    p_gen.add_argument("--engine", default="piper")
+    p_gen.add_argument("--voices-dir")
+    p_gen.add_argument("--n-top", type=int, default=12)
+    p_gen.set_defaults(func=_cmd_generate)
 
-    p_audit.add_argument("--resolve-aliases", action="store_true")
-    p_audit.add_argument("--annotations", type=Path)
-    p_audit.add_argument("--out-dir", type=Path)
-    p_audit.add_argument("--annotations", type=Path, default=None)
-    p_audit.add_argument("--eval-after", action="store_true")
-    p_audit.add_argument("--eval-dir", default="reports")
-
-
-    args = parser.parse_args(argv)
-
-    if args.cmd == "validate":
-        return _cmd_validate(args.file)
-    if args.cmd == "audit":
-        rc = _cmd_audit(args.roster, args.profiles)
-        if rc == 0:
-            _run_alias_resolver(args)
-        if args.eval_after and args.annotations:
-            cmd = [
-                sys.executable,
-                "-m",
-                "abm.audit",
-                "--refined",
-                str(args.annotations),
-                "--out-dir",
-                args.eval_dir or "reports",
-                "--title",
-                "Eval — profiles audit",
-            ]
-            try:
-                rc = subprocess.run(cmd, check=False).returncode
-                if rc:
-                    logger.warning("audit exited with code %s", rc)
-            except Exception as exc:
-                logger.warning("audit skipped: %s", exc)
-        return rc
-    return 1
+    ns = parser.parse_args(argv)
+    return ns.func(ns)
 
 
-if __name__ == "__main__":  # pragma: no cover
+if __name__ == "__main__":  # pragma: no cover - CLI entry
     raise SystemExit(main())
