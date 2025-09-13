@@ -361,6 +361,18 @@ Details: `docs/05-development/planning/MULTI_AGENT_ROADMAP.md`.
 
 Canonical utterance schema (rich) is defined in `docs/02-specifications/data-schemas/ANNOTATION_SCHEMA.md`. Current prototype only emits: `book_id, chapter_id, utterance_idx, text, is_dialogue`. Migration will layer in speaker, emotion, prosody, SSML, TTS artifact linkage. Version each expansion to preserve reproducibility.
 
+## Built-in TTS engines
+
+- **Piper** – CPU-friendly CLI synthesizer. Set `ABM_PIPER_BIN` to point to the
+  binary. Use `ABM_PIPER_DRYRUN=1` to write a short silence WAV instead of
+  invoking Piper (useful for tests).
+- **XTTS v2** – Coqui's neural TTS with speaker cloning. Enable dry-run via
+  `ABM_XTTS_DRYRUN=1`. Override device/model with `ABM_XTTS_DEVICE` and
+  `ABM_XTTS_MODEL`.
+
+Chunking defaults are ~700 characters for Piper and ~500 for XTTS. Override via
+`Chunker.split(..., max_chars=...)`.
+
 ## Contributing
 
 Internal project (learning / portfolio). PRs should keep deterministic ingestion guarantees (run regression tests) and update snapshot notes when changing text transforms.
