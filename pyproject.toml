@@ -39,8 +39,11 @@ tts = [
 ]
 # Convenience meta-extras
 all-optional = [
-	"agent-audiobook-maker[coref,spacy-trf,ui,metrics,db,booknlp,tts]",
+        "agent-audiobook-maker[coref,spacy-trf,ui,metrics,db,booknlp,tts]",
 ]
+
+[project.scripts]
+abm-package-book = "abm.audio.package_book:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
