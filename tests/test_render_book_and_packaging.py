@@ -218,13 +218,17 @@ def test_packaging_requires_ffmpeg(tmp_path, monkeypatch):
     def boom():  # pragma: no cover - simulated missing dep
         raise RuntimeError("pydub/ffmpeg required for packaging")
 
-    monkeypatch.setattr("abm.audio.packaging._require_pydub", boom)
+    monkeypatch.setattr(
+        "abm.audio.packaging.importlib.util.find_spec", lambda name: None
+    )
+    monkeypatch.setattr("abm.audio.packaging.shutil.which", lambda name: None)
     wav = tmp_path / "in.wav"
     sf.write(wav, np.zeros(10), 16000)
     with pytest.raises(RuntimeError, match="pydub/ffmpeg"):
         export_mp3(wav, tmp_path / "o.mp3", title="t", artist="a", album="b", track=1)
     with pytest.raises(RuntimeError, match="pydub/ffmpeg"):
         export_opus(wav, tmp_path / "o.opus", title="t", artist="a", album="b", track=1)
+    monkeypatch.setattr("abm.audio.packaging._require_pydub", boom)
     with pytest.raises(RuntimeError, match="pydub/ffmpeg"):
         make_chaptered_m4b([wav], tmp_path / "o.m4b", ["One"], album="a", artist="b")
 
@@ -267,7 +271,12 @@ def test_packaging_success_paths(tmp_path, monkeypatch):
         def __add__(self, other: "DummySeg") -> "DummySeg":  # pragma: no cover
             return DummySeg(self.duration_seconds + other.duration_seconds)
 
+    monkeypatch.setattr(
+        "abm.audio.packaging.importlib.util.find_spec", lambda name: object()
+    )
+    monkeypatch.setattr("abm.audio.packaging.shutil.which", lambda name: "ffmpeg")
     monkeypatch.setattr("abm.audio.packaging._require_pydub", lambda: DummySeg)
+    monkeypatch.setattr("abm.audio.packaging._have_ffmpeg", lambda: False)
 
     wav = tmp_path / "in.wav"
     sf.write(wav, np.zeros(10), 16000)
