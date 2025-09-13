@@ -12,8 +12,8 @@ from typing import Any, cast
 
 from abm.annotate.llm_cache import LLMCache
 from abm.annotate.llm_prep import LLMCandidateConfig, LLMCandidatePreparer
-from abm.annotate.prompts import SYSTEM_SPEAKER, speaker_user_prompt
 from abm.annotate.progress import ProgressReporter
+from abm.annotate.prompts import SYSTEM_SPEAKER, speaker_user_prompt
 from abm.llm.client import OpenAICompatClient
 from abm.llm.manager import LLMBackend, LLMService
 
