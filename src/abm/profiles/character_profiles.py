@@ -52,6 +52,14 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
+try:  # pragma: no cover - optional dependency
+    import yaml  # type: ignore
+
+    HAVE_YAML = True
+except Exception:  # pragma: no cover - YAML not installed
+    yaml = None  # type: ignore
+    HAVE_YAML = False
+
 __all__ = [
     "Style",
     "SpeakerProfile",
@@ -178,16 +186,16 @@ def load_profiles(path: str | Path) -> ProfileConfig:
         raise RuntimeError(f"unable to read profiles file: {p}") from exc
 
     data: dict[str, Any]
-    try:  # pragma: no cover - exercised when yaml installed
-        import yaml  # type: ignore
-
-        data = yaml.safe_load(text)  # type: ignore
-        if not isinstance(data, dict):
-            raise TypeError
-    except Exception:
+    if HAVE_YAML:
+        try:  # pragma: no cover - exercised when yaml installed
+            data = yaml.safe_load(text)  # type: ignore
+        except Exception:
+            data = json.loads(text)
+    else:
         data = json.loads(text)
-        if not isinstance(data, dict):
-            raise ValueError("profiles file must contain a mapping") from None
+
+    if not isinstance(data, dict):
+        raise ValueError("profiles file must contain a mapping")
 
     defaults = data.get("defaults", {}) or {}
     defaults_style = Style(**(defaults.get("style") or {}))
