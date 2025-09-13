@@ -1,0 +1,14 @@
+```mermaid
+flowchart LR
+    A["Stage A combined.json"] --> B["LLMCandidatePreparer"]
+    B --> C{Cache hit?}
+    C -- Yes --> D["Cached speaker/conf"]
+    C -- No --> E["OpenAICompatClient"]
+    E --> F[("LLM Service")]
+    E --> G["Decision"]
+    G --> H["LLMCache"]
+    D --> I["Apply if improved"]
+    H --> I
+    I --> J["combined_refined.json"]
+    I --> K["review_refined.md"]
+```

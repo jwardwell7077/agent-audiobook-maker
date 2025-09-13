@@ -6,57 +6,55 @@ Last updated: 2025-09-08
 
 ## Overview
 
-LLM Attribution is a second-pass speaker attribution stage that resolves dialogue spans that the heuristic stage could not confidently attribute. It operates in an open-world fashion (no pre-baked roster), runs locally (default backend: Ollama), and guarantees no "Unknown" speakers in its outputs by applying conservative fallbacks when the LLM cannot decide with high confidence.
+LLM Attribution is a second-pass speaker attribution stage that resolves dialogue spans that the heuristic stage could not confidently attribute. It operates in an open-world fashion (no pre-baked roster), runs locally (default backend: Ollama), and attempts to resolve speakers with helpful fallbacks. In edge cases where there is genuinely insufficient evidence, it may return "Unknown".
 
 This component consumes the outputs of the heuristic stage (spans_attr) and produces updated spans with speaker, confidence, method, and evidence, plus a meta summary. It may also enrich narration confidence if configured, but its primary job is to resolve dialogue speakers.
 
 ## Scope and Goals
 
- 
 - Resolve speaker for dialogue spans marked unknown or low-confidence by the heuristic pass.
-- Enforce strict outputs: no "Unknown" speakers after this stage.
+- Provide best-effort attribution; allow "Unknown" when context is genuinely ambiguous.
 - Keep everything local by default; allow pluggable LLM backend (Ollama first).
 - Deterministic caching by prompt payload to reduce re-compute/cost and make results reproducible.
 - Artifact IO via JSONL to support headless runs and downstream tools.
 
 Non-goals:
- 
+
 - Not responsible for full conversation consistency across chapters (that belongs to Finalizer/Normalization).
 - Not responsible for building a canonical character roster (but can hint probable names).
 
 ## Contracts
 
 Inputs
- 
+
 - spans_attr.jsonl or in-memory payload from the heuristic component containing an array of records with keys such as: book_id, chapter_index, block_id, segment_id, text_norm/text_raw, type/role, attribution { speaker?, confidence, method, evidence }.
 - Config knobs: model name, temperature, context radius (spans or characters), max retries, cache directory, min confidence to skip LLM (if heuristic already high), timeouts.
 
 Outputs
- 
+
 - spans_attr_llm.jsonl (updated): same records with attribution replaced/filled where needed. Every dialogue span must have a non-empty speaker string.
 - meta.json (optional): counts, method histogram, retry stats, cache hits/misses, errors (if any), config snapshot.
-- In LangFlow, outputs also provided via Data ports for chaining.
+  
 
 Error modes
- 
+
 - LLM returns non-JSON or malformed JSON: retry with stricter extractor rules up to N times; if still failing, apply conservative fallback (continuity_prev or heuristic evidence), mark qa_flags in evidence.
 - Backend unavailable: if cache has entry, use it; else mark fallback path and continue (never crash the pipeline by default).
 
 ## Data Shapes
 
 Input record (abbreviated):
- 
+
 - {..., type: "dialogue"|"narration", text_norm: str, attribution: { speaker?: str|null, confidence: float, method: str, evidence: dict }, ...}
 
 Output record (dialogue):
- 
+
 - attribution: { speaker: str, confidence: float, method: "llm|llm_fallback|continuity_prev|heuristic_passthrough", evidence: { prompt_version, backend, cache_key, llm: { raw_text?, parsed_json? }, rationale?, qa_flags?: [..] } }
 
 Note: method should include a clear prefix when the LLM was used, e.g., "llm_dialogue_tag", "llm_proximity", or "llm_fallback".
 
 ## Decision Logic
 
- 
 1. Span selection
 
 - Target only dialogue spans where: attribution.speaker is null/empty OR attribution.method == "unknown" OR attribution.confidence < min_conf_for_skip.
@@ -73,7 +71,7 @@ Note: method should include a clear prefix when the LLM was used, e.g., "llm_dia
 
 1. Prompting
 
-- Single-shot JSON-only prompt. The LLM must return a single JSON object with fields: { speaker: string, confidence: 0..1, rationale: string }. No "Unknown" allowed.
+- Single-shot JSON-only prompt. The LLM must return a single JSON object with fields: { speaker: string, confidence: 0..1, rationale: string }. "Unknown" is permitted if evidence is insufficient.
 - If the LLM proposes a non-name (e.g., pronoun or generic), post-validate and either map to previous speaker (continuity_prev) or lowest-confidence fallback.
 - Temperature default moderate (e.g., 0.4) to reduce hallucination and promote deterministic output.
 
@@ -83,11 +81,11 @@ Note: method should include a clear prefix when the LLM was used, e.g., "llm_dia
 - Enforce speaker normalization rules (trim, title-case; blocklisted pronouns ignored).
 - Ensure confidence is clamped to [0,1]. If below a minimum threshold after validation, tag qa_flags and optionally blend with deterministic confidence scorer if desired.
 
-1. Fallbacks (no-Unknown guarantee)
+1. Fallbacks (best-effort)
 
 - continuity_prev within a short distance window (<= 2 spans) when available.
 - Otherwise, choose best heuristic cue from narration window (dialogue tags, proper nouns) with a conservative confidence.
-- As a last resort, attribute to "Narrator" only if the span is actually narration; for dialogue spans, pick the nearest consistent dialogue speaker in block (even if weak), and tag qa_flags.
+- If still indeterminate, allow speaker "Unknown" with lowered confidence and a qa_flag.
 
 ## Backend Interface
 
@@ -124,32 +122,14 @@ Note: method should include a clear prefix when the LLM was used, e.g., "llm_dia
 - Meta: output/{book_id}/ch{chapter:02d}/spans_attr_llm.meta.json
 - Cache: .cache/abm/llm_attr/<sharded_key>.json
 
-## LangFlow Component Design
+## CLI/Library Design
 
-Name: ABMLLMAttribution
+Provide a library function and thin CLI wrapper instead of a visual component:
 
-- Inputs:
-   
-  - DataInput spans_attr (required)
-  - StrInput model_name (default: llama3.1:8b-instruct)
-  - StrInput base_url (default: <http://localhost:11434>)
-  - FloatInput temperature (0.4)
-  - FloatInput min_conf_for_skip (0.85)
-  - FloatInput context_radius (4)
-  - IntInput max_json_retries (2)
-  - StrInput prompt_version ("v1")
-  - BoolInput write_to_disk (false)
-  - StrInput output_dir (optional; derive if empty)
-  - StrInput cache_dir (".cache/abm")
-  - FloatInput timeout_s (30)
-  - BoolInput re_attribute_all (false)
+- Python: abm.attr.llm_attribution.LLMAttributor with LLMAttrConfig
+- CLI: tools/llm_attr_cli.py that reads spans_attr.jsonl, writes spans_attr_llm.jsonl and meta.json
 
-- Outputs:
-   
-  - Output spans_attr_llm (Data: { spans_attr: [...] })
-  - Output meta (Data)
-
-Implementation note: There is no existing component that calls an LLM for attribution. We will implement a new component, reusing patterns from `ABMSpanAttribution` for grouping and IO, and introducing a small backend adapter for Ollama.
+Implementation note: Reuse deterministic confidence helper and strict JSON validation. Keep the CLI optional; primary surface is the Python API.
 
 ## Prompt (v1, sketch)
 
@@ -161,15 +141,43 @@ User content (fields):
 - narration_before: ["...", "..."]
 - narration_after: ["...", "..."]
 - prev_dialogue_speaker: "Name" | null
-- rules: "Do not return Unknown. Choose the most plausible proper name."
+- rules: "Return the most plausible proper name. If insufficient evidence, you may return the literal string Unknown."
 
 Expected assistant response (exactly one JSON object):
 { "speaker": "Name", "confidence": 0.0-1.0, "rationale": "..." }
 
+## Retry strategy (asymmetric, no-heuristic contamination)
+
+Goal: Improve attribution without biasing the model. Each retry adds only local narration context; no heuristic cues are injected into prompts.
+
+- Retry 1 (minimal):
+  - Input fields: dialogue_text only.
+  - Rationale: cheap, deterministic, low hallucination.
+
+- Retry 2 (span + context):
+  - Input fields: dialogue_text, narration_before, narration_after.
+  - Asymmetric policy: prioritize narration_before (allocate ~2x budget vs. after).
+  - Ordering: narration_before is chronological (earliest→latest), with most recent last; narration_after is earliest→latest.
+  - No previous-speaker hints and no heuristic artifacts (pure text context).
+
+- Retry 3 (expanded window):
+  - Input fields: same as retry 2, but double the context radius (token-capped).
+  - Guidance: prefer proper names repeated in narration_before if conflict arises.
+
+Example (toy):
+
+- dialogue_text: "I'll meet you at the docks," Quinn said.
+- retry 2 narration_before: ["Quinn adjusted her coat.", "Mara glanced at him.", "The captain, Quinn, took the map."]
+- retry 2 narration_after: ["They walked toward the pier."]
+
+Expected JSON:
+
+- { "speaker": "Quinn", "confidence": 0.8, "rationale": "Name appears in prior narration near dialogue tag." }
+
 ## Testing
 
 - Unit tests for: cache key stability, JSON validation, fallback coverage, selection of target spans, pass-through behavior when min_conf_for_skip.
-- Integration test with a small chapter fixture to verify artifact paths, counts, and no-Unknown guarantee.
+- Integration test with a small chapter fixture to verify artifact paths, counts, and reasonable Unknown usage (no excessive Unknown where context is clear).
 - Mock backend returning canned JSON and malformed variants to exercise retries.
 
 ## Performance

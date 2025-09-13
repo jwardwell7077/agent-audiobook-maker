@@ -62,7 +62,7 @@ Pipeline stages (per chapter):
 
 1. Annotation (Prototype → Multi-Agent Roadmap)
 
-- Segmentation → utterances (LangFlow prototype: Loader → Segmenter → Writer)
+- Segmentation → utterances (deterministic library + CLI tooling)
 - Coref resolution (HF local model)
 - Speaker attribution (heuristics + local LLM judge via Ollama; no UNKNOWN outputs)
 - Emotion/prosody classification (classifier + rules)
@@ -165,8 +165,8 @@ ______________________________________________________________________
 - Ingestion service
   - PDF parsing, chapterization, normalization, hashing.
   - Write chapters to Postgres and `data/clean/`.
-- Annotation service (LangGraph / LangFlow hybrid during transition)
-  - IMPLEMENTED: LangFlow segmentation components + skeleton graph (`segment`, `coref`, `speakers`, `emotion`, `qa`).
+- Annotation service (evolving to LangGraph)
+  - IMPLEMENTED: Deterministic segmentation components + skeleton graph (`segment`, `coref`, `speakers`, `emotion`, `qa`).
   - Flags now stored directly in `State` (reliable across invocation); removed deprecated `config_schema` usage.
   - Added synchronous execution helper `run_annotation_for_chapter` with caching via (text_sha256, params_hash, graph_version).
   - Persists JSONL under `data/annotations/` and a DB row (records + stats).
@@ -195,7 +195,7 @@ ______________________________________________________________________
 - Ingestion endpoint (`/ingest`) persists chapters + JSON artifacts (simple splitter heuristic + PDF extraction with multi-backend detection) now refactored into helpers (`_batch_ingest`, `_ingest_single_stored`, `_ingest_uploaded`) with `_BatchIngestAccumulator` reducing complexity.
 - PDF extraction module with layered backends (PyPDF2, optional pdfminer, pdftotext CLI) + tests (skip if no backend).
 - Annotation graph skeleton implemented with placeholder logic & idempotent segmentation.
-- LangFlow prototype components packaged under `lf_components/` (Loader, Segmenter, Writer, PayloadLogger).
+- Prior visual prototype removed; focus on CLI + library modules.
 - Flags stored in `State` (`enable_coref`, `enable_emotion`, `enable_qa`, `max_segments`).
 - Annotation execution + persistence (`run_annotation_for_chapter`) writing JSONL + DB row with caching.
 - Casting prototype: derive & persist character records from annotation speakers.

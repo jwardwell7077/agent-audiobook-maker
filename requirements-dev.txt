@@ -1,7 +1,6 @@
 -r requirements.txt
 
 pip>=24.2
-# Note: langflow>=1.5.0.post2 requires ruff>=0.9.7; pin a compatible version
 ruff==0.12.11
 mypy==1.10.0
 pytest==8.3.4

@@ -45,7 +45,8 @@ The **Audio Book Maker MVP** delivers a complete, deterministic pipeline that co
 
 #### 4. System Infrastructure
 
-- 🔄 **LangFlow visual pipeline** for component orchestration
+Note: former visual pipeline removed; use direct Python modules and CLI orchestration.
+
 - 🔄 **Deterministic caching** for reproducible outputs
 - 🔄 **Error recovery** with retry logic and fallback strategies
 - 🔄 **Progress tracking** and status reporting
@@ -97,7 +98,7 @@ The **Audio Book Maker MVP** delivers a complete, deterministic pipeline that co
 | **T1: Local Deployment**     | Runs entirely on single machine with GPU, no cloud dependencies      | P0       |
 | **T2: Data Persistence**     | All intermediate artifacts stored locally, recoverable after restart | P0       |
 | **T3: Memory Efficiency**    | Peak memory usage \<16GB for standard novel processing               | P1       |
-| **T4: LangFlow Integration** | Visual pipeline editor works for component configuration             | P0       |
+| **T4: Visual Layer Removed** | Direct module configuration via CLI/env                               | P0       |
 | **T5: API Completeness**     | RESTful API covers all core operations with OpenAPI documentation    | P1       |
 | **T6: Quality Gates**        | Automated testing covers >90% of critical path functionality         | P1       |
 
@@ -121,7 +122,7 @@ The **Audio Book Maker MVP** delivers a complete, deterministic pipeline that co
    - Structured TOC parsing
    - Deterministic chapter hashing
 
-1. **LangFlow Pipeline** (🔄 In Progress)
+1. **Authoring / Attribution Pipeline** (🔄 In Progress)
 
    - Visual component orchestration
    - Custom audiobook processing nodes
@@ -162,7 +163,7 @@ Final Audiobook
 ### **Required Dependencies**
 
 - **Python 3.11+** with virtual environment
-- **LangFlow** for visual pipeline development
+   (Removed) former visual pipeline dependency
 - **PyMuPDF** for PDF processing
 - **TTS Engines**: XTTS, Piper (multiple for voice variety)
 - **Audio Processing**: librosa, pydub for mastering
@@ -316,14 +317,14 @@ The MVP is considered **complete and ready for release** when:
 
 | Phase | Duration | Key Deliverables | Success Criteria |
 |-------|----------|------------------|------------------|
-| **Phase 1: LangFlow Pipeline** | 2 weeks | Visual pipeline, custom components | Components work in LangFlow UI |
+| **Phase 1: Authoring/Attribution** | 2 weeks | Scene segmentation, attribution stubs | CLI runs end-to-end on sample |
 | **Phase 2: Text Analysis** | 3 weeks | Speaker attribution, emotion classification | >95% F1 on test data |
 | **Phase 3: Audio Generation** | 4 weeks | TTS rendering, audio mastering | Professional quality output |
 | **Phase 4: Integration & QA** | 2 weeks | End-to-end testing, documentation | All MVP criteria met |
 
 ### **Critical Path Dependencies**
 
-1. LangFlow custom components → Text analysis agents
+1. Authoring modules → Text analysis agents
 2. Character attribution → Voice assignment  
 3. Audio generation → Quality assurance
 4. All components → Final integration testing
@@ -332,7 +333,7 @@ The MVP is considered **complete and ready for release** when:
 
 ### **Reference Documents**
 
-- [LANGFLOW_COMPONENT_PLAN.md](../../03-implementation/langflow/LANGFLOW_COMPONENT_PLAN.md) - Detailed component specifications
+<!-- Removed deprecated LangFlow component plan link -->
 - [DEVELOPMENT_JOURNEY.md](../../05-development/journey/DEVELOPMENT_JOURNEY.md) - Current ingestion pipeline status
 - [MULTI_AGENT_ROADMAP.md](../../03-implementation/multi-agent/MULTI_AGENT_ROADMAP.md) - Future roadmap beyond MVP
 - [Architecture Diagrams](../../04-diagrams/README.md) - System architecture and component relationships

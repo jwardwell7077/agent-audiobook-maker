@@ -33,22 +33,14 @@ Definition of done (KISS slice)
 
 Components path
 
-- Export `LANGFLOW_COMPONENTS_PATH` to include our custom components directory
-- Typical value: `export LANGFLOW_COMPONENTS_PATH="$(pwd)/src/abm/lf_components"`
+- Keep CLI/library entry points simple and discoverable under `src/abm/*`
 
 Available components (this branch)
 
-- ABMChapterLoader – book/chapters
-- ABMBlockSchemaValidator – normalize + JSONL
-- ABMMixedBlockResolver – spans
-- ABMSpanClassifier – dialogue/narration
-- ABMSpanIterator – simple windowing
-- ABMArtifactOrchestrator – blocks → spans → spans_cls → spans_attr
-
-Import sample flow
-
-- Use `examples/langflow/abm_spans_first_pipeline.v15.json`
-- Adjust inputs (paths, chapter selection) in the UI
+- Deterministic segmentation helpers
+- Dialogue classifier (heuristic-first with optional LLM judge)
+- Confidence scorer (deterministic)
+- Artifact orchestrators for writing JSONL
 
 Out of scope (this branch)
 
