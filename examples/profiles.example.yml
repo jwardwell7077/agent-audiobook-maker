@@ -1,0 +1,33 @@
+version: 1
+defaults:
+  engine: piper
+  narrator_voice: en_US/ryan-high
+  style:
+    pace: 1.0
+    energy: 0.9
+    pitch: 0.0
+    emotion: neutral
+voices:
+  piper:
+    - en_US/ryan-high
+    - en_US/lessac-medium
+  xtts:
+    - qn_01
+    - narrator_base
+speakers:
+  Narrator:
+    engine: piper
+    voice: en_US/ryan-high
+    aliases: [System, UI]
+  Quinn:
+    engine: piper
+    voice: en_US/lessac-medium
+    aliases: [Q]
+    fallback:
+      xtts: qn_01
+  Griff:
+    engine: xtts
+    voice: qn_01
+    aliases: [G]
+    fallback:
+      piper: en_US/lessac-medium
