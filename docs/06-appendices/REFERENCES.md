@@ -8,13 +8,7 @@ This comprehensive reference collection supports learning, development, and trou
 
 ### Core Frameworks
 
-#### LangFlow
-
-- **Official Documentation**: <https://docs.langflow.org/>
-- **GitHub Repository**: <https://github.com/langflow-ai/langflow>
-- **Component Development Guide**: <https://docs.langflow.org/components/custom>
-- **Community Discord**: <https://discord.com/invite/EqksyE2EX9>
-- **Example Flows**: <https://github.com/langflow-ai/langflow/tree/main/src/backend/base/langflow/examples>
+<!-- Removed LangFlow references (deprecated) -->
 
 #### CrewAI
 
@@ -272,10 +266,10 @@ This comprehensive reference collection supports learning, development, and trou
 - **Python.org Community** - <https://www.python.org/community/>
 - **Stack Overflow Python** - <https://stackoverflow.com/questions/tagged/python>
 
-#### LangChain/LangFlow Community
+#### LangChain Community
 
 - **LangChain Discord** - <https://discord.gg/langchain>
-- **LangFlow Discord** - <https://discord.com/invite/EqksyE2EX9>
+<!-- Removed LangFlow Discord link -->
 - **r/LangChain** - <https://reddit.com/r/LangChain>
 
 ### Conferences & Events

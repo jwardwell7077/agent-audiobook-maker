@@ -252,7 +252,7 @@ Output: narration (0.7, "heuristic_narration_indicators")
 ### Dependencies
 
 - Ollama service (for AI enhancement)
-- LangFlow runtime environment
+ 
 
 ## Configuration
 

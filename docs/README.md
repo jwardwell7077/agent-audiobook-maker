@@ -47,17 +47,25 @@ AI‑generated, Copilot‑assisted. Categorized reference for fast navigation.
   - FSM diagram: [04-diagrams/state-machines/chapterizer_fsm.mmd](04-diagrams/state-machines/chapterizer_fsm.mmd)
   - UML: [04-diagrams/uml/chapterizer_uml.mmd](04-diagrams/uml/chapterizer_uml.mmd)
 
+## Stage B LLM Refinement
+
+- Design spec: [02-specifications/components/STAGE_B_REFINEMENT_SPEC.md](02-specifications/components/STAGE_B_REFINEMENT_SPEC.md)
+- Implementation: [03-implementation/annotate/llm_refine/README.md](03-implementation/annotate/llm_refine/README.md)
+- CLI options: [03-implementation/annotate/llm_refine/OPTIONS.md](03-implementation/annotate/llm_refine/OPTIONS.md)
+- Architecture diagram: [04-diagrams/architecture/stage_b_llm_refinement.mmd](04-diagrams/architecture/stage_b_llm_refinement.mmd)
+- C4: [diagrams/stage_b_llm_refine_c4_context.mmd](diagrams/stage_b_llm_refine_c4_context.mmd), [diagrams/stage_b_llm_refine_c4_container.mmd](diagrams/stage_b_llm_refine_c4_container.mmd)
+
 ## CLI quick links (source)
 
 - PDF→Text CLI: `src/abm/ingestion/pdf_to_text_cli.py`
 - Classifier CLI: `src/abm/classifier/classifier_cli.py`
 - Chapterizer CLI: `src/abm/structuring/chapterizer_cli.py`
+- Stage B LLM refine CLI: `src/abm/annotate/llm_refine.py`
 
 ## Roadmap
 
 - Multi‑agent roadmap: [05-development/planning/MULTI_AGENT_ROADMAP.md](05-development/planning/MULTI_AGENT_ROADMAP.md)
-- LangFlow component plan: [LANGFLOW_COMPONENT_PLAN.md](LANGFLOW_COMPONENT_PLAN.md)
-- Learning path (LangFlow/LangChain/LangSmith/LangGraph/CrewAI): [03-implementation/multi-agent/LEARNING_PATH_MULTI_AGENT.md](03-implementation/multi-agent/LEARNING_PATH_MULTI_AGENT.md)
+- Learning path (LangGraph/CrewAI): [03-implementation/multi-agent/LEARNING_PATH_MULTI_AGENT.md](03-implementation/multi-agent/LEARNING_PATH_MULTI_AGENT.md)
 
 ## Templates
 
@@ -76,6 +84,7 @@ AI‑generated, Copilot‑assisted. Categorized reference for fast navigation.
 - Chapterizer: [diagrams/chapterizer_fsm.mmd](diagrams/chapterizer_fsm.mmd), [diagrams/chapterizer_uml.mmd](diagrams/chapterizer_uml.mmd)
 - Quality Gate: [diagrams/quality_gate_architecture.mmd](diagrams/quality_gate_architecture.mmd), [diagrams/quality_gate_fsm.mmd](diagrams/quality_gate_fsm.mmd), [diagrams/quality_gate_uml.mmd](diagrams/quality_gate_uml.mmd)
 - Structured JSON: [diagrams/structured_json_schema.mmd](diagrams/structured_json_schema.mmd)
+- Stage B LLM Refinement: [04-diagrams/architecture/stage_b_llm_refinement.mmd](04-diagrams/architecture/stage_b_llm_refinement.mmd), [diagrams/stage_b_llm_refine_c4_context.mmd](diagrams/stage_b_llm_refine_c4_context.mmd), [diagrams/stage_b_llm_refine_c4_container.mmd](diagrams/stage_b_llm_refine_c4_container.mmd)
 
 ## Examples
 

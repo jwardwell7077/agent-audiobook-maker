@@ -237,4 +237,4 @@ temp/LEGACY_PRIVATE_*
 /output/
 
 # Runtime PIDs/state files
-.langflow.pid
+ # (Removed) LangFlow pid file

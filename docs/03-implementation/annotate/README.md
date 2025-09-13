@@ -1,0 +1,210 @@
+# Annotation Pipeline Modules
+
+> **Purpose**: Technical overview and usage examples for the annotation utilities that convert normalized chapters into speaker-tagged spans with optional LLM refinement.
+
+The `abm.annotate` package orchestrates the end-to-end annotation flow:
+
+1. **Normalization** – sanitize and tag raw paragraphs.
+2. **Segmentation** – carve the chapter text into structured spans.
+3. **Roster Building** – collect character aliases and merge them into canonical rosters.
+4. **Attribution** – assign speakers and confidence scores to dialogue and thought spans.
+5. **LLM Refinement (optional)** – re‑evaluate low‑confidence spans with a local model.
+6. **Review Generation** – emit Markdown reports for manual QA.
+7. **CLI Runner** – glue everything together for batch processing.
+
+Each component is modular and unit tested; they can be composed individually or used via the [`annotate_cli.py`](../../../src/abm/annotate/annotate_cli.py) entrypoint.
+
+## 1. Chapter Normalization
+
+```python
+from abm.annotate.normalize import ChapterNormalizer, NormalizerConfig
+
+normalizer = ChapterNormalizer(NormalizerConfig())
+chapter_out = normalizer.normalize(chapter_dict)
+```
+
+Key features:
+
+- Joins paragraphs with `\n\n`, trims trailing spaces, and optionally strips control characters.
+- Tags each paragraph as `Heading`, `SystemAngle`, `SystemSquare`, `SectionBreak`, `Meta`, or `None`.
+- Records inline system tokens with offsets (`<Skill>`, `[Yes]`).
+- Emits a `normalize_report` summarizing counts and any heading removal.
+
+See [`normalize.py`](../../../src/abm/annotate/normalize.py) for details.
+
+## 2. Span Segmentation
+
+```python
+from abm.annotate.segment import Segmenter
+
+segmenter = Segmenter()
+spans = segmenter.segment(chapter_out)
+```
+
+Highlights:
+
+- Overlays structural spans (system lines, meta lines, headings, section breaks).
+- Uses a quote state machine to extract `Dialogue` and `Thought` spans while preserving offsets.
+- Supports inline system tokens and configurable merging of adjacent narration.
+
+See [`segment.py`](../../../src/abm/annotate/segment.py).
+
+## 3. Roster Building
+
+```python
+from abm.annotate.roster import build_chapter_roster, merge_book_roster
+
+chap_roster = build_chapter_roster(chapter_out["text"])
+book_roster = merge_book_roster(book_roster, chap_roster)
+```
+
+Capabilities:
+
+- Heuristics for angle-tagged user lines, vocatives, and title+name patterns.
+- Optional spaCy `PERSON` NER and rapidfuzz alias merging.
+- Produces `{canonical: [aliases...]}` mappings for chapters and books.
+
+Module: [`roster.py`](../../../src/abm/annotate/roster.py).
+
+## 4. Attribution Engine
+
+```python
+from abm.annotate.attribute import AttributeEngine
+
+engine = AttributeEngine(mode="high")
+speaker, method, conf = engine.attribute_span(full_text, (start, end), span_type, roster)
+```
+
+Responsibilities:
+
+- Combines rule-based cues, spaCy dependencies, and optional coreference/LLM hooks.
+- Returns `(speaker, method, confidence)` for a span.
+
+Implementation: [`attribute.py`](../../../src/abm/annotate/attribute.py).
+
+## 5. LLM Refinement (Optional)
+
+Stage B revisits low-confidence spans using a roster-constrained LLM
+query and writes a refined JSON + optional review markdown.
+
+### Candidate Extraction
+
+```python
+from abm.annotate.llm_prep import LLMCandidatePreparer
+
+prep = LLMCandidatePreparer()
+candidates = prep.prepare(tagged_doc)
+```
+
+### Refinement CLI
+
+```bash
+PYTHONPATH=src python -m abm.annotate.llm_refine \
+  --tagged data/annotations/book/combined.json \
+  --out-json data/annotations/book/combined_refined.json \
+  --out-md data/annotations/book/review_refined.md \
+  --endpoint http://127.0.0.1:11434/v1 \
+  --model llama3.1:8b-instruct-q6_K \
+  --manage-llm
+```
+
+Features:
+
+- Selects low-confidence dialogue/thought spans with context windows and roster info.
+- Caches LLM decisions in SQLite keyed by prompt hash.
+- Accepts only improvements that beat the baseline confidence by a configurable margin.
+
+Modules: [`llm_prep.py`](../../../src/abm/annotate/llm_prep.py), [`llm_refine.py`](../../../src/abm/annotate/llm_refine.py). See [`llm_refine/README.md`](llm_refine/README.md) for details and CLI options.
+
+## 6. Review Generation
+
+```python
+from abm.annotate.review import make_review_markdown
+
+markdown = make_review_markdown(tagged_doc["chapters"])
+```
+
+Provides:
+
+- Per-chapter tables of the lowest-confidence spans.
+- Global span table and method-level breakdown for quick QA.
+
+See [`review.py`](../../../src/abm/annotate/review.py).
+
+## 7. CLI Runner
+
+```bash
+python -m abm.annotate.annotate_cli --in chapters.json --out-json chapters_tagged.json --out-md chapters_review.md
+```
+
+`AnnotateRunner` orchestrates normalization → segmentation → roster building → attribution and writes both JSON and review Markdown files.
+
+Entry module: [`annotate_cli.py`](../../../src/abm/annotate/annotate_cli.py).
+
+---
+
+*Part of [Implementation](../README.md)*
+
+## End-to-end pipeline with BookNLP fuse and voice casting
+
+Example command sequence using full-doc parse, optional BookNLP fusion, LLM refinement, and voice casting.
+
+1) Stage A (heuristic attribution, doc-mode)
+
+```bash
+python -m abm.annotate.annotate_cli \
+	--in data/clean/mvs/classified/chapters.json \
+	--out-json data/ann/mvs/combined.json \
+	--out-roster data/ann/mvs/book_roster.json \
+	--out-dir data/ann/mvs/chapters \
+	--out-md data/ann/mvs/review.md \
+	--metrics-jsonl data/ann/mvs/metrics.jsonl \
+	--status rich \
+	--mode high \
+	--parse-mode doc \
+	--doc-cache data/.doccache \
+	--pipe-batch-size 8 \
+	--treat-single-as-thought \
+	--roster-scope book \
+	--verbose
+```
+
+2) Stage A+ (BookNLP fuse)
+
+```bash
+python -m abm.annotate.bnlp_refine \
+	--tagged data/ann/mvs/combined.json \
+	--out    data/ann/mvs/combined_bnlp.json \
+	--verbose
+```
+
+3) Stage B (LLM refine). Run the refiner directly on the BNLP‑fused JSON. It will select candidates internally. Note this points Stage‑B at `combined_bnlp.json`.
+
+```bash
+# Refine with local OpenAI-compatible endpoint (e.g., Ollama)
+python -m abm.annotate.llm_refine \
+	--tagged     data/ann/mvs/combined_bnlp.json \
+	--out-json   data/ann/mvs/combined_refined.json \
+	--out-md     data/ann/mvs/review_refined.md \
+	--endpoint   http://127.0.0.1:11434/v1 \
+	--model      llama3.1:8b-instruct-q6_K \
+	--votes      3 \
+	--accept-margin 0.05
+```
+
+4) Voice casting (profiles + casting plan)
+
+```bash
+python -m abm.voice.voicecasting_cli \
+	--combined      data/ann/mvs/combined_refined.json \
+	--out-profiles  data/ann/mvs/speaker_profile.json \
+	--out-cast      data/ann/mvs/casting_plan.json \
+	--top-k 16 --minor-pool 6 \
+	--verbose
+```
+
+Outputs:
+
+- `combined_bnlp.json`: Stage‑A JSON with BookNLP suggestions fused where helpful.
+- `combined_refined.json`: LLM‑cleaned final attributions.
+- `speaker_profile.json` and `casting_plan.json`: inputs for multi‑voice TTS.
