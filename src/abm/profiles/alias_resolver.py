@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import json
+import logging
 import math
 import re
 from pathlib import Path
@@ -22,6 +23,9 @@ try:  # optional dependency used for phonetic matching
     from metaphone import doublemetaphone  # type: ignore
 except Exception:  # pragma: no cover - dependency is optional
     doublemetaphone = None  # type: ignore
+
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 
@@ -223,6 +227,8 @@ def propose_aliases(
     cfg: ResolverConfig,
 ) -> List[Proposal]:
     """Return a list of :class:`Proposal` objects for potential aliases."""
+    if cfg.use_llm:
+        logger.warning("LLM verification not implemented; skipping")
 
     mentions = harvest_mentions(refined_json)
     clusters = build_clusters(mentions, cfg)
@@ -266,14 +272,22 @@ def apply_proposals(
 ) -> "CharacterProfilesDB":
     """Apply auto-accepted proposals to ``profiles_db`` in-place."""
 
+    existing_lower = {k.lower() for k in profiles_db.speaker_map}
     for prop in proposals:
         if prop.decision != "auto" or not prop.candidate:
             continue
         target_profile = profiles_db.speaker_map.get(prop.candidate)
         if not target_profile:
             continue
-        if prop.mention not in profiles_db.speaker_map:
-            profiles_db.speaker_map[prop.mention] = target_profile
+        if prop.mention.lower() in existing_lower:
+            continue
+        profiles_db.speaker_map[prop.mention] = target_profile
+        existing_lower.add(prop.mention.lower())
+
+    # sort mapping case-insensitively for determinism
+    profiles_db.speaker_map = dict(
+        sorted(profiles_db.speaker_map.items(), key=lambda kv: kv[0].lower())
+    )
     return profiles_db
 
 
@@ -293,14 +307,25 @@ def save_artifacts(proposals: Iterable[Proposal], out_dir: Path) -> None:
 
     # Build alias patch for autos
     patch: Dict[str, str] = {}
+    review: List[Proposal] = []
     for prop in proposals:
-        if prop.decision == "auto" and prop.candidate:
+        if prop.decision == "auto" and prop.candidate and prop.mention not in patch:
             patch[prop.mention] = prop.candidate
+        elif prop.decision == "review":
+            review.append(prop)
     if patch:
         yaml_lines = ["# Auto-generated alias patch", "map:"]
-        for alias, canonical in sorted(patch.items()):
+        for alias, canonical in sorted(patch.items(), key=lambda kv: kv[0].lower()):
             yaml_lines.append(f"  {alias!r}: {canonical!r}")
         (out_dir / "alias_patch.yaml").write_text("\n".join(yaml_lines), "utf-8")
+
+    # Review queue markdown
+    review_lines = ["# Review Queue", "", "| mention | candidate | score |", "|---|---|---|"]
+    for prop in review:
+        review_lines.append(
+            f"|{prop.mention}|{prop.candidate or ''}|{prop.score:.2f}|"
+        )
+    (out_dir / "review_queue.md").write_text("\n".join(review_lines), "utf-8")
 
 
 __all__ = [
