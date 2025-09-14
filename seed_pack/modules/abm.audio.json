@@ -1,0 +1,600 @@
+{
+  "id": "abm.audio",
+  "path_globs": [
+    "src/abm/audio/**/*.py"
+  ],
+  "purpose": "Auto-generated module summary.",
+  "key_components": [
+    {
+      "name": "BookMeta",
+      "kind": "class",
+      "file": "src/abm/audio/book_config.py",
+      "summary": ""
+    },
+    {
+      "name": "EngineRegistry",
+      "kind": "class",
+      "file": "src/abm/audio/engine_registry.py",
+      "summary": ""
+    },
+    {
+      "name": "PiperAdapter",
+      "kind": "class",
+      "file": "src/abm/audio/piper_adapter.py",
+      "summary": ""
+    },
+    {
+      "name": "TextNormalizer",
+      "kind": "class",
+      "file": "src/abm/audio/text_normalizer.py",
+      "summary": ""
+    },
+    {
+      "name": "Chunker",
+      "kind": "class",
+      "file": "src/abm/audio/text_normalizer.py",
+      "summary": ""
+    },
+    {
+      "name": "SynthesisError",
+      "kind": "class",
+      "file": "src/abm/audio/tts_base.py",
+      "summary": ""
+    },
+    {
+      "name": "TTSTask",
+      "kind": "class",
+      "file": "src/abm/audio/tts_base.py",
+      "summary": ""
+    },
+    {
+      "name": "TTSAdapter",
+      "kind": "class",
+      "file": "src/abm/audio/tts_base.py",
+      "summary": ""
+    },
+    {
+      "name": "TTSManager",
+      "kind": "class",
+      "file": "src/abm/audio/tts_manager.py",
+      "summary": ""
+    },
+    {
+      "name": "XTTSAdapter",
+      "kind": "class",
+      "file": "src/abm/audio/xtts_adapter.py",
+      "summary": ""
+    }
+  ],
+  "public_surfaces": [
+    {
+      "symbol": "register_builtins",
+      "signature": "()",
+      "summary": ""
+    },
+    {
+      "symbol": "collect_chapter_stats",
+      "signature": "(manifest_path)",
+      "summary": ""
+    },
+    {
+      "symbol": "compute_album_offset",
+      "signature": "(stats, target_lufs, trim_percent)",
+      "summary": ""
+    },
+    {
+      "symbol": "apply_album_gain",
+      "signature": "(wav_path, out_path, offset_db, peak_ceiling_dbfs, pcm_subtype)",
+      "summary": ""
+    },
+    {
+      "symbol": "write_album_manifest",
+      "signature": "(manifest_path, offset_db)",
+      "summary": ""
+    },
+    {
+      "symbol": "load_wav",
+      "signature": "(path)",
+      "summary": ""
+    },
+    {
+      "symbol": "ensure_mono",
+      "signature": "(y)",
+      "summary": ""
+    },
+    {
+      "symbol": "silence",
+      "signature": "(duration_ms, sr)",
+      "summary": ""
+    },
+    {
+      "symbol": "assemble",
+      "signature": "(span_paths, pauses_ms, crossfade_ms, sr_hint, allow_resample)",
+      "summary": ""
+    },
+    {
+      "symbol": "load_book_meta",
+      "signature": "(path)",
+      "summary": ""
+    },
+    {
+      "symbol": "equal_power_crossfade",
+      "signature": "(a, b, sr, crossfade_ms)",
+      "summary": ""
+    },
+    {
+      "symbol": "micro_fade",
+      "signature": "(signal, sr, head_ms, tail_ms)",
+      "summary": ""
+    },
+    {
+      "symbol": "measure_loudness",
+      "signature": "(y, sr)",
+      "summary": ""
+    },
+    {
+      "symbol": "measure_true_peak",
+      "signature": "(y, sr, oversample)",
+      "summary": ""
+    },
+    {
+      "symbol": "limit_peaks",
+      "signature": "(y, peak_dbfs)",
+      "summary": ""
+    },
+    {
+      "symbol": "add_head_tail_silence",
+      "signature": "(y, sr, head_ms, tail_ms)",
+      "summary": ""
+    },
+    {
+      "symbol": "master",
+      "signature": "(y, sr, target_lufs, peak_dbfs, head_ms, tail_ms, enable_true_peak, true_peak_ceiling_dbfs, true_peak_oversample)",
+      "summary": ""
+    },
+    {
+      "symbol": "package_book",
+      "signature": "(renders_dir, meta_path, out_dir, formats)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "format_ts",
+      "signature": "(seconds)",
+      "summary": ""
+    },
+    {
+      "symbol": "export_mp3",
+      "signature": "(in_wav, out_mp3, title, artist, album, track)",
+      "summary": ""
+    },
+    {
+      "symbol": "export_opus",
+      "signature": "(in_wav, out_opus, title, artist, album, track)",
+      "summary": ""
+    },
+    {
+      "symbol": "make_chaptered_m4b",
+      "signature": "(chapter_wavs, out_m4b, chapter_titles, album, artist, cover_jpeg)",
+      "summary": ""
+    },
+    {
+      "symbol": "write_chapter_cue",
+      "signature": "(chapter_wavs, out_cue, titles)",
+      "summary": ""
+    },
+    {
+      "symbol": "measure_lufs",
+      "signature": "(y, sr)",
+      "summary": ""
+    },
+    {
+      "symbol": "peak_dbfs",
+      "signature": "(y)",
+      "summary": ""
+    },
+    {
+      "symbol": "duration_s",
+      "signature": "(y, sr)",
+      "summary": ""
+    },
+    {
+      "symbol": "write_qc_json",
+      "signature": "(path, lufs, peak_dbfs, duration_s, segments)",
+      "summary": ""
+    },
+    {
+      "symbol": "qc_report",
+      "signature": "(y, sr)",
+      "summary": ""
+    },
+    {
+      "symbol": "write_qc_json",
+      "signature": "(report, out_path)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "cast_speaker",
+      "signature": "(speaker, db, preferred_engine)",
+      "summary": ""
+    },
+    {
+      "symbol": "spans_to_tasks",
+      "signature": "(spans, db, default_engine, default_pause_ms)",
+      "summary": ""
+    }
+  ],
+  "data_flow": "Unknown",
+  "dependencies": {
+    "imports_internal": [
+      "abm.audio",
+      "abm.audio.assembly",
+      "abm.audio.book_config",
+      "abm.audio.engine_registry",
+      "abm.audio.mastering",
+      "abm.audio.packaging",
+      "abm.audio.qc_report",
+      "abm.audio.render_chapter",
+      "abm.audio.text_normalizer",
+      "abm.audio.tts_base",
+      "abm.audio.tts_casting",
+      "abm.audio.tts_manager",
+      "abm.profiles.character_profiles"
+    ],
+    "imports_external": [
+      "TTS",
+      "__future__",
+      "argparse",
+      "collections",
+      "concurrent",
+      "dataclasses",
+      "hashlib",
+      "importlib",
+      "json",
+      "logging",
+      "math",
+      "mutagen",
+      "numpy",
+      "os",
+      "pathlib",
+      "pydub",
+      "pyloudnorm",
+      "re",
+      "scipy",
+      "shutil",
+      "soundfile",
+      "statistics",
+      "subprocess",
+      "tempfile",
+      "threading",
+      "tqdm",
+      "typing",
+      "wave",
+      "yaml"
+    ]
+  },
+  "configs_env": {
+    "env_vars": [],
+    "config_files": []
+  },
+  "cli_entrypoints": [
+    {
+      "file": "src/abm/audio/render_book.py",
+      "module": "abm.audio.render_book",
+      "command": "python -m abm.audio.render_book",
+      "flags": [
+        {
+          "name": "--scripts-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--engine-workers",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--start",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--end",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--resume",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--show-progress",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--log-level",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--scripts-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--engine-workers",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--start",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--end",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--resume",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--show-progress",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--log-level",
+          "type": "unknown",
+          "default": null
+        }
+      ],
+      "examples": [
+        "python -m abm.audio.render_book"
+      ]
+    },
+    {
+      "file": "src/abm/audio/render_chapter.py",
+      "module": "abm.audio.render_chapter",
+      "command": "python -m abm.audio.render_chapter",
+      "flags": [
+        {
+          "name": "--script",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tmp-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--lufs",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--peak",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--crossfade-ms",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--engine-workers",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--workers",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--show-progress",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--save-master-wav",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--save-mp3",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--script",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tmp-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--lufs",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--peak",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--crossfade-ms",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--engine-workers",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--workers",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--show-progress",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--save-master-wav",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--save-mp3",
+          "type": "unknown",
+          "default": null
+        }
+      ],
+      "examples": [
+        "python -m abm.audio.render_chapter"
+      ]
+    },
+    {
+      "file": "src/abm/audio/synthesis_export.py",
+      "module": "abm.audio.synthesis_export",
+      "command": "python -m abm.audio.synthesis_export",
+      "flags": [
+        {
+          "name": "--tagged",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--only",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--default-engine",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--default-pause",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tagged",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--only",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--default-engine",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--default-pause",
+          "type": "unknown",
+          "default": null
+        }
+      ],
+      "examples": [
+        "python -m abm.audio.synthesis_export"
+      ]
+    }
+  ],
+  "invariants": [],
+  "edge_cases": [],
+  "known_gotchas": [],
+  "related_tests": [],
+  "status": {
+    "maturity": "alpha",
+    "owners": [],
+    "last_touched_file_mtime": "2025-09-14T22:58:07.872852+00:00"
+  }
+}

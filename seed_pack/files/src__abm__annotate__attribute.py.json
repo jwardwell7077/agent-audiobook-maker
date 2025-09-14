@@ -1,0 +1,49 @@
+{
+  "file": "src/abm/annotate/attribute.py",
+  "module": "abm.annotate.attribute",
+  "summary": "Auto-generated summary.",
+  "public_api": [
+    {
+      "name": "AttributeConfig",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "AttributeEngine",
+      "signature": "",
+      "kind": "class"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "fastcoref",
+      "os",
+      "re",
+      "spacy",
+      "torch",
+      "typing",
+      "warnings"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/annotate/attribute.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

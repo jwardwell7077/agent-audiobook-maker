@@ -1,0 +1,56 @@
+{
+  "file": "src/abm/annotate/roster.py",
+  "module": "abm.annotate.roster",
+  "summary": "Build and merge speaker rosters for chapters.",
+  "public_api": [
+    {
+      "name": "RosterConfig",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "RosterBuilder",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "build_chapter_roster",
+      "signature": "(text, nlp)",
+      "kind": "function"
+    },
+    {
+      "name": "merge_book_roster",
+      "signature": "(book, chap)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "collections",
+      "dataclasses",
+      "importlib",
+      "re",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/annotate/roster.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

@@ -1,0 +1,48 @@
+{
+  "file": "src/abm/ingestion/db_insert.py",
+  "module": "abm.ingestion.db_insert",
+  "summary": "Postgres inserter for Well‑Done JSONL outputs.",
+  "public_api": [
+    {
+      "name": "InsertResult",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "PgInserter",
+      "signature": "",
+      "kind": "class"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "collections",
+      "dataclasses",
+      "json",
+      "os",
+      "pathlib",
+      "psycopg",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/ingestion/db_insert.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

@@ -1,0 +1,34 @@
+{
+  "project": "agent-audiobook-maker",
+  "generated_at": "2025-09-14T22:58:07.872852+00:00",
+  "code_root": "src",
+  "modules": [
+    "abm.annotate",
+    "abm.audio",
+    "abm.audit",
+    "abm.classifier",
+    "abm.ingestion",
+    "abm.llm",
+    "abm.parse",
+    "abm.profiles",
+    "abm.sidecar",
+    "abm.voice"
+  ],
+  "files_indexed": 77,
+  "graphs": {
+    "import_graph": "graphs/import_graph.json",
+    "call_graph": "graphs/call_graph.json"
+  },
+  "inventories": {
+    "cli_tools": "inventories/cli_tools.json",
+    "env_vars": "inventories/env_vars.json",
+    "config_files": "inventories/config_files.json"
+  },
+  "decisions": {
+    "markdown": "decisions/DESIGN_DECISIONS.md",
+    "structured": "decisions/decisions.json"
+  },
+  "schemas_index": "schemas_index.json",
+  "schema_version": "1.0.0",
+  "shards": []
+}

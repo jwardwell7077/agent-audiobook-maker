@@ -1,0 +1,58 @@
+{
+  "id": "abm.llm",
+  "path_globs": [
+    "src/abm/llm/**/*.py"
+  ],
+  "purpose": "Auto-generated module summary.",
+  "key_components": [
+    {
+      "name": "OpenAICompatClient",
+      "kind": "class",
+      "file": "src/abm/llm/client.py",
+      "summary": ""
+    },
+    {
+      "name": "LLMBackend",
+      "kind": "class",
+      "file": "src/abm/llm/manager.py",
+      "summary": ""
+    },
+    {
+      "name": "LLMService",
+      "kind": "class",
+      "file": "src/abm/llm/manager.py",
+      "summary": ""
+    }
+  ],
+  "public_surfaces": [],
+  "data_flow": "Unknown",
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "logging",
+      "os",
+      "requests",
+      "signal",
+      "subprocess",
+      "time",
+      "typing"
+    ]
+  },
+  "configs_env": {
+    "env_vars": [],
+    "config_files": []
+  },
+  "cli_entrypoints": [],
+  "invariants": [],
+  "edge_cases": [],
+  "known_gotchas": [],
+  "related_tests": [],
+  "status": {
+    "maturity": "alpha",
+    "owners": [],
+    "last_touched_file_mtime": "2025-09-14T20:35:57.976444+00:00"
+  }
+}

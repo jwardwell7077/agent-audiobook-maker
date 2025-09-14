@@ -1,0 +1,442 @@
+{
+  "id": "abm.profiles",
+  "path_globs": [
+    "src/abm/profiles/**/*.py"
+  ],
+  "purpose": "Auto-generated module summary.",
+  "key_components": [
+    {
+      "name": "ResolverConfig",
+      "kind": "class",
+      "file": "src/abm/profiles/alias_resolver.py",
+      "summary": ""
+    },
+    {
+      "name": "Proposal",
+      "kind": "class",
+      "file": "src/abm/profiles/alias_resolver.py",
+      "summary": ""
+    },
+    {
+      "name": "Style",
+      "kind": "class",
+      "file": "src/abm/profiles/character_profiles.py",
+      "summary": ""
+    },
+    {
+      "name": "SpeakerProfile",
+      "kind": "class",
+      "file": "src/abm/profiles/character_profiles.py",
+      "summary": ""
+    },
+    {
+      "name": "ProfileConfig",
+      "kind": "class",
+      "file": "src/abm/profiles/character_profiles.py",
+      "summary": ""
+    },
+    {
+      "name": "Profile",
+      "kind": "class",
+      "file": "src/abm/profiles/character_profiles.py",
+      "summary": ""
+    },
+    {
+      "name": "CharacterProfilesDB",
+      "kind": "class",
+      "file": "src/abm/profiles/character_profiles.py",
+      "summary": ""
+    }
+  ],
+  "public_surfaces": [
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "normalize_name",
+      "signature": "(name)",
+      "summary": ""
+    },
+    {
+      "symbol": "harvest_mentions",
+      "signature": "(refined_json)",
+      "summary": ""
+    },
+    {
+      "symbol": "build_clusters",
+      "signature": "(names, cfg)",
+      "summary": ""
+    },
+    {
+      "symbol": "score_candidate",
+      "signature": "(norm, canonical_list, aliases_map, cfg)",
+      "summary": ""
+    },
+    {
+      "symbol": "propose_aliases",
+      "signature": "(refined_json, profiles_db, cfg)",
+      "summary": ""
+    },
+    {
+      "symbol": "apply_proposals",
+      "signature": "(proposals, profiles_db)",
+      "summary": ""
+    },
+    {
+      "symbol": "save_artifacts",
+      "signature": "(proposals, out_dir)",
+      "summary": ""
+    },
+    {
+      "symbol": "normalize_speaker_name",
+      "signature": "(name)",
+      "summary": ""
+    },
+    {
+      "symbol": "load_profiles",
+      "signature": "(path)",
+      "summary": ""
+    },
+    {
+      "symbol": "available_voices",
+      "signature": "(cfg, engine)",
+      "summary": ""
+    },
+    {
+      "symbol": "resolve_speaker_ex",
+      "signature": "(cfg, speaker)",
+      "summary": ""
+    },
+    {
+      "symbol": "resolve_with_reason",
+      "signature": "(cfg, speaker)",
+      "summary": ""
+    },
+    {
+      "symbol": "resolve_speaker",
+      "signature": "(cfg, speaker)",
+      "summary": ""
+    },
+    {
+      "symbol": "validate_profiles",
+      "signature": "(cfg)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    }
+  ],
+  "data_flow": "Unknown",
+  "dependencies": {
+    "imports_internal": [
+      "abm.profiles",
+      "abm.profiles.character_profiles",
+      "abm.voice"
+    ],
+    "imports_external": [
+      "__future__",
+      "alias_resolver",
+      "argparse",
+      "collections",
+      "dataclasses",
+      "json",
+      "logging",
+      "math",
+      "metaphone",
+      "pathlib",
+      "re",
+      "sys",
+      "typing",
+      "yaml"
+    ]
+  },
+  "configs_env": {
+    "env_vars": [],
+    "config_files": []
+  },
+  "cli_entrypoints": [
+    {
+      "file": "src/abm/profiles/alias_cli.py",
+      "module": "abm.profiles.alias_cli",
+      "command": "python -m abm.profiles.alias_cli",
+      "flags": [
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tau-auto",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tau-review",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--use-llm",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--model",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--proposals",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tau-auto",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tau-review",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--use-llm",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--model",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tau-auto",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tau-review",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--use-llm",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--model",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--proposals",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tau-auto",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tau-review",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--use-llm",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--model",
+          "type": "unknown",
+          "default": null
+        }
+      ],
+      "examples": [
+        "python -m abm.profiles.alias_cli"
+      ]
+    },
+    {
+      "file": "src/abm/profiles/profiles_cli.py",
+      "module": "abm.profiles.profiles_cli",
+      "command": "python -m abm.profiles.profiles_cli",
+      "flags": [
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--prefer-engine",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--engine",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--voices-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--n-top",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--prefer-engine",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--engine",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--voices-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--n-top",
+          "type": "unknown",
+          "default": null
+        }
+      ],
+      "examples": [
+        "python -m abm.profiles.profiles_cli"
+      ]
+    }
+  ],
+  "invariants": [],
+  "edge_cases": [],
+  "known_gotchas": [],
+  "related_tests": [],
+  "status": {
+    "maturity": "alpha",
+    "owners": [],
+    "last_touched_file_mtime": "2025-09-14T22:58:07.872852+00:00"
+  }
+}

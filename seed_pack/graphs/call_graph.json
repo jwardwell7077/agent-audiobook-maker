@@ -1,0 +1,220 @@
+{
+  "edges": [
+    {
+      "from": "abm.annotate.annotate_cli.main",
+      "to": "abm.annotate.metrics.MetricsCollector"
+    },
+    {
+      "from": "abm.annotate.bnlp_refine.refine_with_bnlp",
+      "to": "abm.sidecar.booknlp_adapter.BookNLPAdapter"
+    },
+    {
+      "from": "abm.annotate.bnlp_refine.refine_with_bnlp",
+      "to": "abm.sidecar.booknlp_adapter.BookNLPConfig"
+    },
+    {
+      "from": "abm.annotate.llm_prep_cli.main",
+      "to": "abm.annotate.llm_prep.LLMCandidateConfig"
+    },
+    {
+      "from": "abm.annotate.llm_prep_cli.main",
+      "to": "abm.annotate.llm_prep.LLMCandidatePreparer"
+    },
+    {
+      "from": "abm.annotate.llm_refine.main",
+      "to": "abm.llm.manager.LLMBackend"
+    },
+    {
+      "from": "abm.annotate.llm_refine.refine_document",
+      "to": "abm.annotate.llm_cache.LLMCache"
+    },
+    {
+      "from": "abm.annotate.llm_refine.refine_document",
+      "to": "abm.annotate.llm_prep.LLMCandidateConfig"
+    },
+    {
+      "from": "abm.annotate.llm_refine.refine_document",
+      "to": "abm.annotate.llm_prep.LLMCandidatePreparer"
+    },
+    {
+      "from": "abm.annotate.llm_refine.refine_document",
+      "to": "abm.annotate.progress.ProgressReporter"
+    },
+    {
+      "from": "abm.annotate.llm_refine.refine_document",
+      "to": "abm.annotate.prompts.speaker_user_prompt"
+    },
+    {
+      "from": "abm.annotate.llm_refine.refine_document",
+      "to": "abm.llm.client.OpenAICompatClient"
+    },
+    {
+      "from": "abm.annotate.llm_refine.refine_document",
+      "to": "abm.llm.manager.LLMService"
+    },
+    {
+      "from": "abm.audio.mastering.add_head_tail_silence",
+      "to": "abm.audio.assembly.silence"
+    },
+    {
+      "from": "abm.audio.package_book.package_book",
+      "to": "abm.audio.book_config.load_book_meta"
+    },
+    {
+      "from": "abm.audio.package_book.package_book",
+      "to": "abm.audio.packaging.export_mp3"
+    },
+    {
+      "from": "abm.audio.package_book.package_book",
+      "to": "abm.audio.packaging.export_opus"
+    },
+    {
+      "from": "abm.audio.package_book.package_book",
+      "to": "abm.audio.packaging.format_ts"
+    },
+    {
+      "from": "abm.audio.qc_report.qc_report",
+      "to": "abm.audio.mastering.measure_loudness"
+    },
+    {
+      "from": "abm.audio.register_builtins",
+      "to": "abm.audio.engine_registry.EngineRegistry.register"
+    },
+    {
+      "from": "abm.audio.render_book.main",
+      "to": "abm.audio.render_chapter.main"
+    },
+    {
+      "from": "abm.audio.render_chapter.main",
+      "to": "abm.audio.assembly.assemble"
+    },
+    {
+      "from": "abm.audio.render_chapter.main",
+      "to": "abm.audio.engine_registry.EngineRegistry.create"
+    },
+    {
+      "from": "abm.audio.render_chapter.main",
+      "to": "abm.audio.mastering.master"
+    },
+    {
+      "from": "abm.audio.render_chapter.main",
+      "to": "abm.audio.qc_report.qc_report"
+    },
+    {
+      "from": "abm.audio.render_chapter.main",
+      "to": "abm.audio.qc_report.write_qc_json"
+    },
+    {
+      "from": "abm.audio.render_chapter.main",
+      "to": "abm.audio.register_builtins"
+    },
+    {
+      "from": "abm.audio.render_chapter.main",
+      "to": "abm.audio.tts_base.TTSTask"
+    },
+    {
+      "from": "abm.audio.render_chapter.main",
+      "to": "abm.audio.tts_manager.TTSManager"
+    },
+    {
+      "from": "abm.audio.synthesis_export.main",
+      "to": "abm.audio.tts_casting.spans_to_tasks"
+    },
+    {
+      "from": "abm.audio.synthesis_export.main",
+      "to": "abm.profiles.character_profiles.CharacterProfilesDB.load"
+    },
+    {
+      "from": "abm.classifier.classifier_cli.main",
+      "to": "abm.classifier.section_classifier.classify_blocks"
+    },
+    {
+      "from": "abm.profiles.alias_cli._load_profiles",
+      "to": "abm.profiles.character_profiles.CharacterProfilesDB.load"
+    },
+    {
+      "from": "abm.profiles.profiles_cli._cmd_audit",
+      "to": "abm.profiles.load_profiles"
+    },
+    {
+      "from": "abm.profiles.profiles_cli._cmd_audit",
+      "to": "abm.voice.pick_voice"
+    },
+    {
+      "from": "abm.profiles.profiles_cli._cmd_generate",
+      "to": "abm.profiles.Style"
+    },
+    {
+      "from": "abm.profiles.profiles_cli._cmd_generate",
+      "to": "abm.profiles.normalize_speaker_name"
+    },
+    {
+      "from": "abm.voice.piper_casting.propose_casting",
+      "to": "abm.profiles.load_profiles"
+    },
+    {
+      "from": "abm.voice.piper_casting.propose_casting",
+      "to": "abm.voice.piper_catalog.discover_piper_voices"
+    },
+    {
+      "from": "abm.voice.plan_from_annotations._process_chapter",
+      "to": "abm.voice.pick_voice"
+    },
+    {
+      "from": "abm.voice.plan_from_annotations.build_plans",
+      "to": "abm.profiles.load_profiles"
+    },
+    {
+      "from": "abm.voice.render_chapter._load_engine",
+      "to": "abm.voice.engines.PiperEngine"
+    },
+    {
+      "from": "abm.voice.render_chapter._load_engine",
+      "to": "abm.voice.engines.XTTSEngine"
+    },
+    {
+      "from": "abm.voice.render_chapter._synth_segment",
+      "to": "abm.voice.cache.cache_path"
+    },
+    {
+      "from": "abm.voice.render_chapter._synth_segment",
+      "to": "abm.voice.cache.make_cache_key"
+    },
+    {
+      "from": "abm.voice.render_chapter.render_chapter",
+      "to": "abm.audio.concat.equal_power_crossfade"
+    },
+    {
+      "from": "abm.voice.render_chapter.render_chapter",
+      "to": "abm.audio.concat.micro_fade"
+    },
+    {
+      "from": "abm.voice.render_chapter.render_chapter",
+      "to": "abm.audio.qc.duration_s"
+    },
+    {
+      "from": "abm.voice.render_chapter.render_chapter",
+      "to": "abm.audio.qc.measure_lufs"
+    },
+    {
+      "from": "abm.voice.render_chapter.render_chapter",
+      "to": "abm.audio.qc.peak_dbfs"
+    },
+    {
+      "from": "abm.voice.render_chapter.render_chapter",
+      "to": "abm.audio.qc.write_qc_json"
+    },
+    {
+      "from": "abm.voice.tts_casting.merge_style",
+      "to": "abm.profiles.Style"
+    },
+    {
+      "from": "abm.voice.tts_casting.pick_voice",
+      "to": "abm.profiles.resolve_speaker_ex"
+    },
+    {
+      "from": "abm.voice.voicecasting_cli.main",
+      "to": "abm.voice.voicecasting.VoiceCasting"
+    }
+  ]
+}

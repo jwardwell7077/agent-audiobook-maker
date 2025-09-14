@@ -1,0 +1,138 @@
+[
+  {
+    "file": "src/abm/annotate/annotate_cli.py",
+    "config": ".json"
+  },
+  {
+    "file": "src/abm/audio/piper_adapter.py",
+    "config": ".json"
+  },
+  {
+    "file": "src/abm/audit/cli.py",
+    "config": ".json"
+  },
+  {
+    "file": "src/abm/profiles/profiles_cli.py",
+    "config": ".json"
+  },
+  {
+    "file": "src/abm/voice/engines/piper_engine.py",
+    "config": ".json"
+  },
+  {
+    "file": "src/abm/voice/piper_catalog.py",
+    "config": ".json"
+  },
+  {
+    "file": "src/abm/voice/plan_from_annotations.py",
+    "config": ".json"
+  },
+  {
+    "file": "src/abm/audio/piper_adapter.py",
+    "config": ".onnx.json"
+  },
+  {
+    "file": "src/abm/voice/engines/piper_engine.py",
+    "config": ".onnx.json"
+  },
+  {
+    "file": "src/abm/audio/render_book.py",
+    "config": ".qc.json"
+  },
+  {
+    "file": "src/abm/audio/render_chapter.py",
+    "config": ".qc.json"
+  },
+  {
+    "file": "src/abm/voice/render_chapter.py",
+    "config": ".qc.json"
+  },
+  {
+    "file": "src/abm/audio/synthesis_export.py",
+    "config": ".synth.json"
+  },
+  {
+    "file": "src/abm/annotate/llm_refine.py",
+    "config": "Path to Stage A combined.json"
+  },
+  {
+    "file": "src/abm/annotate/bnlp_refine.py",
+    "config": "Path to Stage-A combined.json"
+  },
+  {
+    "file": "src/abm/annotate/annotate_cli.py",
+    "config": "Path to chapters.json"
+  },
+  {
+    "file": "src/abm/ingestion/ingest_pdf.py",
+    "config": "_ingest_meta.json"
+  },
+  {
+    "file": "src/abm/ingestion/welldone_to_json.py",
+    "config": "_ingest_meta.json"
+  },
+  {
+    "file": "src/abm/ingestion/welldone_to_json.py",
+    "config": "_meta.json"
+  },
+  {
+    "file": "src/abm/profiles/alias_resolver.py",
+    "config": "alias_patch.yaml"
+  },
+  {
+    "file": "src/abm/classifier/classifier_cli.py",
+    "config": "back_matter.json"
+  },
+  {
+    "file": "src/abm/audio/render_book.py",
+    "config": "book_manifest.json"
+  },
+  {
+    "file": "src/abm/audio/render_chapter.py",
+    "config": "book_manifest.json"
+  },
+  {
+    "file": "src/abm/voice/piper_casting.py",
+    "config": "casting_proposed.yaml"
+  },
+  {
+    "file": "src/abm/voice/piper_casting.py",
+    "config": "casting_summary.json"
+  },
+  {
+    "file": "src/abm/audio/render_book.py",
+    "config": "ch_(\\d+)\\.synth\\.json"
+  },
+  {
+    "file": "src/abm/audio/render_book.py",
+    "config": "ch_*.synth.json"
+  },
+  {
+    "file": "src/abm/classifier/classifier_cli.py",
+    "config": "chapters.json"
+  },
+  {
+    "file": "src/abm/audit/cli.py",
+    "config": "data/ann/*/combined.json"
+  },
+  {
+    "file": "src/abm/audit/cli.py",
+    "config": "data/ann/*/combined_refined.json"
+  },
+  {
+    "file": "src/abm/classifier/classifier_cli.py",
+    "config": "front_matter.json"
+  },
+  {
+    "file": "src/abm/sidecar/booknlp_adapter.py",
+    "config": "quotes.json"
+  },
+  {
+    "file": "src/abm/audio/synthesis_export.py",
+    "config": "synth_manifest.json"
+  },
+  {
+    "file": "src/abm/classifier/classifier_cli.py",
+    "config": "toc.json"
+  }
+]

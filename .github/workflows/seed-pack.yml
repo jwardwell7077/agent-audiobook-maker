@@ -1,0 +1,32 @@
+name: seed-pack
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+          pip install jsonschema
+      - name: Generate seed pack
+        run: python scripts/generate_seed_pack.py
+      - name: Build chat seeds
+        run: |
+          python scripts/make_chat_seed.py --min-kb 12 --full-kb 30
+          test $(wc -c < docs/chat_seed/CHAT_SEED_MIN.md) -le 12288
+          test $(wc -c < docs/chat_seed/CHAT_SEED_FULL.md) -le 30720
+      - name: Validate seed pack
+        run: python scripts/validate_seed_pack.py
+      - name: Check for clean tree
+        run: |
+          git status --porcelain
+          test -z "$(git status --porcelain)" || (echo 'Seed pack not up to date'; exit 1)

@@ -1,0 +1,99 @@
+{
+  "file": "src/abm/profiles/alias_resolver.py",
+  "module": "abm.profiles.alias_resolver",
+  "summary": "Utilities for resolving speaker aliases.",
+  "public_api": [
+    {
+      "name": "ResolverConfig",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "Proposal",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "normalize_name",
+      "signature": "(name)",
+      "kind": "function"
+    },
+    {
+      "name": "_edit_distance",
+      "signature": "(a, b)",
+      "kind": "function"
+    },
+    {
+      "name": "_chargram_vector",
+      "signature": "(text, dim)",
+      "kind": "function"
+    },
+    {
+      "name": "_cosine",
+      "signature": "(a, b)",
+      "kind": "function"
+    },
+    {
+      "name": "harvest_mentions",
+      "signature": "(refined_json)",
+      "kind": "function"
+    },
+    {
+      "name": "build_clusters",
+      "signature": "(names, cfg)",
+      "kind": "function"
+    },
+    {
+      "name": "score_candidate",
+      "signature": "(norm, canonical_list, aliases_map, cfg)",
+      "kind": "function"
+    },
+    {
+      "name": "propose_aliases",
+      "signature": "(refined_json, profiles_db, cfg)",
+      "kind": "function"
+    },
+    {
+      "name": "apply_proposals",
+      "signature": "(proposals, profiles_db)",
+      "kind": "function"
+    },
+    {
+      "name": "save_artifacts",
+      "signature": "(proposals, out_dir)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "logging",
+      "math",
+      "metaphone",
+      "pathlib",
+      "re",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/profiles/alias_resolver.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

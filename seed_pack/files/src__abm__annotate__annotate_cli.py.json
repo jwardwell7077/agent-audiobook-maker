@@ -1,0 +1,294 @@
+{
+  "file": "src/abm/annotate/annotate_cli.py",
+  "module": "abm.annotate.annotate_cli",
+  "summary": "Auto-generated summary.",
+  "public_api": [
+    {
+      "name": "SpanOut",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "AnnotateRunner",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "_parse_args",
+      "signature": "()",
+      "kind": "function"
+    },
+    {
+      "name": "_load_json",
+      "signature": "(path)",
+      "kind": "function"
+    },
+    {
+      "name": "main",
+      "signature": "()",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [
+      {
+        "name": "--in",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-json",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-md",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--metrics-jsonl",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-roster",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--stages",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--spacy-model",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-coref",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--coref",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--status",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--mode",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--llm",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--remove-heading",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--treat-single-as-thought",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--only",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--roster-scope",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-roster-ner",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--parse-mode",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--doc-cache",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--pipe-batch-size",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--in",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-json",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-md",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--metrics-jsonl",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-roster",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--stages",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--spacy-model",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-coref",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--coref",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--status",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--mode",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--llm",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--remove-heading",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--treat-single-as-thought",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--only",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--roster-scope",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-roster-ner",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--parse-mode",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--doc-cache",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--pipe-batch-size",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.annotate.annotate_cli"
+    ]
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.annotate.attribute",
+      "abm.annotate.metrics",
+      "abm.annotate.normalize",
+      "abm.annotate.progress",
+      "abm.annotate.review",
+      "abm.annotate.roster",
+      "abm.annotate.segment",
+      "abm.parse.cache"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "collections",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/annotate/annotate_cli.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

@@ -293,5 +293,14 @@ dev_setup_uv:
 
 .PHONY: prod_run_private
 prod_run_private:
-	@$(VENV_GUARD)
-	@bash scripts/production_run.sh private_book
+        @$(VENV_GUARD)
+        @bash scripts/production_run.sh private_book
+
+SEED_DIR=seed_pack
+.PHONY: seed validate
+
+seed:
+	python scripts/generate_seed_pack.py
+
+validate:
+	python scripts/validate_seed_pack.py

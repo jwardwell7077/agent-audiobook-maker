@@ -1,0 +1,66 @@
+{
+  "id": "abm.classifier",
+  "path_globs": [
+    "src/abm/classifier/**/*.py"
+  ],
+  "purpose": "Auto-generated module summary.",
+  "key_components": [],
+  "public_surfaces": [
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "canon_title",
+      "signature": "(s)",
+      "summary": ""
+    },
+    {
+      "symbol": "classify_blocks",
+      "signature": "(jsonl_path)",
+      "summary": ""
+    }
+  ],
+  "data_flow": "Unknown",
+  "dependencies": {
+    "imports_internal": [
+      "abm.classifier.section_classifier"
+    ],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "tempfile",
+      "typing",
+      "unicodedata"
+    ]
+  },
+  "configs_env": {
+    "env_vars": [],
+    "config_files": []
+  },
+  "cli_entrypoints": [
+    {
+      "file": "src/abm/classifier/classifier_cli.py",
+      "module": "abm.classifier.classifier_cli",
+      "command": "python -m abm.classifier.classifier_cli",
+      "flags": [],
+      "examples": [
+        "python -m abm.classifier.classifier_cli"
+      ]
+    }
+  ],
+  "invariants": [],
+  "edge_cases": [],
+  "known_gotchas": [],
+  "related_tests": [],
+  "status": {
+    "maturity": "alpha",
+    "owners": [],
+    "last_touched_file_mtime": "2025-09-14T20:35:57.976444+00:00"
+  }
+}
