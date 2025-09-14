@@ -1,6 +1,6 @@
 {
   "file": "src/abm/llm/__init__.py",
-  "module": "abm.llm.__init__",
+  "module": "abm.llm",
   "summary": "LLM utilities for the audiobook maker.",
   "public_api": [],
   "cli": {

@@ -6,11 +6,12 @@ This project seed pack provides context for a GPT-5 subject-matter expert.
 ## Pipeline
 ```mermaid
 graph LR
-abm_annotate___init__-->abm_annotate_annotate_cli
-abm_annotate___init__-->abm_annotate_attribute
-abm_annotate___init__-->abm_annotate_llm_prep
-abm_annotate___init__-->abm_annotate_llm_refine
+abm_annotate-->abm_annotate_annotate_cli
+abm_annotate-->abm_annotate_attribute
+abm_annotate-->abm_annotate_llm_prep
+abm_annotate-->abm_annotate_llm_refine
 abm_annotate_annotate_cli-->abm_annotate_attribute
+abm_annotate_annotate_cli-->abm_annotate_metrics
 abm_annotate_llm_prep_cli-->abm_annotate_llm_prep
 abm_annotate_llm_refine-->abm_annotate_llm_cache
 abm_annotate_llm_refine-->abm_annotate_llm_prep

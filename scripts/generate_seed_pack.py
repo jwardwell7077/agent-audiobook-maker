@@ -25,10 +25,21 @@ def sanitize_filename(p: Path) -> str:
 def discover_modules() -> List[str]:
     mods: set[str] = set()
     for py in SRC.rglob("*.py"):
-        if ("__pycache__" in py.parts or ".egg-info" in py.parts or any(part.startswith(".") for part in py.parts) or "tests" in py.parts or py == SRC / "__init__.py"):
+        if (
+            "__pycache__" in py.parts
+            or ".egg-info" in py.parts
+            or any(part.startswith(".") for part in py.parts)
+            or "tests" in py.parts
+        ):
             continue
-        rel = py.relative_to(SRC).with_suffix("")
+        if py == SRC / "__init__.py":
+            continue
+        if py.name == "__init__.py":
+            rel = py.parent.relative_to(SRC)
+        else:
+            rel = py.relative_to(SRC).with_suffix("")
         mods.add(".".join(rel.parts))
+    mods.discard("abm")
     return sorted(mods)
 
 
@@ -52,7 +63,11 @@ def discover_py_files() -> List[Path]:
 
 def module_name_from_path(path: Path) -> str:
     rel = path.relative_to(SRC)
-    return ".".join(rel.with_suffix("").parts)
+    if rel.name == "__init__.py":
+        rel = rel.parent
+    else:
+        rel = rel.with_suffix("")
+    return ".".join(rel.parts)
 
 
 def get_docstring_summary(node: ast.AST) -> str:
@@ -361,7 +376,7 @@ def main() -> None:
             "status": {
                 "maturity": "alpha",
                 "owners": [],
-                "last_touched_file_mtime": dt.datetime.utcfromtimestamp(last_mtime).isoformat(),
+                "last_touched_file_mtime": dt.datetime.fromtimestamp(last_mtime, dt.timezone.utc).isoformat(),
             },
         }
         write_json(modules_dir / f"{pkg}.json", mod_record, shards)
@@ -581,9 +596,10 @@ def main() -> None:
         encoding="utf-8",
     )
 
+    max_mtime = max((ROOT / r["file"]).stat().st_mtime for r in file_records)
     index = {
         "project": ROOT.name,
-        "generated_at": dt.datetime.utcnow().isoformat(),
+        "generated_at": dt.datetime.fromtimestamp(max_mtime, dt.timezone.utc).isoformat(),
         "code_root": "src",
         "modules": MODULES,
         "files_indexed": len(file_records),

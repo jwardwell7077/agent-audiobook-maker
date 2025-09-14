@@ -53,10 +53,6 @@
       "to": "abm.llm.manager.LLMService"
     },
     {
-      "from": "abm.audio.__init__.register_builtins",
-      "to": "abm.audio.engine_registry.EngineRegistry.register"
-    },
-    {
       "from": "abm.audio.mastering.add_head_tail_silence",
       "to": "abm.audio.assembly.silence"
     },
@@ -79,6 +75,10 @@
     {
       "from": "abm.audio.qc_report.qc_report",
       "to": "abm.audio.mastering.measure_loudness"
+    },
+    {
+      "from": "abm.audio.register_builtins",
+      "to": "abm.audio.engine_registry.EngineRegistry.register"
     },
     {
       "from": "abm.audio.render_book.main",

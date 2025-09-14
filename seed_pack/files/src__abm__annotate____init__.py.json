@@ -1,6 +1,6 @@
 {
   "file": "src/abm/annotate/__init__.py",
-  "module": "abm.annotate.__init__",
+  "module": "abm.annotate",
   "summary": "Annotation utilities for processing chapters.",
   "public_api": [],
   "cli": {

@@ -1,6 +1,6 @@
 {
   "file": "src/abm/__init__.py",
-  "module": "abm.__init__",
+  "module": "abm",
   "summary": "Audiobook Maker core package.",
   "public_api": [],
   "cli": {

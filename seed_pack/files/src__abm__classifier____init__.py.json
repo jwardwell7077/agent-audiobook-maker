@@ -1,6 +1,6 @@
 {
   "file": "src/abm/classifier/__init__.py",
-  "module": "abm.classifier.__init__",
+  "module": "abm.classifier",
   "summary": "Classifier package exports.",
   "public_api": [],
   "cli": {

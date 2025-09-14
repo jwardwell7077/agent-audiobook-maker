@@ -1,6 +1,6 @@
 {
   "file": "src/abm/voice/__init__.py",
-  "module": "abm.voice.__init__",
+  "module": "abm.voice",
   "summary": "Auto-generated summary.",
   "public_api": [],
   "cli": {

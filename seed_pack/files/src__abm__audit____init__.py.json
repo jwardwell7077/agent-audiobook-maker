@@ -1,6 +1,6 @@
 {
   "file": "src/abm/audit/__init__.py",
-  "module": "abm.audit.__init__",
+  "module": "abm.audit",
   "summary": "Lightweight auditing utilities for annotation evaluation.",
   "public_api": [],
   "cli": {

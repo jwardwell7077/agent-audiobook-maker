@@ -227,12 +227,9 @@
   "data_flow": "Unknown",
   "dependencies": {
     "imports_internal": [
-      "abm",
-      "abm.annotate.annotate_cli",
       "abm.annotate.attribute",
       "abm.annotate.llm_cache",
       "abm.annotate.llm_prep",
-      "abm.annotate.llm_refine",
       "abm.annotate.metrics",
       "abm.annotate.normalize",
       "abm.annotate.progress",
@@ -845,6 +842,6 @@
   "status": {
     "maturity": "alpha",
     "owners": [],
-    "last_touched_file_mtime": "2025-09-14T20:07:17.407794"
+    "last_touched_file_mtime": "2025-09-14T20:35:56.664159+00:00"
   }
 }

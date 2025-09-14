@@ -1,8 +1,7 @@
 {
   "nodes": [
-    "abm.__init__",
     "abm._warnings",
-    "abm.annotate.__init__",
+    "abm.annotate",
     "abm.annotate.annotate_cli",
     "abm.annotate.attribute",
     "abm.annotate.bnlp_refine",
@@ -17,7 +16,7 @@
     "abm.annotate.review",
     "abm.annotate.roster",
     "abm.annotate.segment",
-    "abm.audio.__init__",
+    "abm.audio",
     "abm.audio.album_norm",
     "abm.audio.assembly",
     "abm.audio.book_config",
@@ -37,7 +36,7 @@
     "abm.audio.tts_casting",
     "abm.audio.tts_manager",
     "abm.audio.xtts_adapter",
-    "abm.audit.__init__",
+    "abm.audit",
     "abm.audit.__main__",
     "abm.audit.cli",
     "abm.audit.metrics_eval",
@@ -47,7 +46,7 @@
     "abm.audit.schemas",
     "abm.audit.speaker_confusion",
     "abm.audit.vote_metrics",
-    "abm.classifier.__init__",
+    "abm.classifier",
     "abm.classifier.classifier_cli",
     "abm.classifier.section_classifier",
     "abm.ingestion.db_insert",
@@ -55,19 +54,19 @@
     "abm.ingestion.pdf_to_raw_text",
     "abm.ingestion.raw_to_welldone",
     "abm.ingestion.welldone_to_json",
-    "abm.llm.__init__",
+    "abm.llm",
     "abm.llm.client",
     "abm.llm.manager",
     "abm.parse.cache",
-    "abm.profiles.__init__",
+    "abm.profiles",
     "abm.profiles.alias_cli",
     "abm.profiles.alias_resolver",
     "abm.profiles.character_profiles",
     "abm.profiles.profiles_cli",
     "abm.sidecar.booknlp_adapter",
-    "abm.voice.__init__",
+    "abm.voice",
     "abm.voice.cache",
-    "abm.voice.engines.__init__",
+    "abm.voice.engines",
     "abm.voice.engines.piper_engine",
     "abm.voice.engines.xtts_engine",
     "abm.voice.piper_casting",
@@ -80,35 +79,35 @@
   ],
   "edges": [
     {
-      "from": "abm.annotate.__init__",
+      "from": "abm.annotate",
       "to": "abm.annotate.annotate_cli"
     },
     {
-      "from": "abm.annotate.__init__",
+      "from": "abm.annotate",
       "to": "abm.annotate.attribute"
     },
     {
-      "from": "abm.annotate.__init__",
+      "from": "abm.annotate",
       "to": "abm.annotate.llm_prep"
     },
     {
-      "from": "abm.annotate.__init__",
+      "from": "abm.annotate",
       "to": "abm.annotate.llm_refine"
     },
     {
-      "from": "abm.annotate.__init__",
+      "from": "abm.annotate",
       "to": "abm.annotate.normalize"
     },
     {
-      "from": "abm.annotate.__init__",
+      "from": "abm.annotate",
       "to": "abm.annotate.review"
     },
     {
-      "from": "abm.annotate.__init__",
+      "from": "abm.annotate",
       "to": "abm.annotate.roster"
     },
     {
-      "from": "abm.annotate.__init__",
+      "from": "abm.annotate",
       "to": "abm.annotate.segment"
     },
     {
@@ -176,15 +175,15 @@
       "to": "abm.llm.manager"
     },
     {
-      "from": "abm.audio.__init__",
+      "from": "abm.audio",
       "to": "abm.audio.engine_registry"
     },
     {
-      "from": "abm.audio.__init__",
+      "from": "abm.audio",
       "to": "abm.audio.piper_adapter"
     },
     {
-      "from": "abm.audio.__init__",
+      "from": "abm.audio",
       "to": "abm.audio.xtts_adapter"
     },
     {
@@ -214,6 +213,10 @@
     {
       "from": "abm.audio.render_book",
       "to": "abm.audio.render_chapter"
+    },
+    {
+      "from": "abm.audio.render_chapter",
+      "to": "abm.audio"
     },
     {
       "from": "abm.audio.render_chapter",
@@ -268,7 +271,7 @@
       "to": "abm.audit.schemas"
     },
     {
-      "from": "abm.classifier.__init__",
+      "from": "abm.classifier",
       "to": "abm.classifier.section_classifier"
     },
     {
@@ -288,15 +291,15 @@
       "to": "abm.ingestion.welldone_to_json"
     },
     {
-      "from": "abm.llm.__init__",
+      "from": "abm.llm",
       "to": "abm.llm.client"
     },
     {
-      "from": "abm.llm.__init__",
+      "from": "abm.llm",
       "to": "abm.llm.manager"
     },
     {
-      "from": "abm.profiles.__init__",
+      "from": "abm.profiles",
       "to": "abm.profiles.character_profiles"
     },
     {
@@ -304,24 +307,44 @@
       "to": "abm.profiles.character_profiles"
     },
     {
-      "from": "abm.voice.__init__",
+      "from": "abm.profiles.profiles_cli",
+      "to": "abm.profiles"
+    },
+    {
+      "from": "abm.profiles.profiles_cli",
+      "to": "abm.voice"
+    },
+    {
+      "from": "abm.voice",
       "to": "abm.voice.tts_casting"
     },
     {
-      "from": "abm.voice.__init__",
+      "from": "abm.voice",
       "to": "abm.voice.voicecasting"
     },
     {
-      "from": "abm.voice.engines.__init__",
+      "from": "abm.voice.engines",
       "to": "abm.voice.engines.piper_engine"
     },
     {
-      "from": "abm.voice.engines.__init__",
+      "from": "abm.voice.engines",
       "to": "abm.voice.engines.xtts_engine"
     },
     {
       "from": "abm.voice.piper_casting",
+      "to": "abm.profiles"
+    },
+    {
+      "from": "abm.voice.piper_casting",
       "to": "abm.voice.piper_catalog"
+    },
+    {
+      "from": "abm.voice.plan_from_annotations",
+      "to": "abm.profiles"
+    },
+    {
+      "from": "abm.voice.plan_from_annotations",
+      "to": "abm.voice"
     },
     {
       "from": "abm.voice.render_chapter",
@@ -334,6 +357,14 @@
     {
       "from": "abm.voice.render_chapter",
       "to": "abm.voice.cache"
+    },
+    {
+      "from": "abm.voice.render_chapter",
+      "to": "abm.voice.engines"
+    },
+    {
+      "from": "abm.voice.tts_casting",
+      "to": "abm.profiles"
     },
     {
       "from": "abm.voice.voicecasting_cli",

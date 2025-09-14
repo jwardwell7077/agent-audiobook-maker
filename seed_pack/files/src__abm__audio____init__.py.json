@@ -1,6 +1,6 @@
 {
   "file": "src/abm/audio/__init__.py",
-  "module": "abm.audio.__init__",
+  "module": "abm.audio",
   "summary": "Audio synthesis interfaces and engine registry.",
   "public_api": [
     {

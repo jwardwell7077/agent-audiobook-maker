@@ -1,6 +1,6 @@
 {
   "file": "src/abm/profiles/__init__.py",
-  "module": "abm.profiles.__init__",
+  "module": "abm.profiles",
   "summary": "Profile configuration and utilities.",
   "public_api": [],
   "cli": {
