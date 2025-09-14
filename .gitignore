@@ -173,6 +173,16 @@ uv.lock
 *.wav
 *.ogg
 *.flac
+*.aiff
+*.aif
+*.aac
+*.opus
+*.m4a
+*.m4b
+*.mp4
+*.webm
+*.mkv
+*.mov
 *.bin
 *.dat
 *.zip
@@ -186,6 +196,12 @@ uv.lock
 *.tmp
 *.log.*
 *.log
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.svg
 data/clean/**/*.pdf
 data/books/**/*.pdf
 *.db
@@ -220,6 +236,9 @@ data/books/LEGACY_PRIVATE_*/**
 
 # Local scratch artifacts
 /tmp/
+
+# Packaged outputs (audiobook containers)
+*.m4b
 
 # Pipeline run logs (redact from repo)
 run_logs/
