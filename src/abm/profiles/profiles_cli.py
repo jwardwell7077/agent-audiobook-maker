@@ -4,11 +4,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
 
 from abm.profiles.character_profiles import CharacterProfilesDB
+
+logger = logging.getLogger(__name__)
 
 __all__ = ["main"]
 
@@ -63,13 +67,35 @@ def main(argv: list[str] | None = None) -> int:
     p_audit = sub.add_parser("audit")
     p_audit.add_argument("--roster", type=Path, required=True)
     p_audit.add_argument("--profiles", type=Path, required=True)
+    p_audit.add_argument("--annotations", type=Path, default=None)
+    p_audit.add_argument("--eval-after", action="store_true")
+    p_audit.add_argument("--eval-dir", default="reports")
 
     args = parser.parse_args(argv)
 
     if args.cmd == "validate":
         return _cmd_validate(args.file)
     if args.cmd == "audit":
-        return _cmd_audit(args.roster, args.profiles)
+        rc = _cmd_audit(args.roster, args.profiles)
+        if args.eval_after and args.annotations:
+            cmd = [
+                sys.executable,
+                "-m",
+                "abm.audit",
+                "--refined",
+                str(args.annotations),
+                "--out-dir",
+                args.eval_dir or "reports",
+                "--title",
+                "Eval — profiles audit",
+            ]
+            try:
+                rc = subprocess.run(cmd, check=False).returncode
+                if rc:
+                    logger.warning("audit exited with code %s", rc)
+            except Exception as exc:
+                logger.warning("audit skipped: %s", exc)
+        return rc
     return 1
 
 
