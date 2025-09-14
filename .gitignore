@@ -208,11 +208,6 @@ data/**
 !data/annotations/SAMPLE_BOOK/**
 !data/renders/SAMPLE_BOOK/**
 !data/stems/SAMPLE_BOOK/**
-!data/clean/
-!data/clean/SAMPLE_BOOK/
-!data/annotations/
-!data/renders/
-!data/stems/
 
 # Keep prototype / legacy private book directories ignored explicitly (redundant due to data/**, but self-documenting)
 data/books/LEGACY_PRIVATE_*/**
@@ -225,6 +220,10 @@ data/books/LEGACY_PRIVATE_*/**
 
 # Local scratch artifacts
 /tmp/
+
+# Pipeline run logs (redact from repo)
+run_logs/
+stageB/run_logs/
 
 # MVS artifacts (explicitly ignored even though data/** is ignored; guards against re-includes)
 data/clean/mvs/**
