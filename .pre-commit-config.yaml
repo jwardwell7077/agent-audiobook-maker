@@ -52,6 +52,13 @@ repos:
 
   - repo: local
     hooks:
+      - id: prevent-private-data
+        name: Prevent committing private data or binaries
+        entry: bash scripts/prevent_private_data.sh
+        language: system
+        pass_filenames: false
+        stages: [commit]
+
       - id: commit-message-guard
         name: Commit Message Guard (single Fixes #ID, subject <=72)
         entry: bash scripts/validate_commit_message.sh
