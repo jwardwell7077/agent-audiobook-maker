@@ -66,6 +66,20 @@ repos:
         pass_filenames: false
         stages: [push]
 
+      - id: prevent-private-data
+        name: Prevent Private Data (data/** except SAMPLE_BOOK; block media)
+        entry: bash scripts/prevent_private_data.sh
+        language: system
+        pass_filenames: true
+        stages: [commit]
+
+      - id: check-added-large-files
+        name: Check Added Large Files (>= 20MB)
+        entry: bash -lc 'git diff --cached --name-only --diff-filter=A | xargs -r -I {} bash -lc "[ -f '{}' ] && [ $(stat -c%s '{}') -ge 20971520 ] && echo 'Large file blocked: {}' && exit 1 || true"'
+        language: system
+        pass_filenames: false
+        stages: [commit]
+
       - id: docs-link-check
         name: Docs Link Check (local relative links)
         entry: bash -lc 'python scripts/check_docs_links.py'

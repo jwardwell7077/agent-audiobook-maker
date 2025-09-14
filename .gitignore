@@ -238,3 +238,8 @@ temp/LEGACY_PRIVATE_*
 
 # Runtime PIDs/state files
  # (Removed) LangFlow pid file
+
+# Run logs (block anywhere in tree)
+**/run_logs/
+run_logs/
+stage*/run_logs/
