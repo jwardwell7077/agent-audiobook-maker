@@ -3,7 +3,10 @@ from __future__ import annotations
 import argparse
 import concurrent.futures as futures
 import difflib
+from datetime import datetime
 import json
+import subprocess
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
@@ -301,8 +304,11 @@ def _parse_args() -> argparse.Namespace:
     )
     ap.add_argument("--votes", type=int, default=3, help="Majority vote count per span")
     ap.add_argument("--cache", default=None, help="Optional path to SQLite cache file")
+    ap.add_argument("--metrics-jsonl", dest="metrics_jsonl", default=None, help="Write per-span metrics JSONL here")
     ap.add_argument("--max-concurrency", type=int, default=4, help="Max parallel LLM requests")
     ap.add_argument("--cache-dir", default=None, help="Directory for cache DB (overrides --cache)")
+    ap.add_argument("--eval-after", action="store_true", help="Run abm.audit after completion")
+    ap.add_argument("--eval-dir", default=None, help="Directory for audit reports")
     ap.add_argument("--verbose", action="store_true", help="Verbose refinement logs")
     ap.add_argument(
         "--status",
@@ -342,6 +348,23 @@ def main() -> None:
             Path(args.cache) if args.cache else (Path(args.cache_dir) / "llm.cache.sqlite" if args.cache_dir else None)
         ),
     )
+
+    if args.eval_after:
+        cmd = [
+            sys.executable, "-m", "abm.audit",
+            "--refined", args.out_json,
+            "--out-dir", args.eval_dir or "reports",
+            "--title", f"Eval — llm_refine {datetime.today():%F}"
+        ]
+        if args.tagged:
+            cmd += ["--base", args.tagged]
+        if args.metrics_jsonl:
+            cmd += ["--metrics-jsonl", args.metrics_jsonl]
+        try:
+            subprocess.run(cmd, check=False)
+        except Exception as e:
+            print(f"audit skipped: {e}", file=sys.stderr)
+
 
 
 if __name__ == "__main__":

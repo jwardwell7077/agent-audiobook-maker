@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -63,13 +64,23 @@ def main(argv: list[str] | None = None) -> int:
     p_audit = sub.add_parser("audit")
     p_audit.add_argument("--roster", type=Path, required=True)
     p_audit.add_argument("--profiles", type=Path, required=True)
+    p_audit.add_argument("--annotations", type=Path, default=None)
+    p_audit.add_argument("--eval-after", action="store_true")
+    p_audit.add_argument("--eval-dir", default="reports")
 
     args = parser.parse_args(argv)
 
     if args.cmd == "validate":
         return _cmd_validate(args.file)
     if args.cmd == "audit":
-        return _cmd_audit(args.roster, args.profiles)
+        rc = _cmd_audit(args.roster, args.profiles)
+        if args.eval_after and args.annotations:
+            cmd = [sys.executable, "-m", "abm.audit", "--refined", str(args.annotations), "--out-dir", args.eval_dir, "--title", "Eval — profiles audit"]
+            try:
+                subprocess.run(cmd, check=False)
+            except Exception as e:
+                print(f"audit skipped: {e}", file=sys.stderr)
+        return rc
     return 1
 
 
