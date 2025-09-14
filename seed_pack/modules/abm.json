@@ -3,9 +3,918 @@
   "path_globs": [
     "src/abm/**/*.py"
   ],
-  "purpose": "Unknown",
-  "key_components": [],
-  "public_surfaces": [],
+  "purpose": "Auto-generated module summary.",
+  "key_components": [
+    {
+      "name": "SpanOut",
+      "kind": "class",
+      "file": "src/abm/annotate/annotate_cli.py",
+      "summary": ""
+    },
+    {
+      "name": "AnnotateRunner",
+      "kind": "class",
+      "file": "src/abm/annotate/annotate_cli.py",
+      "summary": ""
+    },
+    {
+      "name": "AttributeConfig",
+      "kind": "class",
+      "file": "src/abm/annotate/attribute.py",
+      "summary": ""
+    },
+    {
+      "name": "AttributeEngine",
+      "kind": "class",
+      "file": "src/abm/annotate/attribute.py",
+      "summary": ""
+    },
+    {
+      "name": "BNLPRefinePolicy",
+      "kind": "class",
+      "file": "src/abm/annotate/bnlp_refine.py",
+      "summary": ""
+    },
+    {
+      "name": "LLMCache",
+      "kind": "class",
+      "file": "src/abm/annotate/llm_cache.py",
+      "summary": ""
+    },
+    {
+      "name": "LLMCandidateConfig",
+      "kind": "class",
+      "file": "src/abm/annotate/llm_prep.py",
+      "summary": ""
+    },
+    {
+      "name": "LLMCandidatePreparer",
+      "kind": "class",
+      "file": "src/abm/annotate/llm_prep.py",
+      "summary": ""
+    },
+    {
+      "name": "LLMRefineConfig",
+      "kind": "class",
+      "file": "src/abm/annotate/llm_refine.py",
+      "summary": ""
+    },
+    {
+      "name": "ChapterMetrics",
+      "kind": "class",
+      "file": "src/abm/annotate/metrics.py",
+      "summary": ""
+    },
+    {
+      "name": "Timer",
+      "kind": "class",
+      "file": "src/abm/annotate/metrics.py",
+      "summary": ""
+    },
+    {
+      "name": "MetricsCollector",
+      "kind": "class",
+      "file": "src/abm/annotate/metrics.py",
+      "summary": ""
+    },
+    {
+      "name": "LineTag",
+      "kind": "class",
+      "file": "src/abm/annotate/normalize.py",
+      "summary": ""
+    },
+    {
+      "name": "InlineTag",
+      "kind": "class",
+      "file": "src/abm/annotate/normalize.py",
+      "summary": ""
+    },
+    {
+      "name": "NormalizerConfig",
+      "kind": "class",
+      "file": "src/abm/annotate/normalize.py",
+      "summary": ""
+    },
+    {
+      "name": "NormalizeReport",
+      "kind": "class",
+      "file": "src/abm/annotate/normalize.py",
+      "summary": ""
+    },
+    {
+      "name": "ChapterNormalizer",
+      "kind": "class",
+      "file": "src/abm/annotate/normalize.py",
+      "summary": ""
+    },
+    {
+      "name": "ProgressReporter",
+      "kind": "class",
+      "file": "src/abm/annotate/progress.py",
+      "summary": ""
+    },
+    {
+      "name": "ReviewConfig",
+      "kind": "class",
+      "file": "src/abm/annotate/review.py",
+      "summary": ""
+    },
+    {
+      "name": "Reviewer",
+      "kind": "class",
+      "file": "src/abm/annotate/review.py",
+      "summary": ""
+    },
+    {
+      "name": "RosterConfig",
+      "kind": "class",
+      "file": "src/abm/annotate/roster.py",
+      "summary": ""
+    },
+    {
+      "name": "RosterBuilder",
+      "kind": "class",
+      "file": "src/abm/annotate/roster.py",
+      "summary": ""
+    },
+    {
+      "name": "SpanType",
+      "kind": "class",
+      "file": "src/abm/annotate/segment.py",
+      "summary": ""
+    },
+    {
+      "name": "Span",
+      "kind": "class",
+      "file": "src/abm/annotate/segment.py",
+      "summary": ""
+    },
+    {
+      "name": "SegmenterConfig",
+      "kind": "class",
+      "file": "src/abm/annotate/segment.py",
+      "summary": ""
+    },
+    {
+      "name": "Segmenter",
+      "kind": "class",
+      "file": "src/abm/annotate/segment.py",
+      "summary": ""
+    },
+    {
+      "name": "BookMeta",
+      "kind": "class",
+      "file": "src/abm/audio/book_config.py",
+      "summary": ""
+    },
+    {
+      "name": "EngineRegistry",
+      "kind": "class",
+      "file": "src/abm/audio/engine_registry.py",
+      "summary": ""
+    },
+    {
+      "name": "PiperAdapter",
+      "kind": "class",
+      "file": "src/abm/audio/piper_adapter.py",
+      "summary": ""
+    },
+    {
+      "name": "TextNormalizer",
+      "kind": "class",
+      "file": "src/abm/audio/text_normalizer.py",
+      "summary": ""
+    },
+    {
+      "name": "Chunker",
+      "kind": "class",
+      "file": "src/abm/audio/text_normalizer.py",
+      "summary": ""
+    },
+    {
+      "name": "SynthesisError",
+      "kind": "class",
+      "file": "src/abm/audio/tts_base.py",
+      "summary": ""
+    },
+    {
+      "name": "TTSTask",
+      "kind": "class",
+      "file": "src/abm/audio/tts_base.py",
+      "summary": ""
+    },
+    {
+      "name": "TTSAdapter",
+      "kind": "class",
+      "file": "src/abm/audio/tts_base.py",
+      "summary": ""
+    },
+    {
+      "name": "TTSManager",
+      "kind": "class",
+      "file": "src/abm/audio/tts_manager.py",
+      "summary": ""
+    },
+    {
+      "name": "XTTSAdapter",
+      "kind": "class",
+      "file": "src/abm/audio/xtts_adapter.py",
+      "summary": ""
+    },
+    {
+      "name": "Span",
+      "kind": "class",
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
+    },
+    {
+      "name": "Chapter",
+      "kind": "class",
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
+    },
+    {
+      "name": "ChapterStat",
+      "kind": "class",
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
+    },
+    {
+      "name": "EvalSummary",
+      "kind": "class",
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
+    },
+    {
+      "name": "VoteStats",
+      "kind": "class",
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
+    },
+    {
+      "name": "ConfusionPair",
+      "kind": "class",
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
+    },
+    {
+      "name": "ConfusionSummary",
+      "kind": "class",
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
+    },
+    {
+      "name": "InsertResult",
+      "kind": "class",
+      "file": "src/abm/ingestion/db_insert.py",
+      "summary": ""
+    },
+    {
+      "name": "PgInserter",
+      "kind": "class",
+      "file": "src/abm/ingestion/db_insert.py",
+      "summary": ""
+    },
+    {
+      "name": "PipelineOptions",
+      "kind": "class",
+      "file": "src/abm/ingestion/ingest_pdf.py",
+      "summary": ""
+    },
+    {
+      "name": "PdfIngestPipeline",
+      "kind": "class",
+      "file": "src/abm/ingestion/ingest_pdf.py",
+      "summary": ""
+    },
+    {
+      "name": "RawExtractOptions",
+      "kind": "class",
+      "file": "src/abm/ingestion/pdf_to_raw_text.py",
+      "summary": ""
+    },
+    {
+      "name": "RawPdfTextExtractor",
+      "kind": "class",
+      "file": "src/abm/ingestion/pdf_to_raw_text.py",
+      "summary": ""
+    },
+    {
+      "name": "WellDoneOptions",
+      "kind": "class",
+      "file": "src/abm/ingestion/raw_to_welldone.py",
+      "summary": ""
+    },
+    {
+      "name": "RawToWellDone",
+      "kind": "class",
+      "file": "src/abm/ingestion/raw_to_welldone.py",
+      "summary": ""
+    },
+    {
+      "name": "WDToJSONOptions",
+      "kind": "class",
+      "file": "src/abm/ingestion/welldone_to_json.py",
+      "summary": ""
+    },
+    {
+      "name": "WellDoneToJSONL",
+      "kind": "class",
+      "file": "src/abm/ingestion/welldone_to_json.py",
+      "summary": ""
+    },
+    {
+      "name": "OpenAICompatClient",
+      "kind": "class",
+      "file": "src/abm/llm/client.py",
+      "summary": ""
+    },
+    {
+      "name": "LLMBackend",
+      "kind": "class",
+      "file": "src/abm/llm/manager.py",
+      "summary": ""
+    },
+    {
+      "name": "LLMService",
+      "kind": "class",
+      "file": "src/abm/llm/manager.py",
+      "summary": ""
+    },
+    {
+      "name": "DocCacheConfig",
+      "kind": "class",
+      "file": "src/abm/parse/cache.py",
+      "summary": ""
+    },
+    {
+      "name": "DocCache",
+      "kind": "class",
+      "file": "src/abm/parse/cache.py",
+      "summary": ""
+    },
+    {
+      "name": "ResolverConfig",
+      "kind": "class",
+      "file": "src/abm/profiles/alias_resolver.py",
+      "summary": ""
+    },
+    {
+      "name": "Proposal",
+      "kind": "class",
+      "file": "src/abm/profiles/alias_resolver.py",
+      "summary": ""
+    },
+    {
+      "name": "Style",
+      "kind": "class",
+      "file": "src/abm/profiles/character_profiles.py",
+      "summary": ""
+    },
+    {
+      "name": "SpeakerProfile",
+      "kind": "class",
+      "file": "src/abm/profiles/character_profiles.py",
+      "summary": ""
+    },
+    {
+      "name": "ProfileConfig",
+      "kind": "class",
+      "file": "src/abm/profiles/character_profiles.py",
+      "summary": ""
+    },
+    {
+      "name": "Profile",
+      "kind": "class",
+      "file": "src/abm/profiles/character_profiles.py",
+      "summary": ""
+    },
+    {
+      "name": "CharacterProfilesDB",
+      "kind": "class",
+      "file": "src/abm/profiles/character_profiles.py",
+      "summary": ""
+    },
+    {
+      "name": "BookNLPConfig",
+      "kind": "class",
+      "file": "src/abm/sidecar/booknlp_adapter.py",
+      "summary": ""
+    },
+    {
+      "name": "BookNLPAdapter",
+      "kind": "class",
+      "file": "src/abm/sidecar/booknlp_adapter.py",
+      "summary": ""
+    },
+    {
+      "name": "PiperEngine",
+      "kind": "class",
+      "file": "src/abm/voice/engines/piper_engine.py",
+      "summary": ""
+    },
+    {
+      "name": "XTTSEngine",
+      "kind": "class",
+      "file": "src/abm/voice/engines/xtts_engine.py",
+      "summary": ""
+    },
+    {
+      "name": "AuditionLine",
+      "kind": "class",
+      "file": "src/abm/voice/piper_casting.py",
+      "summary": ""
+    },
+    {
+      "name": "PiperVoice",
+      "kind": "class",
+      "file": "src/abm/voice/piper_catalog.py",
+      "summary": ""
+    },
+    {
+      "name": "_Options",
+      "kind": "class",
+      "file": "src/abm/voice/plan_from_annotations.py",
+      "summary": ""
+    },
+    {
+      "name": "CastDecision",
+      "kind": "class",
+      "file": "src/abm/voice/tts_casting.py",
+      "summary": ""
+    },
+    {
+      "name": "VoiceHints",
+      "kind": "class",
+      "file": "src/abm/voice/voicecasting.py",
+      "summary": ""
+    },
+    {
+      "name": "SpeakerProfile",
+      "kind": "class",
+      "file": "src/abm/voice/voicecasting.py",
+      "summary": ""
+    },
+    {
+      "name": "CastingPlan",
+      "kind": "class",
+      "file": "src/abm/voice/voicecasting.py",
+      "summary": ""
+    },
+    {
+      "name": "VoiceCasting",
+      "kind": "class",
+      "file": "src/abm/voice/voicecasting.py",
+      "summary": ""
+    }
+  ],
+  "public_surfaces": [
+    {
+      "symbol": "main",
+      "signature": "()",
+      "summary": ""
+    },
+    {
+      "symbol": "refine_with_bnlp",
+      "signature": "(tagged_path, out_path, policy, verbose, max_chapters, bnlp_pipeline, bnlp_size, bnlp_gate_threshold, bnlp_top_n, bnlp_try_big, bnlp_tmp_dir)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "()",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "()",
+      "summary": ""
+    },
+    {
+      "symbol": "refine_document",
+      "signature": "(tagged_path, out_json, out_md, backend, cfg, manage_service, cache_path)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "()",
+      "summary": ""
+    },
+    {
+      "symbol": "normalize_chapter_text",
+      "signature": "(chapter, config)",
+      "summary": ""
+    },
+    {
+      "symbol": "speaker_user_prompt",
+      "signature": "(roster, left, mid, right, span_type)",
+      "summary": ""
+    },
+    {
+      "symbol": "make_review_markdown",
+      "signature": "(chapters)",
+      "summary": ""
+    },
+    {
+      "symbol": "build_chapter_roster",
+      "signature": "(text, nlp)",
+      "summary": ""
+    },
+    {
+      "symbol": "merge_book_roster",
+      "signature": "(book, chap)",
+      "summary": ""
+    },
+    {
+      "symbol": "segment_spans",
+      "signature": "(chapter, config)",
+      "summary": ""
+    },
+    {
+      "symbol": "register_builtins",
+      "signature": "()",
+      "summary": ""
+    },
+    {
+      "symbol": "collect_chapter_stats",
+      "signature": "(manifest_path)",
+      "summary": ""
+    },
+    {
+      "symbol": "compute_album_offset",
+      "signature": "(stats, target_lufs, trim_percent)",
+      "summary": ""
+    },
+    {
+      "symbol": "apply_album_gain",
+      "signature": "(wav_path, out_path, offset_db, peak_ceiling_dbfs, pcm_subtype)",
+      "summary": ""
+    },
+    {
+      "symbol": "write_album_manifest",
+      "signature": "(manifest_path, offset_db)",
+      "summary": ""
+    },
+    {
+      "symbol": "load_wav",
+      "signature": "(path)",
+      "summary": ""
+    },
+    {
+      "symbol": "ensure_mono",
+      "signature": "(y)",
+      "summary": ""
+    },
+    {
+      "symbol": "silence",
+      "signature": "(duration_ms, sr)",
+      "summary": ""
+    },
+    {
+      "symbol": "assemble",
+      "signature": "(span_paths, pauses_ms, crossfade_ms, sr_hint, allow_resample)",
+      "summary": ""
+    },
+    {
+      "symbol": "load_book_meta",
+      "signature": "(path)",
+      "summary": ""
+    },
+    {
+      "symbol": "equal_power_crossfade",
+      "signature": "(a, b, sr, crossfade_ms)",
+      "summary": ""
+    },
+    {
+      "symbol": "micro_fade",
+      "signature": "(signal, sr, head_ms, tail_ms)",
+      "summary": ""
+    },
+    {
+      "symbol": "measure_loudness",
+      "signature": "(y, sr)",
+      "summary": ""
+    },
+    {
+      "symbol": "measure_true_peak",
+      "signature": "(y, sr, oversample)",
+      "summary": ""
+    },
+    {
+      "symbol": "limit_peaks",
+      "signature": "(y, peak_dbfs)",
+      "summary": ""
+    },
+    {
+      "symbol": "add_head_tail_silence",
+      "signature": "(y, sr, head_ms, tail_ms)",
+      "summary": ""
+    },
+    {
+      "symbol": "master",
+      "signature": "(y, sr, target_lufs, peak_dbfs, head_ms, tail_ms, enable_true_peak, true_peak_ceiling_dbfs, true_peak_oversample)",
+      "summary": ""
+    },
+    {
+      "symbol": "package_book",
+      "signature": "(renders_dir, meta_path, out_dir, formats)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "format_ts",
+      "signature": "(seconds)",
+      "summary": ""
+    },
+    {
+      "symbol": "export_mp3",
+      "signature": "(in_wav, out_mp3, title, artist, album, track)",
+      "summary": ""
+    },
+    {
+      "symbol": "export_opus",
+      "signature": "(in_wav, out_opus, title, artist, album, track)",
+      "summary": ""
+    },
+    {
+      "symbol": "make_chaptered_m4b",
+      "signature": "(chapter_wavs, out_m4b, chapter_titles, album, artist, cover_jpeg)",
+      "summary": ""
+    },
+    {
+      "symbol": "write_chapter_cue",
+      "signature": "(chapter_wavs, out_cue, titles)",
+      "summary": ""
+    },
+    {
+      "symbol": "measure_lufs",
+      "signature": "(y, sr)",
+      "summary": ""
+    },
+    {
+      "symbol": "peak_dbfs",
+      "signature": "(y)",
+      "summary": ""
+    },
+    {
+      "symbol": "duration_s",
+      "signature": "(y, sr)",
+      "summary": ""
+    },
+    {
+      "symbol": "write_qc_json",
+      "signature": "(path, lufs, peak_dbfs, duration_s, segments)",
+      "summary": ""
+    },
+    {
+      "symbol": "qc_report",
+      "signature": "(y, sr)",
+      "summary": ""
+    },
+    {
+      "symbol": "write_qc_json",
+      "signature": "(report, out_path)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "cast_speaker",
+      "signature": "(speaker, db, preferred_engine)",
+      "summary": ""
+    },
+    {
+      "symbol": "spans_to_tasks",
+      "signature": "(spans, db, default_engine, default_pause_ms)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "load_doc",
+      "signature": "(path)",
+      "summary": ""
+    },
+    {
+      "symbol": "compute_basic_metrics",
+      "signature": "(refined, base, worst_n)",
+      "summary": ""
+    },
+    {
+      "symbol": "plot_top_speakers",
+      "signature": "(counter, out_png)",
+      "summary": ""
+    },
+    {
+      "symbol": "plot_unknown_by_chapter",
+      "signature": "(rows, out_png)",
+      "summary": ""
+    },
+    {
+      "symbol": "plot_vote_margin_hist",
+      "signature": "(margins, out_png)",
+      "summary": ""
+    },
+    {
+      "symbol": "md_to_html",
+      "signature": "(md_path, html_path)",
+      "summary": ""
+    },
+    {
+      "symbol": "render_markdown",
+      "signature": "(summary, vote, conf, out_md, assets_prefix_dir, title)",
+      "summary": ""
+    },
+    {
+      "symbol": "compute_confusion",
+      "signature": "(base_doc, refined_doc)",
+      "summary": ""
+    },
+    {
+      "symbol": "parse_metrics_jsonl",
+      "signature": "(path)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "canon_title",
+      "signature": "(s)",
+      "summary": ""
+    },
+    {
+      "symbol": "classify_blocks",
+      "signature": "(jsonl_path)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "normalize_name",
+      "signature": "(name)",
+      "summary": ""
+    },
+    {
+      "symbol": "harvest_mentions",
+      "signature": "(refined_json)",
+      "summary": ""
+    },
+    {
+      "symbol": "build_clusters",
+      "signature": "(names, cfg)",
+      "summary": ""
+    },
+    {
+      "symbol": "score_candidate",
+      "signature": "(norm, canonical_list, aliases_map, cfg)",
+      "summary": ""
+    },
+    {
+      "symbol": "propose_aliases",
+      "signature": "(refined_json, profiles_db, cfg)",
+      "summary": ""
+    },
+    {
+      "symbol": "apply_proposals",
+      "signature": "(proposals, profiles_db)",
+      "summary": ""
+    },
+    {
+      "symbol": "save_artifacts",
+      "signature": "(proposals, out_dir)",
+      "summary": ""
+    },
+    {
+      "symbol": "normalize_speaker_name",
+      "signature": "(name)",
+      "summary": ""
+    },
+    {
+      "symbol": "load_profiles",
+      "signature": "(path)",
+      "summary": ""
+    },
+    {
+      "symbol": "available_voices",
+      "signature": "(cfg, engine)",
+      "summary": ""
+    },
+    {
+      "symbol": "resolve_speaker_ex",
+      "signature": "(cfg, speaker)",
+      "summary": ""
+    },
+    {
+      "symbol": "resolve_with_reason",
+      "signature": "(cfg, speaker)",
+      "summary": ""
+    },
+    {
+      "symbol": "resolve_speaker",
+      "signature": "(cfg, speaker)",
+      "summary": ""
+    },
+    {
+      "symbol": "validate_profiles",
+      "signature": "(cfg)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "make_cache_key",
+      "signature": "(payload)",
+      "summary": ""
+    },
+    {
+      "symbol": "cache_path",
+      "signature": "(root, engine, voice, key)",
+      "summary": ""
+    },
+    {
+      "symbol": "propose_casting",
+      "signature": "(profiles_path, annotations_path, out_dir, engine, max_chars)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "discover_piper_voices",
+      "signature": "(voices_dir)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "build_plans",
+      "signature": "(combined_json, cast_profiles, out_dir, sample_rate, crossfade_ms, max_chars, pause_narr, pause_dialog, pause_thought, prefer_engine)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "render_chapter",
+      "signature": "(plan_path, out_wav, cache_dir, tmp_dir, force)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "merge_style",
+      "signature": "(base, override)",
+      "summary": ""
+    },
+    {
+      "symbol": "pick_voice",
+      "signature": "(cfg, speaker_name, preferred_engine)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "()",
+      "summary": ""
+    }
+  ],
   "data_flow": "Unknown",
   "dependencies": {
     "imports_internal": [],
@@ -15,8 +924,41 @@
     ]
   },
   "configs_env": {
-    "env_vars": [],
-    "config_files": []
+    "env_vars": [
+      "ABM_PIPER_BIN",
+      "ABM_PIPER_DRYRUN",
+      "ABM_PIPER_VOICES_DIR",
+      "ABM_XTTS_DEVICE",
+      "ABM_XTTS_DRYRUN",
+      "ABM_XTTS_MODEL",
+      "DATABASE_URL",
+      "OPENAI_API_KEY"
+    ],
+    "config_files": [
+      ".json",
+      ".onnx.json",
+      ".qc.json",
+      ".synth.json",
+      "Path to Stage A combined.json",
+      "Path to Stage-A combined.json",
+      "Path to chapters.json",
+      "_ingest_meta.json",
+      "_meta.json",
+      "alias_patch.yaml",
+      "back_matter.json",
+      "book_manifest.json",
+      "casting_proposed.yaml",
+      "casting_summary.json",
+      "ch_(\\d+)\\.synth\\.json",
+      "ch_*.synth.json",
+      "chapters.json",
+      "data/ann/*/combined.json",
+      "data/ann/*/combined_refined.json",
+      "front_matter.json",
+      "quotes.json",
+      "synth_manifest.json",
+      "toc.json"
+    ]
   },
   "cli_entrypoints": [],
   "invariants": [],
@@ -24,8 +966,8 @@
   "known_gotchas": [],
   "related_tests": [],
   "status": {
-    "maturity": "Unknown",
+    "maturity": "alpha",
     "owners": [],
-    "last_touched_file_mtime": "2025-09-14T19:51:48.023289"
+    "last_touched_file_mtime": "2025-09-14T20:56:17.688699"
   }
 }

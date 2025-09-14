@@ -3,131 +3,131 @@
   "path_globs": [
     "src/abm/profiles/**/*.py"
   ],
-  "purpose": "Unknown",
+  "purpose": "Auto-generated module summary.",
   "key_components": [
     {
       "name": "ResolverConfig",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/profiles/alias_resolver.py",
-      "summary": "Configuration for :mod:`alias_resolver`. Only a subset of the fields from the original design are currently used,\nbut the structure mirrors the proposed interface so that future extensions\nremain backwards compatible."
+      "file": "src/abm/profiles/alias_resolver.py",
+      "summary": ""
     },
     {
       "name": "Proposal",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/profiles/alias_resolver.py",
-      "summary": "Proposed alias mapping."
+      "file": "src/abm/profiles/alias_resolver.py",
+      "summary": ""
     },
     {
       "name": "Style",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/profiles/character_profiles.py",
-      "summary": "Prosody style parameters for a voice. Attributes:\n    pace: Speech pace multiplier."
+      "file": "src/abm/profiles/character_profiles.py",
+      "summary": ""
     },
     {
       "name": "SpeakerProfile",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/profiles/character_profiles.py",
-      "summary": "Configuration for a single character voice. Attributes:\n    name: Display name of the speaker."
+      "file": "src/abm/profiles/character_profiles.py",
+      "summary": ""
     },
     {
       "name": "ProfileConfig",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/profiles/character_profiles.py",
-      "summary": "Container for all profiles and defaults. Attributes:\n    version: Schema version number."
+      "file": "src/abm/profiles/character_profiles.py",
+      "summary": ""
     },
     {
       "name": "Profile",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/profiles/character_profiles.py",
-      "summary": "Minimal voice profile used by casting and alias resolver. Attributes:\n    id: Stable identifier for the profile."
+      "file": "src/abm/profiles/character_profiles.py",
+      "summary": ""
     },
     {
       "name": "CharacterProfilesDB",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/profiles/character_profiles.py",
-      "summary": "Unified view over profiles with helpers for casting/aliasing. The database can be loaded from two on-disk schemas:\n- JSON (tests and tools):\n    {\n      \"profiles\": [{...}],\n      \"map\": {\"Speaker\": \"profile_id\"},\n      \"fallbacks\": {\"engine\": \"profile_id\"}\n    }\n- YAML (human-edited casting file):\n    version: 1\n    defaults: { engine: ..., narrator_voice: ..."
+      "file": "src/abm/profiles/character_profiles.py",
+      "summary": ""
     }
   ],
   "public_surfaces": [
     {
       "symbol": "main",
       "signature": "(argv)",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "normalize_name",
       "signature": "(name)",
-      "summary": "Return a normalised version of ``name``. Normalisation follows a few simple heuristics: lower case, strip\npunctuation, collapse whitespace and drop a leading ``\"i \"`` pattern used by\nsome transcribers."
+      "summary": ""
     },
     {
       "symbol": "harvest_mentions",
       "signature": "(refined_json)",
-      "summary": "Extract speaker mentions from ``refined_json``. The structure of ``refined_json`` varies between pipelines."
+      "summary": ""
     },
     {
       "symbol": "build_clusters",
       "signature": "(names, cfg)",
-      "summary": "Group names that normalise to the same string. The full system would use a BK-tree and phonetic keys."
+      "summary": ""
     },
     {
       "symbol": "score_candidate",
       "signature": "(norm, canonical_list, aliases_map, cfg)",
-      "summary": "Return the best candidate canonical speaker and a confidence score."
+      "summary": ""
     },
     {
       "symbol": "propose_aliases",
       "signature": "(refined_json, profiles_db, cfg)",
-      "summary": "Return a list of :class:`Proposal` objects for potential aliases."
+      "summary": ""
     },
     {
       "symbol": "apply_proposals",
       "signature": "(proposals, profiles_db)",
-      "summary": "Apply auto-accepted proposals to ``profiles_db`` in-place."
+      "summary": ""
     },
     {
       "symbol": "save_artifacts",
       "signature": "(proposals, out_dir)",
-      "summary": "Persist proposal information to ``out_dir``. * ``proposals.jsonl`` \u2013 line-delimited :class:`Proposal` objects."
+      "summary": ""
     },
     {
       "symbol": "normalize_speaker_name",
       "signature": "(name)",
-      "summary": "Normalize a speaker name to a comparison key. The function trims leading/trailing whitespace, collapses internal\nwhitespace, and returns the casefolded result."
+      "summary": ""
     },
     {
       "symbol": "load_profiles",
       "signature": "(path)",
-      "summary": "Load a profile configuration file. The file may be YAML (preferred) or JSON."
+      "summary": ""
     },
     {
       "symbol": "available_voices",
       "signature": "(cfg, engine)",
-      "summary": "Return the declared voices for an engine."
+      "summary": ""
     },
     {
       "symbol": "resolve_speaker_ex",
       "signature": "(cfg, speaker)",
-      "summary": "Return the resolved profile and reason for ``speaker``. Args:\n    cfg: Loaded profile configuration."
+      "summary": ""
     },
     {
       "symbol": "resolve_with_reason",
       "signature": "(cfg, speaker)",
-      "summary": "Backward compatible wrapper around :func:`resolve_speaker_ex`."
+      "summary": ""
     },
     {
       "symbol": "resolve_speaker",
       "signature": "(cfg, speaker)",
-      "summary": "Resolve ``speaker`` to a profile using canonical names or aliases."
+      "summary": ""
     },
     {
       "symbol": "validate_profiles",
       "signature": "(cfg)",
-      "summary": "Validate a profile configuration. Args:\n    cfg: Loaded profile configuration."
+      "summary": ""
     },
     {
       "symbol": "main",
       "signature": "(argv)",
-      "summary": "Entry point for the profiles CLI."
+      "summary": ""
     }
   ],
   "data_flow": "Unknown",
@@ -155,21 +155,306 @@
     ]
   },
   "configs_env": {
-    "env_vars": [],
-    "config_files": []
+    "env_vars": [
+      "ABM_PIPER_BIN",
+      "ABM_PIPER_DRYRUN",
+      "ABM_PIPER_VOICES_DIR",
+      "ABM_XTTS_DEVICE",
+      "ABM_XTTS_DRYRUN",
+      "ABM_XTTS_MODEL",
+      "DATABASE_URL",
+      "OPENAI_API_KEY"
+    ],
+    "config_files": [
+      ".json",
+      ".onnx.json",
+      ".qc.json",
+      ".synth.json",
+      "Path to Stage A combined.json",
+      "Path to Stage-A combined.json",
+      "Path to chapters.json",
+      "_ingest_meta.json",
+      "_meta.json",
+      "alias_patch.yaml",
+      "back_matter.json",
+      "book_manifest.json",
+      "casting_proposed.yaml",
+      "casting_summary.json",
+      "ch_(\\d+)\\.synth\\.json",
+      "ch_*.synth.json",
+      "chapters.json",
+      "data/ann/*/combined.json",
+      "data/ann/*/combined_refined.json",
+      "front_matter.json",
+      "quotes.json",
+      "synth_manifest.json",
+      "toc.json"
+    ]
   },
   "cli_entrypoints": [
     {
-      "file": "/workspace/agent-audiobook-maker/src/abm/profiles/alias_cli.py",
-      "module": "abm.profiles",
+      "file": "src/abm/profiles/alias_cli.py",
+      "module": "abm.profiles.alias_cli",
       "command": "python -m abm.profiles.alias_cli",
-      "flags": []
+      "flags": [
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tau-auto",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tau-review",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--use-llm",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--model",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--proposals",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tau-auto",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tau-review",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--use-llm",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--model",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tau-auto",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tau-review",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--use-llm",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--model",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--proposals",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tau-auto",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tau-review",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--use-llm",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--model",
+          "type": "unknown",
+          "default": null
+        }
+      ]
     },
     {
-      "file": "/workspace/agent-audiobook-maker/src/abm/profiles/profiles_cli.py",
-      "module": "abm.profiles",
+      "file": "src/abm/profiles/profiles_cli.py",
+      "module": "abm.profiles.profiles_cli",
       "command": "python -m abm.profiles.profiles_cli",
-      "flags": []
+      "flags": [
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--prefer-engine",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--engine",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--voices-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--n-top",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--prefer-engine",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--engine",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--voices-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--n-top",
+          "type": "unknown",
+          "default": null
+        }
+      ]
     }
   ],
   "invariants": [],
@@ -177,8 +462,8 @@
   "known_gotchas": [],
   "related_tests": [],
   "status": {
-    "maturity": "Unknown",
+    "maturity": "alpha",
     "owners": [],
-    "last_touched_file_mtime": "2025-09-14T19:51:48.027289"
+    "last_touched_file_mtime": "2025-09-14T20:56:17.688699"
   }
 }

@@ -1,0 +1,38 @@
+{
+  "file": "src/abm/annotate/__init__.py",
+  "module": "abm.annotate.__init__",
+  "summary": "Annotation utilities for processing chapters.",
+  "public_api": [],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm",
+      "abm.annotate.annotate_cli",
+      "abm.annotate.attribute",
+      "abm.annotate.llm_prep",
+      "abm.annotate.llm_refine",
+      "abm.annotate.normalize",
+      "abm.annotate.review",
+      "abm.annotate.roster",
+      "abm.annotate.segment"
+    ],
+    "external": []
+  },
+  "evidence": [
+    {
+      "file": "src/abm/annotate/__init__.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

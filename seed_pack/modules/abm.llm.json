@@ -3,25 +3,25 @@
   "path_globs": [
     "src/abm/llm/**/*.py"
   ],
-  "purpose": "Unknown",
+  "purpose": "Auto-generated module summary.",
   "key_components": [
     {
       "name": "OpenAICompatClient",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/llm/client.py",
-      "summary": "Minimal OpenAI-compatible chat client returning JSON content. Attributes:\n    base_url: Endpoint to send requests to."
+      "file": "src/abm/llm/client.py",
+      "summary": ""
     },
     {
       "name": "LLMBackend",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/llm/manager.py",
-      "summary": "Configuration for a local or remote LLM endpoint. Attributes:\n    kind: Backend type, e.g."
+      "file": "src/abm/llm/manager.py",
+      "summary": ""
     },
     {
       "name": "LLMService",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/llm/manager.py",
-      "summary": "Manage the lifecycle of a local LLM server. Attributes:\n    backend: Connection information for the target service."
+      "file": "src/abm/llm/manager.py",
+      "summary": ""
     }
   ],
   "public_surfaces": [],
@@ -45,8 +45,41 @@
     ]
   },
   "configs_env": {
-    "env_vars": [],
-    "config_files": []
+    "env_vars": [
+      "ABM_PIPER_BIN",
+      "ABM_PIPER_DRYRUN",
+      "ABM_PIPER_VOICES_DIR",
+      "ABM_XTTS_DEVICE",
+      "ABM_XTTS_DRYRUN",
+      "ABM_XTTS_MODEL",
+      "DATABASE_URL",
+      "OPENAI_API_KEY"
+    ],
+    "config_files": [
+      ".json",
+      ".onnx.json",
+      ".qc.json",
+      ".synth.json",
+      "Path to Stage A combined.json",
+      "Path to Stage-A combined.json",
+      "Path to chapters.json",
+      "_ingest_meta.json",
+      "_meta.json",
+      "alias_patch.yaml",
+      "back_matter.json",
+      "book_manifest.json",
+      "casting_proposed.yaml",
+      "casting_summary.json",
+      "ch_(\\d+)\\.synth\\.json",
+      "ch_*.synth.json",
+      "chapters.json",
+      "data/ann/*/combined.json",
+      "data/ann/*/combined_refined.json",
+      "front_matter.json",
+      "quotes.json",
+      "synth_manifest.json",
+      "toc.json"
+    ]
   },
   "cli_entrypoints": [],
   "invariants": [],
@@ -54,8 +87,8 @@
   "known_gotchas": [],
   "related_tests": [],
   "status": {
-    "maturity": "Unknown",
+    "maturity": "alpha",
     "owners": [],
-    "last_touched_file_mtime": "2025-09-14T19:51:48.027289"
+    "last_touched_file_mtime": "2025-09-14T20:04:37.476314"
   }
 }

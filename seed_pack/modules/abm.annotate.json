@@ -3,225 +3,225 @@
   "path_globs": [
     "src/abm/annotate/**/*.py"
   ],
-  "purpose": "Unknown",
+  "purpose": "Auto-generated module summary.",
   "key_components": [
     {
       "name": "SpanOut",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/annotate_cli.py",
-      "summary": "Serializable span object enriched with attribution fields."
+      "file": "src/abm/annotate/annotate_cli.py",
+      "summary": ""
     },
     {
       "name": "AnnotateRunner",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/annotate_cli.py",
-      "summary": "End-to-end runner: normalize \u2192 segment \u2192 roster \u2192 attribute \u2192 write outputs."
+      "file": "src/abm/annotate/annotate_cli.py",
+      "summary": ""
     },
     {
       "name": "AttributeConfig",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/attribute.py",
-      "summary": "Config for attribution engine."
+      "file": "src/abm/annotate/attribute.py",
+      "summary": ""
     },
     {
       "name": "AttributeEngine",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/attribute.py",
-      "summary": "Speaker attribution using rules \u2192 coref \u2192 optional LLM."
+      "file": "src/abm/annotate/attribute.py",
+      "summary": ""
     },
     {
       "name": "BNLPRefinePolicy",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/bnlp_refine.py",
-      "summary": "Policy to accept or fuse BookNLP attribution."
+      "file": "src/abm/annotate/bnlp_refine.py",
+      "summary": ""
     },
     {
       "name": "LLMCache",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/llm_cache.py",
-      "summary": "Tiny SQLite cache mapping prompt hashes to JSON results. Attributes:\n    path: Location of the SQLite database file."
+      "file": "src/abm/annotate/llm_cache.py",
+      "summary": ""
     },
     {
       "name": "LLMCandidateConfig",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/llm_prep.py",
-      "summary": "Configuration for selecting spans that require LLM refinement. Attributes:\n    conf_threshold: Confidence above which spans are skipped."
+      "file": "src/abm/annotate/llm_prep.py",
+      "summary": ""
     },
     {
       "name": "LLMCandidatePreparer",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/llm_prep.py",
-      "summary": "Collect spans that need LLM help (Unknown or low-confidence). Attributes:\n    cfg: Selection policy for candidate spans."
+      "file": "src/abm/annotate/llm_prep.py",
+      "summary": ""
     },
     {
       "name": "LLMRefineConfig",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/llm_refine.py",
-      "summary": "Policy for refinement acceptance. Attributes:\n    min_conf_for_skip: Spans at or above this confidence are not refined."
+      "file": "src/abm/annotate/llm_refine.py",
+      "summary": ""
     },
     {
       "name": "ChapterMetrics",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/metrics.py",
-      "summary": "Holds metrics for a single chapter processing pass."
+      "file": "src/abm/annotate/metrics.py",
+      "summary": ""
     },
     {
       "name": "Timer",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/metrics.py",
-      "summary": "Context manager timer to measure stage durations."
+      "file": "src/abm/annotate/metrics.py",
+      "summary": ""
     },
     {
       "name": "MetricsCollector",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/metrics.py",
-      "summary": "Collects and persists per-chapter metrics to a JSONL."
+      "file": "src/abm/annotate/metrics.py",
+      "summary": ""
     },
     {
       "name": "LineTag",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/normalize.py",
-      "summary": "Structured label for per-paragraph line classification."
+      "file": "src/abm/annotate/normalize.py",
+      "summary": ""
     },
     {
       "name": "InlineTag",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/normalize.py",
-      "summary": "Inline structural token span inside a non-system paragraph."
+      "file": "src/abm/annotate/normalize.py",
+      "summary": ""
     },
     {
       "name": "NormalizerConfig",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/normalize.py",
-      "summary": "Configuration for ChapterNormalizer behavior."
+      "file": "src/abm/annotate/normalize.py",
+      "summary": ""
     },
     {
       "name": "NormalizeReport",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/normalize.py",
-      "summary": "Summary of normalization actions and counts for one chapter."
+      "file": "src/abm/annotate/normalize.py",
+      "summary": ""
     },
     {
       "name": "ChapterNormalizer",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/normalize.py",
-      "summary": "Normalize and structurally tag a chapter object."
+      "file": "src/abm/annotate/normalize.py",
+      "summary": ""
     },
     {
       "name": "ProgressReporter",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/progress.py",
-      "summary": "Simple progress reporter with rich/tqdm/print fallbacks."
+      "file": "src/abm/annotate/progress.py",
+      "summary": ""
     },
     {
       "name": "ReviewConfig",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/review.py",
-      "summary": "Configuration for review report formatting."
+      "file": "src/abm/annotate/review.py",
+      "summary": ""
     },
     {
       "name": "Reviewer",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/review.py",
-      "summary": "Build a Markdown review report from annotated chapters."
+      "file": "src/abm/annotate/review.py",
+      "summary": ""
     },
     {
       "name": "RosterConfig",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/roster.py",
-      "summary": "Configuration for :class:`RosterBuilder` behavior. Attributes:\n    use_spacy: Whether to use spaCy NER if available."
+      "file": "src/abm/annotate/roster.py",
+      "summary": ""
     },
     {
       "name": "RosterBuilder",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/roster.py",
-      "summary": "Build chapter- and book-level speaker rosters from raw text."
+      "file": "src/abm/annotate/roster.py",
+      "summary": ""
     },
     {
       "name": "SpanType",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/segment.py",
-      "summary": "Span categories emitted by the Segmenter."
+      "file": "src/abm/annotate/segment.py",
+      "summary": ""
     },
     {
       "name": "Span",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/segment.py",
-      "summary": "A contiguous piece of text with a semantic label and absolute offsets."
+      "file": "src/abm/annotate/segment.py",
+      "summary": ""
     },
     {
       "name": "SegmenterConfig",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/segment.py",
-      "summary": "Configuration for the Segmenter behavior."
+      "file": "src/abm/annotate/segment.py",
+      "summary": ""
     },
     {
       "name": "Segmenter",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/segment.py",
-      "summary": "Produce offset-accurate spans from a normalized chapter. Expects the chapter to be normalized by ChapterNormalizer:\n  - `paragraphs`: list[str]\n  - `text`: single LF-joined string of all paragraphs\n  - `line_tags`: per-paragraph line tag labels (e.g., \"SystemAngle\", \"Meta\", ...)\n  - `inline_tags`: { str(para_index) : [ {start, end, tag}, ..."
+      "file": "src/abm/annotate/segment.py",
+      "summary": ""
     }
   ],
   "public_surfaces": [
     {
       "symbol": "main",
       "signature": "()",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "refine_with_bnlp",
       "signature": "(tagged_path, out_path, policy, verbose, max_chapters, bnlp_pipeline, bnlp_size, bnlp_gate_threshold, bnlp_top_n, bnlp_try_big, bnlp_tmp_dir)",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "main",
       "signature": "()",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "main",
       "signature": "()",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "refine_document",
       "signature": "(tagged_path, out_json, out_md, backend, cfg, manage_service, cache_path)",
-      "summary": "Refine low-confidence spans in ``combined.json`` using an LLM. Args:\n    tagged_path: Input JSON produced by Stage\u00a0A."
+      "summary": ""
     },
     {
       "symbol": "main",
       "signature": "()",
-      "summary": "Entry point for the ``llm_refine`` command-line interface. Returns:\n    None\n\nRaises:\n    None"
+      "summary": ""
     },
     {
       "symbol": "normalize_chapter_text",
       "signature": "(chapter, config)",
-      "summary": "Backwards-compatible helper: normalize a chapter dict with defaults. This wrapper preserves the previous functional API you may have used."
+      "summary": ""
     },
     {
       "symbol": "speaker_user_prompt",
       "signature": "(roster, left, mid, right, span_type)",
-      "summary": "Build a user prompt constraining speaker choices to a roster. Args:\n    roster: Mapping of speaker names to aliases."
+      "summary": ""
     },
     {
       "symbol": "make_review_markdown",
       "signature": "(chapters)",
-      "summary": "Functional wrapper used by :mod:`annotate_cli` to emit a report."
+      "summary": ""
     },
     {
       "symbol": "build_chapter_roster",
       "signature": "(text, nlp)",
-      "summary": "Functional wrapper for building a chapter roster. Args:\n    text: Chapter text."
+      "summary": ""
     },
     {
       "symbol": "merge_book_roster",
       "signature": "(book, chap)",
-      "summary": "Functional wrapper for merging rosters (compatibility helper)."
+      "summary": ""
     },
     {
       "symbol": "segment_spans",
       "signature": "(chapter, config)",
-      "summary": "Functional wrapper to keep compatibility with earlier code paths."
+      "summary": ""
     }
   ],
   "data_flow": "Unknown",
@@ -283,33 +283,580 @@
     ]
   },
   "configs_env": {
-    "env_vars": [],
-    "config_files": []
+    "env_vars": [
+      "ABM_PIPER_BIN",
+      "ABM_PIPER_DRYRUN",
+      "ABM_PIPER_VOICES_DIR",
+      "ABM_XTTS_DEVICE",
+      "ABM_XTTS_DRYRUN",
+      "ABM_XTTS_MODEL",
+      "DATABASE_URL",
+      "OPENAI_API_KEY"
+    ],
+    "config_files": [
+      ".json",
+      ".onnx.json",
+      ".qc.json",
+      ".synth.json",
+      "Path to Stage A combined.json",
+      "Path to Stage-A combined.json",
+      "Path to chapters.json",
+      "_ingest_meta.json",
+      "_meta.json",
+      "alias_patch.yaml",
+      "back_matter.json",
+      "book_manifest.json",
+      "casting_proposed.yaml",
+      "casting_summary.json",
+      "ch_(\\d+)\\.synth\\.json",
+      "ch_*.synth.json",
+      "chapters.json",
+      "data/ann/*/combined.json",
+      "data/ann/*/combined_refined.json",
+      "front_matter.json",
+      "quotes.json",
+      "synth_manifest.json",
+      "toc.json"
+    ]
   },
   "cli_entrypoints": [
     {
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/annotate_cli.py",
-      "module": "abm.annotate",
+      "file": "src/abm/annotate/annotate_cli.py",
+      "module": "abm.annotate.annotate_cli",
       "command": "python -m abm.annotate.annotate_cli",
-      "flags": []
+      "flags": [
+        {
+          "name": "--in",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-json",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-md",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--metrics-jsonl",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-roster",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--stages",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--spacy-model",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--no-coref",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--coref",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--status",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--mode",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--llm",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--remove-heading",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--treat-single-as-thought",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--only",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--roster-scope",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--no-roster-ner",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--parse-mode",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--doc-cache",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--pipe-batch-size",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--in",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-json",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-md",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--metrics-jsonl",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-roster",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--stages",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--spacy-model",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--no-coref",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--coref",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--status",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--mode",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--llm",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--remove-heading",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--treat-single-as-thought",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--only",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--roster-scope",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--no-roster-ner",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--parse-mode",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--doc-cache",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--pipe-batch-size",
+          "type": "unknown",
+          "default": null
+        }
+      ]
     },
     {
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/bnlp_refine.py",
-      "module": "abm.annotate",
+      "file": "src/abm/annotate/bnlp_refine.py",
+      "module": "abm.annotate.bnlp_refine",
       "command": "python -m abm.annotate.bnlp_refine",
-      "flags": []
+      "flags": [
+        {
+          "name": "--tagged",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--max-chapters",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-pipeline",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-size",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-gate-threshold",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-top-n",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-try-big",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-tmp-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tagged",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--max-chapters",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-pipeline",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-size",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-gate-threshold",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-top-n",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-try-big",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-tmp-dir",
+          "type": "unknown",
+          "default": null
+        }
+      ]
     },
     {
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/llm_prep_cli.py",
-      "module": "abm.annotate",
+      "file": "src/abm/annotate/llm_prep_cli.py",
+      "module": "abm.annotate.llm_prep_cli",
       "command": "python -m abm.annotate.llm_prep_cli",
-      "flags": []
+      "flags": [
+        {
+          "name": "--in",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--conf-threshold",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--in",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--conf-threshold",
+          "type": "unknown",
+          "default": null
+        }
+      ]
     },
     {
-      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/llm_refine.py",
-      "module": "abm.annotate",
+      "file": "src/abm/annotate/llm_refine.py",
+      "module": "abm.annotate.llm_refine",
       "command": "python -m abm.annotate.llm_refine",
-      "flags": []
+      "flags": [
+        {
+          "name": "--tagged",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-json",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-md",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--endpoint",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--model",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--manage-llm",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--skip-threshold",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--votes",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--cache",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--metrics-jsonl",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--max-concurrency",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--cache-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--eval-after",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--eval-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--status",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tagged",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-json",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-md",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--endpoint",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--model",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--manage-llm",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--skip-threshold",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--votes",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--cache",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--metrics-jsonl",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--max-concurrency",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--cache-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--eval-after",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--eval-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--status",
+          "type": "unknown",
+          "default": null
+        }
+      ]
     }
   ],
   "invariants": [],
@@ -317,8 +864,8 @@
   "known_gotchas": [],
   "related_tests": [],
   "status": {
-    "maturity": "Unknown",
+    "maturity": "alpha",
     "owners": [],
-    "last_touched_file_mtime": "2025-09-14T19:51:48.023289"
+    "last_touched_file_mtime": "2025-09-14T20:04:37.476314"
   }
 }

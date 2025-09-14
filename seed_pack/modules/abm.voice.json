@@ -3,122 +3,134 @@
   "path_globs": [
     "src/abm/voice/**/*.py"
   ],
-  "purpose": "Unknown",
+  "purpose": "Auto-generated module summary.",
   "key_components": [
+    {
+      "name": "PiperEngine",
+      "kind": "class",
+      "file": "src/abm/voice/engines/piper_engine.py",
+      "summary": ""
+    },
+    {
+      "name": "XTTSEngine",
+      "kind": "class",
+      "file": "src/abm/voice/engines/xtts_engine.py",
+      "summary": ""
+    },
     {
       "name": "AuditionLine",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/voice/piper_casting.py",
-      "summary": "Unknown"
+      "file": "src/abm/voice/piper_casting.py",
+      "summary": ""
     },
     {
       "name": "PiperVoice",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/voice/piper_catalog.py",
-      "summary": "Simple description of a Piper voice installation."
+      "file": "src/abm/voice/piper_catalog.py",
+      "summary": ""
     },
     {
       "name": "_Options",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/voice/plan_from_annotations.py",
-      "summary": "Unknown"
+      "file": "src/abm/voice/plan_from_annotations.py",
+      "summary": ""
     },
     {
       "name": "CastDecision",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/voice/tts_casting.py",
-      "summary": "Final TTS selection for a speaker. Attributes:\n    speaker: Original speaker query."
+      "file": "src/abm/voice/tts_casting.py",
+      "summary": ""
     },
     {
       "name": "VoiceHints",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/voice/voicecasting.py",
-      "summary": "Unknown"
+      "file": "src/abm/voice/voicecasting.py",
+      "summary": ""
     },
     {
       "name": "SpeakerProfile",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/voice/voicecasting.py",
-      "summary": "Unknown"
+      "file": "src/abm/voice/voicecasting.py",
+      "summary": ""
     },
     {
       "name": "CastingPlan",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/voice/voicecasting.py",
-      "summary": "Map speakers to voice slots; cluster minor roles to a small pool."
+      "file": "src/abm/voice/voicecasting.py",
+      "summary": ""
     },
     {
       "name": "VoiceCasting",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/voice/voicecasting.py",
-      "summary": "Derive voice profiles and a casting plan from the combined annotations."
+      "file": "src/abm/voice/voicecasting.py",
+      "summary": ""
     }
   ],
   "public_surfaces": [
     {
       "symbol": "make_cache_key",
       "signature": "(payload)",
-      "summary": "Return a deterministic SHA-256 key for ``payload``. Args:\n    payload: Serializable dictionary describing a TTS request."
+      "summary": ""
     },
     {
       "symbol": "cache_path",
       "signature": "(root, engine, voice, key)",
-      "summary": "Return the expected cache path for ``engine``/``voice``/``key``. Args:\n    root: Root directory of the cache."
+      "summary": ""
     },
     {
       "symbol": "propose_casting",
       "signature": "(profiles_path, annotations_path, out_dir, engine, max_chars)",
-      "summary": "Generate a simple casting proposal scaffold. Returns a summary dictionary with discovered voices and selected characters."
+      "summary": ""
     },
     {
       "symbol": "main",
       "signature": "(argv)",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "discover_piper_voices",
       "signature": "(voices_dir)",
-      "summary": "Return a list of discovered Piper voices. We consider a voice defined by a model file (\"*.onnx\" or compressed) and\noptionally a matching JSON config (same stem with \".json\")."
+      "summary": ""
     },
     {
       "symbol": "main",
       "signature": "(argv)",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "build_plans",
       "signature": "(combined_json, cast_profiles, out_dir, sample_rate, crossfade_ms, max_chars, pause_narr, pause_dialog, pause_thought, prefer_engine)",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "main",
       "signature": "(argv)",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "render_chapter",
       "signature": "(plan_path, out_wav, cache_dir, tmp_dir, force)",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "main",
       "signature": "(argv)",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "merge_style",
       "signature": "(base, override)",
-      "summary": "Merge style overrides onto ``base``. Args:\n    base: Base style dataclass."
+      "summary": ""
     },
     {
       "symbol": "pick_voice",
       "signature": "(cfg, speaker_name, preferred_engine)",
-      "summary": "Choose engine, voice and style for ``speaker_name``. Args:\n    cfg: Loaded profile configuration."
+      "summary": ""
     },
     {
       "symbol": "main",
       "signature": "()",
-      "summary": "Unknown"
+      "summary": ""
     }
   ],
   "data_flow": "Unknown",
@@ -152,27 +164,193 @@
     ]
   },
   "configs_env": {
-    "env_vars": [],
-    "config_files": []
+    "env_vars": [
+      "ABM_PIPER_BIN",
+      "ABM_PIPER_DRYRUN",
+      "ABM_PIPER_VOICES_DIR",
+      "ABM_XTTS_DEVICE",
+      "ABM_XTTS_DRYRUN",
+      "ABM_XTTS_MODEL",
+      "DATABASE_URL",
+      "OPENAI_API_KEY"
+    ],
+    "config_files": [
+      ".json",
+      ".onnx.json",
+      ".qc.json",
+      ".synth.json",
+      "Path to Stage A combined.json",
+      "Path to Stage-A combined.json",
+      "Path to chapters.json",
+      "_ingest_meta.json",
+      "_meta.json",
+      "alias_patch.yaml",
+      "back_matter.json",
+      "book_manifest.json",
+      "casting_proposed.yaml",
+      "casting_summary.json",
+      "ch_(\\d+)\\.synth\\.json",
+      "ch_*.synth.json",
+      "chapters.json",
+      "data/ann/*/combined.json",
+      "data/ann/*/combined_refined.json",
+      "front_matter.json",
+      "quotes.json",
+      "synth_manifest.json",
+      "toc.json"
+    ]
   },
   "cli_entrypoints": [
     {
-      "file": "/workspace/agent-audiobook-maker/src/abm/voice/piper_casting.py",
-      "module": "abm.voice",
+      "file": "src/abm/voice/piper_casting.py",
+      "module": "abm.voice.piper_casting",
       "command": "python -m abm.voice.piper_casting",
-      "flags": []
+      "flags": [
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--engine",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--max-chars",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--engine",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--max-chars",
+          "type": "unknown",
+          "default": null
+        }
+      ]
     },
     {
-      "file": "/workspace/agent-audiobook-maker/src/abm/voice/piper_catalog.py",
-      "module": "abm.voice",
+      "file": "src/abm/voice/piper_catalog.py",
+      "module": "abm.voice.piper_catalog",
       "command": "python -m abm.voice.piper_catalog",
-      "flags": []
+      "flags": [
+        {
+          "name": "--voices-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--json",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--voices-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--json",
+          "type": "unknown",
+          "default": null
+        }
+      ]
     },
     {
-      "file": "/workspace/agent-audiobook-maker/src/abm/voice/voicecasting_cli.py",
-      "module": "abm.voice",
+      "file": "src/abm/voice/voicecasting_cli.py",
+      "module": "abm.voice.voicecasting_cli",
       "command": "python -m abm.voice.voicecasting_cli",
-      "flags": []
+      "flags": [
+        {
+          "name": "--combined",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-cast",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--top-k",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--minor-pool",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--combined",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-cast",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--top-k",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--minor-pool",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": null
+        }
+      ]
     }
   ],
   "invariants": [],
@@ -180,8 +358,8 @@
   "known_gotchas": [],
   "related_tests": [],
   "status": {
-    "maturity": "Unknown",
+    "maturity": "alpha",
     "owners": [],
-    "last_touched_file_mtime": "2025-09-14T19:51:48.027289"
+    "last_touched_file_mtime": "2025-09-14T20:56:17.688699"
   }
 }

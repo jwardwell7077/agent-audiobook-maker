@@ -1,3 +1,3 @@
 # Seed Pack
 
-This directory contains a machine-readable seed pack summarizing the project.
+This folder contains machine-readable context. Load `index.json` and follow paths for modules, files, graphs, inventories, and design decisions.

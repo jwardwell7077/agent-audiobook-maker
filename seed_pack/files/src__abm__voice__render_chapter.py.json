@@ -1,0 +1,119 @@
+{
+  "file": "src/abm/voice/render_chapter.py",
+  "module": "abm.voice.render_chapter",
+  "summary": "Render a chapter plan to audio using local TTS engines.",
+  "public_api": [
+    {
+      "name": "_load_engine",
+      "signature": "(name, sample_rate)",
+      "kind": "function"
+    },
+    {
+      "name": "_synth_segment",
+      "signature": "(seg, sr, cache_dir, tmp_dir)",
+      "kind": "function"
+    },
+    {
+      "name": "render_chapter",
+      "signature": "(plan_path, out_wav, cache_dir, tmp_dir, force)",
+      "kind": "function"
+    },
+    {
+      "name": "main",
+      "signature": "(argv)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [
+      {
+        "name": "--chapter-plan",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--cache-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tmp-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-wav",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--force",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--chapter-plan",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--cache-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tmp-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-wav",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--force",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [
+    {
+      "type": "KeyError",
+      "when": "Unknown"
+    }
+  ],
+  "dependencies": {
+    "internal": [
+      "abm.audio.concat",
+      "abm.audio.qc",
+      "abm.voice.cache",
+      "abm.voice.engines"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "json",
+      "numpy",
+      "pathlib",
+      "shutil",
+      "soundfile",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/voice/render_chapter.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

@@ -1,0 +1,38 @@
+{
+  "file": "src/abm/audio/__init__.py",
+  "module": "abm.audio.__init__",
+  "summary": "Audio synthesis interfaces and engine registry.",
+  "public_api": [
+    {
+      "name": "register_builtins",
+      "signature": "()",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.audio.engine_registry",
+      "abm.audio.piper_adapter",
+      "abm.audio.xtts_adapter"
+    ],
+    "external": []
+  },
+  "evidence": [
+    {
+      "file": "src/abm/audio/__init__.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

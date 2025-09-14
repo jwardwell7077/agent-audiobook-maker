@@ -3,244 +3,244 @@
   "path_globs": [
     "src/abm/audio/**/*.py"
   ],
-  "purpose": "Unknown",
+  "purpose": "Auto-generated module summary.",
   "key_components": [
     {
       "name": "BookMeta",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/audio/book_config.py",
-      "summary": "Metadata describing an audiobook."
+      "file": "src/abm/audio/book_config.py",
+      "summary": ""
     },
     {
       "name": "EngineRegistry",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/audio/engine_registry.py",
-      "summary": "Global registry for TTS engine factories. This avoids hard-coding adapter imports throughout the codebase."
+      "file": "src/abm/audio/engine_registry.py",
+      "summary": ""
     },
     {
       "name": "PiperAdapter",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/audio/piper_adapter.py",
-      "summary": "Adapter that calls the `piper` CLI per synthesis request. Attributes:\n    voice: Piper voice identifier (e.g., 'en_US-ryan-medium')."
+      "file": "src/abm/audio/piper_adapter.py",
+      "summary": ""
     },
     {
       "name": "TextNormalizer",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/audio/text_normalizer.py",
-      "summary": "Normalize story/game text to be TTS-friendly. Methods here avoid engine dependencies and can be unit-tested in isolation."
+      "file": "src/abm/audio/text_normalizer.py",
+      "summary": ""
     },
     {
       "name": "Chunker",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/audio/text_normalizer.py",
-      "summary": "Split text into chunks within engine-friendly limits."
+      "file": "src/abm/audio/text_normalizer.py",
+      "summary": ""
     },
     {
       "name": "SynthesisError",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/audio/tts_base.py",
-      "summary": "Raised when a TTS engine fails to synthesize audio."
+      "file": "src/abm/audio/tts_base.py",
+      "summary": ""
     },
     {
       "name": "TTSTask",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/audio/tts_base.py",
-      "summary": "A single text-to-speech synthesis job. Attributes:\n    text: Text content to synthesize (plain text; pre-normalized)."
+      "file": "src/abm/audio/tts_base.py",
+      "summary": ""
     },
     {
       "name": "TTSAdapter",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/audio/tts_base.py",
-      "summary": "Abstract base class for all TTS engine adapters. Subclasses must implement :meth:`preload` and :meth:`synth`."
+      "file": "src/abm/audio/tts_base.py",
+      "summary": ""
     },
     {
       "name": "TTSManager",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/audio/tts_manager.py",
-      "summary": "Render ``TTSTask`` objects with optional caching and concurrency. The manager deduplicates synthesis requests using a content-addressable\ncache."
+      "file": "src/abm/audio/tts_manager.py",
+      "summary": ""
     },
     {
       "name": "XTTSAdapter",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/audio/xtts_adapter.py",
-      "summary": "Adapter for Coqui XTTS v2 (speaker cloning). Args:\n    model_name: Model identifier."
+      "file": "src/abm/audio/xtts_adapter.py",
+      "summary": ""
     }
   ],
   "public_surfaces": [
     {
       "symbol": "register_builtins",
       "signature": "()",
-      "summary": "Register built-in adapters with :class:`EngineRegistry`. Importing adapters triggers registration side effects."
+      "summary": ""
     },
     {
       "symbol": "collect_chapter_stats",
       "signature": "(manifest_path)",
-      "summary": "Collect QC stats for each chapter listed in ``manifest_path``. Args:\n    manifest_path: Path to ``book_manifest.json``."
+      "summary": ""
     },
     {
       "symbol": "compute_album_offset",
       "signature": "(stats, target_lufs, trim_percent)",
-      "summary": "Return the dB gain to apply so the median LUFS hits ``target_lufs``. Args:\n    stats: List of chapter stat dictionaries."
+      "summary": ""
     },
     {
       "symbol": "apply_album_gain",
       "signature": "(wav_path, out_path, offset_db, peak_ceiling_dbfs, pcm_subtype)",
-      "summary": "Apply a uniform gain to ``wav_path`` and write ``out_path``. Args:\n    wav_path: Source WAV file."
+      "summary": ""
     },
     {
       "symbol": "write_album_manifest",
       "signature": "(manifest_path, offset_db)",
-      "summary": "Write a small JSON file describing the applied album gain. Args:\n    manifest_path: Destination path for the manifest JSON."
+      "summary": ""
     },
     {
       "symbol": "load_wav",
       "signature": "(path)",
-      "summary": "Load a WAV file as mono ``float32`` samples. Args:\n    path: Input WAV file path."
+      "summary": ""
     },
     {
       "symbol": "ensure_mono",
       "signature": "(y)",
-      "summary": "Collapse stereo signals to mono by averaging channels."
+      "summary": ""
     },
     {
       "symbol": "silence",
       "signature": "(duration_ms, sr)",
-      "summary": "Return a block of digital silence."
+      "summary": ""
     },
     {
       "symbol": "assemble",
       "signature": "(span_paths, pauses_ms, crossfade_ms, sr_hint, allow_resample)",
-      "summary": "Stitch a sequence of span WAVs with pauses and crossfades. Args:\n    span_paths: Ordered list of WAV files to concatenate."
+      "summary": ""
     },
     {
       "symbol": "load_book_meta",
       "signature": "(path)",
-      "summary": "Load :class:`BookMeta` from a YAML file. Args:\n    path: Path to a ``book.yaml`` file."
+      "summary": ""
     },
     {
       "symbol": "equal_power_crossfade",
       "signature": "(a, b, sr, crossfade_ms)",
-      "summary": "Join two mono signals with an equal-power crossfade. Args:\n    a: First signal ``[-1, 1]``."
+      "summary": ""
     },
     {
       "symbol": "micro_fade",
       "signature": "(signal, sr, head_ms, tail_ms)",
-      "summary": "Apply short linear fades to the beginning and end of ``signal``. Args:\n    signal: Mono signal ``[-1, 1]``."
+      "summary": ""
     },
     {
       "symbol": "measure_loudness",
       "signature": "(y, sr)",
-      "summary": "Return integrated loudness (LUFS)."
+      "summary": ""
     },
     {
       "symbol": "measure_true_peak",
       "signature": "(y, sr, oversample)",
-      "summary": "Estimate true peak in dBFS via optional oversampling. Args:\n    y: Mono audio in float32 range ``[-1, 1]``."
+      "summary": ""
     },
     {
       "symbol": "limit_peaks",
       "signature": "(y, peak_dbfs)",
-      "summary": "Limit waveform peaks to the given dBFS value."
+      "summary": ""
     },
     {
       "symbol": "add_head_tail_silence",
       "signature": "(y, sr, head_ms, tail_ms)",
-      "summary": "Pad audio with silence before and after."
+      "summary": ""
     },
     {
       "symbol": "master",
       "signature": "(y, sr, target_lufs, peak_dbfs, head_ms, tail_ms, enable_true_peak, true_peak_ceiling_dbfs, true_peak_oversample)",
-      "summary": "Master audio to target loudness and peak limits. Processing order: loudness match \u2192 peak limit \u2192 optional true-peak safety \u2192\nhead/tail silence."
+      "summary": ""
     },
     {
       "symbol": "package_book",
       "signature": "(renders_dir, meta_path, out_dir, formats)",
-      "summary": "Package chapter WAVs into selected formats. Args:\n    renders_dir: Directory containing ``ch_*.wav`` files."
+      "summary": ""
     },
     {
       "symbol": "main",
       "signature": "(argv)",
-      "summary": "CLI entry point for packaging chapters."
+      "summary": ""
     },
     {
       "symbol": "format_ts",
       "signature": "(seconds)",
-      "summary": "Return a zero-padded ``HH:MM:SS.mmm`` timestamp. Args:\n    seconds: Time in seconds."
+      "summary": ""
     },
     {
       "symbol": "export_mp3",
       "signature": "(in_wav, out_mp3, title, artist, album, track)",
-      "summary": "Export ``in_wav`` as an MP3 with basic ID3 tags. Args:\n    in_wav: Source WAV file."
+      "summary": ""
     },
     {
       "symbol": "export_opus",
       "signature": "(in_wav, out_opus, title, artist, album, track)",
-      "summary": "Export ``in_wav`` as an Opus file with basic tags. Args:\n    in_wav: Source WAV file."
+      "summary": ""
     },
     {
       "symbol": "make_chaptered_m4b",
       "signature": "(chapter_wavs, out_m4b, chapter_titles, album, artist, cover_jpeg)",
-      "summary": "Concatenate ``chapter_wavs`` into a single M4B-style file. Args:\n    chapter_wavs: Ordered list of chapter WAV files."
+      "summary": ""
     },
     {
       "symbol": "write_chapter_cue",
       "signature": "(chapter_wavs, out_cue, titles)",
-      "summary": "Write a cue sheet with basic chapter information. Args:\n    chapter_wavs: Ordered list of chapter WAV files."
+      "summary": ""
     },
     {
       "symbol": "measure_lufs",
       "signature": "(y, sr)",
-      "summary": "Return integrated loudness (LUFS). Uses :mod:`pyloudnorm` if available, otherwise returns ``nan`` and logs a\nwarning."
+      "summary": ""
     },
     {
       "symbol": "peak_dbfs",
       "signature": "(y)",
-      "summary": "Return sample peak in dBFS."
+      "summary": ""
     },
     {
       "symbol": "duration_s",
       "signature": "(y, sr)",
-      "summary": "Return duration of ``y`` in seconds."
+      "summary": ""
     },
     {
       "symbol": "write_qc_json",
       "signature": "(path, lufs, peak_dbfs, duration_s, segments)",
-      "summary": "Write a JSON file with QC metrics."
+      "summary": ""
     },
     {
       "symbol": "qc_report",
       "signature": "(y, sr)",
-      "summary": "Compute basic QC metrics for an audio signal. The ``approx_noise_floor_dbfs`` metric uses the 10th percentile of the\nabsolute amplitude as a rough estimate of the noise floor."
+      "summary": ""
     },
     {
       "symbol": "write_qc_json",
       "signature": "(report, out_path)",
-      "summary": "Write a QC report dictionary to JSON."
+      "summary": ""
     },
     {
       "symbol": "main",
       "signature": "(argv)",
-      "summary": "Entry point for the ``render_book`` CLI. Args:\n    argv: Optional argument list for testing."
+      "summary": ""
     },
     {
       "symbol": "main",
       "signature": "(argv)",
-      "summary": "Entry point for the ``render_chapter`` CLI."
+      "summary": ""
     },
     {
       "symbol": "main",
       "signature": "(argv)",
-      "summary": "Entry point for the ``synthesis_export`` CLI."
+      "summary": ""
     },
     {
       "symbol": "cast_speaker",
       "signature": "(speaker, db, preferred_engine)",
-      "summary": "Return casting info for ``speaker``. Args:\n    speaker: Speaker name from the roster."
+      "summary": ""
     },
     {
       "symbol": "spans_to_tasks",
       "signature": "(spans, db, default_engine, default_pause_ms)",
-      "summary": "Convert annotated spans into synthesis tasks."
+      "summary": ""
     }
   ],
   "data_flow": "Unknown",
@@ -295,27 +295,323 @@
     ]
   },
   "configs_env": {
-    "env_vars": [],
-    "config_files": []
+    "env_vars": [
+      "ABM_PIPER_BIN",
+      "ABM_PIPER_DRYRUN",
+      "ABM_PIPER_VOICES_DIR",
+      "ABM_XTTS_DEVICE",
+      "ABM_XTTS_DRYRUN",
+      "ABM_XTTS_MODEL",
+      "DATABASE_URL",
+      "OPENAI_API_KEY"
+    ],
+    "config_files": [
+      ".json",
+      ".onnx.json",
+      ".qc.json",
+      ".synth.json",
+      "Path to Stage A combined.json",
+      "Path to Stage-A combined.json",
+      "Path to chapters.json",
+      "_ingest_meta.json",
+      "_meta.json",
+      "alias_patch.yaml",
+      "back_matter.json",
+      "book_manifest.json",
+      "casting_proposed.yaml",
+      "casting_summary.json",
+      "ch_(\\d+)\\.synth\\.json",
+      "ch_*.synth.json",
+      "chapters.json",
+      "data/ann/*/combined.json",
+      "data/ann/*/combined_refined.json",
+      "front_matter.json",
+      "quotes.json",
+      "synth_manifest.json",
+      "toc.json"
+    ]
   },
   "cli_entrypoints": [
     {
-      "file": "/workspace/agent-audiobook-maker/src/abm/audio/render_book.py",
-      "module": "abm.audio",
+      "file": "src/abm/audio/render_book.py",
+      "module": "abm.audio.render_book",
       "command": "python -m abm.audio.render_book",
-      "flags": []
+      "flags": [
+        {
+          "name": "--scripts-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--engine-workers",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--start",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--end",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--resume",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--show-progress",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--log-level",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--scripts-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--engine-workers",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--start",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--end",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--resume",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--show-progress",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--log-level",
+          "type": "unknown",
+          "default": null
+        }
+      ]
     },
     {
-      "file": "/workspace/agent-audiobook-maker/src/abm/audio/render_chapter.py",
-      "module": "abm.audio",
+      "file": "src/abm/audio/render_chapter.py",
+      "module": "abm.audio.render_chapter",
       "command": "python -m abm.audio.render_chapter",
-      "flags": []
+      "flags": [
+        {
+          "name": "--script",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tmp-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--lufs",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--peak",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--crossfade-ms",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--engine-workers",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--workers",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--show-progress",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--save-master-wav",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--save-mp3",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--script",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tmp-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--lufs",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--peak",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--crossfade-ms",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--engine-workers",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--workers",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--show-progress",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--save-master-wav",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--save-mp3",
+          "type": "unknown",
+          "default": null
+        }
+      ]
     },
     {
-      "file": "/workspace/agent-audiobook-maker/src/abm/audio/synthesis_export.py",
-      "module": "abm.audio",
+      "file": "src/abm/audio/synthesis_export.py",
+      "module": "abm.audio.synthesis_export",
       "command": "python -m abm.audio.synthesis_export",
-      "flags": []
+      "flags": [
+        {
+          "name": "--tagged",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--only",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--default-engine",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--default-pause",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tagged",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--only",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--default-engine",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--default-pause",
+          "type": "unknown",
+          "default": null
+        }
+      ]
     }
   ],
   "invariants": [],
@@ -323,8 +619,8 @@
   "known_gotchas": [],
   "related_tests": [],
   "status": {
-    "maturity": "Unknown",
+    "maturity": "alpha",
     "owners": [],
-    "last_touched_file_mtime": "2025-09-14T19:51:48.027289"
+    "last_touched_file_mtime": "2025-09-14T20:56:17.688699"
   }
 }

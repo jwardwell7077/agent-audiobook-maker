@@ -1,250 +1,591 @@
-import os, json, ast, re, datetime
-from pathlib import Path
-from typing import Any
+import ast
+import datetime as dt
+import json
+import os
+import re
+import shutil
 from collections import defaultdict
+from pathlib import Path
+from typing import Any, Dict, List, Tuple
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / 'src'
-OUT = ROOT / 'seed_pack'
+SRC = ROOT / "src"
+SEED_DIR = ROOT / "seed_pack"
+SIZE_LIMIT = 500 * 1024  # 500 KB
 
-MODULES = [
-    'abm.annotate', 'abm.audio', 'abm.audit', 'abm.classifier', 'abm.ingestion',
-    'abm.llm', 'abm.parse', 'abm.profiles', 'abm.sidecar', 'abm.structuring', 'abm.voice'
-]
+
+def sanitize_filename(path: Path) -> str:
+    return str(path).replace("/", "__") + ".json"
+
+
+def discover_py_files() -> List[Path]:
+    files: List[Path] = []
+    for path in sorted(SRC.rglob("*.py")):
+        if any(part.startswith(".") for part in path.parts):
+            continue
+        if "__pycache__" in path.parts:
+            continue
+        if any(part.startswith("tests") for part in path.parts):
+            continue
+        if path == SRC / "__init__.py":
+            continue
+        files.append(path)
+    return files
+
 
 def module_name_from_path(path: Path) -> str:
     rel = path.relative_to(SRC)
-    return '.'.join(rel.with_suffix('').parts)
+    return ".".join(rel.with_suffix("").parts)
+
 
 def get_docstring_summary(node: ast.AST) -> str:
-    doc = ast.get_docstring(node) or ''
+    doc = ast.get_docstring(node) or ""
     if not doc:
-        return 'Unknown'
-    sentences = re.split(r'(?<=[.!?])\s+', doc.strip())
-    return ' '.join(sentences[:2])
+        return "Auto-generated summary."
+    first = doc.strip().splitlines()[0]
+    return first.strip()
+
 
 def function_signature(node: ast.FunctionDef) -> str:
     params = []
     for arg in node.args.args:
         params.append(arg.arg)
     if node.args.vararg:
-        params.append('*' + node.args.vararg.arg)
+        params.append("*" + node.args.vararg.arg)
     for arg in node.args.kwonlyargs:
         params.append(arg.arg)
     if node.args.kwarg:
-        params.append('**' + node.args.kwarg.arg)
+        params.append("**" + node.args.kwarg.arg)
     return f"({', '.join(params)})"
 
-def parse_file(path: Path) -> dict[str, Any]:
-    text = path.read_text(encoding='utf-8')
+
+def parse_file(path: Path) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+    text = path.read_text(encoding="utf-8")
     tree = ast.parse(text)
-    module = module_name_from_path(path)
+    module_name = module_name_from_path(path)
     summary = get_docstring_summary(tree)
 
-    classes = []
-    functions = []
-    env_vars = set()
-    internal_imports = set()
-    external_imports = set()
-    errors = []
-    has_main = False
+    public_api: List[Dict[str, str]] = []
+    errors: List[Dict[str, str]] = []
+    deps_internal: set[str] = set()
+    deps_external: set[str] = set()
+    env_vars: set[str] = set()
+    config_files: set[str] = set()
+    cli_flags: List[Dict[str, Any]] = []
+    is_cli = False
+    import_aliases: Dict[str, str] = {}
+    call_edges: List[Tuple[str, str]] = []
 
+    # map imports
     for node in ast.walk(tree):
-        if isinstance(node, ast.ClassDef):
-            methods = [n.name for n in node.body if isinstance(n, ast.FunctionDef)]
-            classes.append({'name': node.name, 'kind': 'class', 'methods': methods, 'doc': get_docstring_summary(node)})
-        elif isinstance(node, ast.FunctionDef) and node in tree.body:
-            functions.append({'name': node.name, 'kind': 'function', 'signature': function_signature(node), 'doc': get_docstring_summary(node)})
-        if isinstance(node, (ast.Import, ast.ImportFrom)):
-            names = []
-            if isinstance(node, ast.Import):
-                names = [a.name for a in node.names]
-            else:
-                if node.module:
-                    names = [node.module]
-            for name in names:
-                if name.startswith('abm'):
-                    internal_imports.add(name)
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                mod = alias.name
+                asname = alias.asname or mod.split(".")[0]
+                if mod.startswith("abm"):
+                    deps_internal.add(mod)
+                    import_aliases[asname] = mod
                 else:
-                    external_imports.add(name.split('.')[0])
+                    deps_external.add(mod.split(".")[0])
+                    import_aliases[asname] = mod
+        elif isinstance(node, ast.ImportFrom):
+            if node.module:
+                mod = node.module
+                base = mod
+                if mod.startswith("abm"):
+                    deps_internal.add(mod)
+                else:
+                    deps_external.add(mod.split(".")[0])
+                for alias in node.names:
+                    asname = alias.asname or alias.name
+                    import_aliases[asname] = f"{base}.{alias.name}"
+
+    # top-level defs
+    for node in tree.body:
+        if isinstance(node, ast.FunctionDef):
+            public_api.append({"name": node.name, "signature": function_signature(node), "kind": "function"})
+        elif isinstance(node, ast.ClassDef):
+            public_api.append({"name": node.name, "signature": "", "kind": "class"})
+        elif isinstance(node, ast.If):
+            if (
+                isinstance(node.test, ast.Compare)
+                and isinstance(node.test.left, ast.Name)
+                and node.test.left.id == "__name__"
+            ):
+                is_cli = True
+
+    # deeper scan for raises, env vars, config files, cli flags, call edges
+    for func in [n for n in tree.body if isinstance(n, ast.FunctionDef)]:
+        for sub in ast.walk(func):
+            if isinstance(sub, ast.Call):
+                # CLI flags
+                if isinstance(sub.func, ast.Attribute) and sub.func.attr == "add_argument":
+                    for arg in sub.args:
+                        if isinstance(arg, ast.Constant) and isinstance(arg.value, str) and arg.value.startswith("-"):
+                            cli_flags.append({"name": arg.value, "type": "unknown", "default": None})
+                # call graph edges
+                target = None
+                if isinstance(sub.func, ast.Attribute) and isinstance(sub.func.value, ast.Name):
+                    base = sub.func.value.id
+                    if base in import_aliases:
+                        target_mod = import_aliases[base]
+                        target = f"{target_mod}.{sub.func.attr}"
+                elif isinstance(sub.func, ast.Name):
+                    base = sub.func.id
+                    if base in import_aliases:
+                        target = import_aliases[base]
+                if target and target.startswith("abm"):
+                    call_edges.append((f"{module_name}.{func.name}", target))
+            elif isinstance(sub, ast.Raise) and sub.exc:
+                exc = sub.exc
+                name = None
+                if isinstance(exc, ast.Call) and isinstance(exc.func, ast.Name):
+                    name = exc.func.id
+                elif isinstance(exc, ast.Name):
+                    name = exc.id
+                if name:
+                    errors.append({"type": name, "when": "Unknown"})
+        # end walk function
+    for node in ast.walk(tree):
         if isinstance(node, ast.Subscript):
-            if isinstance(node.value, ast.Attribute) and isinstance(node.value.value, ast.Name) and node.value.value.id == 'os' and node.value.attr == 'environ':
-                key = None
-                if isinstance(node.slice, ast.Index):
-                    sl = node.slice.value
-                else:
-                    sl = node.slice
-                if isinstance(sl, ast.Constant) and isinstance(sl.value, str):
-                    env_vars.add(sl.value)
+            if (
+                isinstance(node.value, ast.Attribute)
+                and isinstance(node.value.value, ast.Name)
+                and node.value.value.id == "os"
+                and node.value.attr == "environ"
+            ):
+                key_node = node.slice
+                if isinstance(key_node, ast.Index):  # type: ignore[attr-defined]
+                    key_node = key_node.value
+                if isinstance(key_node, ast.Constant) and isinstance(key_node.value, str):
+                    env_vars.add(key_node.value)
         if isinstance(node, ast.Call):
-            if isinstance(node.func, ast.Attribute) and isinstance(node.func.value, ast.Name) and node.func.value.id == 'os' and node.func.attr == 'getenv':
-                if node.args and isinstance(node.args[0], ast.Constant) and isinstance(node.args[0].value, str):
-                    env_vars.add(node.args[0].value)
-        if isinstance(node, ast.Raise) and node.exc:
-            exc_name = None
-            if isinstance(node.exc, ast.Call) and isinstance(node.exc.func, ast.Name):
-                exc_name = node.exc.func.id
-            elif isinstance(node.exc, ast.Name):
-                exc_name = node.exc.id
-            if exc_name:
-                errors.append({'type': exc_name, 'when': 'Unknown'})
-        if isinstance(node, ast.If):
-            if isinstance(node.test, ast.Compare):
-                left = node.test.left
-                if isinstance(left, ast.Name) and left.id == '__name__':
-                    has_main = True
+            if (
+                isinstance(node.func, ast.Attribute)
+                and isinstance(node.func.value, ast.Attribute)
+                and isinstance(node.func.value.value, ast.Name)
+                and node.func.value.value.id == "os"
+                and node.func.value.attr == "environ"
+                and node.func.attr == "get"
+                and node.args
+                and isinstance(node.args[0], ast.Constant)
+                and isinstance(node.args[0].value, str)
+            ):
+                env_vars.add(node.args[0].value)
+            if (
+                isinstance(node.func, ast.Attribute)
+                and isinstance(node.func.value, ast.Name)
+                and node.func.value.id == "os"
+                and node.func.attr == "getenv"
+                and node.args
+                and isinstance(node.args[0], ast.Constant)
+                and isinstance(node.args[0].value, str)
+            ):
+                env_vars.add(node.args[0].value)
+            if isinstance(node.func, ast.Attribute) and node.func.attr == "add_argument":
+                for arg in node.args:
+                    if isinstance(arg, ast.Constant) and isinstance(arg.value, str) and arg.value.startswith("-"):
+                        cli_flags.append({"name": arg.value, "type": "unknown", "default": None})
+        if isinstance(node, ast.Constant) and isinstance(node.value, str):
+            if re.search(r"\.(json|ya?ml|toml)$", node.value):
+                config_files.add(node.value)
 
-    symbols = classes + functions
-    if has_main:
-        symbols.append({'name': '__main__', 'kind': 'cli', 'entrypoint': f'python -m {module}', 'flags': []})
-
-    record = {
-        'file': str(path),
-        'module': module.rsplit('.', 1)[0] if '.' in module else module,
-        'summary': summary,
-        'top_level_symbols': symbols,
-        'io_contracts': {'inputs': [], 'outputs': [], 'file_patterns_written': [], 'stdout_side_effects': []},
-        'dependencies': {'imports_internal': sorted(internal_imports), 'imports_external': sorted(external_imports)},
-        'errors_raised': errors,
-        'env_vars': sorted(env_vars)
+    file_record = {
+        "file": str(path.relative_to(ROOT)),
+        "module": module_name,
+        "summary": summary,
+        "public_api": public_api,
+        "cli": {"is_cli": is_cli, "flags": cli_flags, "examples": [f"python -m {module_name}"] if is_cli else []},
+        "io_contracts": {"inputs": [], "outputs": [], "patterns": []},
+        "errors_raised": errors,
+        "dependencies": {"internal": sorted(deps_internal), "external": sorted(deps_external)},
+        "evidence": [{"file": str(path.relative_to(ROOT)), "lines": "1-1"}],
+        "confidence": 0.7,
     }
-    return record
 
-# Parse all files
-file_records = [parse_file(p) for p in sorted(SRC.rglob('*.py'))]
-
-files_dir = OUT / 'files'
-files_dir.mkdir(parents=True, exist_ok=True)
-for rec in file_records:
-    rel = Path(rec['file'])
-    name = str(rel).replace('/', '__') + '.json'
-    with open(files_dir / name, 'w', encoding='utf-8') as f:
-        json.dump(rec, f, indent=2)
-
-# Aggregate modules
-pkg_records = defaultdict(list)
-for rec in file_records:
-    pkg_records[rec['module']].append(rec)
-
-modules_dir = OUT / 'modules'
-modules_dir.mkdir(parents=True, exist_ok=True)
-for pkg, recs in pkg_records.items():
-    path_globs = [f'src/{pkg.replace('.', '/')}/**/*.py']
-    imports_internal = sorted({imp for r in recs for imp in r['dependencies']['imports_internal']})
-    imports_external = sorted({imp for r in recs for imp in r['dependencies']['imports_external']})
-    last_mtime = max(Path(r['file']).stat().st_mtime for r in recs)
-    mrec = {
-        'id': pkg,
-        'path_globs': path_globs,
-        'purpose': 'Unknown',
-        'key_components': [],
-        'public_surfaces': [],
-        'data_flow': 'Unknown',
-        'dependencies': {'imports_internal': imports_internal, 'imports_external': imports_external},
-        'configs_env': {'env_vars': [], 'config_files': []},
-        'cli_entrypoints': [],
-        'invariants': [],
-        'edge_cases': [],
-        'known_gotchas': [],
-        'related_tests': [],
-        'status': {'maturity': 'Unknown', 'owners': [], 'last_touched_file_mtime': datetime.datetime.utcfromtimestamp(last_mtime).isoformat()}
+    extras = {
+        "env_vars": env_vars,
+        "config_files": config_files,
+        "is_cli": is_cli,
+        "cli_flags": cli_flags,
+        "module_name": module_name,
+        "package": module_name.rsplit(".", 1)[0] if "." in module_name else module_name,
+        "deps_internal": deps_internal,
+        "deps_external": deps_external,
+        "call_edges": call_edges,
     }
-    for r in recs:
-        for sym in r['top_level_symbols']:
-            if sym['kind'] == 'class':
-                mrec['key_components'].append({'name': sym['name'], 'kind': 'class', 'file': r['file'], 'summary': sym.get('doc', '')})
-            elif sym['kind'] == 'function' and not sym['name'].startswith('_'):
-                mrec['public_surfaces'].append({'symbol': sym['name'], 'signature': sym.get('signature', ''), 'summary': sym.get('doc', '')})
-            elif sym['kind'] == 'cli':
-                mrec['cli_entrypoints'].append({'file': r['file'], 'module': pkg, 'command': sym['entrypoint'], 'flags': sym.get('flags', [])})
-    with open(modules_dir / f'{pkg}.json', 'w', encoding='utf-8') as f:
-        json.dump(mrec, f, indent=2)
+    return file_record, extras
 
-# Inventories
-env_inventory = []
-for rec in file_records:
-    for var in rec['env_vars']:
-        env_inventory.append({'file': rec['file'], 'env_var': var, 'purpose': 'Unknown'})
-inv_dir = OUT / 'inventories'
-inv_dir.mkdir(parents=True, exist_ok=True)
-with open(inv_dir / 'env_vars.json', 'w', encoding='utf-8') as f:
-    json.dump(env_inventory, f, indent=2)
-with open(inv_dir / 'cli_tools.json', 'w', encoding='utf-8') as f:
-    json.dump([], f, indent=2)
-with open(inv_dir / 'config_files.json', 'w', encoding='utf-8') as f:
-    json.dump([], f, indent=2)
 
-# Graphs
-nodes = sorted(pkg_records.keys())
-import_edges = []
-for rec in file_records:
-    src = rec['module']
-    for dst in rec['dependencies']['imports_internal']:
-        if dst in nodes:
-            import_edges.append({'from': src, 'to': dst})
-graphs_dir = OUT / 'graphs'
-graphs_dir.mkdir(parents=True, exist_ok=True)
-with open(graphs_dir / 'import_graph.json', 'w', encoding='utf-8') as f:
-    json.dump({'nodes': nodes, 'edges': import_edges}, f, indent=2)
-with open(graphs_dir / 'call_graph.json', 'w', encoding='utf-8') as f:
-    json.dump({'nodes': [], 'edges': []}, f, indent=2)
+def write_json(path: Path, data: Any, shards: List[str]) -> None:
+    text = json.dumps(data, indent=2, ensure_ascii=False)
+    size = len(text.encode("utf-8"))
+    if size <= SIZE_LIMIT:
+        path.write_text(text, encoding="utf-8")
+    else:
+        if isinstance(data, list):
+            chunk: List[Any] = []
+            part = 1
+            for item in data:
+                chunk.append(item)
+                chunk_text = json.dumps(chunk, indent=2, ensure_ascii=False)
+                if len(chunk_text.encode("utf-8")) > SIZE_LIMIT:
+                    chunk.pop()
+                    shard_path = path.with_suffix(f".part{part:02d}.json")
+                    shard_path.write_text(json.dumps(chunk, indent=2, ensure_ascii=False), encoding="utf-8")
+                    shards.append(str(shard_path.relative_to(SEED_DIR)))
+                    part += 1
+                    chunk = [item]
+            if chunk:
+                shard_path = path.with_suffix(f".part{part:02d}.json")
+                shard_path.write_text(json.dumps(chunk, indent=2, ensure_ascii=False), encoding="utf-8")
+                shards.append(str(shard_path.relative_to(SEED_DIR)))
+        else:
+            path.write_text(text, encoding="utf-8")
 
-# Decisions
-dec_dir = OUT / 'decisions'
-dec_dir.mkdir(parents=True, exist_ok=True)
-with open(dec_dir / 'DESIGN_DECISIONS.md', 'w', encoding='utf-8') as f:
-    f.write('# Design Decisions\n\n')
-    f.write('## Pending transcripts to fold in\n- [ ] transcript_1.md\n- [ ] transcript_2.md\n- [ ] transcript_3.md (optional)\n')
-with open(dec_dir / 'decisions.json', 'w', encoding='utf-8') as f:
-    json.dump([], f, indent=2)
 
-# Schema
-schema_dir = OUT / 'schemas'
-schema_dir.mkdir(parents=True, exist_ok=True)
-seed_schema = {
-    'module_record': {
-        'type': 'object',
-        'required': ['id', 'path_globs'],
-        'properties': {
-            'id': {'type': 'string'},
-            'path_globs': {'type': 'array', 'items': {'type': 'string'}}
+def main() -> None:
+    if SEED_DIR.exists():
+        shutil.rmtree(SEED_DIR)
+    (SEED_DIR / "files").mkdir(parents=True, exist_ok=True)
+    (SEED_DIR / "modules").mkdir(parents=True, exist_ok=True)
+    (SEED_DIR / "inventories").mkdir(parents=True, exist_ok=True)
+    (SEED_DIR / "graphs").mkdir(parents=True, exist_ok=True)
+    (SEED_DIR / "decisions").mkdir(parents=True, exist_ok=True)
+    (SEED_DIR / "schemas").mkdir(parents=True, exist_ok=True)
+
+    file_records: List[Dict[str, Any]] = []
+    packages: set[str] = set()
+    cli_inventory: List[Dict[str, Any]] = []
+    env_inventory: List[Dict[str, Any]] = []
+    config_inventory: List[Dict[str, Any]] = []
+    import_edges: set[Tuple[str, str]] = set()
+    call_edges: set[Tuple[str, str]] = set()
+    module_deps_internal: Dict[str, set[str]] = defaultdict(set)
+    module_deps_external: Dict[str, set[str]] = defaultdict(set)
+    module_env: Dict[str, set[str]] = defaultdict(set)
+    module_configs: Dict[str, set[str]] = defaultdict(set)
+    module_cli: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+    file_paths = discover_py_files()
+
+    for path in file_paths:
+        record, extra = parse_file(path)
+        file_records.append(record)
+        packages.add(extra["package"])
+        if extra["is_cli"]:
+            cli_inventory.append(
+                {
+                    "file": record["file"],
+                    "module": record["module"],
+                    "command": f"python -m {record['module']}",
+                    "flags": extra["cli_flags"],
+                    "examples": [f"python -m {record['module']}"]
+                }
+            )
+            module_cli[extra["package"]].append(
+                {
+                    "file": record["file"],
+                    "module": record["module"],
+                    "command": f"python -m {record['module']}",
+                    "flags": extra["cli_flags"],
+                }
+            )
+        for v in extra["env_vars"]:
+            env_inventory.append({"env_var": v, "file": record["file"]})
+            module_env[extra["package"].split('.')[0] if '.' in extra["package"] else extra["package"]].add(v)
+        for c in extra["config_files"]:
+            config_inventory.append({"file": record["file"], "config": c})
+            module_configs[extra["package"].split('.')[0] if '.' in extra["package"] else extra["package"]].add(c)
+        module_deps_internal[extra["package"]].update(extra["deps_internal"])
+        module_deps_external[extra["package"]].update(extra["deps_external"])
+        for dst in extra["deps_internal"]:
+            import_edges.add((extra["package"], dst))
+        for frm, to in extra["call_edges"]:
+            call_edges.add((frm, to))
+
+    shards: List[str] = []
+    files_dir = SEED_DIR / "files"
+    for rec in file_records:
+        out_path = files_dir / sanitize_filename(Path(rec["file"]))
+        write_json(out_path, rec, shards)
+
+    modules_dir = SEED_DIR / "modules"
+    for pkg in sorted(packages):
+        pkg_files = [r for r in file_records if r["module"].startswith(pkg + ".") or r["module"] == pkg]
+        last_mtime = max((ROOT / r["file"]).stat().st_mtime for r in pkg_files)
+        key_components = []
+        public_surfaces = []
+        for r in pkg_files:
+            for sym in r["public_api"]:
+                if sym["kind"] == "class":
+                    key_components.append({"name": sym["name"], "kind": "class", "file": r["file"], "summary": ""})
+                elif sym["kind"] == "function" and not sym["name"].startswith("_"):
+                    public_surfaces.append({"symbol": sym["name"], "signature": sym["signature"], "summary": ""})
+        mod_record = {
+            "id": pkg,
+            "path_globs": [f"src/{pkg.replace('.', '/')}/**/*.py"],
+            "purpose": "Auto-generated module summary.",
+            "key_components": key_components,
+            "public_surfaces": public_surfaces,
+            "data_flow": "Unknown",
+            "dependencies": {
+                "imports_internal": sorted(module_deps_internal.get(pkg, set())),
+                "imports_external": sorted(module_deps_external.get(pkg, set())),
+            },
+            "configs_env": {
+                "env_vars": sorted(module_env.get(pkg.split('.')[0] if '.' in pkg else pkg, set())),
+                "config_files": sorted(module_configs.get(pkg.split('.')[0] if '.' in pkg else pkg, set())),
+            },
+            "cli_entrypoints": module_cli.get(pkg, []),
+            "invariants": [],
+            "edge_cases": [],
+            "known_gotchas": [],
+            "related_tests": [],
+            "status": {
+                "maturity": "alpha",
+                "owners": [],
+                "last_touched_file_mtime": dt.datetime.utcfromtimestamp(last_mtime).isoformat(),
+            },
         }
-    },
-    'file_record': {
-        'type': 'object',
-        'required': ['file', 'module'],
-        'properties': {
-            'file': {'type': 'string'},
-            'module': {'type': 'string'}
-        }
-    }
-}
-with open(schema_dir / 'seedpack.schema.json', 'w', encoding='utf-8') as f:
-    json.dump(seed_schema, f, indent=2)
+        write_json(modules_dir / f"{pkg}.json", mod_record, shards)
 
-# README and index
-with open(OUT / 'README.md', 'w', encoding='utf-8') as f:
-    f.write('# Seed Pack\n\nThis directory contains a machine-readable seed pack summarizing the project.\n')
-index = {
-    'project': ROOT.name,
-    'generated_at': datetime.datetime.utcnow().isoformat(),
-    'code_root': 'src',
-    'modules': MODULES,
-    'files_indexed': len(file_records),
-    'graphs': {
-        'import_graph': 'graphs/import_graph.json',
-        'call_graph': 'graphs/call_graph.json'
-    },
-    'inventories': {
-        'cli_tools': 'inventories/cli_tools.json',
-        'env_vars': 'inventories/env_vars.json',
-        'config_files': 'inventories/config_files.json'
-    },
-    'decisions': {
-        'markdown': 'decisions/DESIGN_DECISIONS.md',
-        'structured': 'decisions/decisions.json'
-    },
-    'schema_version': '1.0.0'
-}
-with open(OUT / 'index.json', 'w', encoding='utf-8') as f:
-    json.dump(index, f, indent=2)
+    write_json(SEED_DIR / "inventories" / "cli_tools.json", sorted(cli_inventory, key=lambda x: x["command"]), shards)
+    write_json(SEED_DIR / "inventories" / "env_vars.json", env_inventory, shards)
+    write_json(SEED_DIR / "inventories" / "config_files.json", config_inventory, shards)
+
+    import_graph = {
+        "nodes": sorted(set(src for src, _ in import_edges) | set(dst for _, dst in import_edges)),
+        "edges": [
+            {"from": src, "to": dst}
+            for src, dst in sorted(import_edges)
+        ],
+    }
+    write_json(SEED_DIR / "graphs" / "import_graph.json", import_graph, shards)
+
+    call_graph = {
+        "edges": [
+            {"from": frm, "to": to}
+            for frm, to in sorted(call_edges)
+        ]
+    }
+    write_json(SEED_DIR / "graphs" / "call_graph.json", call_graph, shards)
+
+    # decisions
+    decisions_md = SEED_DIR / "decisions" / "DESIGN_DECISIONS.md"
+    decisions_md.write_text(
+        "# Design Decisions\n\n## Pending transcripts to fold in\n- [ ] transcript_1.md\n- [ ] transcript_2.md\n- [ ] transcript_3.md (optional)\n",
+        encoding="utf-8",
+    )
+    write_json(SEED_DIR / "decisions" / "decisions.json", [], shards)
+
+    # schemas index and placeholders
+    schemas_entries = []
+    schemas_dir = SEED_DIR / "schemas"
+    base_schemas = [
+        ("Chapter", ROOT / "docs" / "chat_seed" / "04-schemas" / "chapter.json"),
+        ("Segment", ROOT / "docs" / "chat_seed" / "04-schemas" / "segment.json"),
+    ]
+    for name, path in base_schemas:
+        if path.exists():
+            schemas_entries.append({"name": name, "path": str(path.relative_to(ROOT)), "inferred": False})
+        else:
+            placeholder = schemas_dir / f"{name.lower()}.schema.json"
+            placeholder.write_text(
+                json.dumps({"$schema": "http://json-schema.org/draft-07/schema#", "title": name, "type": "object"}, indent=2),
+                encoding="utf-8",
+            )
+            schemas_entries.append({"name": name, "path": str(placeholder.relative_to(ROOT)), "inferred": True})
+    casting_path = schemas_dir / "casting_plan.schema.json"
+    casting_path.write_text(
+        json.dumps({"$schema": "http://json-schema.org/draft-07/schema#", "title": "CastingPlan", "type": "object"}, indent=2),
+        encoding="utf-8",
+    )
+    schemas_entries.append({"name": "CastingPlan", "path": str(casting_path.relative_to(ROOT)), "inferred": True})
+    write_json(SEED_DIR / "schemas_index.json", {"schemas": schemas_entries}, shards)
+
+    # umbrella schema (static)
+    seed_schema = {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "$id": "seedpack.schema.json",
+        "$defs": {
+            "file_record": {
+                "type": "object",
+                "required": [
+                    "file",
+                    "module",
+                    "summary",
+                    "public_api",
+                    "cli",
+                    "io_contracts",
+                    "errors_raised",
+                    "dependencies",
+                    "evidence",
+                    "confidence",
+                ],
+                "properties": {
+                    "file": {"type": "string"},
+                    "module": {"type": "string"},
+                    "summary": {"type": "string"},
+                    "public_api": {"type": "array", "items": {"type": "object"}},
+                    "cli": {"type": "object"},
+                    "io_contracts": {"type": "object"},
+                    "errors_raised": {"type": "array", "items": {"type": "object"}},
+                    "dependencies": {"type": "object"},
+                    "evidence": {"type": "array", "items": {"type": "object"}},
+                    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+                },
+            },
+            "module_record": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "path_globs",
+                    "purpose",
+                    "key_components",
+                    "public_surfaces",
+                    "data_flow",
+                    "dependencies",
+                    "configs_env",
+                    "cli_entrypoints",
+                    "invariants",
+                    "edge_cases",
+                    "status",
+                ],
+                "properties": {
+                    "id": {"type": "string"},
+                    "path_globs": {"type": "array", "items": {"type": "string"}},
+                    "purpose": {"type": "string"},
+                    "key_components": {"type": "array", "items": {"type": "object"}},
+                    "public_surfaces": {"type": "array", "items": {"type": "object"}},
+                    "data_flow": {"type": "string"},
+                    "dependencies": {"type": "object"},
+                    "configs_env": {"type": "object"},
+                    "cli_entrypoints": {"type": "array", "items": {"type": "object"}},
+                    "invariants": {"type": "array", "items": {"type": "string"}},
+                    "edge_cases": {"type": "array", "items": {"type": "string"}},
+                    "status": {"type": "object"},
+                },
+            },
+            "cli_tools": {"type": "array", "items": {"type": "object"}},
+            "env_vars": {"type": "array", "items": {"type": "object"}},
+            "config_files": {"type": "array", "items": {"type": "object"}},
+            "import_graph": {
+                "type": "object",
+                "required": ["nodes", "edges"],
+                "properties": {
+                    "nodes": {"type": "array", "items": {"type": "string"}},
+                    "edges": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "required": ["from", "to"],
+                            "properties": {
+                                "from": {"type": "string"},
+                                "to": {"type": "string"},
+                            },
+                        },
+                    },
+                },
+            },
+            "call_graph": {
+                "type": "object",
+                "required": ["edges"],
+                "properties": {
+                    "edges": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "required": ["from", "to"],
+                            "properties": {
+                                "from": {"type": "string"},
+                                "to": {"type": "string"},
+                            },
+                        },
+                    }
+                },
+            },
+            "index": {
+                "type": "object",
+                "required": [
+                    "project",
+                    "generated_at",
+                    "code_root",
+                    "modules",
+                    "files_indexed",
+                    "graphs",
+                    "inventories",
+                    "decisions",
+                    "schemas_index",
+                    "schema_version",
+                    "shards",
+                ],
+                "properties": {
+                    "project": {"type": "string"},
+                    "generated_at": {"type": "string"},
+                    "code_root": {"type": "string"},
+                    "modules": {"type": "array", "items": {"type": "string"}},
+                    "files_indexed": {"type": "integer"},
+                    "graphs": {"type": "object"},
+                    "inventories": {"type": "object"},
+                    "decisions": {"type": "object"},
+                    "schemas_index": {"type": "string"},
+                    "schema_version": {"type": "string"},
+                    "shards": {"type": "array", "items": {"type": "string"}},
+                },
+            },
+            "schemas_index": {
+                "type": "object",
+                "required": ["schemas"],
+                "properties": {
+                    "schemas": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "required": ["name", "path", "inferred"],
+                            "properties": {
+                                "name": {"type": "string"},
+                                "path": {"type": "string"},
+                                "inferred": {"type": "boolean"},
+                            },
+                        },
+                    }
+                },
+            },
+        },
+    }
+    write_json(SEED_DIR / "schemas" / "seedpack.schema.json", seed_schema, shards)
+
+    # README
+    (SEED_DIR / "README.md").write_text(
+        "# Seed Pack\n\nThis folder contains machine-readable context. Load `index.json` and follow paths for modules, files, graphs, inventories, and design decisions.",
+        encoding="utf-8",
+    )
+
+    index = {
+        "project": ROOT.name,
+        "generated_at": dt.datetime.utcnow().isoformat(),
+        "code_root": "src",
+        "modules": sorted(packages),
+        "files_indexed": len(file_records),
+        "graphs": {
+            "import_graph": "graphs/import_graph.json",
+            "call_graph": "graphs/call_graph.json",
+        },
+        "inventories": {
+            "cli_tools": "inventories/cli_tools.json",
+            "env_vars": "inventories/env_vars.json",
+            "config_files": "inventories/config_files.json",
+        },
+        "decisions": {
+            "markdown": "decisions/DESIGN_DECISIONS.md",
+            "structured": "decisions/decisions.json",
+        },
+        "schemas_index": "schemas_index.json",
+        "schema_version": "1.0.0",
+        "shards": sorted(shards),
+    }
+    write_json(SEED_DIR / "index.json", index, shards)
+
+
+if __name__ == "__main__":
+    main()

@@ -3,67 +3,67 @@
   "path_globs": [
     "src/abm/ingestion/**/*.py"
   ],
-  "purpose": "Unknown",
+  "purpose": "Auto-generated module summary.",
   "key_components": [
     {
       "name": "InsertResult",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/db_insert.py",
-      "summary": "Unknown"
+      "file": "src/abm/ingestion/db_insert.py",
+      "summary": ""
     },
     {
       "name": "PgInserter",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/db_insert.py",
-      "summary": "Unknown"
+      "file": "src/abm/ingestion/db_insert.py",
+      "summary": ""
     },
     {
       "name": "PipelineOptions",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/ingest_pdf.py",
-      "summary": "Unknown"
+      "file": "src/abm/ingestion/ingest_pdf.py",
+      "summary": ""
     },
     {
       "name": "PdfIngestPipeline",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/ingest_pdf.py",
-      "summary": "Unknown"
+      "file": "src/abm/ingestion/ingest_pdf.py",
+      "summary": ""
     },
     {
       "name": "RawExtractOptions",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/pdf_to_raw_text.py",
-      "summary": "Unknown"
+      "file": "src/abm/ingestion/pdf_to_raw_text.py",
+      "summary": ""
     },
     {
       "name": "RawPdfTextExtractor",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/pdf_to_raw_text.py",
-      "summary": "Low-level PDF\u2192text extractor that preserves line/blank-line fidelity. Primary responsibilities:\n- Extract per-page text blocks (minimal processing)\n- Assemble pages into a single text buffer\n- Optionally write to disk\n\nUse `extract_pages` + `assemble_output` if you need an in-memory object\nfor further processing before writing."
+      "file": "src/abm/ingestion/pdf_to_raw_text.py",
+      "summary": ""
     },
     {
       "name": "WellDoneOptions",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/raw_to_welldone.py",
-      "summary": "Unknown"
+      "file": "src/abm/ingestion/raw_to_welldone.py",
+      "summary": ""
     },
     {
       "name": "RawToWellDone",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/raw_to_welldone.py",
-      "summary": "Unknown"
+      "file": "src/abm/ingestion/raw_to_welldone.py",
+      "summary": ""
     },
     {
       "name": "WDToJSONOptions",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/welldone_to_json.py",
-      "summary": "Unknown"
+      "file": "src/abm/ingestion/welldone_to_json.py",
+      "summary": ""
     },
     {
       "name": "WellDoneToJSONL",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/welldone_to_json.py",
-      "summary": "Unknown"
+      "file": "src/abm/ingestion/welldone_to_json.py",
+      "summary": ""
     }
   ],
   "public_surfaces": [],
@@ -92,27 +92,138 @@
     ]
   },
   "configs_env": {
-    "env_vars": [],
-    "config_files": []
+    "env_vars": [
+      "ABM_PIPER_BIN",
+      "ABM_PIPER_DRYRUN",
+      "ABM_PIPER_VOICES_DIR",
+      "ABM_XTTS_DEVICE",
+      "ABM_XTTS_DRYRUN",
+      "ABM_XTTS_MODEL",
+      "DATABASE_URL",
+      "OPENAI_API_KEY"
+    ],
+    "config_files": [
+      ".json",
+      ".onnx.json",
+      ".qc.json",
+      ".synth.json",
+      "Path to Stage A combined.json",
+      "Path to Stage-A combined.json",
+      "Path to chapters.json",
+      "_ingest_meta.json",
+      "_meta.json",
+      "alias_patch.yaml",
+      "back_matter.json",
+      "book_manifest.json",
+      "casting_proposed.yaml",
+      "casting_summary.json",
+      "ch_(\\d+)\\.synth\\.json",
+      "ch_*.synth.json",
+      "chapters.json",
+      "data/ann/*/combined.json",
+      "data/ann/*/combined_refined.json",
+      "front_matter.json",
+      "quotes.json",
+      "synth_manifest.json",
+      "toc.json"
+    ]
   },
   "cli_entrypoints": [
     {
-      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/ingest_pdf.py",
-      "module": "abm.ingestion",
+      "file": "src/abm/ingestion/ingest_pdf.py",
+      "module": "abm.ingestion.ingest_pdf",
       "command": "python -m abm.ingestion.ingest_pdf",
-      "flags": []
+      "flags": [
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--mode",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--preserve-form-feeds",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--no-reflow",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--no-dehyphenate",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--no-dedupe-spaces",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--no-strip-trailing",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--insert-pg",
+          "type": "unknown",
+          "default": null
+        }
+      ]
     },
     {
-      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/pdf_to_raw_text.py",
-      "module": "abm.ingestion",
+      "file": "src/abm/ingestion/pdf_to_raw_text.py",
+      "module": "abm.ingestion.pdf_to_raw_text",
       "command": "python -m abm.ingestion.pdf_to_raw_text",
-      "flags": []
+      "flags": [
+        {
+          "name": "--newline",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--preserve-form-feeds",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--no-strip-trailing-spaces",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--dedupe-inline-spaces",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--fix-short-wraps",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--artifact-compat",
+          "type": "unknown",
+          "default": null
+        }
+      ]
     },
     {
-      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/welldone_to_json.py",
-      "module": "abm.ingestion",
+      "file": "src/abm/ingestion/welldone_to_json.py",
+      "module": "abm.ingestion.welldone_to_json",
       "command": "python -m abm.ingestion.welldone_to_json",
-      "flags": []
+      "flags": [
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        }
+      ]
     }
   ],
   "invariants": [],
@@ -120,8 +231,8 @@
   "known_gotchas": [],
   "related_tests": [],
   "status": {
-    "maturity": "Unknown",
+    "maturity": "alpha",
     "owners": [],
-    "last_touched_file_mtime": "2025-09-14T19:51:48.027289"
+    "last_touched_file_mtime": "2025-09-14T20:04:37.476314"
   }
 }

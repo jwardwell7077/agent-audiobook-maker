@@ -1,0 +1,33 @@
+{
+  "file": "src/abm/voice/engines/__init__.py",
+  "module": "abm.voice.engines.__init__",
+  "summary": "TTS engine adapters for the ``abm.voice`` pipeline.",
+  "public_api": [],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.voice.engines.piper_engine",
+      "abm.voice.engines.xtts_engine"
+    ],
+    "external": [
+      "__future__"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/voice/engines/__init__.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

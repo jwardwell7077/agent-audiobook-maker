@@ -1,0 +1,57 @@
+{
+  "file": "src/abm/audio/qc.py",
+  "module": "abm.audio.qc",
+  "summary": "Quality-control helpers for rendered audio.",
+  "public_api": [
+    {
+      "name": "measure_lufs",
+      "signature": "(y, sr)",
+      "kind": "function"
+    },
+    {
+      "name": "peak_dbfs",
+      "signature": "(y)",
+      "kind": "function"
+    },
+    {
+      "name": "duration_s",
+      "signature": "(y, sr)",
+      "kind": "function"
+    },
+    {
+      "name": "write_qc_json",
+      "signature": "(path, lufs, peak_dbfs, duration_s, segments)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "json",
+      "logging",
+      "numpy",
+      "pathlib",
+      "pyloudnorm",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/audio/qc.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

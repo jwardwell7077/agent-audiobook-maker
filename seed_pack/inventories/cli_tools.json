@@ -1,1 +1,1505 @@
-[]
+[
+  {
+    "file": "src/abm/annotate/annotate_cli.py",
+    "module": "abm.annotate.annotate_cli",
+    "command": "python -m abm.annotate.annotate_cli",
+    "flags": [
+      {
+        "name": "--in",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-json",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-md",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--metrics-jsonl",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-roster",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--stages",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--spacy-model",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-coref",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--coref",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--status",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--mode",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--llm",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--remove-heading",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--treat-single-as-thought",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--only",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--roster-scope",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-roster-ner",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--parse-mode",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--doc-cache",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--pipe-batch-size",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--in",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-json",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-md",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--metrics-jsonl",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-roster",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--stages",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--spacy-model",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-coref",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--coref",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--status",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--mode",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--llm",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--remove-heading",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--treat-single-as-thought",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--only",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--roster-scope",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-roster-ner",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--parse-mode",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--doc-cache",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--pipe-batch-size",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.annotate.annotate_cli"
+    ]
+  },
+  {
+    "file": "src/abm/annotate/bnlp_refine.py",
+    "module": "abm.annotate.bnlp_refine",
+    "command": "python -m abm.annotate.bnlp_refine",
+    "flags": [
+      {
+        "name": "--tagged",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--max-chapters",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-pipeline",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-size",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-gate-threshold",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-top-n",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-try-big",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-tmp-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tagged",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--max-chapters",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-pipeline",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-size",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-gate-threshold",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-top-n",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-try-big",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-tmp-dir",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.annotate.bnlp_refine"
+    ]
+  },
+  {
+    "file": "src/abm/annotate/llm_prep_cli.py",
+    "module": "abm.annotate.llm_prep_cli",
+    "command": "python -m abm.annotate.llm_prep_cli",
+    "flags": [
+      {
+        "name": "--in",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--conf-threshold",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--in",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--conf-threshold",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.annotate.llm_prep_cli"
+    ]
+  },
+  {
+    "file": "src/abm/annotate/llm_refine.py",
+    "module": "abm.annotate.llm_refine",
+    "command": "python -m abm.annotate.llm_refine",
+    "flags": [
+      {
+        "name": "--tagged",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-json",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-md",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--endpoint",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--model",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--manage-llm",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--skip-threshold",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--votes",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--cache",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--metrics-jsonl",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--max-concurrency",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--cache-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--eval-after",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--eval-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--status",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tagged",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-json",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-md",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--endpoint",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--model",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--manage-llm",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--skip-threshold",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--votes",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--cache",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--metrics-jsonl",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--max-concurrency",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--cache-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--eval-after",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--eval-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--status",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.annotate.llm_refine"
+    ]
+  },
+  {
+    "file": "src/abm/audio/render_book.py",
+    "module": "abm.audio.render_book",
+    "command": "python -m abm.audio.render_book",
+    "flags": [
+      {
+        "name": "--scripts-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--engine-workers",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--start",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--end",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--resume",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--show-progress",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--log-level",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--scripts-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--engine-workers",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--start",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--end",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--resume",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--show-progress",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--log-level",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.audio.render_book"
+    ]
+  },
+  {
+    "file": "src/abm/audio/render_chapter.py",
+    "module": "abm.audio.render_chapter",
+    "command": "python -m abm.audio.render_chapter",
+    "flags": [
+      {
+        "name": "--script",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tmp-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--lufs",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--peak",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--crossfade-ms",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--engine-workers",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--workers",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--show-progress",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--save-master-wav",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--save-mp3",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--script",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tmp-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--lufs",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--peak",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--crossfade-ms",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--engine-workers",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--workers",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--show-progress",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--save-master-wav",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--save-mp3",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.audio.render_chapter"
+    ]
+  },
+  {
+    "file": "src/abm/audio/synthesis_export.py",
+    "module": "abm.audio.synthesis_export",
+    "command": "python -m abm.audio.synthesis_export",
+    "flags": [
+      {
+        "name": "--tagged",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--only",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--default-engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--default-pause",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tagged",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--only",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--default-engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--default-pause",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.audio.synthesis_export"
+    ]
+  },
+  {
+    "file": "src/abm/audit/__main__.py",
+    "module": "abm.audit.__main__",
+    "command": "python -m abm.audit.__main__",
+    "flags": [],
+    "examples": [
+      "python -m abm.audit.__main__"
+    ]
+  },
+  {
+    "file": "src/abm/audit/cli.py",
+    "module": "abm.audit.cli",
+    "command": "python -m abm.audit.cli",
+    "flags": [
+      {
+        "name": "--refined",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--base",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--metrics-jsonl",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--chapters",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--plots",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--html",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--prefix",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--title",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--stdout-summary",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--refined",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--base",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--metrics-jsonl",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--chapters",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--plots",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--html",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--prefix",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--title",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--stdout-summary",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.audit.cli"
+    ]
+  },
+  {
+    "file": "src/abm/classifier/classifier_cli.py",
+    "module": "abm.classifier.classifier_cli",
+    "command": "python -m abm.classifier.classifier_cli",
+    "flags": [],
+    "examples": [
+      "python -m abm.classifier.classifier_cli"
+    ]
+  },
+  {
+    "file": "src/abm/ingestion/ingest_pdf.py",
+    "module": "abm.ingestion.ingest_pdf",
+    "command": "python -m abm.ingestion.ingest_pdf",
+    "flags": [
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--mode",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--preserve-form-feeds",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-reflow",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-dehyphenate",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-dedupe-spaces",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-strip-trailing",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--insert-pg",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.ingestion.ingest_pdf"
+    ]
+  },
+  {
+    "file": "src/abm/ingestion/pdf_to_raw_text.py",
+    "module": "abm.ingestion.pdf_to_raw_text",
+    "command": "python -m abm.ingestion.pdf_to_raw_text",
+    "flags": [
+      {
+        "name": "--newline",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--preserve-form-feeds",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-strip-trailing-spaces",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--dedupe-inline-spaces",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--fix-short-wraps",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--artifact-compat",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.ingestion.pdf_to_raw_text"
+    ]
+  },
+  {
+    "file": "src/abm/ingestion/welldone_to_json.py",
+    "module": "abm.ingestion.welldone_to_json",
+    "command": "python -m abm.ingestion.welldone_to_json",
+    "flags": [
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.ingestion.welldone_to_json"
+    ]
+  },
+  {
+    "file": "src/abm/profiles/alias_cli.py",
+    "module": "abm.profiles.alias_cli",
+    "command": "python -m abm.profiles.alias_cli",
+    "flags": [
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tau-auto",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tau-review",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--use-llm",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--model",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--proposals",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tau-auto",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tau-review",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--use-llm",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--model",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tau-auto",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tau-review",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--use-llm",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--model",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--proposals",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tau-auto",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tau-review",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--use-llm",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--model",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.profiles.alias_cli"
+    ]
+  },
+  {
+    "file": "src/abm/profiles/profiles_cli.py",
+    "module": "abm.profiles.profiles_cli",
+    "command": "python -m abm.profiles.profiles_cli",
+    "flags": [
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--prefer-engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--voices-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--n-top",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--prefer-engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--voices-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--n-top",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.profiles.profiles_cli"
+    ]
+  },
+  {
+    "file": "src/abm/voice/piper_casting.py",
+    "module": "abm.voice.piper_casting",
+    "command": "python -m abm.voice.piper_casting",
+    "flags": [
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--max-chars",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--max-chars",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.voice.piper_casting"
+    ]
+  },
+  {
+    "file": "src/abm/voice/piper_catalog.py",
+    "module": "abm.voice.piper_catalog",
+    "command": "python -m abm.voice.piper_catalog",
+    "flags": [
+      {
+        "name": "--voices-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--json",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--voices-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--json",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.voice.piper_catalog"
+    ]
+  },
+  {
+    "file": "src/abm/voice/voicecasting_cli.py",
+    "module": "abm.voice.voicecasting_cli",
+    "command": "python -m abm.voice.voicecasting_cli",
+    "flags": [
+      {
+        "name": "--combined",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-cast",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--top-k",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--minor-pool",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--combined",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-cast",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--top-k",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--minor-pool",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.voice.voicecasting_cli"
+    ]
+  }
+]

@@ -1,0 +1,30 @@
+{
+  "file": "src/abm/audit/__init__.py",
+  "module": "abm.audit.__init__",
+  "summary": "Lightweight auditing utilities for annotation evaluation.",
+  "public_api": [],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "cli"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/audit/__init__.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

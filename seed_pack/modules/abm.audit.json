@@ -3,101 +3,101 @@
   "path_globs": [
     "src/abm/audit/**/*.py"
   ],
-  "purpose": "Unknown",
+  "purpose": "Auto-generated module summary.",
   "key_components": [
     {
       "name": "Span",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/audit/schemas.py",
-      "summary": "Unknown"
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
     },
     {
       "name": "Chapter",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/audit/schemas.py",
-      "summary": "Unknown"
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
     },
     {
       "name": "ChapterStat",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/audit/schemas.py",
-      "summary": "Unknown"
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
     },
     {
       "name": "EvalSummary",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/audit/schemas.py",
-      "summary": "Unknown"
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
     },
     {
       "name": "VoteStats",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/audit/schemas.py",
-      "summary": "Unknown"
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
     },
     {
       "name": "ConfusionPair",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/audit/schemas.py",
-      "summary": "Unknown"
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
     },
     {
       "name": "ConfusionSummary",
       "kind": "class",
-      "file": "/workspace/agent-audiobook-maker/src/abm/audit/schemas.py",
-      "summary": "Unknown"
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
     }
   ],
   "public_surfaces": [
     {
       "symbol": "main",
       "signature": "(argv)",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "load_doc",
       "signature": "(path)",
-      "summary": "Load a JSON document from ``path``."
+      "summary": ""
     },
     {
       "symbol": "compute_basic_metrics",
       "signature": "(refined, base, worst_n)",
-      "summary": "Compute headline statistics for a refined annotation document."
+      "summary": ""
     },
     {
       "symbol": "plot_top_speakers",
       "signature": "(counter, out_png)",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "plot_unknown_by_chapter",
       "signature": "(rows, out_png)",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "plot_vote_margin_hist",
       "signature": "(margins, out_png)",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "md_to_html",
       "signature": "(md_path, html_path)",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "render_markdown",
       "signature": "(summary, vote, conf, out_md, assets_prefix_dir, title)",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "compute_confusion",
       "signature": "(base_doc, refined_doc)",
-      "summary": "Unknown"
+      "summary": ""
     },
     {
       "symbol": "parse_metrics_jsonl",
       "signature": "(path)",
-      "summary": "Parse a metrics JSONL file into aggregate statistics."
+      "summary": ""
     }
   ],
   "data_flow": "Unknown",
@@ -127,21 +127,155 @@
     ]
   },
   "configs_env": {
-    "env_vars": [],
-    "config_files": []
+    "env_vars": [
+      "ABM_PIPER_BIN",
+      "ABM_PIPER_DRYRUN",
+      "ABM_PIPER_VOICES_DIR",
+      "ABM_XTTS_DEVICE",
+      "ABM_XTTS_DRYRUN",
+      "ABM_XTTS_MODEL",
+      "DATABASE_URL",
+      "OPENAI_API_KEY"
+    ],
+    "config_files": [
+      ".json",
+      ".onnx.json",
+      ".qc.json",
+      ".synth.json",
+      "Path to Stage A combined.json",
+      "Path to Stage-A combined.json",
+      "Path to chapters.json",
+      "_ingest_meta.json",
+      "_meta.json",
+      "alias_patch.yaml",
+      "back_matter.json",
+      "book_manifest.json",
+      "casting_proposed.yaml",
+      "casting_summary.json",
+      "ch_(\\d+)\\.synth\\.json",
+      "ch_*.synth.json",
+      "chapters.json",
+      "data/ann/*/combined.json",
+      "data/ann/*/combined_refined.json",
+      "front_matter.json",
+      "quotes.json",
+      "synth_manifest.json",
+      "toc.json"
+    ]
   },
   "cli_entrypoints": [
     {
-      "file": "/workspace/agent-audiobook-maker/src/abm/audit/__main__.py",
-      "module": "abm.audit",
+      "file": "src/abm/audit/__main__.py",
+      "module": "abm.audit.__main__",
       "command": "python -m abm.audit.__main__",
       "flags": []
     },
     {
-      "file": "/workspace/agent-audiobook-maker/src/abm/audit/cli.py",
-      "module": "abm.audit",
+      "file": "src/abm/audit/cli.py",
+      "module": "abm.audit.cli",
       "command": "python -m abm.audit.cli",
-      "flags": []
+      "flags": [
+        {
+          "name": "--refined",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--base",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--metrics-jsonl",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--chapters",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--plots",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--html",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--prefix",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--title",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--stdout-summary",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--refined",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--base",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--metrics-jsonl",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--chapters",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--plots",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--html",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--prefix",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--title",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--stdout-summary",
+          "type": "unknown",
+          "default": null
+        }
+      ]
     }
   ],
   "invariants": [],
@@ -149,8 +283,8 @@
   "known_gotchas": [],
   "related_tests": [],
   "status": {
-    "maturity": "Unknown",
+    "maturity": "alpha",
     "owners": [],
-    "last_touched_file_mtime": "2025-09-14T19:51:48.027289"
+    "last_touched_file_mtime": "2025-09-14T20:04:37.476314"
   }
 }
