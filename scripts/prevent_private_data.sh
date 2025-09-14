@@ -30,6 +30,11 @@ for f in "${files[@]}"; do
     continue
   fi
 
+  # Allow under tests/ (test names may contain keywords like 'mvs')
+  if [[ "$f" == tests/* ]]; then
+    continue
+  fi
+
   # Block any path containing 'mvs' (case-insensitive)
   if [[ "$f" =~ [Mm][Vv][Ss] ]]; then
     blocked+=("$f [contains 'mvs']")
