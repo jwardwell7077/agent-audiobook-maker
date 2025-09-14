@@ -14,8 +14,25 @@ SEED_DIR = ROOT / "seed_pack"
 SIZE_LIMIT = 500 * 1024  # 500 KB
 
 
-def sanitize_filename(path: Path) -> str:
-    return str(path).replace("/", "__") + ".json"
+def relpath(p: Path) -> str:
+    return str(p.resolve().relative_to(ROOT))
+
+
+def sanitize_filename(p: Path) -> str:
+    return relpath(p).replace("/", "__")
+
+
+def discover_modules() -> List[str]:
+    mods: set[str] = set()
+    for py in SRC.rglob("*.py"):
+        if ("__pycache__" in py.parts or ".egg-info" in py.parts or any(part.startswith(".") for part in py.parts) or "tests" in py.parts or py == SRC / "__init__.py"):
+            continue
+        rel = py.relative_to(SRC).with_suffix("")
+        mods.add(".".join(rel.parts))
+    return sorted(mods)
+
+
+MODULES = discover_modules()
 
 
 def discover_py_files() -> List[Path]:
@@ -191,7 +208,7 @@ def parse_file(path: Path) -> Tuple[Dict[str, Any], Dict[str, Any]]:
                 config_files.add(node.value)
 
     file_record = {
-        "file": str(path.relative_to(ROOT)),
+        "file": relpath(path),
         "module": module_name,
         "summary": summary,
         "public_api": public_api,
@@ -199,7 +216,7 @@ def parse_file(path: Path) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         "io_contracts": {"inputs": [], "outputs": [], "patterns": []},
         "errors_raised": errors,
         "dependencies": {"internal": sorted(deps_internal), "external": sorted(deps_external)},
-        "evidence": [{"file": str(path.relative_to(ROOT)), "lines": "1-1"}],
+        "evidence": [{"file": relpath(path), "lines": "1-1"}],
         "confidence": 0.7,
     }
 
@@ -267,13 +284,10 @@ def main() -> None:
     module_configs: Dict[str, set[str]] = defaultdict(set)
     module_cli: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
     file_paths = discover_py_files()
-    module_names: set[str] = set()
 
     for path in file_paths:
         record, extra = parse_file(path)
         file_records.append(record)
-
-        module_names.add(extra["module_name"])
 
         pkg_full = extra["package"]
         parts = pkg_full.split(".")
@@ -309,7 +323,7 @@ def main() -> None:
     shards: List[str] = []
     files_dir = SEED_DIR / "files"
     for rec in file_records:
-        out_path = files_dir / sanitize_filename(Path(rec["file"]))
+        out_path = files_dir / f"{sanitize_filename(Path(rec['file']))}.json"
         write_json(out_path, rec, shards)
 
     modules_dir = SEED_DIR / "modules"
@@ -364,12 +378,12 @@ def main() -> None:
         shards,
     )
 
-    import_nodes = module_names | {dst for _, dst in import_edges}
     import_graph = {
-        "nodes": sorted(import_nodes),
+        "nodes": MODULES,
         "edges": [
             {"from": src, "to": dst}
             for src, dst in sorted(import_edges)
+            if src in MODULES and dst in MODULES
         ],
     }
     write_json(SEED_DIR / "graphs" / "import_graph.json", import_graph, shards)
@@ -391,28 +405,22 @@ def main() -> None:
     write_json(SEED_DIR / "decisions" / "decisions.json", [], shards)
 
     # schemas index and placeholders
-    schemas_entries = []
+    schemas_entries: List[Dict[str, Any]] = []
     schemas_dir = SEED_DIR / "schemas"
-    base_schemas = [
-        ("Chapter", ROOT / "docs" / "chat_seed" / "04-schemas" / "chapter.json"),
-        ("Segment", ROOT / "docs" / "chat_seed" / "04-schemas" / "segment.json"),
-    ]
-    for name, path in base_schemas:
-        if path.exists():
-            schemas_entries.append({"name": name, "path": str(path.relative_to(ROOT)), "inferred": False})
-        else:
-            placeholder = schemas_dir / f"{name.lower()}.schema.json"
-            placeholder.write_text(
-                json.dumps({"$schema": "http://json-schema.org/draft-07/schema#", "title": name, "type": "object"}, indent=2),
-                encoding="utf-8",
-            )
-            schemas_entries.append({"name": name, "path": str(placeholder.relative_to(ROOT)), "inferred": True})
-    casting_path = schemas_dir / "casting_plan.schema.json"
-    casting_path.write_text(
-        json.dumps({"$schema": "http://json-schema.org/draft-07/schema#", "title": "CastingPlan", "type": "object"}, indent=2),
-        encoding="utf-8",
-    )
-    schemas_entries.append({"name": "CastingPlan", "path": str(casting_path.relative_to(ROOT)), "inferred": True})
+    docs_schemas = ROOT / "docs" / "chat_seed" / "04-schemas"
+    if docs_schemas.exists():
+        for p in sorted(docs_schemas.glob("*.json")):
+            schemas_entries.append({"name": p.stem, "path": relpath(p), "inferred": False})
+    else:
+        schemas_dir.mkdir(parents=True, exist_ok=True)
+        for stem in ["chapter", "segment", "casting_plan", "book_config"]:
+            fp = schemas_dir / f"{stem}.schema.json"
+            if not fp.exists():
+                fp.write_text(
+                    json.dumps({"$schema": "http://json-schema.org/draft-07/schema#", "title": stem, "type": "object"}, indent=2),
+                    encoding="utf-8",
+                )
+            schemas_entries.append({"name": stem, "path": relpath(fp), "inferred": True})
     write_json(SEED_DIR / "schemas_index.json", {"schemas": schemas_entries}, shards)
 
     # umbrella schema (static)
@@ -577,7 +585,7 @@ def main() -> None:
         "project": ROOT.name,
         "generated_at": dt.datetime.utcnow().isoformat(),
         "code_root": "src",
-        "modules": sorted(packages),
+        "modules": MODULES,
         "files_indexed": len(file_records),
         "graphs": {
             "import_graph": "graphs/import_graph.json",

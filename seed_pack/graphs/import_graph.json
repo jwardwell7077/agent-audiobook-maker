@@ -1,6 +1,5 @@
 {
   "nodes": [
-    "abm",
     "abm.__init__",
     "abm._warnings",
     "abm.annotate.__init__",
@@ -18,7 +17,6 @@
     "abm.annotate.review",
     "abm.annotate.roster",
     "abm.annotate.segment",
-    "abm.audio",
     "abm.audio.__init__",
     "abm.audio.album_norm",
     "abm.audio.assembly",
@@ -61,17 +59,14 @@
     "abm.llm.client",
     "abm.llm.manager",
     "abm.parse.cache",
-    "abm.profiles",
     "abm.profiles.__init__",
     "abm.profiles.alias_cli",
     "abm.profiles.alias_resolver",
     "abm.profiles.character_profiles",
     "abm.profiles.profiles_cli",
     "abm.sidecar.booknlp_adapter",
-    "abm.voice",
     "abm.voice.__init__",
     "abm.voice.cache",
-    "abm.voice.engines",
     "abm.voice.engines.__init__",
     "abm.voice.engines.piper_engine",
     "abm.voice.engines.xtts_engine",
@@ -84,10 +79,6 @@
     "abm.voice.voicecasting_cli"
   ],
   "edges": [
-    {
-      "from": "abm.annotate.__init__",
-      "to": "abm"
-    },
     {
       "from": "abm.annotate.__init__",
       "to": "abm.annotate.annotate_cli"
@@ -226,10 +217,6 @@
     },
     {
       "from": "abm.audio.render_chapter",
-      "to": "abm.audio"
-    },
-    {
-      "from": "abm.audio.render_chapter",
       "to": "abm.audio.assembly"
     },
     {
@@ -317,14 +304,6 @@
       "to": "abm.profiles.character_profiles"
     },
     {
-      "from": "abm.profiles.profiles_cli",
-      "to": "abm.profiles"
-    },
-    {
-      "from": "abm.profiles.profiles_cli",
-      "to": "abm.voice"
-    },
-    {
       "from": "abm.voice.__init__",
       "to": "abm.voice.tts_casting"
     },
@@ -342,19 +321,7 @@
     },
     {
       "from": "abm.voice.piper_casting",
-      "to": "abm.profiles"
-    },
-    {
-      "from": "abm.voice.piper_casting",
       "to": "abm.voice.piper_catalog"
-    },
-    {
-      "from": "abm.voice.plan_from_annotations",
-      "to": "abm.profiles"
-    },
-    {
-      "from": "abm.voice.plan_from_annotations",
-      "to": "abm.voice"
     },
     {
       "from": "abm.voice.render_chapter",
@@ -367,14 +334,6 @@
     {
       "from": "abm.voice.render_chapter",
       "to": "abm.voice.cache"
-    },
-    {
-      "from": "abm.voice.render_chapter",
-      "to": "abm.voice.engines"
-    },
-    {
-      "from": "abm.voice.tts_casting",
-      "to": "abm.profiles"
     },
     {
       "from": "abm.voice.voicecasting_cli",
