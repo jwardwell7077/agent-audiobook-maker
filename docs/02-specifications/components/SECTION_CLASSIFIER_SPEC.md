@@ -132,7 +132,7 @@ Warnings from heading matching are surfaced together with TOC warnings under toc
 - Body headings with missing titles: ordinal fallback will still work (with warning) if digits are present.
 - Body headings using spelled-out or Roman numerals: not matched yet (see Future Work).
 
-## Example (from mvs JSONL)
+## Example (from a local JSONL)
 
 - index 12–15: "• Chapter 1: Just an old Book", "• Chapter 2: …", "• Chapter 3: …", "• Chapter 4: …"
 - Body snippet:

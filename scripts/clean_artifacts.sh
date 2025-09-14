@@ -14,8 +14,8 @@ Options:
   --dry-run=true      Show what would be removed without deleting
 
 Examples:
-  bash scripts/clean_artifacts.sh mvs --what=classified
-  bash scripts/clean_artifacts.sh mvs --what=all --dry-run=false
+  bash scripts/clean_artifacts.sh private_book --what=classified
+  bash scripts/clean_artifacts.sh private_book --what=all --dry-run=false
 EOF
 }
 

@@ -154,24 +154,24 @@ run_api:
 # DEV PIPELINE SHORTCUTS
 ######################
 
-.PHONY: dev_mvs_txt dev_mvs_classify dev_mvs_all test_quick test_all_optional
+.PHONY: dev_private_txt dev_private_classify dev_private_all test_quick test_all_optional
 
-# Produce cleaned text from the local mvs PDF (dev only). Creates mvs.txt and mvs_nopp.txt.
-dev_mvs_txt:
+# Produce cleaned text from a local private PDF (dev only).
+dev_private_txt:
 	@$(VENV_GUARD)
 	$(ACTIVATE) python -m abm.ingestion.ingest_pdf \
-		data/books/mvs/source_pdfs/MyVampireSystem_CH0001_0700.pdf \
-		--out-dir data/clean/mvs --mode dev
+		$(PDF) \
+		--out-dir $(OUT_DIR) --mode $(MODE)
 
-# Run the classifier CLI on local mvs JSONL and write artifacts under data/clean/mvs/classified
-dev_mvs_classify:
+# Run the classifier CLI on local JSONL and write artifacts under data/clean/<book>/classified
+dev_private_classify:
 	@$(VENV_GUARD)
 	$(ACTIVATE) python -m abm.classifier.classifier_cli \
-		data/clean/mvs/MyVampireSystem_CH0001_0700_well_done.jsonl data/clean/mvs/classified
+		$(WELL_DONE) $(CLASSIFIED_OUT)
 
 
 # One-shot: pdf->text --dev, classifier --dev
-dev_mvs_all: dev_mvs_txt dev_mvs_classify
+dev_private_all: dev_private_txt dev_private_classify
 
 # Fast unit tests only
 test_quick:
@@ -191,8 +191,8 @@ test_all_optional:
 .PHONY: clean_artifacts clean_artifacts_apply ingest_pdf classify_well_done ingest_and_classify
 
 # Clean generated artifacts under data/clean/<book>
-# Usage: make clean_artifacts BOOK=mvs WHAT=all DRY_RUN=true
-BOOK?=mvs
+# Usage: make clean_artifacts BOOK=private_book WHAT=all DRY_RUN=true
+BOOK?=private_book
 WHAT?=all             # classified | ingest | all
 DRY_RUN?=true         # true | false
 clean_artifacts:
@@ -204,8 +204,8 @@ clean_artifacts_apply:
 
 # Ingest a PDF to raw/well_done + JSONL (wrapper around existing CLI)
 # Usage: make ingest_pdf PDF=path/to/book.pdf OUT_DIR=data/clean/<book> MODE=dev
-PDF?=data/books/mvs/source_pdfs/mvs_ch_0001_0700.pdf
-OUT_DIR?=data/clean/mvs
+PDF?=data/books/private_book/source_pdfs/sample.pdf
+OUT_DIR?=data/clean/private_book
 MODE?=dev
 ingest_pdf:
 	@$(VENV_GUARD)
@@ -213,9 +213,7 @@ ingest_pdf:
 
 # Classify a well_done.jsonl into sections under classified/
 # Usage: make classify_well_done WELL_DONE=path/to/*_well_done.jsonl OUT_DIR=data/clean/<book>/classified
-# Classify a well_done.jsonl into sections under classified/
-# Usage: make classify_well_done WELL_DONE=path/to/*_well_done.jsonl OUT_DIR=data/clean/<book>/classified
-WELL_DONE?=$(OUT_DIR)/MyVampireSystem_CH0001_0700_well_done.jsonl
+WELL_DONE?=$(OUT_DIR)/*_well_done.jsonl
 CLASSIFIED_OUT?=$(OUT_DIR)/classified
 classify_well_done:
 	@$(VENV_GUARD)
@@ -252,7 +250,7 @@ help:
 	@echo 'pre_push                     - run quick local checks before pushing'
 	@echo 'install_git_hooks            - install a local pre-push git hook to run checks before push'
 	@echo 'dev_setup_uv                 - create .venv and install dev deps via uv (fast)'
-	@echo 'prod_run_mvs                 - run full production pipeline for mvs'
+	@echo 'prod_run_private             - run full production pipeline for a private book'
 
 # Lightweight helpers for the components/ tooling pack (removed duplicate alt install/lint/type/itest)
 
@@ -293,7 +291,7 @@ dev_setup_uv:
 	. .venv/bin/activate; uv pip install -r requirements-dev.txt
 	@echo 'Activate with: source .venv/bin/activate'
 
-.PHONY: prod_run_mvs
-prod_run_mvs:
+.PHONY: prod_run_private
+prod_run_private:
 	@$(VENV_GUARD)
-	@bash scripts/production_run.sh mvs
+	@bash scripts/production_run.sh private_book

@@ -73,6 +73,13 @@ repos:
         pass_filenames: true
         stages: [commit]
 
+      - id: banned-tokens
+        name: Banned Tokens (reject sensitive series names)
+        entry: bash scripts/banned_token_scan.sh
+        language: system
+        pass_filenames: true
+        stages: [commit]
+
       - id: check-added-large-files
         name: Check Added Large Files (>= 20MB)
         entry: bash -lc 'git diff --cached --name-only --diff-filter=A | xargs -r -I {} bash -lc "[ -f '{}' ] && [ $(stat -c%s '{}') -ge 20971520 ] && echo 'Large file blocked: {}' && exit 1 || true"'

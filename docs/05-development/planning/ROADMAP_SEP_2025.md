@@ -13,7 +13,7 @@ Status: draft Branch: snapshot-2025-08-31-wip Related tickets: tickets/ATTRIBUTI
 
 ### P1 – High (near-term user value)
 
-- Evaluation utilities: notebook + CLI for accuracy/calibration; curate small gold set (MVS ch01–ch02).
+- Evaluation utilities: notebook + CLI for accuracy/calibration; curate small gold set from a local private sample (ch01–ch02).
 - SAMPLE_BOOK: minimal sample + golden artifacts.
 - LangFlow UX polish: output_dir inference, status messages, orchestrator toggles, preview nodes.
 - Orchestrator flags: `enable_llm`, `low_conf_threshold`, and reporting in meta.
