@@ -16,6 +16,7 @@ def test_cli_smoke(tmp_path):
     _write_doc(refined)
     _write_doc(base)
     metrics.write_text("{}\n")
+    out_dir = tmp_path / "out"
     proc = subprocess.run(
         [
             sys.executable,
@@ -28,12 +29,16 @@ def test_cli_smoke(tmp_path):
             "--metrics-jsonl",
             str(metrics),
             "--out-dir",
-            str(tmp_path / "out"),
+            str(out_dir),
             "--stdout-summary",
         ],
         capture_output=True,
         text=True,
-        env={"PYTHONPATH": str(Path.cwd()/"src")},
+        env={"PYTHONPATH": str(Path.cwd() / "src")},
     )
     assert proc.returncode == 0
     assert "Unknown" in proc.stdout
+    summary_files = list(out_dir.glob("*.json"))
+    assert summary_files, "summary JSON not written"
+    summary = json.loads(summary_files[0].read_text())
+    assert summary["summary"]["total_spans"] == 1

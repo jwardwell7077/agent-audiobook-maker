@@ -3,11 +3,12 @@ from __future__ import annotations
 import argparse
 import concurrent.futures as futures
 import difflib
-from datetime import datetime
 import json
+import logging
 import subprocess
 import sys
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any, cast
 
@@ -17,6 +18,8 @@ from abm.annotate.progress import ProgressReporter
 from abm.annotate.prompts import SYSTEM_SPEAKER, speaker_user_prompt
 from abm.llm.client import OpenAICompatClient
 from abm.llm.manager import LLMBackend, LLMService
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -351,20 +354,26 @@ def main() -> None:
 
     if args.eval_after:
         cmd = [
-            sys.executable, "-m", "abm.audit",
-            "--refined", args.out_json,
-            "--out-dir", args.eval_dir or "reports",
-            "--title", f"Eval — llm_refine {datetime.today():%F}"
+            sys.executable,
+            "-m",
+            "abm.audit",
+            "--refined",
+            args.out_json,
+            "--out-dir",
+            args.eval_dir or "reports",
+            "--title",
+            f"Eval — llm_refine {datetime.today():%F}",
         ]
         if args.tagged:
             cmd += ["--base", args.tagged]
         if args.metrics_jsonl:
             cmd += ["--metrics-jsonl", args.metrics_jsonl]
         try:
-            subprocess.run(cmd, check=False)
-        except Exception as e:
-            print(f"audit skipped: {e}", file=sys.stderr)
-
+            rc = subprocess.run(cmd, check=False).returncode
+            if rc:
+                logger.warning("audit exited with code %s", rc)
+        except Exception as exc:
+            logger.warning("audit skipped: %s", exc)
 
 
 if __name__ == "__main__":

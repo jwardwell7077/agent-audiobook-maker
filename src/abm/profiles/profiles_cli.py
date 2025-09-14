@@ -4,12 +4,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import subprocess
 import sys
 from pathlib import Path
 from typing import Any
 
 from abm.profiles.character_profiles import CharacterProfilesDB
+
+logger = logging.getLogger(__name__)
 
 __all__ = ["main"]
 
@@ -75,11 +78,23 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "audit":
         rc = _cmd_audit(args.roster, args.profiles)
         if args.eval_after and args.annotations:
-            cmd = [sys.executable, "-m", "abm.audit", "--refined", str(args.annotations), "--out-dir", args.eval_dir, "--title", "Eval — profiles audit"]
+            cmd = [
+                sys.executable,
+                "-m",
+                "abm.audit",
+                "--refined",
+                str(args.annotations),
+                "--out-dir",
+                args.eval_dir or "reports",
+                "--title",
+                "Eval — profiles audit",
+            ]
             try:
-                subprocess.run(cmd, check=False)
-            except Exception as e:
-                print(f"audit skipped: {e}", file=sys.stderr)
+                rc = subprocess.run(cmd, check=False).returncode
+                if rc:
+                    logger.warning("audit exited with code %s", rc)
+            except Exception as exc:
+                logger.warning("audit skipped: %s", exc)
         return rc
     return 1
 
