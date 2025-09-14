@@ -1,0 +1,18 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/__init__.py",
+  "module": "__init__",
+  "summary": "Top-level package for the audiobook maker project. This package will gradually evolve.",
+  "top_level_symbols": [],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": []
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

@@ -1,0 +1,43 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/voice/voicecasting_cli.py",
+  "module": "abm.voice",
+  "summary": "Unknown",
+  "top_level_symbols": [
+    {
+      "name": "_parse_args",
+      "kind": "function",
+      "signature": "()",
+      "doc": "Unknown"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "()",
+      "doc": "Unknown"
+    },
+    {
+      "name": "__main__",
+      "kind": "cli",
+      "entrypoint": "python -m abm.voice.voicecasting_cli",
+      "flags": []
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [
+      "abm.voice.voicecasting"
+    ],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "pathlib"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

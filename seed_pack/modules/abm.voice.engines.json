@@ -1,0 +1,55 @@
+{
+  "id": "abm.voice.engines",
+  "path_globs": [
+    "src/abm/voice/engines/**/*.py"
+  ],
+  "purpose": "Unknown",
+  "key_components": [
+    {
+      "name": "PiperEngine",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/voice/engines/piper_engine.py",
+      "summary": "Minimal interface to the `piper` TTS engine. The implementation intentionally keeps features to a bare minimum for unit\ntesting."
+    },
+    {
+      "name": "XTTSEngine",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/voice/engines/xtts_engine.py",
+      "summary": "Stub implementation that raises :class:`NotImplementedError`. The real project will provide an adapter to an XTTS engine."
+    }
+  ],
+  "public_surfaces": [],
+  "data_flow": "Unknown",
+  "dependencies": {
+    "imports_internal": [
+      "abm.voice.engines.piper_engine",
+      "abm.voice.engines.xtts_engine"
+    ],
+    "imports_external": [
+      "__future__",
+      "numpy",
+      "os",
+      "pathlib",
+      "scipy",
+      "shutil",
+      "soundfile",
+      "subprocess",
+      "tempfile",
+      "typing"
+    ]
+  },
+  "configs_env": {
+    "env_vars": [],
+    "config_files": []
+  },
+  "cli_entrypoints": [],
+  "invariants": [],
+  "edge_cases": [],
+  "known_gotchas": [],
+  "related_tests": [],
+  "status": {
+    "maturity": "Unknown",
+    "owners": [],
+    "last_touched_file_mtime": "2025-09-14T19:51:48.027289"
+  }
+}

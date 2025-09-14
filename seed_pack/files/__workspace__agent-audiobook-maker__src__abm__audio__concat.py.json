@@ -1,0 +1,34 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/audio/concat.py",
+  "module": "abm.audio",
+  "summary": "Numpy-based audio concatenation helpers.",
+  "top_level_symbols": [
+    {
+      "name": "equal_power_crossfade",
+      "kind": "function",
+      "signature": "(a, b, sr, crossfade_ms)",
+      "doc": "Join two mono signals with an equal-power crossfade. Args:\n    a: First signal ``[-1, 1]``."
+    },
+    {
+      "name": "micro_fade",
+      "kind": "function",
+      "signature": "(signal, sr, head_ms, tail_ms)",
+      "doc": "Apply short linear fades to the beginning and end of ``signal``. Args:\n    signal: Mono signal ``[-1, 1]``."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "numpy"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

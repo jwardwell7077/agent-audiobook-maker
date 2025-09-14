@@ -1,0 +1,38 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/llm/client.py",
+  "module": "abm.llm",
+  "summary": "Thin OpenAI-compatible JSON chat client. This module intentionally implements only the minimal pieces required for the\nrefinement pipeline.",
+  "top_level_symbols": [
+    {
+      "name": "OpenAICompatClient",
+      "kind": "class",
+      "methods": [
+        "_headers",
+        "_post_openai_v1",
+        "_post_ollama_chat",
+        "_post_ollama_generate",
+        "chat_json"
+      ],
+      "doc": "Minimal OpenAI-compatible chat client returning JSON content. Attributes:\n    base_url: Endpoint to send requests to."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "logging",
+      "requests",
+      "typing"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

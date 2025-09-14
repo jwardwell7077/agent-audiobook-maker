@@ -1,0 +1,60 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/audio/render_chapter.py",
+  "module": "abm.audio",
+  "summary": "Render an audiobook chapter from a synthesis script.",
+  "top_level_symbols": [
+    {
+      "name": "_load_script",
+      "kind": "function",
+      "signature": "(path)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "(argv)",
+      "doc": "Entry point for the ``render_chapter`` CLI."
+    },
+    {
+      "name": "__main__",
+      "kind": "cli",
+      "entrypoint": "python -m abm.audio.render_chapter",
+      "flags": []
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [
+      "abm.audio",
+      "abm.audio.assembly",
+      "abm.audio.engine_registry",
+      "abm.audio.mastering",
+      "abm.audio.qc_report",
+      "abm.audio.tts_base",
+      "abm.audio.tts_manager"
+    ],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "json",
+      "logging",
+      "pathlib",
+      "pydub",
+      "soundfile",
+      "tempfile",
+      "typing"
+    ]
+  },
+  "errors_raised": [
+    {
+      "type": "SystemExit",
+      "when": "Unknown"
+    }
+  ],
+  "env_vars": []
+}

@@ -1,0 +1,45 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/audit/metrics_eval.py",
+  "module": "abm.audit",
+  "summary": "Basic statistics for annotation refinement results.",
+  "top_level_symbols": [
+    {
+      "name": "load_doc",
+      "kind": "function",
+      "signature": "(path)",
+      "doc": "Load a JSON document from ``path``."
+    },
+    {
+      "name": "_iter_spans",
+      "kind": "function",
+      "signature": "(doc)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "compute_basic_metrics",
+      "kind": "function",
+      "signature": "(refined, base, worst_n)",
+      "doc": "Compute headline statistics for a refined annotation document."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "collections",
+      "datetime",
+      "json",
+      "pathlib",
+      "schemas",
+      "typing"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

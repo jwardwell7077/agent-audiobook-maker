@@ -1,0 +1,101 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/profiles/alias_resolver.py",
+  "module": "abm.profiles",
+  "summary": "Utilities for resolving speaker aliases. This module implements a simplified version of the specification described in\n`abm.profiles.alias_resolver`.",
+  "top_level_symbols": [
+    {
+      "name": "ResolverConfig",
+      "kind": "class",
+      "methods": [],
+      "doc": "Configuration for :mod:`alias_resolver`. Only a subset of the fields from the original design are currently used,\nbut the structure mirrors the proposed interface so that future extensions\nremain backwards compatible."
+    },
+    {
+      "name": "Proposal",
+      "kind": "class",
+      "methods": [],
+      "doc": "Proposed alias mapping."
+    },
+    {
+      "name": "normalize_name",
+      "kind": "function",
+      "signature": "(name)",
+      "doc": "Return a normalised version of ``name``. Normalisation follows a few simple heuristics: lower case, strip\npunctuation, collapse whitespace and drop a leading ``\"i \"`` pattern used by\nsome transcribers."
+    },
+    {
+      "name": "_edit_distance",
+      "kind": "function",
+      "signature": "(a, b)",
+      "doc": "Compute the Levenshtein edit distance between two strings."
+    },
+    {
+      "name": "_chargram_vector",
+      "kind": "function",
+      "signature": "(text, dim)",
+      "doc": "Return a simple hashed character n-gram vector."
+    },
+    {
+      "name": "_cosine",
+      "kind": "function",
+      "signature": "(a, b)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "harvest_mentions",
+      "kind": "function",
+      "signature": "(refined_json)",
+      "doc": "Extract speaker mentions from ``refined_json``. The structure of ``refined_json`` varies between pipelines."
+    },
+    {
+      "name": "build_clusters",
+      "kind": "function",
+      "signature": "(names, cfg)",
+      "doc": "Group names that normalise to the same string. The full system would use a BK-tree and phonetic keys."
+    },
+    {
+      "name": "score_candidate",
+      "kind": "function",
+      "signature": "(norm, canonical_list, aliases_map, cfg)",
+      "doc": "Return the best candidate canonical speaker and a confidence score."
+    },
+    {
+      "name": "propose_aliases",
+      "kind": "function",
+      "signature": "(refined_json, profiles_db, cfg)",
+      "doc": "Return a list of :class:`Proposal` objects for potential aliases."
+    },
+    {
+      "name": "apply_proposals",
+      "kind": "function",
+      "signature": "(proposals, profiles_db)",
+      "doc": "Apply auto-accepted proposals to ``profiles_db`` in-place."
+    },
+    {
+      "name": "save_artifacts",
+      "kind": "function",
+      "signature": "(proposals, out_dir)",
+      "doc": "Persist proposal information to ``out_dir``. * ``proposals.jsonl`` \u2013 line-delimited :class:`Proposal` objects."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "logging",
+      "math",
+      "metaphone",
+      "pathlib",
+      "re",
+      "typing"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

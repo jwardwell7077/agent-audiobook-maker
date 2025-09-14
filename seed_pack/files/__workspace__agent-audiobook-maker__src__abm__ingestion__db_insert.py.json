@@ -1,0 +1,45 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/db_insert.py",
+  "module": "abm.ingestion",
+  "summary": "Postgres inserter for Well\u2011Done JSONL outputs. Design goals:\n- Optional: only runs when DATABASE_URL points to Postgres; otherwise it no\u2011ops.",
+  "top_level_symbols": [
+    {
+      "name": "InsertResult",
+      "kind": "class",
+      "methods": [],
+      "doc": "Unknown"
+    },
+    {
+      "name": "PgInserter",
+      "kind": "class",
+      "methods": [
+        "__init__",
+        "available",
+        "insert_from_jsonl",
+        "_ensure_schema"
+      ],
+      "doc": "Unknown"
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "collections",
+      "dataclasses",
+      "json",
+      "os",
+      "pathlib",
+      "psycopg",
+      "typing"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

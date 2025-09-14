@@ -1,0 +1,28 @@
+{
+  "id": "__init__",
+  "path_globs": [
+    "src/__init__/**/*.py"
+  ],
+  "purpose": "Unknown",
+  "key_components": [],
+  "public_surfaces": [],
+  "data_flow": "Unknown",
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": []
+  },
+  "configs_env": {
+    "env_vars": [],
+    "config_files": []
+  },
+  "cli_entrypoints": [],
+  "invariants": [],
+  "edge_cases": [],
+  "known_gotchas": [],
+  "related_tests": [],
+  "status": {
+    "maturity": "Unknown",
+    "owners": [],
+    "last_touched_file_mtime": "2025-09-14T19:51:48.023289"
+  }
+}

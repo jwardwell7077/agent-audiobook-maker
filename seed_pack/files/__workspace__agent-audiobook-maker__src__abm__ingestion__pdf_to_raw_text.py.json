@@ -1,0 +1,71 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/pdf_to_raw_text.py",
+  "module": "abm.ingestion",
+  "summary": "Raw PDF \u2192 Text extractor preserving line/blank-line fidelity (PyMuPDF). - Preserves visible line breaks and blank lines.",
+  "top_level_symbols": [
+    {
+      "name": "RawExtractOptions",
+      "kind": "class",
+      "methods": [],
+      "doc": "Unknown"
+    },
+    {
+      "name": "RawPdfTextExtractor",
+      "kind": "class",
+      "methods": [
+        "extract",
+        "extract_pages",
+        "_extract_page_text_blocks",
+        "assemble_output",
+        "_write"
+      ],
+      "doc": "Low-level PDF\u2192text extractor that preserves line/blank-line fidelity. Primary responsibilities:\n- Extract per-page text blocks (minimal processing)\n- Assemble pages into a single text buffer\n- Optionally write to disk\n\nUse `extract_pages` + `assemble_output` if you need an in-memory object\nfor further processing before writing."
+    },
+    {
+      "name": "_default_output_for_input",
+      "kind": "function",
+      "signature": "(p)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "__main__",
+      "kind": "cli",
+      "entrypoint": "python -m abm.ingestion.pdf_to_raw_text",
+      "flags": []
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "fitz",
+      "pathlib",
+      "re",
+      "sys",
+      "typing"
+    ]
+  },
+  "errors_raised": [
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "FileNotFoundError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    }
+  ],
+  "env_vars": []
+}

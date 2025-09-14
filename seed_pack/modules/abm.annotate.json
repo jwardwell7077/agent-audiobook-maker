@@ -1,0 +1,324 @@
+{
+  "id": "abm.annotate",
+  "path_globs": [
+    "src/abm/annotate/**/*.py"
+  ],
+  "purpose": "Unknown",
+  "key_components": [
+    {
+      "name": "SpanOut",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/annotate_cli.py",
+      "summary": "Serializable span object enriched with attribution fields."
+    },
+    {
+      "name": "AnnotateRunner",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/annotate_cli.py",
+      "summary": "End-to-end runner: normalize \u2192 segment \u2192 roster \u2192 attribute \u2192 write outputs."
+    },
+    {
+      "name": "AttributeConfig",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/attribute.py",
+      "summary": "Config for attribution engine."
+    },
+    {
+      "name": "AttributeEngine",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/attribute.py",
+      "summary": "Speaker attribution using rules \u2192 coref \u2192 optional LLM."
+    },
+    {
+      "name": "BNLPRefinePolicy",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/bnlp_refine.py",
+      "summary": "Policy to accept or fuse BookNLP attribution."
+    },
+    {
+      "name": "LLMCache",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/llm_cache.py",
+      "summary": "Tiny SQLite cache mapping prompt hashes to JSON results. Attributes:\n    path: Location of the SQLite database file."
+    },
+    {
+      "name": "LLMCandidateConfig",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/llm_prep.py",
+      "summary": "Configuration for selecting spans that require LLM refinement. Attributes:\n    conf_threshold: Confidence above which spans are skipped."
+    },
+    {
+      "name": "LLMCandidatePreparer",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/llm_prep.py",
+      "summary": "Collect spans that need LLM help (Unknown or low-confidence). Attributes:\n    cfg: Selection policy for candidate spans."
+    },
+    {
+      "name": "LLMRefineConfig",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/llm_refine.py",
+      "summary": "Policy for refinement acceptance. Attributes:\n    min_conf_for_skip: Spans at or above this confidence are not refined."
+    },
+    {
+      "name": "ChapterMetrics",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/metrics.py",
+      "summary": "Holds metrics for a single chapter processing pass."
+    },
+    {
+      "name": "Timer",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/metrics.py",
+      "summary": "Context manager timer to measure stage durations."
+    },
+    {
+      "name": "MetricsCollector",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/metrics.py",
+      "summary": "Collects and persists per-chapter metrics to a JSONL."
+    },
+    {
+      "name": "LineTag",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/normalize.py",
+      "summary": "Structured label for per-paragraph line classification."
+    },
+    {
+      "name": "InlineTag",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/normalize.py",
+      "summary": "Inline structural token span inside a non-system paragraph."
+    },
+    {
+      "name": "NormalizerConfig",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/normalize.py",
+      "summary": "Configuration for ChapterNormalizer behavior."
+    },
+    {
+      "name": "NormalizeReport",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/normalize.py",
+      "summary": "Summary of normalization actions and counts for one chapter."
+    },
+    {
+      "name": "ChapterNormalizer",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/normalize.py",
+      "summary": "Normalize and structurally tag a chapter object."
+    },
+    {
+      "name": "ProgressReporter",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/progress.py",
+      "summary": "Simple progress reporter with rich/tqdm/print fallbacks."
+    },
+    {
+      "name": "ReviewConfig",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/review.py",
+      "summary": "Configuration for review report formatting."
+    },
+    {
+      "name": "Reviewer",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/review.py",
+      "summary": "Build a Markdown review report from annotated chapters."
+    },
+    {
+      "name": "RosterConfig",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/roster.py",
+      "summary": "Configuration for :class:`RosterBuilder` behavior. Attributes:\n    use_spacy: Whether to use spaCy NER if available."
+    },
+    {
+      "name": "RosterBuilder",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/roster.py",
+      "summary": "Build chapter- and book-level speaker rosters from raw text."
+    },
+    {
+      "name": "SpanType",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/segment.py",
+      "summary": "Span categories emitted by the Segmenter."
+    },
+    {
+      "name": "Span",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/segment.py",
+      "summary": "A contiguous piece of text with a semantic label and absolute offsets."
+    },
+    {
+      "name": "SegmenterConfig",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/segment.py",
+      "summary": "Configuration for the Segmenter behavior."
+    },
+    {
+      "name": "Segmenter",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/segment.py",
+      "summary": "Produce offset-accurate spans from a normalized chapter. Expects the chapter to be normalized by ChapterNormalizer:\n  - `paragraphs`: list[str]\n  - `text`: single LF-joined string of all paragraphs\n  - `line_tags`: per-paragraph line tag labels (e.g., \"SystemAngle\", \"Meta\", ...)\n  - `inline_tags`: { str(para_index) : [ {start, end, tag}, ..."
+    }
+  ],
+  "public_surfaces": [
+    {
+      "symbol": "main",
+      "signature": "()",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "refine_with_bnlp",
+      "signature": "(tagged_path, out_path, policy, verbose, max_chapters, bnlp_pipeline, bnlp_size, bnlp_gate_threshold, bnlp_top_n, bnlp_try_big, bnlp_tmp_dir)",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "main",
+      "signature": "()",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "main",
+      "signature": "()",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "refine_document",
+      "signature": "(tagged_path, out_json, out_md, backend, cfg, manage_service, cache_path)",
+      "summary": "Refine low-confidence spans in ``combined.json`` using an LLM. Args:\n    tagged_path: Input JSON produced by Stage\u00a0A."
+    },
+    {
+      "symbol": "main",
+      "signature": "()",
+      "summary": "Entry point for the ``llm_refine`` command-line interface. Returns:\n    None\n\nRaises:\n    None"
+    },
+    {
+      "symbol": "normalize_chapter_text",
+      "signature": "(chapter, config)",
+      "summary": "Backwards-compatible helper: normalize a chapter dict with defaults. This wrapper preserves the previous functional API you may have used."
+    },
+    {
+      "symbol": "speaker_user_prompt",
+      "signature": "(roster, left, mid, right, span_type)",
+      "summary": "Build a user prompt constraining speaker choices to a roster. Args:\n    roster: Mapping of speaker names to aliases."
+    },
+    {
+      "symbol": "make_review_markdown",
+      "signature": "(chapters)",
+      "summary": "Functional wrapper used by :mod:`annotate_cli` to emit a report."
+    },
+    {
+      "symbol": "build_chapter_roster",
+      "signature": "(text, nlp)",
+      "summary": "Functional wrapper for building a chapter roster. Args:\n    text: Chapter text."
+    },
+    {
+      "symbol": "merge_book_roster",
+      "signature": "(book, chap)",
+      "summary": "Functional wrapper for merging rosters (compatibility helper)."
+    },
+    {
+      "symbol": "segment_spans",
+      "signature": "(chapter, config)",
+      "summary": "Functional wrapper to keep compatibility with earlier code paths."
+    }
+  ],
+  "data_flow": "Unknown",
+  "dependencies": {
+    "imports_internal": [
+      "abm",
+      "abm.annotate.annotate_cli",
+      "abm.annotate.attribute",
+      "abm.annotate.llm_cache",
+      "abm.annotate.llm_prep",
+      "abm.annotate.llm_refine",
+      "abm.annotate.metrics",
+      "abm.annotate.normalize",
+      "abm.annotate.progress",
+      "abm.annotate.prompts",
+      "abm.annotate.review",
+      "abm.annotate.roster",
+      "abm.annotate.segment",
+      "abm.llm.client",
+      "abm.llm.manager",
+      "abm.parse.cache",
+      "abm.sidecar.booknlp_adapter"
+    ],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "collections",
+      "concurrent",
+      "dataclasses",
+      "datetime",
+      "difflib",
+      "enum",
+      "fastcoref",
+      "hashlib",
+      "importlib",
+      "json",
+      "logging",
+      "os",
+      "pathlib",
+      "psutil",
+      "pynvml",
+      "re",
+      "rich",
+      "shutil",
+      "spacy",
+      "sqlite3",
+      "statistics",
+      "subprocess",
+      "sys",
+      "tempfile",
+      "threading",
+      "time",
+      "torch",
+      "tqdm",
+      "typing",
+      "unicodedata",
+      "uuid",
+      "warnings"
+    ]
+  },
+  "configs_env": {
+    "env_vars": [],
+    "config_files": []
+  },
+  "cli_entrypoints": [
+    {
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/annotate_cli.py",
+      "module": "abm.annotate",
+      "command": "python -m abm.annotate.annotate_cli",
+      "flags": []
+    },
+    {
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/bnlp_refine.py",
+      "module": "abm.annotate",
+      "command": "python -m abm.annotate.bnlp_refine",
+      "flags": []
+    },
+    {
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/llm_prep_cli.py",
+      "module": "abm.annotate",
+      "command": "python -m abm.annotate.llm_prep_cli",
+      "flags": []
+    },
+    {
+      "file": "/workspace/agent-audiobook-maker/src/abm/annotate/llm_refine.py",
+      "module": "abm.annotate",
+      "command": "python -m abm.annotate.llm_refine",
+      "flags": []
+    }
+  ],
+  "invariants": [],
+  "edge_cases": [],
+  "known_gotchas": [],
+  "related_tests": [],
+  "status": {
+    "maturity": "Unknown",
+    "owners": [],
+    "last_touched_file_mtime": "2025-09-14T19:51:48.023289"
+  }
+}

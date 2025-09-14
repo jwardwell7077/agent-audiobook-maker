@@ -1,0 +1,156 @@
+{
+  "id": "abm.audit",
+  "path_globs": [
+    "src/abm/audit/**/*.py"
+  ],
+  "purpose": "Unknown",
+  "key_components": [
+    {
+      "name": "Span",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/audit/schemas.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "Chapter",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/audit/schemas.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "ChapterStat",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/audit/schemas.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "EvalSummary",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/audit/schemas.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "VoteStats",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/audit/schemas.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "ConfusionPair",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/audit/schemas.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "ConfusionSummary",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/audit/schemas.py",
+      "summary": "Unknown"
+    }
+  ],
+  "public_surfaces": [
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "load_doc",
+      "signature": "(path)",
+      "summary": "Load a JSON document from ``path``."
+    },
+    {
+      "symbol": "compute_basic_metrics",
+      "signature": "(refined, base, worst_n)",
+      "summary": "Compute headline statistics for a refined annotation document."
+    },
+    {
+      "symbol": "plot_top_speakers",
+      "signature": "(counter, out_png)",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "plot_unknown_by_chapter",
+      "signature": "(rows, out_png)",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "plot_vote_margin_hist",
+      "signature": "(margins, out_png)",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "md_to_html",
+      "signature": "(md_path, html_path)",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "render_markdown",
+      "signature": "(summary, vote, conf, out_md, assets_prefix_dir, title)",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "compute_confusion",
+      "signature": "(base_doc, refined_doc)",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "parse_metrics_jsonl",
+      "signature": "(path)",
+      "summary": "Parse a metrics JSONL file into aggregate statistics."
+    }
+  ],
+  "data_flow": "Unknown",
+  "dependencies": {
+    "imports_internal": [
+      "abm.audit.schemas"
+    ],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "cli",
+      "collections",
+      "datetime",
+      "json",
+      "logging",
+      "markdown2",
+      "matplotlib",
+      "metrics_eval",
+      "pathlib",
+      "report_html",
+      "report_md",
+      "schemas",
+      "speaker_confusion",
+      "statistics",
+      "typing",
+      "vote_metrics"
+    ]
+  },
+  "configs_env": {
+    "env_vars": [],
+    "config_files": []
+  },
+  "cli_entrypoints": [
+    {
+      "file": "/workspace/agent-audiobook-maker/src/abm/audit/__main__.py",
+      "module": "abm.audit",
+      "command": "python -m abm.audit.__main__",
+      "flags": []
+    },
+    {
+      "file": "/workspace/agent-audiobook-maker/src/abm/audit/cli.py",
+      "module": "abm.audit",
+      "command": "python -m abm.audit.cli",
+      "flags": []
+    }
+  ],
+  "invariants": [],
+  "edge_cases": [],
+  "known_gotchas": [],
+  "related_tests": [],
+  "status": {
+    "maturity": "Unknown",
+    "owners": [],
+    "last_touched_file_mtime": "2025-09-14T19:51:48.027289"
+  }
+}

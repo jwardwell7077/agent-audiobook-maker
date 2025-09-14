@@ -1,0 +1,61 @@
+{
+  "id": "abm.llm",
+  "path_globs": [
+    "src/abm/llm/**/*.py"
+  ],
+  "purpose": "Unknown",
+  "key_components": [
+    {
+      "name": "OpenAICompatClient",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/llm/client.py",
+      "summary": "Minimal OpenAI-compatible chat client returning JSON content. Attributes:\n    base_url: Endpoint to send requests to."
+    },
+    {
+      "name": "LLMBackend",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/llm/manager.py",
+      "summary": "Configuration for a local or remote LLM endpoint. Attributes:\n    kind: Backend type, e.g."
+    },
+    {
+      "name": "LLMService",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/llm/manager.py",
+      "summary": "Manage the lifecycle of a local LLM server. Attributes:\n    backend: Connection information for the target service."
+    }
+  ],
+  "public_surfaces": [],
+  "data_flow": "Unknown",
+  "dependencies": {
+    "imports_internal": [
+      "abm.llm.client",
+      "abm.llm.manager"
+    ],
+    "imports_external": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "logging",
+      "os",
+      "requests",
+      "signal",
+      "subprocess",
+      "time",
+      "typing"
+    ]
+  },
+  "configs_env": {
+    "env_vars": [],
+    "config_files": []
+  },
+  "cli_entrypoints": [],
+  "invariants": [],
+  "edge_cases": [],
+  "known_gotchas": [],
+  "related_tests": [],
+  "status": {
+    "maturity": "Unknown",
+    "owners": [],
+    "last_touched_file_mtime": "2025-09-14T19:51:48.027289"
+  }
+}

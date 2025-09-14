@@ -1,0 +1,72 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/annotate/normalize.py",
+  "module": "abm.annotate",
+  "summary": "Unknown",
+  "top_level_symbols": [
+    {
+      "name": "LineTag",
+      "kind": "class",
+      "methods": [],
+      "doc": "Structured label for per-paragraph line classification."
+    },
+    {
+      "name": "InlineTag",
+      "kind": "class",
+      "methods": [],
+      "doc": "Inline structural token span inside a non-system paragraph."
+    },
+    {
+      "name": "NormalizerConfig",
+      "kind": "class",
+      "methods": [],
+      "doc": "Configuration for ChapterNormalizer behavior."
+    },
+    {
+      "name": "NormalizeReport",
+      "kind": "class",
+      "methods": [
+        "to_dict"
+      ],
+      "doc": "Summary of normalization actions and counts for one chapter."
+    },
+    {
+      "name": "ChapterNormalizer",
+      "kind": "class",
+      "methods": [
+        "__init__",
+        "normalize",
+        "_classify_line",
+        "_normalize_system_angle_line",
+        "_find_inline_system_tokens",
+        "_strip_control_chars",
+        "_display_title"
+      ],
+      "doc": "Normalize and structurally tag a chapter object."
+    },
+    {
+      "name": "normalize_chapter_text",
+      "kind": "function",
+      "signature": "(chapter, config)",
+      "doc": "Backwards-compatible helper: normalize a chapter dict with defaults. This wrapper preserves the previous functional API you may have used."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "dataclasses",
+      "enum",
+      "re",
+      "typing",
+      "unicodedata"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

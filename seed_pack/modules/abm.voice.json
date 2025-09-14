@@ -1,0 +1,187 @@
+{
+  "id": "abm.voice",
+  "path_globs": [
+    "src/abm/voice/**/*.py"
+  ],
+  "purpose": "Unknown",
+  "key_components": [
+    {
+      "name": "AuditionLine",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/voice/piper_casting.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "PiperVoice",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/voice/piper_catalog.py",
+      "summary": "Simple description of a Piper voice installation."
+    },
+    {
+      "name": "_Options",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/voice/plan_from_annotations.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "CastDecision",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/voice/tts_casting.py",
+      "summary": "Final TTS selection for a speaker. Attributes:\n    speaker: Original speaker query."
+    },
+    {
+      "name": "VoiceHints",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/voice/voicecasting.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "SpeakerProfile",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/voice/voicecasting.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "CastingPlan",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/voice/voicecasting.py",
+      "summary": "Map speakers to voice slots; cluster minor roles to a small pool."
+    },
+    {
+      "name": "VoiceCasting",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/voice/voicecasting.py",
+      "summary": "Derive voice profiles and a casting plan from the combined annotations."
+    }
+  ],
+  "public_surfaces": [
+    {
+      "symbol": "make_cache_key",
+      "signature": "(payload)",
+      "summary": "Return a deterministic SHA-256 key for ``payload``. Args:\n    payload: Serializable dictionary describing a TTS request."
+    },
+    {
+      "symbol": "cache_path",
+      "signature": "(root, engine, voice, key)",
+      "summary": "Return the expected cache path for ``engine``/``voice``/``key``. Args:\n    root: Root directory of the cache."
+    },
+    {
+      "symbol": "propose_casting",
+      "signature": "(profiles_path, annotations_path, out_dir, engine, max_chars)",
+      "summary": "Generate a simple casting proposal scaffold. Returns a summary dictionary with discovered voices and selected characters."
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "discover_piper_voices",
+      "signature": "(voices_dir)",
+      "summary": "Return a list of discovered Piper voices. We consider a voice defined by a model file (\"*.onnx\" or compressed) and\noptionally a matching JSON config (same stem with \".json\")."
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "build_plans",
+      "signature": "(combined_json, cast_profiles, out_dir, sample_rate, crossfade_ms, max_chars, pause_narr, pause_dialog, pause_thought, prefer_engine)",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "render_chapter",
+      "signature": "(plan_path, out_wav, cache_dir, tmp_dir, force)",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "merge_style",
+      "signature": "(base, override)",
+      "summary": "Merge style overrides onto ``base``. Args:\n    base: Base style dataclass."
+    },
+    {
+      "symbol": "pick_voice",
+      "signature": "(cfg, speaker_name, preferred_engine)",
+      "summary": "Choose engine, voice and style for ``speaker_name``. Args:\n    cfg: Loaded profile configuration."
+    },
+    {
+      "symbol": "main",
+      "signature": "()",
+      "summary": "Unknown"
+    }
+  ],
+  "data_flow": "Unknown",
+  "dependencies": {
+    "imports_internal": [
+      "abm.audio.concat",
+      "abm.audio.qc",
+      "abm.profiles",
+      "abm.voice",
+      "abm.voice.cache",
+      "abm.voice.engines",
+      "abm.voice.piper_catalog",
+      "abm.voice.tts_casting",
+      "abm.voice.voicecasting"
+    ],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "collections",
+      "dataclasses",
+      "hashlib",
+      "json",
+      "numpy",
+      "os",
+      "pathlib",
+      "re",
+      "shutil",
+      "soundfile",
+      "typing",
+      "yaml"
+    ]
+  },
+  "configs_env": {
+    "env_vars": [],
+    "config_files": []
+  },
+  "cli_entrypoints": [
+    {
+      "file": "/workspace/agent-audiobook-maker/src/abm/voice/piper_casting.py",
+      "module": "abm.voice",
+      "command": "python -m abm.voice.piper_casting",
+      "flags": []
+    },
+    {
+      "file": "/workspace/agent-audiobook-maker/src/abm/voice/piper_catalog.py",
+      "module": "abm.voice",
+      "command": "python -m abm.voice.piper_catalog",
+      "flags": []
+    },
+    {
+      "file": "/workspace/agent-audiobook-maker/src/abm/voice/voicecasting_cli.py",
+      "module": "abm.voice",
+      "command": "python -m abm.voice.voicecasting_cli",
+      "flags": []
+    }
+  ],
+  "invariants": [],
+  "edge_cases": [],
+  "known_gotchas": [],
+  "related_tests": [],
+  "status": {
+    "maturity": "Unknown",
+    "owners": [],
+    "last_touched_file_mtime": "2025-09-14T19:51:48.027289"
+  }
+}

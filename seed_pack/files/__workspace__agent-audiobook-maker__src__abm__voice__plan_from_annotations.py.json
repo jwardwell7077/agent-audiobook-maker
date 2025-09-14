@@ -1,0 +1,72 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/voice/plan_from_annotations.py",
+  "module": "abm.voice",
+  "summary": "Convert refined annotations into per-chapter render plans.",
+  "top_level_symbols": [
+    {
+      "name": "_Options",
+      "kind": "class",
+      "methods": [],
+      "doc": "Unknown"
+    },
+    {
+      "name": "_split_text",
+      "kind": "function",
+      "signature": "(text, kind, max_chars)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "_pause",
+      "kind": "function",
+      "signature": "(kind, text, defaults)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "_style_for",
+      "kind": "function",
+      "signature": "(kind, base)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "_process_chapter",
+      "kind": "function",
+      "signature": "(ch, cfg, opt)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "build_plans",
+      "kind": "function",
+      "signature": "(combined_json, cast_profiles, out_dir, sample_rate, crossfade_ms, max_chars, pause_narr, pause_dialog, pause_thought, prefer_engine)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "(argv)",
+      "doc": "Unknown"
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [
+      "abm.profiles",
+      "abm.voice"
+    ],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "re",
+      "typing"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

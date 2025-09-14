@@ -1,0 +1,66 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/audio/piper_adapter.py",
+  "module": "abm.audio",
+  "summary": "Piper TTS adapter (CLI-based, CPU-friendly). Supports a dry-run mode (env ABM_PIPER_DRYRUN=1) that writes a short silence WAV\nso unit tests can run without Piper installed.",
+  "top_level_symbols": [
+    {
+      "name": "PiperAdapter",
+      "kind": "class",
+      "methods": [
+        "__init__",
+        "version",
+        "preload",
+        "_candidate_dirs",
+        "_resolve_model_paths",
+        "_build_cmd",
+        "synth"
+      ],
+      "doc": "Adapter that calls the `piper` CLI per synthesis request. Attributes:\n    voice: Piper voice identifier (e.g., 'en_US-ryan-medium')."
+    },
+    {
+      "name": "_write_silence_wav",
+      "kind": "function",
+      "signature": "(path, duration_ms, sr)",
+      "doc": "Write a short 16-bit PCM mono silence WAV. Args:\n    path: Output file path."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [
+      "abm.audio.tts_base"
+    ],
+    "imports_external": [
+      "__future__",
+      "os",
+      "pathlib",
+      "shutil",
+      "subprocess",
+      "tempfile",
+      "wave"
+    ]
+  },
+  "errors_raised": [
+    {
+      "type": "SynthesisError",
+      "when": "Unknown"
+    },
+    {
+      "type": "SynthesisError",
+      "when": "Unknown"
+    },
+    {
+      "type": "SynthesisError",
+      "when": "Unknown"
+    },
+    {
+      "type": "SynthesisError",
+      "when": "Unknown"
+    }
+  ],
+  "env_vars": []
+}

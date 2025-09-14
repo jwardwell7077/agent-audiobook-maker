@@ -1,0 +1,35 @@
+{
+  "module_record": {
+    "type": "object",
+    "required": [
+      "id",
+      "path_globs"
+    ],
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "path_globs": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "file_record": {
+    "type": "object",
+    "required": [
+      "file",
+      "module"
+    ],
+    "properties": {
+      "file": {
+        "type": "string"
+      },
+      "module": {
+        "type": "string"
+      }
+    }
+  }
+}

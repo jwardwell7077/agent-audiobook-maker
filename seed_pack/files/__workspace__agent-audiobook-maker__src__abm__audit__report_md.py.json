@@ -1,0 +1,31 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/audit/report_md.py",
+  "module": "abm.audit",
+  "summary": "Render Markdown audit reports.",
+  "top_level_symbols": [
+    {
+      "name": "render_markdown",
+      "kind": "function",
+      "signature": "(summary, vote, conf, out_md, assets_prefix_dir, title)",
+      "doc": "Unknown"
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "metrics_eval",
+      "pathlib",
+      "speaker_confusion",
+      "vote_metrics"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

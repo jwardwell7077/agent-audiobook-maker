@@ -1,0 +1,66 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/audio/assembly.py",
+  "module": "abm.audio",
+  "summary": "Utilities for stitching synthesized audio segments.",
+  "top_level_symbols": [
+    {
+      "name": "load_wav",
+      "kind": "function",
+      "signature": "(path)",
+      "doc": "Load a WAV file as mono ``float32`` samples. Args:\n    path: Input WAV file path."
+    },
+    {
+      "name": "ensure_mono",
+      "kind": "function",
+      "signature": "(y)",
+      "doc": "Collapse stereo signals to mono by averaging channels."
+    },
+    {
+      "name": "silence",
+      "kind": "function",
+      "signature": "(duration_ms, sr)",
+      "doc": "Return a block of digital silence."
+    },
+    {
+      "name": "assemble",
+      "kind": "function",
+      "signature": "(span_paths, pauses_ms, crossfade_ms, sr_hint, allow_resample)",
+      "doc": "Stitch a sequence of span WAVs with pauses and crossfades. Args:\n    span_paths: Ordered list of WAV files to concatenate."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "numpy",
+      "pathlib",
+      "scipy",
+      "soundfile"
+    ]
+  },
+  "errors_raised": [
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    }
+  ],
+  "env_vars": []
+}

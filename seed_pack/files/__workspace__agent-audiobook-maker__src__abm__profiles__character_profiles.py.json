@@ -1,0 +1,137 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/profiles/character_profiles.py",
+  "module": "abm.profiles",
+  "summary": "Character profile loading and resolution utilities. Profiles describe available voices, default rendering parameters, and\nper-speaker overrides.",
+  "top_level_symbols": [
+    {
+      "name": "Style",
+      "kind": "class",
+      "methods": [],
+      "doc": "Prosody style parameters for a voice. Attributes:\n    pace: Speech pace multiplier."
+    },
+    {
+      "name": "SpeakerProfile",
+      "kind": "class",
+      "methods": [],
+      "doc": "Configuration for a single character voice. Attributes:\n    name: Display name of the speaker."
+    },
+    {
+      "name": "ProfileConfig",
+      "kind": "class",
+      "methods": [],
+      "doc": "Container for all profiles and defaults. Attributes:\n    version: Schema version number."
+    },
+    {
+      "name": "Profile",
+      "kind": "class",
+      "methods": [],
+      "doc": "Minimal voice profile used by casting and alias resolver. Attributes:\n    id: Stable identifier for the profile."
+    },
+    {
+      "name": "CharacterProfilesDB",
+      "kind": "class",
+      "methods": [
+        "__init__",
+        "load",
+        "save",
+        "by_speaker",
+        "fallback",
+        "_resolve_profile_ref",
+        "_to_json_dict",
+        "_from_json_dict",
+        "_from_yaml_dict"
+      ],
+      "doc": "Unified view over profiles with helpers for casting/aliasing. The database can be loaded from two on-disk schemas:\n- JSON (tests and tools):\n    {\n      \"profiles\": [{...}],\n      \"map\": {\"Speaker\": \"profile_id\"},\n      \"fallbacks\": {\"engine\": \"profile_id\"}\n    }\n- YAML (human-edited casting file):\n    version: 1\n    defaults: { engine: ..., narrator_voice: ..."
+    },
+    {
+      "name": "normalize_speaker_name",
+      "kind": "function",
+      "signature": "(name)",
+      "doc": "Normalize a speaker name to a comparison key. The function trims leading/trailing whitespace, collapses internal\nwhitespace, and returns the casefolded result."
+    },
+    {
+      "name": "_style_from_dict",
+      "kind": "function",
+      "signature": "(base, data)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "load_profiles",
+      "kind": "function",
+      "signature": "(path)",
+      "doc": "Load a profile configuration file. The file may be YAML (preferred) or JSON."
+    },
+    {
+      "name": "available_voices",
+      "kind": "function",
+      "signature": "(cfg, engine)",
+      "doc": "Return the declared voices for an engine."
+    },
+    {
+      "name": "_resolve_with_reason",
+      "kind": "function",
+      "signature": "(cfg, speaker)",
+      "doc": "Internal helper returning a profile and match reason."
+    },
+    {
+      "name": "resolve_speaker_ex",
+      "kind": "function",
+      "signature": "(cfg, speaker)",
+      "doc": "Return the resolved profile and reason for ``speaker``. Args:\n    cfg: Loaded profile configuration."
+    },
+    {
+      "name": "resolve_with_reason",
+      "kind": "function",
+      "signature": "(cfg, speaker)",
+      "doc": "Backward compatible wrapper around :func:`resolve_speaker_ex`."
+    },
+    {
+      "name": "resolve_speaker",
+      "kind": "function",
+      "signature": "(cfg, speaker)",
+      "doc": "Resolve ``speaker`` to a profile using canonical names or aliases."
+    },
+    {
+      "name": "validate_profiles",
+      "kind": "function",
+      "signature": "(cfg)",
+      "doc": "Validate a profile configuration. Args:\n    cfg: Loaded profile configuration."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "typing",
+      "yaml"
+    ]
+  },
+  "errors_raised": [
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    }
+  ],
+  "env_vars": []
+}

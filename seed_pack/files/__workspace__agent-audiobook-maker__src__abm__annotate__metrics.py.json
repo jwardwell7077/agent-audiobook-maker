@@ -1,0 +1,58 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/annotate/metrics.py",
+  "module": "abm.annotate",
+  "summary": "Unknown",
+  "top_level_symbols": [
+    {
+      "name": "ChapterMetrics",
+      "kind": "class",
+      "methods": [
+        "to_dict"
+      ],
+      "doc": "Holds metrics for a single chapter processing pass."
+    },
+    {
+      "name": "Timer",
+      "kind": "class",
+      "methods": [
+        "__init__",
+        "__enter__",
+        "__exit__"
+      ],
+      "doc": "Context manager timer to measure stage durations."
+    },
+    {
+      "name": "MetricsCollector",
+      "kind": "class",
+      "methods": [
+        "__init__",
+        "close",
+        "write",
+        "sample_resources"
+      ],
+      "doc": "Collects and persists per-chapter metrics to a JSONL."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "os",
+      "pathlib",
+      "psutil",
+      "pynvml",
+      "time",
+      "typing"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

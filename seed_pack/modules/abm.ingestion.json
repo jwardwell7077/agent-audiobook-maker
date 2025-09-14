@@ -1,0 +1,127 @@
+{
+  "id": "abm.ingestion",
+  "path_globs": [
+    "src/abm/ingestion/**/*.py"
+  ],
+  "purpose": "Unknown",
+  "key_components": [
+    {
+      "name": "InsertResult",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/db_insert.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "PgInserter",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/db_insert.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "PipelineOptions",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/ingest_pdf.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "PdfIngestPipeline",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/ingest_pdf.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "RawExtractOptions",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/pdf_to_raw_text.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "RawPdfTextExtractor",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/pdf_to_raw_text.py",
+      "summary": "Low-level PDF\u2192text extractor that preserves line/blank-line fidelity. Primary responsibilities:\n- Extract per-page text blocks (minimal processing)\n- Assemble pages into a single text buffer\n- Optionally write to disk\n\nUse `extract_pages` + `assemble_output` if you need an in-memory object\nfor further processing before writing."
+    },
+    {
+      "name": "WellDoneOptions",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/raw_to_welldone.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "RawToWellDone",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/raw_to_welldone.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "WDToJSONOptions",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/welldone_to_json.py",
+      "summary": "Unknown"
+    },
+    {
+      "name": "WellDoneToJSONL",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/welldone_to_json.py",
+      "summary": "Unknown"
+    }
+  ],
+  "public_surfaces": [],
+  "data_flow": "Unknown",
+  "dependencies": {
+    "imports_internal": [
+      "abm.ingestion.pdf_to_raw_text",
+      "abm.ingestion.raw_to_welldone",
+      "abm.ingestion.welldone_to_json"
+    ],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "collections",
+      "dataclasses",
+      "datetime",
+      "fitz",
+      "hashlib",
+      "json",
+      "os",
+      "pathlib",
+      "psycopg",
+      "re",
+      "sys",
+      "typing"
+    ]
+  },
+  "configs_env": {
+    "env_vars": [],
+    "config_files": []
+  },
+  "cli_entrypoints": [
+    {
+      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/ingest_pdf.py",
+      "module": "abm.ingestion",
+      "command": "python -m abm.ingestion.ingest_pdf",
+      "flags": []
+    },
+    {
+      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/pdf_to_raw_text.py",
+      "module": "abm.ingestion",
+      "command": "python -m abm.ingestion.pdf_to_raw_text",
+      "flags": []
+    },
+    {
+      "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/welldone_to_json.py",
+      "module": "abm.ingestion",
+      "command": "python -m abm.ingestion.welldone_to_json",
+      "flags": []
+    }
+  ],
+  "invariants": [],
+  "edge_cases": [],
+  "known_gotchas": [],
+  "related_tests": [],
+  "status": {
+    "maturity": "Unknown",
+    "owners": [],
+    "last_touched_file_mtime": "2025-09-14T19:51:48.027289"
+  }
+}

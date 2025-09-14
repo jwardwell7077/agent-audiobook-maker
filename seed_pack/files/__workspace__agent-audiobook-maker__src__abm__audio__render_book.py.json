@@ -1,0 +1,74 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/audio/render_book.py",
+  "module": "abm.audio",
+  "summary": "Orchestrate rendering of an entire audiobook. This module provides a small CLI wrapper around :mod:`abm.audio.render_chapter`\nthat iterates over a directory of chapter synthesis scripts.",
+  "top_level_symbols": [
+    {
+      "name": "_discover_scripts",
+      "kind": "function",
+      "signature": "(scripts_dir, start, end)",
+      "doc": "Return ``(index, path, title)`` for scripts within ``scripts_dir``. Args:\n    scripts_dir: Directory containing ``ch_###.synth.json`` files."
+    },
+    {
+      "name": "_load_qc",
+      "kind": "function",
+      "signature": "(qc_path)",
+      "doc": "Load a QC report from ``qc_path``. Args:\n    qc_path: Path to the QC JSON file."
+    },
+    {
+      "name": "_build_entry",
+      "kind": "function",
+      "signature": "(idx, title, qc, wav_rel, qc_rel)",
+      "doc": "Construct a manifest entry for a single chapter. Args:\n    idx: Chapter index."
+    },
+    {
+      "name": "_write_manifest",
+      "kind": "function",
+      "signature": "(manifest_path, base_dir, entries)",
+      "doc": "Write ``book_manifest.json`` to ``manifest_path``. Args:\n    manifest_path: Destination manifest path."
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "(argv)",
+      "doc": "Entry point for the ``render_book`` CLI. Args:\n    argv: Optional argument list for testing."
+    },
+    {
+      "name": "__main__",
+      "kind": "cli",
+      "entrypoint": "python -m abm.audio.render_book",
+      "flags": []
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [
+      "abm.audio.render_chapter"
+    ],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "collections",
+      "json",
+      "logging",
+      "pathlib",
+      "re"
+    ]
+  },
+  "errors_raised": [
+    {
+      "type": "SystemExit",
+      "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    }
+  ],
+  "env_vars": []
+}

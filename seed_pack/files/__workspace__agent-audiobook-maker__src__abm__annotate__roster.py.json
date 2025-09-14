@@ -1,0 +1,65 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/annotate/roster.py",
+  "module": "abm.annotate",
+  "summary": "Build and merge speaker rosters for chapters. This module provides a `RosterBuilder` class that combines lightweight\nheuristics with optional spaCy NER and rapidfuzz fuzzy matching to extract\ncharacter names from chapter text.",
+  "top_level_symbols": [
+    {
+      "name": "RosterConfig",
+      "kind": "class",
+      "methods": [],
+      "doc": "Configuration for :class:`RosterBuilder` behavior. Attributes:\n    use_spacy: Whether to use spaCy NER if available."
+    },
+    {
+      "name": "RosterBuilder",
+      "kind": "class",
+      "methods": [
+        "__init__",
+        "build_chapter_roster",
+        "merge_book_roster",
+        "_canonicalize_group",
+        "_expand_aliases",
+        "_fuzzy_merge",
+        "_strip_title",
+        "_clean_alias",
+        "_get_nlp"
+      ],
+      "doc": "Build chapter- and book-level speaker rosters from raw text."
+    },
+    {
+      "name": "build_chapter_roster",
+      "kind": "function",
+      "signature": "(text, nlp)",
+      "doc": "Functional wrapper for building a chapter roster. Args:\n    text: Chapter text."
+    },
+    {
+      "name": "merge_book_roster",
+      "kind": "function",
+      "signature": "(book, chap)",
+      "doc": "Functional wrapper for merging rosters (compatibility helper)."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "collections",
+      "dataclasses",
+      "importlib",
+      "re",
+      "typing"
+    ]
+  },
+  "errors_raised": [
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    }
+  ],
+  "env_vars": []
+}

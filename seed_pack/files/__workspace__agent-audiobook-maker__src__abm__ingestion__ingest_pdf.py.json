@@ -1,0 +1,89 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/ingest_pdf.py",
+  "module": "abm.ingestion",
+  "summary": "High-level orchestrator: PDF \u2192 raw text and well-done text. This module composes:\n- pdf_to_raw_text.RawPdfTextExtractor for minimal, fidelity-first extraction.",
+  "top_level_symbols": [
+    {
+      "name": "PipelineOptions",
+      "kind": "class",
+      "methods": [],
+      "doc": "Unknown"
+    },
+    {
+      "name": "PdfIngestPipeline",
+      "kind": "class",
+      "methods": [
+        "run"
+      ],
+      "doc": "Unknown"
+    },
+    {
+      "name": "_build_meta",
+      "kind": "function",
+      "signature": "(pdf_p, out_d, raw_path, wd_path, opts)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "_sha256_file",
+      "kind": "function",
+      "signature": "(p)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "_json_dumps",
+      "kind": "function",
+      "signature": "(obj)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "_default_out_dir",
+      "kind": "function",
+      "signature": "(p)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "_build_meta_ephemeral",
+      "kind": "function",
+      "signature": "(pdf_p, out_d, opts)",
+      "doc": "Build a minimal meta object without requiring any written files. Only includes fields safe to compute in memory."
+    },
+    {
+      "name": "_stub_db_insert",
+      "kind": "function",
+      "signature": "(mode, base_name, jsonl_path, meta_path, well_text, meta)",
+      "doc": "Print a friendly DB stub message. Swallow print errors."
+    },
+    {
+      "name": "__main__",
+      "kind": "cli",
+      "entrypoint": "python -m abm.ingestion.ingest_pdf",
+      "flags": []
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [
+      "abm.ingestion.pdf_to_raw_text",
+      "abm.ingestion.raw_to_welldone",
+      "abm.ingestion.welldone_to_json"
+    ],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "datetime",
+      "hashlib",
+      "json",
+      "pathlib",
+      "sys",
+      "typing"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

@@ -1,0 +1,22 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/profiles/__init__.py",
+  "module": "abm.profiles",
+  "summary": "Profile configuration and utilities.",
+  "top_level_symbols": [],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [
+      "abm.profiles.character_profiles"
+    ],
+    "imports_external": [
+      "__future__"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

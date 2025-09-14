@@ -1,0 +1,77 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/voice/piper_casting.py",
+  "module": "abm.voice",
+  "summary": "Propose Piper voice casting for book characters. This tool leverages existing profiles and annotations to suggest a mapping from\ncharacters to Piper voices:\n\n- Enumerates installed Piper voices (via piper_catalog)\n- Loads current profiles and the refined annotations\n- Picks a small audition line per character\n- Writes a proposed casting YAML and a review markdown with commands to audition\n\nAll outputs go under an ignored directory (reports/ by default) so nothing leaks\ninto version control.",
+  "top_level_symbols": [
+    {
+      "name": "AuditionLine",
+      "kind": "class",
+      "methods": [],
+      "doc": "Unknown"
+    },
+    {
+      "name": "_collect_characters",
+      "kind": "function",
+      "signature": "(annotations, max_chars)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "_pick_audition_lines",
+      "kind": "function",
+      "signature": "(annotations, speakers, max_chars)",
+      "doc": "Pick one short line per speaker as an audition text."
+    },
+    {
+      "name": "_render_review_md",
+      "kind": "function",
+      "signature": "(out_dir, lines, voices, engine)",
+      "doc": "Produce a small review markdown with suggested cli trials."
+    },
+    {
+      "name": "propose_casting",
+      "kind": "function",
+      "signature": "(profiles_path, annotations_path, out_dir, engine, max_chars)",
+      "doc": "Generate a simple casting proposal scaffold. Returns a summary dictionary with discovered voices and selected characters."
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "(argv)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "__main__",
+      "kind": "cli",
+      "entrypoint": "python -m abm.voice.piper_casting",
+      "flags": []
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [
+      "abm.profiles",
+      "abm.voice.piper_catalog"
+    ],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "typing",
+      "yaml"
+    ]
+  },
+  "errors_raised": [
+    {
+      "type": "SystemExit",
+      "when": "Unknown"
+    }
+  ],
+  "env_vars": []
+}

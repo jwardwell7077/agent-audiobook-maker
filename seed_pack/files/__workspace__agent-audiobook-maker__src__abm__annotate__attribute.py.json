@@ -1,0 +1,57 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/annotate/attribute.py",
+  "module": "abm.annotate",
+  "summary": "Unknown",
+  "top_level_symbols": [
+    {
+      "name": "AttributeConfig",
+      "kind": "class",
+      "methods": [],
+      "doc": "Config for attribution engine."
+    },
+    {
+      "name": "AttributeEngine",
+      "kind": "class",
+      "methods": [
+        "__init__",
+        "_init_dep_patterns",
+        "attribute_span",
+        "_clip_forward",
+        "_clip_backward",
+        "_dep_in_window",
+        "_bounded_windows",
+        "_try_thought_cue",
+        "_try_descriptor",
+        "_try_dep_subject",
+        "_try_phrasal_dep",
+        "_resolve_pronoun_coref",
+        "_canonical_from_roster",
+        "_safe_load_spacy",
+        "_ask_llm"
+      ],
+      "doc": "Speaker attribution using rules \u2192 coref \u2192 optional LLM."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "dataclasses",
+      "fastcoref",
+      "os",
+      "re",
+      "spacy",
+      "torch",
+      "typing",
+      "warnings"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

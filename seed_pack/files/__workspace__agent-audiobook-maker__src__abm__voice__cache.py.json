@@ -1,0 +1,37 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/voice/cache.py",
+  "module": "abm.voice",
+  "summary": "Cache utilities for synthesized segments.",
+  "top_level_symbols": [
+    {
+      "name": "make_cache_key",
+      "kind": "function",
+      "signature": "(payload)",
+      "doc": "Return a deterministic SHA-256 key for ``payload``. Args:\n    payload: Serializable dictionary describing a TTS request."
+    },
+    {
+      "name": "cache_path",
+      "kind": "function",
+      "signature": "(root, engine, voice, key)",
+      "doc": "Return the expected cache path for ``engine``/``voice``/``key``. Args:\n    root: Root directory of the cache."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "hashlib",
+      "json",
+      "pathlib",
+      "typing"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

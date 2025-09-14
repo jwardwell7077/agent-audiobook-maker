@@ -1,0 +1,34 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/annotate/progress.py",
+  "module": "abm.annotate",
+  "summary": "Unknown",
+  "top_level_symbols": [
+    {
+      "name": "ProgressReporter",
+      "kind": "class",
+      "methods": [
+        "__init__",
+        "__enter__",
+        "__exit__",
+        "advance"
+      ],
+      "doc": "Simple progress reporter with rich/tqdm/print fallbacks."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "rich",
+      "tqdm"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

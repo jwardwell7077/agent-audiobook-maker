@@ -1,0 +1,45 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/audio/book_config.py",
+  "module": "abm.audio",
+  "summary": "Book metadata schema and loader.",
+  "top_level_symbols": [
+    {
+      "name": "BookMeta",
+      "kind": "class",
+      "methods": [],
+      "doc": "Metadata describing an audiobook."
+    },
+    {
+      "name": "load_book_meta",
+      "kind": "function",
+      "signature": "(path)",
+      "doc": "Load :class:`BookMeta` from a YAML file. Args:\n    path: Path to a ``book.yaml`` file."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "dataclasses",
+      "pathlib",
+      "yaml"
+    ]
+  },
+  "errors_raised": [
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "FileNotFoundError",
+      "when": "Unknown"
+    }
+  ],
+  "env_vars": []
+}

@@ -1,0 +1,81 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/annotate/llm_refine.py",
+  "module": "abm.annotate",
+  "summary": "Unknown",
+  "top_level_symbols": [
+    {
+      "name": "LLMRefineConfig",
+      "kind": "class",
+      "methods": [],
+      "doc": "Policy for refinement acceptance. Attributes:\n    min_conf_for_skip: Spans at or above this confidence are not refined."
+    },
+    {
+      "name": "_ctx",
+      "kind": "function",
+      "signature": "(text, start, end, n)",
+      "doc": "Return text surrounding a span with ``n`` characters of context. Args:\n    text: Source text containing the span."
+    },
+    {
+      "name": "_fuzzy_match",
+      "kind": "function",
+      "signature": "(name, roster)",
+      "doc": "Return canonical roster name if ``name`` or any alias matches \u2265 0.92. Args:\n    name: Proposed speaker name from the LLM."
+    },
+    {
+      "name": "refine_document",
+      "kind": "function",
+      "signature": "(tagged_path, out_json, out_md, backend, cfg, manage_service, cache_path)",
+      "doc": "Refine low-confidence spans in ``combined.json`` using an LLM. Args:\n    tagged_path: Input JSON produced by Stage\u00a0A."
+    },
+    {
+      "name": "_parse_args",
+      "kind": "function",
+      "signature": "()",
+      "doc": "Parse CLI arguments for :func:`main`. Returns:\n    argparse.Namespace: Parsed arguments."
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "()",
+      "doc": "Entry point for the ``llm_refine`` command-line interface. Returns:\n    None\n\nRaises:\n    None"
+    },
+    {
+      "name": "__main__",
+      "kind": "cli",
+      "entrypoint": "python -m abm.annotate.llm_refine",
+      "flags": []
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [
+      "abm.annotate.llm_cache",
+      "abm.annotate.llm_prep",
+      "abm.annotate.progress",
+      "abm.annotate.prompts",
+      "abm.llm.client",
+      "abm.llm.manager"
+    ],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "concurrent",
+      "dataclasses",
+      "datetime",
+      "difflib",
+      "json",
+      "logging",
+      "pathlib",
+      "subprocess",
+      "sys",
+      "typing"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

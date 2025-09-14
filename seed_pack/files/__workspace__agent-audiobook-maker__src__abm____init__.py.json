@@ -1,0 +1,18 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/__init__.py",
+  "module": "abm",
+  "summary": "Audiobook Maker core package. This package contains modules for ingestion, processing, and rendering.",
+  "top_level_symbols": [],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": []
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

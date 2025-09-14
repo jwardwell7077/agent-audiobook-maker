@@ -1,0 +1,42 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/audio/tts_manager.py",
+  "module": "abm.audio",
+  "summary": "Concurrency-aware TTS rendering with caching and progress bars.",
+  "top_level_symbols": [
+    {
+      "name": "TTSManager",
+      "kind": "class",
+      "methods": [
+        "__init__",
+        "_cache_path",
+        "_link_or_copy",
+        "render_one",
+        "render_batch"
+      ],
+      "doc": "Render ``TTSTask`` objects with optional caching and concurrency. The manager deduplicates synthesis requests using a content-addressable\ncache."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [
+      "abm.audio.text_normalizer",
+      "abm.audio.tts_base"
+    ],
+    "imports_external": [
+      "__future__",
+      "concurrent",
+      "hashlib",
+      "os",
+      "pathlib",
+      "shutil",
+      "tqdm"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

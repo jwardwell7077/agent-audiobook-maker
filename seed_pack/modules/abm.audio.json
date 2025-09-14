@@ -1,0 +1,330 @@
+{
+  "id": "abm.audio",
+  "path_globs": [
+    "src/abm/audio/**/*.py"
+  ],
+  "purpose": "Unknown",
+  "key_components": [
+    {
+      "name": "BookMeta",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/audio/book_config.py",
+      "summary": "Metadata describing an audiobook."
+    },
+    {
+      "name": "EngineRegistry",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/audio/engine_registry.py",
+      "summary": "Global registry for TTS engine factories. This avoids hard-coding adapter imports throughout the codebase."
+    },
+    {
+      "name": "PiperAdapter",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/audio/piper_adapter.py",
+      "summary": "Adapter that calls the `piper` CLI per synthesis request. Attributes:\n    voice: Piper voice identifier (e.g., 'en_US-ryan-medium')."
+    },
+    {
+      "name": "TextNormalizer",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/audio/text_normalizer.py",
+      "summary": "Normalize story/game text to be TTS-friendly. Methods here avoid engine dependencies and can be unit-tested in isolation."
+    },
+    {
+      "name": "Chunker",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/audio/text_normalizer.py",
+      "summary": "Split text into chunks within engine-friendly limits."
+    },
+    {
+      "name": "SynthesisError",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/audio/tts_base.py",
+      "summary": "Raised when a TTS engine fails to synthesize audio."
+    },
+    {
+      "name": "TTSTask",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/audio/tts_base.py",
+      "summary": "A single text-to-speech synthesis job. Attributes:\n    text: Text content to synthesize (plain text; pre-normalized)."
+    },
+    {
+      "name": "TTSAdapter",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/audio/tts_base.py",
+      "summary": "Abstract base class for all TTS engine adapters. Subclasses must implement :meth:`preload` and :meth:`synth`."
+    },
+    {
+      "name": "TTSManager",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/audio/tts_manager.py",
+      "summary": "Render ``TTSTask`` objects with optional caching and concurrency. The manager deduplicates synthesis requests using a content-addressable\ncache."
+    },
+    {
+      "name": "XTTSAdapter",
+      "kind": "class",
+      "file": "/workspace/agent-audiobook-maker/src/abm/audio/xtts_adapter.py",
+      "summary": "Adapter for Coqui XTTS v2 (speaker cloning). Args:\n    model_name: Model identifier."
+    }
+  ],
+  "public_surfaces": [
+    {
+      "symbol": "register_builtins",
+      "signature": "()",
+      "summary": "Register built-in adapters with :class:`EngineRegistry`. Importing adapters triggers registration side effects."
+    },
+    {
+      "symbol": "collect_chapter_stats",
+      "signature": "(manifest_path)",
+      "summary": "Collect QC stats for each chapter listed in ``manifest_path``. Args:\n    manifest_path: Path to ``book_manifest.json``."
+    },
+    {
+      "symbol": "compute_album_offset",
+      "signature": "(stats, target_lufs, trim_percent)",
+      "summary": "Return the dB gain to apply so the median LUFS hits ``target_lufs``. Args:\n    stats: List of chapter stat dictionaries."
+    },
+    {
+      "symbol": "apply_album_gain",
+      "signature": "(wav_path, out_path, offset_db, peak_ceiling_dbfs, pcm_subtype)",
+      "summary": "Apply a uniform gain to ``wav_path`` and write ``out_path``. Args:\n    wav_path: Source WAV file."
+    },
+    {
+      "symbol": "write_album_manifest",
+      "signature": "(manifest_path, offset_db)",
+      "summary": "Write a small JSON file describing the applied album gain. Args:\n    manifest_path: Destination path for the manifest JSON."
+    },
+    {
+      "symbol": "load_wav",
+      "signature": "(path)",
+      "summary": "Load a WAV file as mono ``float32`` samples. Args:\n    path: Input WAV file path."
+    },
+    {
+      "symbol": "ensure_mono",
+      "signature": "(y)",
+      "summary": "Collapse stereo signals to mono by averaging channels."
+    },
+    {
+      "symbol": "silence",
+      "signature": "(duration_ms, sr)",
+      "summary": "Return a block of digital silence."
+    },
+    {
+      "symbol": "assemble",
+      "signature": "(span_paths, pauses_ms, crossfade_ms, sr_hint, allow_resample)",
+      "summary": "Stitch a sequence of span WAVs with pauses and crossfades. Args:\n    span_paths: Ordered list of WAV files to concatenate."
+    },
+    {
+      "symbol": "load_book_meta",
+      "signature": "(path)",
+      "summary": "Load :class:`BookMeta` from a YAML file. Args:\n    path: Path to a ``book.yaml`` file."
+    },
+    {
+      "symbol": "equal_power_crossfade",
+      "signature": "(a, b, sr, crossfade_ms)",
+      "summary": "Join two mono signals with an equal-power crossfade. Args:\n    a: First signal ``[-1, 1]``."
+    },
+    {
+      "symbol": "micro_fade",
+      "signature": "(signal, sr, head_ms, tail_ms)",
+      "summary": "Apply short linear fades to the beginning and end of ``signal``. Args:\n    signal: Mono signal ``[-1, 1]``."
+    },
+    {
+      "symbol": "measure_loudness",
+      "signature": "(y, sr)",
+      "summary": "Return integrated loudness (LUFS)."
+    },
+    {
+      "symbol": "measure_true_peak",
+      "signature": "(y, sr, oversample)",
+      "summary": "Estimate true peak in dBFS via optional oversampling. Args:\n    y: Mono audio in float32 range ``[-1, 1]``."
+    },
+    {
+      "symbol": "limit_peaks",
+      "signature": "(y, peak_dbfs)",
+      "summary": "Limit waveform peaks to the given dBFS value."
+    },
+    {
+      "symbol": "add_head_tail_silence",
+      "signature": "(y, sr, head_ms, tail_ms)",
+      "summary": "Pad audio with silence before and after."
+    },
+    {
+      "symbol": "master",
+      "signature": "(y, sr, target_lufs, peak_dbfs, head_ms, tail_ms, enable_true_peak, true_peak_ceiling_dbfs, true_peak_oversample)",
+      "summary": "Master audio to target loudness and peak limits. Processing order: loudness match \u2192 peak limit \u2192 optional true-peak safety \u2192\nhead/tail silence."
+    },
+    {
+      "symbol": "package_book",
+      "signature": "(renders_dir, meta_path, out_dir, formats)",
+      "summary": "Package chapter WAVs into selected formats. Args:\n    renders_dir: Directory containing ``ch_*.wav`` files."
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": "CLI entry point for packaging chapters."
+    },
+    {
+      "symbol": "format_ts",
+      "signature": "(seconds)",
+      "summary": "Return a zero-padded ``HH:MM:SS.mmm`` timestamp. Args:\n    seconds: Time in seconds."
+    },
+    {
+      "symbol": "export_mp3",
+      "signature": "(in_wav, out_mp3, title, artist, album, track)",
+      "summary": "Export ``in_wav`` as an MP3 with basic ID3 tags. Args:\n    in_wav: Source WAV file."
+    },
+    {
+      "symbol": "export_opus",
+      "signature": "(in_wav, out_opus, title, artist, album, track)",
+      "summary": "Export ``in_wav`` as an Opus file with basic tags. Args:\n    in_wav: Source WAV file."
+    },
+    {
+      "symbol": "make_chaptered_m4b",
+      "signature": "(chapter_wavs, out_m4b, chapter_titles, album, artist, cover_jpeg)",
+      "summary": "Concatenate ``chapter_wavs`` into a single M4B-style file. Args:\n    chapter_wavs: Ordered list of chapter WAV files."
+    },
+    {
+      "symbol": "write_chapter_cue",
+      "signature": "(chapter_wavs, out_cue, titles)",
+      "summary": "Write a cue sheet with basic chapter information. Args:\n    chapter_wavs: Ordered list of chapter WAV files."
+    },
+    {
+      "symbol": "measure_lufs",
+      "signature": "(y, sr)",
+      "summary": "Return integrated loudness (LUFS). Uses :mod:`pyloudnorm` if available, otherwise returns ``nan`` and logs a\nwarning."
+    },
+    {
+      "symbol": "peak_dbfs",
+      "signature": "(y)",
+      "summary": "Return sample peak in dBFS."
+    },
+    {
+      "symbol": "duration_s",
+      "signature": "(y, sr)",
+      "summary": "Return duration of ``y`` in seconds."
+    },
+    {
+      "symbol": "write_qc_json",
+      "signature": "(path, lufs, peak_dbfs, duration_s, segments)",
+      "summary": "Write a JSON file with QC metrics."
+    },
+    {
+      "symbol": "qc_report",
+      "signature": "(y, sr)",
+      "summary": "Compute basic QC metrics for an audio signal. The ``approx_noise_floor_dbfs`` metric uses the 10th percentile of the\nabsolute amplitude as a rough estimate of the noise floor."
+    },
+    {
+      "symbol": "write_qc_json",
+      "signature": "(report, out_path)",
+      "summary": "Write a QC report dictionary to JSON."
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": "Entry point for the ``render_book`` CLI. Args:\n    argv: Optional argument list for testing."
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": "Entry point for the ``render_chapter`` CLI."
+    },
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": "Entry point for the ``synthesis_export`` CLI."
+    },
+    {
+      "symbol": "cast_speaker",
+      "signature": "(speaker, db, preferred_engine)",
+      "summary": "Return casting info for ``speaker``. Args:\n    speaker: Speaker name from the roster."
+    },
+    {
+      "symbol": "spans_to_tasks",
+      "signature": "(spans, db, default_engine, default_pause_ms)",
+      "summary": "Convert annotated spans into synthesis tasks."
+    }
+  ],
+  "data_flow": "Unknown",
+  "dependencies": {
+    "imports_internal": [
+      "abm.audio",
+      "abm.audio.assembly",
+      "abm.audio.book_config",
+      "abm.audio.engine_registry",
+      "abm.audio.mastering",
+      "abm.audio.packaging",
+      "abm.audio.piper_adapter",
+      "abm.audio.qc_report",
+      "abm.audio.render_chapter",
+      "abm.audio.text_normalizer",
+      "abm.audio.tts_base",
+      "abm.audio.tts_casting",
+      "abm.audio.tts_manager",
+      "abm.audio.xtts_adapter",
+      "abm.profiles.character_profiles"
+    ],
+    "imports_external": [
+      "TTS",
+      "__future__",
+      "argparse",
+      "collections",
+      "concurrent",
+      "dataclasses",
+      "hashlib",
+      "importlib",
+      "json",
+      "logging",
+      "math",
+      "mutagen",
+      "numpy",
+      "os",
+      "pathlib",
+      "pydub",
+      "pyloudnorm",
+      "re",
+      "scipy",
+      "shutil",
+      "soundfile",
+      "statistics",
+      "subprocess",
+      "tempfile",
+      "threading",
+      "tqdm",
+      "typing",
+      "wave",
+      "yaml"
+    ]
+  },
+  "configs_env": {
+    "env_vars": [],
+    "config_files": []
+  },
+  "cli_entrypoints": [
+    {
+      "file": "/workspace/agent-audiobook-maker/src/abm/audio/render_book.py",
+      "module": "abm.audio",
+      "command": "python -m abm.audio.render_book",
+      "flags": []
+    },
+    {
+      "file": "/workspace/agent-audiobook-maker/src/abm/audio/render_chapter.py",
+      "module": "abm.audio",
+      "command": "python -m abm.audio.render_chapter",
+      "flags": []
+    },
+    {
+      "file": "/workspace/agent-audiobook-maker/src/abm/audio/synthesis_export.py",
+      "module": "abm.audio",
+      "command": "python -m abm.audio.synthesis_export",
+      "flags": []
+    }
+  ],
+  "invariants": [],
+  "edge_cases": [],
+  "known_gotchas": [],
+  "related_tests": [],
+  "status": {
+    "maturity": "Unknown",
+    "owners": [],
+    "last_touched_file_mtime": "2025-09-14T19:51:48.027289"
+  }
+}

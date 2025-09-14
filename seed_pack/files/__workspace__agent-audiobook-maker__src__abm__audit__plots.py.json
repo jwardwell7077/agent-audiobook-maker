@@ -1,0 +1,48 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/audit/plots.py",
+  "module": "abm.audit",
+  "summary": "Optional plotting helpers for :mod:`abm.audit`.",
+  "top_level_symbols": [
+    {
+      "name": "_maybe_save",
+      "kind": "function",
+      "signature": "(fig, out_png)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "plot_top_speakers",
+      "kind": "function",
+      "signature": "(counter, out_png)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "plot_unknown_by_chapter",
+      "kind": "function",
+      "signature": "(rows, out_png)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "plot_vote_margin_hist",
+      "kind": "function",
+      "signature": "(margins, out_png)",
+      "doc": "Unknown"
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "collections",
+      "matplotlib",
+      "pathlib"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

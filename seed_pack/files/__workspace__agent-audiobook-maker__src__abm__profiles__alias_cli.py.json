@@ -1,0 +1,87 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/profiles/alias_cli.py",
+  "module": "abm.profiles",
+  "summary": "CLI entry points for the alias resolver. The command line interface is intentionally lightweight.",
+  "top_level_symbols": [
+    {
+      "name": "_load_json",
+      "kind": "function",
+      "signature": "(path)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "_load_profiles",
+      "kind": "function",
+      "signature": "(path)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "_save_profiles",
+      "kind": "function",
+      "signature": "(db, path)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "_proposals_from_file",
+      "kind": "function",
+      "signature": "(path)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "_cmd_discover",
+      "kind": "function",
+      "signature": "(args)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "_cmd_apply",
+      "kind": "function",
+      "signature": "(args)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "_cmd_run",
+      "kind": "function",
+      "signature": "(args)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "(argv)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "__main__",
+      "kind": "cli",
+      "entrypoint": "python -m abm.profiles.alias_cli",
+      "flags": []
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [
+      "abm.profiles.character_profiles"
+    ],
+    "imports_external": [
+      "__future__",
+      "alias_resolver",
+      "argparse",
+      "json",
+      "pathlib",
+      "typing"
+    ]
+  },
+  "errors_raised": [
+    {
+      "type": "SystemExit",
+      "when": "Unknown"
+    }
+  ],
+  "env_vars": []
+}

@@ -1,0 +1,63 @@
+{
+  "id": "abm.classifier",
+  "path_globs": [
+    "src/abm/classifier/**/*.py"
+  ],
+  "purpose": "Unknown",
+  "key_components": [],
+  "public_surfaces": [
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "canon_title",
+      "signature": "(s)",
+      "summary": "Unknown"
+    },
+    {
+      "symbol": "classify_blocks",
+      "signature": "(jsonl_path)",
+      "summary": "Unknown"
+    }
+  ],
+  "data_flow": "Unknown",
+  "dependencies": {
+    "imports_internal": [
+      "abm.classifier.section_classifier"
+    ],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "tempfile",
+      "typing",
+      "unicodedata"
+    ]
+  },
+  "configs_env": {
+    "env_vars": [],
+    "config_files": []
+  },
+  "cli_entrypoints": [
+    {
+      "file": "/workspace/agent-audiobook-maker/src/abm/classifier/classifier_cli.py",
+      "module": "abm.classifier",
+      "command": "python -m abm.classifier.classifier_cli",
+      "flags": []
+    }
+  ],
+  "invariants": [],
+  "edge_cases": [],
+  "known_gotchas": [],
+  "related_tests": [],
+  "status": {
+    "maturity": "Unknown",
+    "owners": [],
+    "last_touched_file_mtime": "2025-09-14T19:51:48.027289"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/audio/tts_base.py",
+  "module": "abm.audio",
+  "summary": "Base interfaces and dataclasses for TTS adapters.",
+  "top_level_symbols": [
+    {
+      "name": "SynthesisError",
+      "kind": "class",
+      "methods": [],
+      "doc": "Raised when a TTS engine fails to synthesize audio."
+    },
+    {
+      "name": "TTSTask",
+      "kind": "class",
+      "methods": [],
+      "doc": "A single text-to-speech synthesis job. Attributes:\n    text: Text content to synthesize (plain text; pre-normalized)."
+    },
+    {
+      "name": "TTSAdapter",
+      "kind": "class",
+      "methods": [
+        "preload",
+        "synth"
+      ],
+      "doc": "Abstract base class for all TTS engine adapters. Subclasses must implement :meth:`preload` and :meth:`synth`."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "dataclasses",
+      "pathlib"
+    ]
+  },
+  "errors_raised": [
+    {
+      "type": "NotImplementedError",
+      "when": "Unknown"
+    },
+    {
+      "type": "NotImplementedError",
+      "when": "Unknown"
+    }
+  ],
+  "env_vars": []
+}

@@ -1,0 +1,130 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/audio/packaging.py",
+  "module": "abm.audio",
+  "summary": "Helpers for packaging rendered audio into common formats.",
+  "top_level_symbols": [
+    {
+      "name": "_require_pydub",
+      "kind": "function",
+      "signature": "()",
+      "doc": "Return :class:`~pydub.AudioSegment` or raise a helpful error."
+    },
+    {
+      "name": "_have_ffmpeg",
+      "kind": "function",
+      "signature": "()",
+      "doc": "Return ``True`` if :command:`ffmpeg` is available on ``PATH``."
+    },
+    {
+      "name": "_write_ffmetadata_chapters",
+      "kind": "function",
+      "signature": "(chapters, out_path)",
+      "doc": "Write an ``FFMETADATA1`` file with chapter entries. Args:\n    chapters: Sequence of ``(start_s, end_s, title)`` tuples."
+    },
+    {
+      "name": "_mux_m4b_with_chapters",
+      "kind": "function",
+      "signature": "(input_m4a, ffmeta, out_m4b)",
+      "doc": "Mux ``input_m4a`` with chapter metadata into ``out_m4b``. Args:\n    input_m4a: Source M4A file."
+    },
+    {
+      "name": "format_ts",
+      "kind": "function",
+      "signature": "(seconds)",
+      "doc": "Return a zero-padded ``HH:MM:SS.mmm`` timestamp. Args:\n    seconds: Time in seconds."
+    },
+    {
+      "name": "export_mp3",
+      "kind": "function",
+      "signature": "(in_wav, out_mp3, title, artist, album, track)",
+      "doc": "Export ``in_wav`` as an MP3 with basic ID3 tags. Args:\n    in_wav: Source WAV file."
+    },
+    {
+      "name": "export_opus",
+      "kind": "function",
+      "signature": "(in_wav, out_opus, title, artist, album, track)",
+      "doc": "Export ``in_wav`` as an Opus file with basic tags. Args:\n    in_wav: Source WAV file."
+    },
+    {
+      "name": "make_chaptered_m4b",
+      "kind": "function",
+      "signature": "(chapter_wavs, out_m4b, chapter_titles, album, artist, cover_jpeg)",
+      "doc": "Concatenate ``chapter_wavs`` into a single M4B-style file. Args:\n    chapter_wavs: Ordered list of chapter WAV files."
+    },
+    {
+      "name": "write_chapter_cue",
+      "kind": "function",
+      "signature": "(chapter_wavs, out_cue, titles)",
+      "doc": "Write a cue sheet with basic chapter information. Args:\n    chapter_wavs: Ordered list of chapter WAV files."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "importlib",
+      "logging",
+      "mutagen",
+      "pathlib",
+      "pydub",
+      "shutil",
+      "soundfile",
+      "subprocess",
+      "tempfile",
+      "typing"
+    ]
+  },
+  "errors_raised": [
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "FileNotFoundError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    }
+  ],
+  "env_vars": []
+}

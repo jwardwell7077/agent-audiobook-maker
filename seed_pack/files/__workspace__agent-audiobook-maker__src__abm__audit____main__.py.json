@@ -1,0 +1,27 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/audit/__main__.py",
+  "module": "abm.audit",
+  "summary": "Unknown",
+  "top_level_symbols": [
+    {
+      "name": "__main__",
+      "kind": "cli",
+      "entrypoint": "python -m abm.audit.__main__",
+      "flags": []
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "cli"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

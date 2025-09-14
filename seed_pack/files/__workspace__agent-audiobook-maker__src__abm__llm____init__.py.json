@@ -1,0 +1,21 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/llm/__init__.py",
+  "module": "abm.llm",
+  "summary": "LLM utilities for the audiobook maker.",
+  "top_level_symbols": [],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [
+      "abm.llm.client",
+      "abm.llm.manager"
+    ],
+    "imports_external": []
+  },
+  "errors_raised": [],
+  "env_vars": []
+}

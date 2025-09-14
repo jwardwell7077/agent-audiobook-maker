@@ -1,0 +1,55 @@
+{
+  "nodes": [
+    "__init__",
+    "abm",
+    "abm.annotate",
+    "abm.audio",
+    "abm.audit",
+    "abm.classifier",
+    "abm.ingestion",
+    "abm.llm",
+    "abm.parse",
+    "abm.profiles",
+    "abm.sidecar",
+    "abm.voice",
+    "abm.voice.engines"
+  ],
+  "edges": [
+    {
+      "from": "abm.annotate",
+      "to": "abm"
+    },
+    {
+      "from": "abm.audio",
+      "to": "abm.audio"
+    },
+    {
+      "from": "abm.profiles",
+      "to": "abm.profiles"
+    },
+    {
+      "from": "abm.profiles",
+      "to": "abm.voice"
+    },
+    {
+      "from": "abm.voice",
+      "to": "abm.profiles"
+    },
+    {
+      "from": "abm.voice",
+      "to": "abm.profiles"
+    },
+    {
+      "from": "abm.voice",
+      "to": "abm.voice"
+    },
+    {
+      "from": "abm.voice",
+      "to": "abm.voice.engines"
+    },
+    {
+      "from": "abm.voice",
+      "to": "abm.profiles"
+    }
+  ]
+}

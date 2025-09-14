@@ -1,0 +1,75 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/voice/piper_catalog.py",
+  "module": "abm.voice",
+  "summary": "Catalog installed Piper voices. This utility scans common Piper voice locations (or a provided directory) for\nvoice model files and associated metadata, then prints a concise inventory.",
+  "top_level_symbols": [
+    {
+      "name": "PiperVoice",
+      "kind": "class",
+      "methods": [],
+      "doc": "Simple description of a Piper voice installation."
+    },
+    {
+      "name": "_candidate_dirs",
+      "kind": "function",
+      "signature": "(override)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "_iter_voice_models",
+      "kind": "function",
+      "signature": "(dirs)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "_load_config",
+      "kind": "function",
+      "signature": "(meta_path)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "discover_piper_voices",
+      "kind": "function",
+      "signature": "(voices_dir)",
+      "doc": "Return a list of discovered Piper voices. We consider a voice defined by a model file (\"*.onnx\" or compressed) and\noptionally a matching JSON config (same stem with \".json\")."
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "(argv)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "__main__",
+      "kind": "cli",
+      "entrypoint": "python -m abm.voice.piper_catalog",
+      "flags": []
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "collections",
+      "dataclasses",
+      "json",
+      "os",
+      "pathlib",
+      "typing"
+    ]
+  },
+  "errors_raised": [
+    {
+      "type": "SystemExit",
+      "when": "Unknown"
+    }
+  ],
+  "env_vars": []
+}

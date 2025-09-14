@@ -1,0 +1,73 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/ingestion/welldone_to_json.py",
+  "module": "abm.ingestion",
+  "summary": "Well-done text \u2192 JSONL converter. Reads a \"well-done\" text file (paragraphs separated by blank lines) and\nemits a .jsonl with one record per paragraph block, plus a sidecar immutable\nmeta JSON describing the document.",
+  "top_level_symbols": [
+    {
+      "name": "WDToJSONOptions",
+      "kind": "class",
+      "methods": [],
+      "doc": "Unknown"
+    },
+    {
+      "name": "WellDoneToJSONL",
+      "kind": "class",
+      "methods": [
+        "convert_text",
+        "convert"
+      ],
+      "doc": "Unknown"
+    },
+    {
+      "name": "_split_paragraphs_with_lines",
+      "kind": "function",
+      "signature": "(text)",
+      "doc": "Split well-done text into paragraph blocks and record line spans. Returns a list of dicts: {\n  text: str,\n  lines: list[str],\n  start_line: int,  # 1-based\n  end_line: int,    # inclusive\n}"
+    },
+    {
+      "name": "_word_count",
+      "kind": "function",
+      "signature": "(s)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "_build_meta_for_wd",
+      "kind": "function",
+      "signature": "(wd_p, blocks, ingest_meta_path)",
+      "doc": "Unknown"
+    },
+    {
+      "name": "__main__",
+      "kind": "cli",
+      "entrypoint": "python -m abm.ingestion.welldone_to_json",
+      "flags": []
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "datetime",
+      "json",
+      "pathlib",
+      "re",
+      "sys",
+      "typing"
+    ]
+  },
+  "errors_raised": [
+    {
+      "type": "FileNotFoundError",
+      "when": "Unknown"
+    }
+  ],
+  "env_vars": []
+}

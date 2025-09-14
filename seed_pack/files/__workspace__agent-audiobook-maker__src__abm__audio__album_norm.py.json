@@ -1,0 +1,50 @@
+{
+  "file": "/workspace/agent-audiobook-maker/src/abm/audio/album_norm.py",
+  "module": "abm.audio",
+  "summary": "Album-level loudness normalization helpers.",
+  "top_level_symbols": [
+    {
+      "name": "collect_chapter_stats",
+      "kind": "function",
+      "signature": "(manifest_path)",
+      "doc": "Collect QC stats for each chapter listed in ``manifest_path``. Args:\n    manifest_path: Path to ``book_manifest.json``."
+    },
+    {
+      "name": "compute_album_offset",
+      "kind": "function",
+      "signature": "(stats, target_lufs, trim_percent)",
+      "doc": "Return the dB gain to apply so the median LUFS hits ``target_lufs``. Args:\n    stats: List of chapter stat dictionaries."
+    },
+    {
+      "name": "apply_album_gain",
+      "kind": "function",
+      "signature": "(wav_path, out_path, offset_db, peak_ceiling_dbfs, pcm_subtype)",
+      "doc": "Apply a uniform gain to ``wav_path`` and write ``out_path``. Args:\n    wav_path: Source WAV file."
+    },
+    {
+      "name": "write_album_manifest",
+      "kind": "function",
+      "signature": "(manifest_path, offset_db)",
+      "doc": "Write a small JSON file describing the applied album gain. Args:\n    manifest_path: Destination path for the manifest JSON."
+    }
+  ],
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "file_patterns_written": [],
+    "stdout_side_effects": []
+  },
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "json",
+      "numpy",
+      "pathlib",
+      "soundfile",
+      "statistics"
+    ]
+  },
+  "errors_raised": [],
+  "env_vars": []
+}
