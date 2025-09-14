@@ -164,6 +164,9 @@ def _cmd_generate(ns: Any) -> int:
     return 0
 
 
+ 
+
+
 def main(argv: list[str] | None = None) -> int:
     """Entry point for the profiles CLI."""
 
