@@ -51,6 +51,33 @@ def _cmd_audit(roster_path: Path, profiles_path: Path) -> int:
     return 0
 
 
+def _run_alias_resolver(args: argparse.Namespace) -> None:
+    """Invoke the alias resolver CLI if the user requested it.
+
+    The resolver is optional and only executed when ``--resolve-aliases`` is
+    provided together with the necessary paths.  Errors are propagated to the
+    caller so that CI surfaces them as failures.
+    """
+
+    if not getattr(args, "resolve_aliases", False):
+        return
+    if not args.annotations or not args.out_dir:
+        raise SystemExit("--annotations and --out-dir required with --resolve-aliases")
+    from . import alias_cli
+
+    alias_cli.main(
+        [
+            "run",
+            "--annotations",
+            str(args.annotations),
+            "--profiles",
+            str(args.profiles),
+            "--out-dir",
+            str(args.out_dir),
+        ]
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     """Entry point for the ``profiles`` CLI."""
 
@@ -63,13 +90,19 @@ def main(argv: list[str] | None = None) -> int:
     p_audit = sub.add_parser("audit")
     p_audit.add_argument("--roster", type=Path, required=True)
     p_audit.add_argument("--profiles", type=Path, required=True)
+    p_audit.add_argument("--resolve-aliases", action="store_true")
+    p_audit.add_argument("--annotations", type=Path)
+    p_audit.add_argument("--out-dir", type=Path)
 
     args = parser.parse_args(argv)
 
     if args.cmd == "validate":
         return _cmd_validate(args.file)
     if args.cmd == "audit":
-        return _cmd_audit(args.roster, args.profiles)
+        rc = _cmd_audit(args.roster, args.profiles)
+        if rc == 0:
+            _run_alias_resolver(args)
+        return rc
     return 1
 
 
