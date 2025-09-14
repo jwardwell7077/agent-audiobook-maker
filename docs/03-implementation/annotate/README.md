@@ -153,12 +153,12 @@ Example command sequence using full-doc parse, optional BookNLP fusion, LLM refi
 
 ```bash
 python -m abm.annotate.annotate_cli \
-	--in data/clean/mvs/classified/chapters.json \
-	--out-json data/ann/mvs/combined.json \
-	--out-roster data/ann/mvs/book_roster.json \
-	--out-dir data/ann/mvs/chapters \
-	--out-md data/ann/mvs/review.md \
-	--metrics-jsonl data/ann/mvs/metrics.jsonl \
+	--in data/clean/private_book/classified/chapters.json \
+	--out-json data/ann/private_book/combined.json \
+	--out-roster data/ann/private_book/book_roster.json \
+	--out-dir data/ann/private_book/chapters \
+	--out-md data/ann/private_book/review.md \
+	--metrics-jsonl data/ann/private_book/metrics.jsonl \
 	--status rich \
 	--mode high \
 	--parse-mode doc \
@@ -173,8 +173,8 @@ python -m abm.annotate.annotate_cli \
 
 ```bash
 python -m abm.annotate.bnlp_refine \
-	--tagged data/ann/mvs/combined.json \
-	--out    data/ann/mvs/combined_bnlp.json \
+	--tagged data/ann/private_book/combined.json \
+	--out    data/ann/private_book/combined_bnlp.json \
 	--verbose
 ```
 
@@ -182,10 +182,11 @@ python -m abm.annotate.bnlp_refine \
 
 ```bash
 # Refine with local OpenAI-compatible endpoint (e.g., Ollama)
+
 python -m abm.annotate.llm_refine \
-	--tagged     data/ann/mvs/combined_bnlp.json \
-	--out-json   data/ann/mvs/combined_refined.json \
-	--out-md     data/ann/mvs/review_refined.md \
+	--tagged     data/ann/private_book/combined_bnlp.json \
+	--out-json   data/ann/private_book/combined_refined.json \
+	--out-md     data/ann/private_book/review_refined.md \
 	--endpoint   http://127.0.0.1:11434/v1 \
 	--model      llama3.1:8b-instruct-q6_K \
 	--votes      3 \
@@ -196,9 +197,9 @@ python -m abm.annotate.llm_refine \
 
 ```bash
 python -m abm.voice.voicecasting_cli \
-	--combined      data/ann/mvs/combined_refined.json \
-	--out-profiles  data/ann/mvs/speaker_profile.json \
-	--out-cast      data/ann/mvs/casting_plan.json \
+	--combined      data/ann/private_book/combined_refined.json \
+	--out-profiles  data/ann/private_book/speaker_profile.json \
+	--out-cast      data/ann/private_book/casting_plan.json \
 	--top-k 16 --minor-pool 6 \
 	--verbose
 ```

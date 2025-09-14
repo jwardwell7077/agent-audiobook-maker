@@ -227,8 +227,7 @@ data/books/LEGACY_PRIVATE_*/**
 # Local scratch artifacts
 /tmp/
 
-# MVS artifacts (explicitly ignored even though data/** is ignored; guards against re-includes)
-data/clean/mvs/**
+# Explicitly ignored artifacts remain covered by data/** above; avoid re-includes for any private content.
 
 # Added during sanitization
 logs/

@@ -200,22 +200,17 @@ python -m spacy download en_core_web_trf
 
 Or point `--spacy-model` to another compatible model. For CPU-only machines, consider `en_core_web_md` and disable `--coref` unless installed with `[coref]`.
 
-### Optional: Local mvs dev flow (kept out of git)
+### Optional: Local private-book dev flow (kept out of git)
 
-If you have the MyVampireSystem PDF at `data/books/mvs/source_pdfs/MyVampireSystem_CH0001_0700.pdf`, you can run the whole pipeline locally and generate readable artifacts:
+You can run the pipeline locally against your own private PDF content; keep any inputs and derived artifacts out of git. The repo includes strict ignore rules and pre-commit guards to prevent accidental commits of private data.
 
 ```bash
-# Create mvs.txt (+ mvs_nopp.txt), classify, and chapterize with dev-readable outputs
-make dev_mvs_all
-
-# Run unit tests only
-make test_quick
-
-# Run all tests including optional e2e on mvs (set env to opt-in)
-ABM_E2E_MVS=1 make test_all_optional
+# Example (pseudocode):
+make ingest_pdf PDF=path/to/your.pdf OUT_DIR=data/clean/private_book MODE=dev
+make classify_well_done OUT_DIR=data/clean/private_book
 ```
 
-Artifacts are written under `data/clean/mvs/` and the `data/books/mvs/` and `data/clean/mvs/` directories are `.gitignore`d.
+Artifacts are written under `data/clean/<your_book>/`. The entire `data/**` tree remains ignored except for explicitly allowlisted public samples.
 
 1. Ingest PDFs (structured TOC only) via API:
 

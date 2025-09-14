@@ -2,7 +2,7 @@
 
 Scope
 
-- Input: structured TOC PDF (MVS, local-only). One narrator, multiple distinct character voices.
+- Input: structured TOC PDF (private/local-only). One narrator, multiple distinct character voices.
 - Process: spans-first classification → speaker attribution → casting → confidence QA → local LLM retry loop → TTS (route Piper/Parler) → combine per chapter.
 - Execution: per-chapter, human-triggered via Make; no automatic cloud calls.
 
@@ -51,7 +51,7 @@ Configuration (TOML overrides defaults)
 
 Notes
 
-- MVS content remains local; directories are `.gitignore`d. No copyrighted text/audio is committed.
+- Private content remains local; directories are `.gitignore`d. No copyrighted text/audio is committed.
 
 ## Diagram
 

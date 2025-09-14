@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BOOK="${1:-mvs}"
+BOOK="${1:-private_book}"
 BASE="data/ann/${BOOK}"
 CLEAN="data/clean/${BOOK}"
 
