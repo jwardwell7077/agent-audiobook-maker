@@ -4,7 +4,11 @@ import argparse
 import concurrent.futures as futures
 import difflib
 import json
+import logging
+import subprocess
+import sys
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any, cast
 
@@ -14,6 +18,8 @@ from abm.annotate.progress import ProgressReporter
 from abm.annotate.prompts import SYSTEM_SPEAKER, speaker_user_prompt
 from abm.llm.client import OpenAICompatClient
 from abm.llm.manager import LLMBackend, LLMService
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -301,8 +307,11 @@ def _parse_args() -> argparse.Namespace:
     )
     ap.add_argument("--votes", type=int, default=3, help="Majority vote count per span")
     ap.add_argument("--cache", default=None, help="Optional path to SQLite cache file")
+    ap.add_argument("--metrics-jsonl", dest="metrics_jsonl", default=None, help="Write per-span metrics JSONL here")
     ap.add_argument("--max-concurrency", type=int, default=4, help="Max parallel LLM requests")
     ap.add_argument("--cache-dir", default=None, help="Directory for cache DB (overrides --cache)")
+    ap.add_argument("--eval-after", action="store_true", help="Run abm.audit after completion")
+    ap.add_argument("--eval-dir", default=None, help="Directory for audit reports")
     ap.add_argument("--verbose", action="store_true", help="Verbose refinement logs")
     ap.add_argument(
         "--status",
@@ -342,6 +351,29 @@ def main() -> None:
             Path(args.cache) if args.cache else (Path(args.cache_dir) / "llm.cache.sqlite" if args.cache_dir else None)
         ),
     )
+
+    if args.eval_after:
+        cmd = [
+            sys.executable,
+            "-m",
+            "abm.audit",
+            "--refined",
+            args.out_json,
+            "--out-dir",
+            args.eval_dir or "reports",
+            "--title",
+            f"Eval — llm_refine {datetime.today():%F}",
+        ]
+        if args.tagged:
+            cmd += ["--base", args.tagged]
+        if args.metrics_jsonl:
+            cmd += ["--metrics-jsonl", args.metrics_jsonl]
+        try:
+            rc = subprocess.run(cmd, check=False).returncode
+            if rc:
+                logger.warning("audit exited with code %s", rc)
+        except Exception as exc:
+            logger.warning("audit skipped: %s", exc)
 
 
 if __name__ == "__main__":

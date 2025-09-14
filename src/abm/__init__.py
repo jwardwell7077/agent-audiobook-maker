@@ -7,4 +7,5 @@ __all__ = [
     "ingestion",
     "classifier",
     "annotate",
+    "audit",
 ]
