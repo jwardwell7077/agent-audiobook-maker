@@ -3,7 +3,7 @@
 Count Unknown speakers across Dialogue/Thought spans in a combined annotations JSON.
 
 Example:
-    python scripts/count_unknown_speakers.py --in data/annotations/mvs/full_gpu_book/combined.json
+    python scripts/count_unknown_speakers.py --in data/annotations/private_book/full_gpu_book/combined.json
 
 Exit codes:
     0 on success, 1 on file/read/parse error.

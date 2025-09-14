@@ -2,9 +2,13 @@
 set -euo pipefail
 
 # Fail commit if banned tokens appear in staged changes.
-# Banned: exact title and known acronyms (case-insensitive), and any obvious variants.
+# Construct banned tokens without storing them literally in the repo.
 
-PATTERN='(MyVampireSystem|\bMVS\b|\bmvs\b)'
+tok_title=$(printf '\x4d\x79\x56\x61\x6d\x70\x69\x72\x65\x53\x79\x73\x74\x65\x6d')
+tok_acr_up=$(printf '\x4d\x56\x53')
+tok_acr_lo=$(printf '\x6d\x76\x73')
+
+PATTERN="(${tok_title}|\\b${tok_acr_up}\\b|\\b${tok_acr_lo}\\b)"
 
 # Collect staged file list
 files=$(git diff --cached --name-only --diff-filter=ACMR)

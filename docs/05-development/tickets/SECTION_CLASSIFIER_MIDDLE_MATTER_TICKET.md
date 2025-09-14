@@ -18,7 +18,7 @@ AI “system” tagging is out of scope for this ticket (handled by a separate p
 
 ## Motivation (corpus examples)
 
-- "For MVS artwork and updates follow on Instagram and Facebook: jksmanga"
+- "For series artwork and updates follow on Instagram and Facebook: jksmanga"
 - "My werewolf system Exclusive on P.a.t.r.e.o.n … (2 Chapters per month)"
 - "Remember to vote … mass release … 4600 Stones … 4800 Stones …"
 - Lone separators (\*\*\*, \*\*\*\*\*) must not be classified as middle_matter unless promo lines are present.
@@ -53,7 +53,7 @@ Required promo/author-note signals (case-insensitive):
 
 - Phrases: remember to vote, mass release, stones, release schedule, two chapters today, rate/review, support me, donation/paypal, subscribe
 - Platforms/links: patreon (incl. p.a.t.r.e.o.n), discord, instagram, facebook, twitter|x, webtoon, http(s)://, @handle
-- Series-specific: "For MVS artwork and updates follow…"
+- Series-specific: "For artwork and updates follow…"
 
 Non-examples (stay in chapter):
 

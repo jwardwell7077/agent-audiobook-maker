@@ -3,7 +3,7 @@
 Report method counts and confidence stats for Dialogue/Thought spans.
 
 Example:
-  python scripts/method_confidence_distribution.py --in data/annotations/mvs/full_gpu_book/combined.json
+    python scripts/method_confidence_distribution.py --in data/annotations/private_book/full_gpu_book/combined.json
 """
 
 import argparse
