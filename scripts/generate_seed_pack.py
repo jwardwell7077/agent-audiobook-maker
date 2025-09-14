@@ -267,39 +267,42 @@ def main() -> None:
     module_configs: Dict[str, set[str]] = defaultdict(set)
     module_cli: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
     file_paths = discover_py_files()
+    module_names: set[str] = set()
 
     for path in file_paths:
         record, extra = parse_file(path)
         file_records.append(record)
-        packages.add(extra["package"])
-        if extra["is_cli"]:
-            cli_inventory.append(
-                {
-                    "file": record["file"],
-                    "module": record["module"],
-                    "command": f"python -m {record['module']}",
-                    "flags": extra["cli_flags"],
-                    "examples": [f"python -m {record['module']}"]
-                }
-            )
-            module_cli[extra["package"]].append(
-                {
-                    "file": record["file"],
-                    "module": record["module"],
-                    "command": f"python -m {record['module']}",
-                    "flags": extra["cli_flags"],
-                }
-            )
+
+        module_names.add(extra["module_name"])
+
+        pkg_full = extra["package"]
+        parts = pkg_full.split(".")
+        top_pkg = ".".join(parts[:2]) if len(parts) >= 2 else pkg_full
+        if top_pkg != "abm":
+            packages.add(top_pkg)
+
+        if extra["is_cli"] and top_pkg != "abm":
+            cli_entry = {
+                "file": record["file"],
+                "module": record["module"],
+                "command": f"python -m {record['module']}",
+                "flags": extra["cli_flags"],
+                "examples": [f"python -m {record['module']}"]
+            }
+            cli_inventory.append(cli_entry)
+            module_cli[top_pkg].append(cli_entry)
+
         for v in extra["env_vars"]:
             env_inventory.append({"env_var": v, "file": record["file"]})
-            module_env[extra["package"].split('.')[0] if '.' in extra["package"] else extra["package"]].add(v)
+            module_env[top_pkg].add(v)
         for c in extra["config_files"]:
             config_inventory.append({"file": record["file"], "config": c})
-            module_configs[extra["package"].split('.')[0] if '.' in extra["package"] else extra["package"]].add(c)
-        module_deps_internal[extra["package"]].update(extra["deps_internal"])
-        module_deps_external[extra["package"]].update(extra["deps_external"])
+            module_configs[top_pkg].add(c)
+
+        module_deps_internal[top_pkg].update(extra["deps_internal"])
+        module_deps_external[top_pkg].update(extra["deps_external"])
         for dst in extra["deps_internal"]:
-            import_edges.add((extra["package"], dst))
+            import_edges.add((extra["module_name"], dst))
         for frm, to in extra["call_edges"]:
             call_edges.add((frm, to))
 
@@ -350,11 +353,20 @@ def main() -> None:
         write_json(modules_dir / f"{pkg}.json", mod_record, shards)
 
     write_json(SEED_DIR / "inventories" / "cli_tools.json", sorted(cli_inventory, key=lambda x: x["command"]), shards)
-    write_json(SEED_DIR / "inventories" / "env_vars.json", env_inventory, shards)
-    write_json(SEED_DIR / "inventories" / "config_files.json", config_inventory, shards)
+    write_json(
+        SEED_DIR / "inventories" / "env_vars.json",
+        sorted(env_inventory, key=lambda x: (x["env_var"], x["file"])),
+        shards,
+    )
+    write_json(
+        SEED_DIR / "inventories" / "config_files.json",
+        sorted(config_inventory, key=lambda x: (x["config"], x["file"])),
+        shards,
+    )
 
+    import_nodes = module_names | {dst for _, dst in import_edges}
     import_graph = {
-        "nodes": sorted(set(src for src, _ in import_edges) | set(dst for _, dst in import_edges)),
+        "nodes": sorted(import_nodes),
         "edges": [
             {"from": src, "to": dst}
             for src, dst in sorted(import_edges)

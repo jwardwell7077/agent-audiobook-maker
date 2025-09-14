@@ -1,9 +1,8 @@
 {
   "project": "agent-audiobook-maker",
-  "generated_at": "2025-09-14T21:16:55.276958",
+  "generated_at": "2025-09-14T21:42:08.405541",
   "code_root": "src",
   "modules": [
-    "abm",
     "abm.annotate",
     "abm.audio",
     "abm.audit",
@@ -13,8 +12,7 @@
     "abm.parse",
     "abm.profiles",
     "abm.sidecar",
-    "abm.voice",
-    "abm.voice.engines"
+    "abm.voice"
   ],
   "files_indexed": 77,
   "graphs": {

@@ -142,6 +142,8 @@
       "abm.voice",
       "abm.voice.cache",
       "abm.voice.engines",
+      "abm.voice.engines.piper_engine",
+      "abm.voice.engines.xtts_engine",
       "abm.voice.piper_catalog",
       "abm.voice.tts_casting",
       "abm.voice.voicecasting"
@@ -157,48 +159,18 @@
       "os",
       "pathlib",
       "re",
+      "scipy",
       "shutil",
       "soundfile",
+      "subprocess",
+      "tempfile",
       "typing",
       "yaml"
     ]
   },
   "configs_env": {
-    "env_vars": [
-      "ABM_PIPER_BIN",
-      "ABM_PIPER_DRYRUN",
-      "ABM_PIPER_VOICES_DIR",
-      "ABM_XTTS_DEVICE",
-      "ABM_XTTS_DRYRUN",
-      "ABM_XTTS_MODEL",
-      "DATABASE_URL",
-      "OPENAI_API_KEY"
-    ],
-    "config_files": [
-      ".json",
-      ".onnx.json",
-      ".qc.json",
-      ".synth.json",
-      "Path to Stage A combined.json",
-      "Path to Stage-A combined.json",
-      "Path to chapters.json",
-      "_ingest_meta.json",
-      "_meta.json",
-      "alias_patch.yaml",
-      "back_matter.json",
-      "book_manifest.json",
-      "casting_proposed.yaml",
-      "casting_summary.json",
-      "ch_(\\d+)\\.synth\\.json",
-      "ch_*.synth.json",
-      "chapters.json",
-      "data/ann/*/combined.json",
-      "data/ann/*/combined_refined.json",
-      "front_matter.json",
-      "quotes.json",
-      "synth_manifest.json",
-      "toc.json"
-    ]
+    "env_vars": [],
+    "config_files": []
   },
   "cli_entrypoints": [
     {
@@ -256,6 +228,9 @@
           "type": "unknown",
           "default": null
         }
+      ],
+      "examples": [
+        "python -m abm.voice.piper_casting"
       ]
     },
     {
@@ -283,6 +258,9 @@
           "type": "unknown",
           "default": null
         }
+      ],
+      "examples": [
+        "python -m abm.voice.piper_catalog"
       ]
     },
     {
@@ -350,6 +328,9 @@
           "type": "unknown",
           "default": null
         }
+      ],
+      "examples": [
+        "python -m abm.voice.voicecasting_cli"
       ]
     }
   ],
@@ -360,6 +341,6 @@
   "status": {
     "maturity": "alpha",
     "owners": [],
-    "last_touched_file_mtime": "2025-09-14T21:16:13.163865"
+    "last_touched_file_mtime": "2025-09-14T21:40:03.807911"
   }
 }

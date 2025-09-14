@@ -40,48 +40,18 @@
     ]
   },
   "configs_env": {
-    "env_vars": [
-      "ABM_PIPER_BIN",
-      "ABM_PIPER_DRYRUN",
-      "ABM_PIPER_VOICES_DIR",
-      "ABM_XTTS_DEVICE",
-      "ABM_XTTS_DRYRUN",
-      "ABM_XTTS_MODEL",
-      "DATABASE_URL",
-      "OPENAI_API_KEY"
-    ],
-    "config_files": [
-      ".json",
-      ".onnx.json",
-      ".qc.json",
-      ".synth.json",
-      "Path to Stage A combined.json",
-      "Path to Stage-A combined.json",
-      "Path to chapters.json",
-      "_ingest_meta.json",
-      "_meta.json",
-      "alias_patch.yaml",
-      "back_matter.json",
-      "book_manifest.json",
-      "casting_proposed.yaml",
-      "casting_summary.json",
-      "ch_(\\d+)\\.synth\\.json",
-      "ch_*.synth.json",
-      "chapters.json",
-      "data/ann/*/combined.json",
-      "data/ann/*/combined_refined.json",
-      "front_matter.json",
-      "quotes.json",
-      "synth_manifest.json",
-      "toc.json"
-    ]
+    "env_vars": [],
+    "config_files": []
   },
   "cli_entrypoints": [
     {
       "file": "src/abm/classifier/classifier_cli.py",
       "module": "abm.classifier.classifier_cli",
       "command": "python -m abm.classifier.classifier_cli",
-      "flags": []
+      "flags": [],
+      "examples": [
+        "python -m abm.classifier.classifier_cli"
+      ]
     }
   ],
   "invariants": [],
@@ -91,6 +61,6 @@
   "status": {
     "maturity": "alpha",
     "owners": [],
-    "last_touched_file_mtime": "2025-09-14T20:04:39.117287"
+    "last_touched_file_mtime": "2025-09-14T20:07:10.338222"
   }
 }

@@ -1,9 +1,5 @@
 [
   {
-    "env_var": "ABM_PIPER_VOICES_DIR",
-    "file": "src/abm/audio/piper_adapter.py"
-  },
-  {
     "env_var": "ABM_PIPER_BIN",
     "file": "src/abm/audio/piper_adapter.py"
   },
@@ -12,15 +8,27 @@
     "file": "src/abm/audio/piper_adapter.py"
   },
   {
+    "env_var": "ABM_PIPER_VOICES_DIR",
+    "file": "src/abm/audio/piper_adapter.py"
+  },
+  {
+    "env_var": "ABM_PIPER_VOICES_DIR",
+    "file": "src/abm/voice/engines/piper_engine.py"
+  },
+  {
+    "env_var": "ABM_PIPER_VOICES_DIR",
+    "file": "src/abm/voice/piper_catalog.py"
+  },
+  {
     "env_var": "ABM_XTTS_DEVICE",
     "file": "src/abm/audio/xtts_adapter.py"
   },
   {
-    "env_var": "ABM_XTTS_MODEL",
+    "env_var": "ABM_XTTS_DRYRUN",
     "file": "src/abm/audio/xtts_adapter.py"
   },
   {
-    "env_var": "ABM_XTTS_DRYRUN",
+    "env_var": "ABM_XTTS_MODEL",
     "file": "src/abm/audio/xtts_adapter.py"
   },
   {
@@ -30,13 +38,5 @@
   {
     "env_var": "OPENAI_API_KEY",
     "file": "src/abm/llm/manager.py"
-  },
-  {
-    "env_var": "ABM_PIPER_VOICES_DIR",
-    "file": "src/abm/voice/engines/piper_engine.py"
-  },
-  {
-    "env_var": "ABM_PIPER_VOICES_DIR",
-    "file": "src/abm/voice/piper_catalog.py"
   }
 ]
