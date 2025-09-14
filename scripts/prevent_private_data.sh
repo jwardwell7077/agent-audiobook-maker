@@ -2,6 +2,7 @@
 set -euo pipefail
 
 # Block committing non-public data and common media/binary artifacts.
+# Also block reports/ outputs.
 # Allowed exceptions: data/books/SAMPLE_BOOK/** and its derived SAMPLE_BOOK dirs.
 
 # Build allowlist regex for SAMPLE_BOOK paths
@@ -23,6 +24,12 @@ while IFS= read -r f; do
   # If under data/ and not in SAMPLE_BOOK allowlist, block
   if [[ "$f" == data/* ]] && ! [[ "$f" =~ $ALLOW_RE ]]; then
     echo "Blocked: committing to data/ outside SAMPLE_BOOK is not allowed: $f" >&2
+    fail=1
+    continue
+  fi
+  # Block reports/ entirely (evaluation artifacts)
+  if [[ "$f" == reports/* ]]; then
+    echo "Blocked: committing reports/ artifacts is not allowed: $f" >&2
     fail=1
     continue
   fi
