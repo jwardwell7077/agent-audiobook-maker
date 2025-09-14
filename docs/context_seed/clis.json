@@ -1,0 +1,1184 @@
+{
+  "clis": [
+    {
+      "path": "abm/abm/profiles/alias_cli.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [
+        {
+          "name": "---------------------------------------------------------------------------",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--model",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--proposals",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--tau-auto",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--tau-review",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--use-llm",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        }
+      ],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/profiles/alias_cli.py",
+          "lines": "1-142"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "path": "abm/abm/profiles/profiles_cli.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--engine",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--n-top",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--prefer-engine",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--voices-dir",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        }
+      ],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/profiles/profiles_cli.py",
+          "lines": "1-188"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "path": "abm/abm/voice/piper_catalog.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [
+        {
+          "name": "--json",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--voices-dir",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        }
+      ],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/voice/piper_catalog.py",
+          "lines": "1-154"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "path": "abm/abm/voice/piper_casting.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [
+        {
+          "name": "--annotations",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--engine",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--max-chars",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--quiet",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        }
+      ],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/voice/piper_casting.py",
+          "lines": "1-183"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "path": "abm/abm/voice/voicecasting_cli.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [
+        {
+          "name": "--combined",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--minor-pool",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out-cast",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out-profiles",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--top-k",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        }
+      ],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/voice/voicecasting_cli.py",
+          "lines": "1-35"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "path": "abm/abm/audio/render_book.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [
+        {
+          "name": "--end",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--engine-workers",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--log-level",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--no-show-progress",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--resume",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--script",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--scripts-dir",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--show-progress",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--start",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        }
+      ],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/audio/render_book.py",
+          "lines": "1-220"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "path": "abm/abm/audio/render_chapter.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [
+        {
+          "name": "--crossfade-ms",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--engine-workers",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--lufs",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--peak",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--save-master-wav",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--save-mp3",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--script",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--show-progress",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--tmp-dir",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--workers",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        }
+      ],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/audio/render_chapter.py",
+          "lines": "1-199"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "path": "abm/abm/audio/synthesis_export.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [
+        {
+          "name": "--default-engine",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--default-pause",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--only",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--profiles",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--tagged",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        }
+      ],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/audio/synthesis_export.py",
+          "lines": "1-101"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "path": "abm/abm/annotate/bnlp_refine.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [
+        {
+          "name": "--bnlp-gate-threshold",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--bnlp-pipeline",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--bnlp-size",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--bnlp-tmp-dir",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--bnlp-top-n",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--bnlp-try-big",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--max-chapters",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--tagged",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        }
+      ],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/annotate/bnlp_refine.py",
+          "lines": "1-351"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "path": "abm/abm/annotate/annotate_cli.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [
+        {
+          "name": "---------------------------------",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "----------------------------------",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--coref",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--doc-cache",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--in",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--llm",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--metrics-jsonl",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--mode",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--no-coref",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--no-roster-ner",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--only",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out-json",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out-md",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out-roster",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--parse-mode",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--pipe-batch-size",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--remove-heading",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--roster-scope",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--spacy-model",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--stages",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--status",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--treat-single-as-thought",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        }
+      ],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/annotate/annotate_cli.py",
+          "lines": "1-518"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "path": "abm/abm/annotate/llm_refine.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [
+        {
+          "name": "--base",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--cache",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--cache-dir",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--endpoint",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--eval-after",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--eval-dir",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--manage-llm",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--max-concurrency",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--metrics-jsonl",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--model",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out-json",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out-md",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--refined",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--skip-threshold",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--status",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--tagged",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--title",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--votes",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        }
+      ],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/annotate/llm_refine.py",
+          "lines": "1-380"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "path": "abm/abm/annotate/llm_prep_cli.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [
+        {
+          "name": "--conf-threshold",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--in",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        }
+      ],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/annotate/llm_prep_cli.py",
+          "lines": "1-32"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "path": "abm/abm/audit/__main__.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/audit/__main__.py",
+          "lines": "1-4"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "path": "abm/abm/audit/cli.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [
+        {
+          "name": "--base",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--chapters",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--html",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--metrics-jsonl",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--plots",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--prefix",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--refined",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--stdout-summary",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--title",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        }
+      ],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/audit/cli.py",
+          "lines": "1-89"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "path": "abm/abm/classifier/classifier_cli.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/classifier/classifier_cli.py",
+          "lines": "1-96"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "path": "abm/abm/ingestion/pdf_to_raw_text.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [
+        {
+          "name": "--artifact-compat",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--dedupe-inline-spaces",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--fix-short-wraps",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--newline",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--no-strip-trailing-spaces",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--preserve-form-feeds",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        }
+      ],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/ingestion/pdf_to_raw_text.py",
+          "lines": "1-167"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "path": "abm/abm/ingestion/welldone_to_json.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        }
+      ],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/ingestion/welldone_to_json.py",
+          "lines": "1-208"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "path": "abm/abm/ingestion/ingest_pdf.py",
+      "commands": [
+        {
+          "name": "main",
+          "desc": "TBD"
+        }
+      ],
+      "flags": [
+        {
+          "name": "--insert-pg",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--mode",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--no-dedupe-spaces",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--no-dehyphenate",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--no-reflow",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--no-strip-trailing",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        },
+        {
+          "name": "--preserve-form-feeds",
+          "type": "unknown",
+          "default": "TBD",
+          "desc": "TBD"
+        }
+      ],
+      "examples": [],
+      "evidence": [
+        {
+          "file": "abm/abm/ingestion/ingest_pdf.py",
+          "lines": "1-256"
+        }
+      ],
+      "confidence": 0.3
+    }
+  ]
+}

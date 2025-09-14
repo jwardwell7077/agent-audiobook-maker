@@ -1,0 +1,55 @@
+{
+  "path": "abm/abm/audio/package_book.py",
+  "summary": "High level orchestrator to package rendered chapters into final formats.",
+  "public_api": [
+    {
+      "name": "_discover_wavs",
+      "kind": "function",
+      "signature": "(root)"
+    },
+    {
+      "name": "package_book",
+      "kind": "function",
+      "signature": "(renders_dir, meta_path, out_dir, formats)"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "(argv)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.audio.book_config",
+      "abm.audio.packaging"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "collections.abc",
+      "logging",
+      "pathlib"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audio/package_book.py",
+      "lines": "1-90"
+    }
+  ],
+  "confidence": 0.4
+}

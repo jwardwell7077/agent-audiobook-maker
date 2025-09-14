@@ -1,0 +1,51 @@
+{
+  "path": "abm/abm/audio/tts_casting.py",
+  "summary": "Simple speaker-to-profile casting helpers.",
+  "public_api": [
+    {
+      "name": "cast_speaker",
+      "kind": "function",
+      "signature": "(speaker, db)"
+    },
+    {
+      "name": "_infer_pause",
+      "kind": "function",
+      "signature": "(text, default_pause_ms)"
+    },
+    {
+      "name": "spans_to_tasks",
+      "kind": "function",
+      "signature": "(spans, db)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.profiles.character_profiles"
+    ],
+    "external": [
+      "__future__",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audio/tts_casting.py",
+      "lines": "1-93"
+    }
+  ],
+  "confidence": 0.4
+}

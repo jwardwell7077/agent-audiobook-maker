@@ -1,0 +1,36 @@
+{
+  "path": "abm/abm/audio/__init__.py",
+  "summary": "Audio synthesis interfaces and engine registry.",
+  "public_api": [
+    {
+      "name": "register_builtins",
+      "kind": "function",
+      "signature": "()"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audio/__init__.py",
+      "lines": "1-28"
+    }
+  ],
+  "confidence": 0.4
+}

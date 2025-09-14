@@ -1,0 +1,55 @@
+{
+  "path": "abm/abm/audit/plots.py",
+  "summary": "Optional plotting helpers for :mod:`abm.audit`.",
+  "public_api": [
+    {
+      "name": "_maybe_save",
+      "kind": "function",
+      "signature": "(fig, out_png)"
+    },
+    {
+      "name": "plot_top_speakers",
+      "kind": "function",
+      "signature": "(counter, out_png)"
+    },
+    {
+      "name": "plot_unknown_by_chapter",
+      "kind": "function",
+      "signature": "(rows, out_png)"
+    },
+    {
+      "name": "plot_vote_margin_hist",
+      "kind": "function",
+      "signature": "(margins, out_png)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "collections",
+      "pathlib"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audit/plots.py",
+      "lines": "1-61"
+    }
+  ],
+  "confidence": 0.4
+}

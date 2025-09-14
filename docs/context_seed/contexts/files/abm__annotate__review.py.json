@@ -1,0 +1,77 @@
+{
+  "path": "abm/abm/annotate/review.py",
+  "summary": "Generate Markdown review reports for annotated chapters.",
+  "public_api": [
+    {
+      "name": "ReviewConfig",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "Reviewer",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self, config)"
+        },
+        {
+          "name": "make_markdown",
+          "signature": "(self, chapters)"
+        },
+        {
+          "name": "_chapter_header",
+          "signature": "(self, ch)"
+        },
+        {
+          "name": "_chapter_summary_table",
+          "signature": "(self, spans)"
+        },
+        {
+          "name": "_spans_table",
+          "signature": "(self, flat)"
+        },
+        {
+          "name": "_method_breakdown",
+          "signature": "(self, chapters)"
+        }
+      ]
+    },
+    {
+      "name": "make_review_markdown",
+      "kind": "function",
+      "signature": "(chapters)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "collections",
+      "dataclasses",
+      "statistics",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/annotate/review.py",
+      "lines": "1-165"
+    }
+  ],
+  "confidence": 0.4
+}

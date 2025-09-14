@@ -1,0 +1,65 @@
+{
+  "path": "abm/abm/voice/render_chapter.py",
+  "summary": "Render a chapter plan to audio using local TTS engines.",
+  "public_api": [
+    {
+      "name": "_load_engine",
+      "kind": "function",
+      "signature": "(name)"
+    },
+    {
+      "name": "_synth_segment",
+      "kind": "function",
+      "signature": "(seg, sr, cache_dir, tmp_dir)"
+    },
+    {
+      "name": "render_chapter",
+      "kind": "function",
+      "signature": "(plan_path, out_wav, cache_dir, tmp_dir)"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "(argv)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.audio.concat",
+      "abm.audio.qc",
+      "abm.voice.cache",
+      "abm.voice.engines"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "json",
+      "numpy",
+      "pathlib",
+      "shutil",
+      "soundfile",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/voice/render_chapter.py",
+      "lines": "1-102"
+    }
+  ],
+  "confidence": 0.4
+}

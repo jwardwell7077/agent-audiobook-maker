@@ -1,0 +1,33 @@
+{
+  "path": "abm/abm/llm/__init__.py",
+  "summary": "LLM utilities for the audiobook maker.",
+  "public_api": [],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.llm.client",
+      "abm.llm.manager"
+    ],
+    "external": [],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/llm/__init__.py",
+      "lines": "1-6"
+    }
+  ],
+  "confidence": 0.4
+}

@@ -1,0 +1,85 @@
+{
+  "path": "abm/abm/audio/packaging.py",
+  "summary": "Helpers for packaging rendered audio into common formats.",
+  "public_api": [
+    {
+      "name": "_require_pydub",
+      "kind": "function",
+      "signature": "()"
+    },
+    {
+      "name": "_have_ffmpeg",
+      "kind": "function",
+      "signature": "()"
+    },
+    {
+      "name": "_write_ffmetadata_chapters",
+      "kind": "function",
+      "signature": "(chapters, out_path)"
+    },
+    {
+      "name": "_mux_m4b_with_chapters",
+      "kind": "function",
+      "signature": "(input_m4a, ffmeta, out_m4b)"
+    },
+    {
+      "name": "format_ts",
+      "kind": "function",
+      "signature": "(seconds)"
+    },
+    {
+      "name": "export_mp3",
+      "kind": "function",
+      "signature": "(in_wav, out_mp3)"
+    },
+    {
+      "name": "export_opus",
+      "kind": "function",
+      "signature": "(in_wav, out_opus)"
+    },
+    {
+      "name": "make_chaptered_m4b",
+      "kind": "function",
+      "signature": "(chapter_wavs, out_m4b, chapter_titles)"
+    },
+    {
+      "name": "write_chapter_cue",
+      "kind": "function",
+      "signature": "(chapter_wavs, out_cue, titles)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "importlib.util",
+      "logging",
+      "pathlib",
+      "shutil",
+      "subprocess",
+      "tempfile",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audio/packaging.py",
+      "lines": "1-399"
+    }
+  ],
+  "confidence": 0.4
+}

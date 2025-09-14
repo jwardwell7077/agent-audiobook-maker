@@ -1,0 +1,122 @@
+{
+  "pipelines": [
+    {
+      "name": "ingestion",
+      "stages": [
+        {
+          "step": "pdf_to_raw_text",
+          "in": "*.pdf",
+          "out": "raw.txt"
+        },
+        {
+          "step": "raw_to_welldone",
+          "in": "raw.txt",
+          "out": "welldone.txt"
+        },
+        {
+          "step": "welldone_to_json",
+          "in": "welldone.txt",
+          "out": "chapters.json"
+        }
+      ],
+      "entrypoints": [
+        "python abm/ingestion/ingest_pdf.py --in a.pdf --out out/"
+      ],
+      "artifacts": [
+        "raw.txt",
+        "welldone.txt",
+        "chapters.json"
+      ],
+      "evidence": [
+        {
+          "file": "abm/ingestion/ingest_pdf.py",
+          "lines": "1-200"
+        }
+      ],
+      "confidence": 0.85
+    },
+    {
+      "name": "classification",
+      "stages": [
+        {
+          "step": "classifier_cli",
+          "in": "chapters.json",
+          "out": "segments.json"
+        }
+      ],
+      "entrypoints": [
+        "python abm/classifier/classifier_cli.py --in out/chapters.json --out out/segments.json"
+      ],
+      "artifacts": [
+        "segments.json"
+      ],
+      "evidence": [
+        {
+          "file": "abm/classifier/classifier_cli.py",
+          "lines": "1-200"
+        }
+      ],
+      "confidence": 0.75
+    },
+    {
+      "name": "voice_synthesis",
+      "stages": [
+        {
+          "step": "voicecasting",
+          "in": "segments.json, profiles/*",
+          "out": "casting_plan.json"
+        },
+        {
+          "step": "render_chapter",
+          "in": "casting_plan.json, segments.json",
+          "out": "audio/*.wav"
+        }
+      ],
+      "entrypoints": [
+        "python abm/voice/voicecasting_cli.py ...",
+        "python abm/audio/render_chapter.py ..."
+      ],
+      "artifacts": [
+        "casting_plan.json",
+        "audio/*.wav",
+        "metadata.json"
+      ],
+      "evidence": [
+        {
+          "file": "abm/voice/voicecasting_cli.py",
+          "lines": "1-200"
+        }
+      ],
+      "confidence": 0.7
+    },
+    {
+      "name": "mastering_packaging",
+      "stages": [
+        {
+          "step": "album_norm",
+          "in": "audio/*.wav",
+          "out": "audio_norm/*.wav"
+        },
+        {
+          "step": "package_book",
+          "in": "audio_norm/*.wav, book_config.*",
+          "out": "dist/book/*"
+        }
+      ],
+      "entrypoints": [
+        "python abm/audio/package_book.py --in audio --config book_config.json --out dist/book"
+      ],
+      "artifacts": [
+        "dist/book/*",
+        "reports/*"
+      ],
+      "evidence": [
+        {
+          "file": "abm/audio/package_book.py",
+          "lines": "1-200"
+        }
+      ],
+      "confidence": 0.7
+    }
+  ]
+}

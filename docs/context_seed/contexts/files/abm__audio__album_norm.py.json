@@ -1,0 +1,58 @@
+{
+  "path": "abm/abm/audio/album_norm.py",
+  "summary": "Album-level loudness normalization helpers.",
+  "public_api": [
+    {
+      "name": "collect_chapter_stats",
+      "kind": "function",
+      "signature": "(manifest_path)"
+    },
+    {
+      "name": "compute_album_offset",
+      "kind": "function",
+      "signature": "(stats, target_lufs, trim_percent)"
+    },
+    {
+      "name": "apply_album_gain",
+      "kind": "function",
+      "signature": "(wav_path, out_path, offset_db)"
+    },
+    {
+      "name": "write_album_manifest",
+      "kind": "function",
+      "signature": "(manifest_path, offset_db)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "json",
+      "numpy",
+      "pathlib",
+      "soundfile",
+      "statistics"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audio/album_norm.py",
+      "lines": "1-124"
+    }
+  ],
+  "confidence": 0.4
+}

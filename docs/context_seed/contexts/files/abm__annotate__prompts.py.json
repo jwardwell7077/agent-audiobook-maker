@@ -1,0 +1,38 @@
+{
+  "path": "abm/abm/annotate/prompts.py",
+  "summary": "Prompt helpers for LLM speaker attribution.",
+  "public_api": [
+    {
+      "name": "speaker_user_prompt",
+      "kind": "function",
+      "signature": "(roster, left, mid, right, span_type)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/annotate/prompts.py",
+      "lines": "1-47"
+    }
+  ],
+  "confidence": 0.4
+}

@@ -1,0 +1,67 @@
+{
+  "path": "abm/abm/audio/xtts_adapter.py",
+  "summary": "Coqui XTTS v2 adapter (GPU preferred, CPU fallback).",
+  "public_api": [
+    {
+      "name": "XTTSAdapter",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self, model_name)"
+        },
+        {
+          "name": "preload",
+          "signature": "(self)"
+        },
+        {
+          "name": "_speaker_kwargs",
+          "signature": "(self, task)"
+        },
+        {
+          "name": "synth",
+          "signature": "(self, task)"
+        }
+      ]
+    },
+    {
+      "name": "_write_sine_wav",
+      "kind": "function",
+      "signature": "(path, duration_ms, sr, freq)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.audio.tts_base"
+    ],
+    "external": [
+      "__future__",
+      "math",
+      "os",
+      "pathlib",
+      "typing",
+      "wave"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audio/xtts_adapter.py",
+      "lines": "1-130"
+    }
+  ],
+  "confidence": 0.4
+}

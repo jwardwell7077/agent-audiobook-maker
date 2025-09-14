@@ -1,0 +1,66 @@
+{
+  "path": "abm/abm/ingestion/db_insert.py",
+  "summary": "Postgres inserter for Well\u2011Done JSONL outputs.",
+  "public_api": [
+    {
+      "name": "InsertResult",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "PgInserter",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self, dsn)"
+        },
+        {
+          "name": "available",
+          "signature": "(self)"
+        },
+        {
+          "name": "insert_from_jsonl",
+          "signature": "(self, jsonl_path, meta_path)"
+        },
+        {
+          "name": "_ensure_schema",
+          "signature": "(self, conn)"
+        }
+      ]
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "collections.abc",
+      "dataclasses",
+      "json",
+      "os",
+      "pathlib",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/ingestion/db_insert.py",
+      "lines": "1-145"
+    }
+  ],
+  "confidence": 0.4
+}

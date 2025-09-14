@@ -1,0 +1,55 @@
+{
+  "path": "abm/abm/classifier/classifier_cli.py",
+  "summary": "TBD",
+  "public_api": [
+    {
+      "name": "_iter_blocks_from_text",
+      "kind": "function",
+      "signature": "(text)"
+    },
+    {
+      "name": "_write_json",
+      "kind": "function",
+      "signature": "(path, data)"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "(argv)"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.classifier.section_classifier"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "json",
+      "os",
+      "pathlib",
+      "tempfile"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/classifier/classifier_cli.py",
+      "lines": "1-96"
+    }
+  ],
+  "confidence": 0.4
+}

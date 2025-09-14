@@ -1,0 +1,66 @@
+{
+  "path": "abm/abm/audio/render_book.py",
+  "summary": "Orchestrate rendering of an entire audiobook.",
+  "public_api": [
+    {
+      "name": "_discover_scripts",
+      "kind": "function",
+      "signature": "(scripts_dir, start, end)"
+    },
+    {
+      "name": "_load_qc",
+      "kind": "function",
+      "signature": "(qc_path)"
+    },
+    {
+      "name": "_build_entry",
+      "kind": "function",
+      "signature": "(idx, title, qc, wav_rel, qc_rel)"
+    },
+    {
+      "name": "_write_manifest",
+      "kind": "function",
+      "signature": "(manifest_path, base_dir, entries)"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "(argv)"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.audio.render_chapter"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "collections.abc",
+      "json",
+      "logging",
+      "pathlib",
+      "re"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audio/render_book.py",
+      "lines": "1-220"
+    }
+  ],
+  "confidence": 0.4
+}

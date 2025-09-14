@@ -1,0 +1,57 @@
+{
+  "path": "abm/abm/voice/tts_casting.py",
+  "summary": "Routing of speakers to TTS engine selections.",
+  "public_api": [
+    {
+      "name": "CastDecision",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "merge_style",
+      "kind": "function",
+      "signature": "(base, override)"
+    },
+    {
+      "name": "_voice_ok",
+      "kind": "function",
+      "signature": "(cfg, engine, voice)"
+    },
+    {
+      "name": "pick_voice",
+      "kind": "function",
+      "signature": "(cfg, speaker_name)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.profiles"
+    ],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/voice/tts_casting.py",
+      "lines": "1-116"
+    }
+  ],
+  "confidence": 0.4
+}

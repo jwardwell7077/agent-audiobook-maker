@@ -1,0 +1,92 @@
+{
+  "path": "abm/abm/voice/voicecasting.py",
+  "summary": "TBD",
+  "public_api": [
+    {
+      "name": "VoiceHints",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "SpeakerProfile",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "CastingPlan",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "VoiceCasting",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self)"
+        },
+        {
+          "name": "build_profiles",
+          "signature": "(self, combined_json)"
+        },
+        {
+          "name": "plan_cast",
+          "signature": "(self, profiles)"
+        },
+        {
+          "name": "write_profiles",
+          "signature": "(profiles, out_path)"
+        },
+        {
+          "name": "write_cast",
+          "signature": "(plan, out_path)"
+        },
+        {
+          "name": "_extract_titles",
+          "signature": "(speaker)"
+        },
+        {
+          "name": "_infer_hints",
+          "signature": "(speaker, titles)"
+        },
+        {
+          "name": "_slot_from_profile",
+          "signature": "(p)"
+        }
+      ]
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "collections",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "re",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/voice/voicecasting.py",
+      "lines": "1-216"
+    }
+  ],
+  "confidence": 0.4
+}

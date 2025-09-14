@@ -1,0 +1,44 @@
+{
+  "path": "abm/abm/audio/concat.py",
+  "summary": "Numpy-based audio concatenation helpers.",
+  "public_api": [
+    {
+      "name": "equal_power_crossfade",
+      "kind": "function",
+      "signature": "(a, b, sr, crossfade_ms)"
+    },
+    {
+      "name": "micro_fade",
+      "kind": "function",
+      "signature": "(signal, sr, head_ms, tail_ms)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "numpy"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audio/concat.py",
+      "lines": "1-62"
+    }
+  ],
+  "confidence": 0.4
+}

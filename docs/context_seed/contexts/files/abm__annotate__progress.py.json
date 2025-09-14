@@ -1,0 +1,55 @@
+{
+  "path": "abm/abm/annotate/progress.py",
+  "summary": "TBD",
+  "public_api": [
+    {
+      "name": "ProgressReporter",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self, total, mode, title)"
+        },
+        {
+          "name": "__enter__",
+          "signature": "(self)"
+        },
+        {
+          "name": "__exit__",
+          "signature": "(self)"
+        },
+        {
+          "name": "advance",
+          "signature": "(self, n, text)"
+        }
+      ]
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/annotate/progress.py",
+      "lines": "1-72"
+    }
+  ],
+  "confidence": 0.4
+}

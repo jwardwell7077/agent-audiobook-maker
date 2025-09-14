@@ -1,0 +1,32 @@
+{
+  "path": "abm/abm/classifier/__init__.py",
+  "summary": "Classifier package exports.",
+  "public_api": [],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.classifier.section_classifier"
+    ],
+    "external": [],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/classifier/__init__.py",
+      "lines": "1-5"
+    }
+  ],
+  "confidence": 0.4
+}

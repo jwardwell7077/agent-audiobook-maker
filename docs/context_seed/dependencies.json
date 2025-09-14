@@ -1,0 +1,148 @@
+{
+  "python": [
+    "TTS",
+    "__future__",
+    "alias_resolver",
+    "argparse",
+    "cli",
+    "collections",
+    "concurrent",
+    "dataclasses",
+    "datetime",
+    "difflib",
+    "enum",
+    "fastcoref",
+    "fitz",
+    "hashlib",
+    "importlib",
+    "json",
+    "logging",
+    "markdown2",
+    "math",
+    "matplotlib",
+    "metaphone",
+    "metrics_eval",
+    "mutagen",
+    "numpy",
+    "os",
+    "pathlib",
+    "psutil",
+    "psycopg",
+    "pydub",
+    "pyloudnorm",
+    "pynvml",
+    "re",
+    "report_html",
+    "report_md",
+    "requests",
+    "rich",
+    "schemas",
+    "scipy",
+    "shutil",
+    "signal",
+    "soundfile",
+    "spacy",
+    "speaker_confusion",
+    "sqlite3",
+    "statistics",
+    "subprocess",
+    "sys",
+    "tempfile",
+    "threading",
+    "time",
+    "torch",
+    "tqdm",
+    "typing",
+    "unicodedata",
+    "uuid",
+    "vote_metrics",
+    "warnings",
+    "wave",
+    "yaml"
+  ],
+  "internal_links": [
+    {
+      "from": "abm/abm/ingestion/ingest_pdf.py",
+      "to": "abm/ingestion.pdf_to_raw_text.py"
+    },
+    {
+      "from": "abm/abm/ingestion/ingest_pdf.py",
+      "to": "abm/ingestion.raw_to_welldone.py"
+    },
+    {
+      "from": "abm/abm/ingestion/ingest_pdf.py",
+      "to": "abm/ingestion.welldone_to_json.py"
+    },
+    {
+      "from": "abm/abm/classifier/__init__.py",
+      "to": "abm/classifier.section_classifier.py"
+    },
+    {
+      "from": "abm/abm/classifier/classifier_cli.py",
+      "to": "abm/classifier.section_classifier.py"
+    },
+    {
+      "from": "abm/abm/audit/speaker_confusion.py",
+      "to": "abm/audit.schemas.py"
+    },
+    {
+      "from": "abm/abm/annotate/llm_prep_cli.py",
+      "to": "abm/annotate.llm_prep.py"
+    },
+    {
+      "from": "abm/abm/annotate/llm_refine.py",
+      "to": "abm/annotate.llm_cache.py"
+    },
+    {
+      "from": "abm/abm/annotate/llm_refine.py",
+      "to": "abm/annotate.llm_prep.py"
+    },
+    {
+      "from": "abm/abm/annotate/llm_refine.py",
+      "to": "abm/annotate.progress.py"
+    },
+    {
+      "from": "abm/abm/annotate/llm_refine.py",
+      "to": "abm/annotate.prompts.py"
+    },
+    {
+      "from": "abm/abm/annotate/llm_refine.py",
+      "to": "abm/llm.client.py"
+    },
+    {
+      "from": "abm/abm/annotate/llm_refine.py",
+      "to": "abm/llm.manager.py"
+    },
+    {
+      "from": "abm/abm/annotate/annotate_cli.py",
+      "to": "abm/annotate.attribute.py"
+    },
+    {
+      "from": "abm/abm/annotate/annotate_cli.py",
+      "to": "abm/annotate.metrics.py"
+    },
+    {
+      "from": "abm/abm/annotate/annotate_cli.py",
+      "to": "abm/annotate.normalize.py"
+    },
+    {
+      "from": "abm/abm/annotate/annotate_cli.py",
+      "to": "abm/annotate.progress.py"
+    },
+    {
+      "from": "abm/abm/annotate/annotate_cli.py",
+      "to": "abm/annotate.review.py"
+    },
+    {
+      "from": "abm/abm/annotate/annotate_cli.py",
+      "to": "abm/annotate.roster.py"
+    },
+    {
+      "from": "abm/abm/annotate/annotate_cli.py",
+      "to": "abm/annotate.segment.py"
+    }
+  ],
+  "native_tools": [],
+  "evidence": [],
+  "confidence": 0.4
+}

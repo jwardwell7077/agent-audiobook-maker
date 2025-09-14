@@ -1,0 +1,85 @@
+{
+  "path": "abm/abm/annotate/annotate_cli.py",
+  "summary": "TBD",
+  "public_api": [
+    {
+      "name": "SpanOut",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "AnnotateRunner",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self, mode, llm_tag, remove_heading, treat_single_quotes_as_thought, verbose, spacy_model, use_coref, stages, roster_scope, roster_use_ner, parse_mode, doc_cache_dir, pipe_batch_size)"
+        },
+        {
+          "name": "run_streaming",
+          "signature": "(self, chapters_doc, out_dir, metrics, status_mode, only_indices, out_json_all, out_md_all, out_roster_path)"
+        },
+        {
+          "name": "_attribute_single",
+          "signature": "(self, full_text, span, roster)"
+        }
+      ]
+    },
+    {
+      "name": "_parse_args",
+      "kind": "function",
+      "signature": "()"
+    },
+    {
+      "name": "_load_json",
+      "kind": "function",
+      "signature": "(path)"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "()"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.annotate.attribute",
+      "abm.annotate.metrics",
+      "abm.annotate.normalize",
+      "abm.annotate.progress",
+      "abm.annotate.review",
+      "abm.annotate.roster",
+      "abm.annotate.segment"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "collections.abc",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/annotate/annotate_cli.py",
+      "lines": "1-518"
+    }
+  ],
+  "confidence": 0.4
+}

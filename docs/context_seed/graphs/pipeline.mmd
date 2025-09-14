@@ -1,0 +1,9 @@
+flowchart TD
+  A[PDF] --> B[pdf_to_raw_text]
+  B --> C[raw_to_welldone]
+  C --> D[welldone_to_json]
+  D --> E[classifier_cli]
+  E --> F[voicecasting]
+  F --> G[render_chapter]
+  G --> H[album_norm]
+  H --> I[package_book]

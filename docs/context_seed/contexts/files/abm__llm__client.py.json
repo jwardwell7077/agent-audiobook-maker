@@ -1,0 +1,64 @@
+{
+  "path": "abm/abm/llm/client.py",
+  "summary": "Thin OpenAI-compatible JSON chat client.",
+  "public_api": [
+    {
+      "name": "OpenAICompatClient",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "_headers",
+          "signature": "(self)"
+        },
+        {
+          "name": "_post_openai_v1",
+          "signature": "(self, payload)"
+        },
+        {
+          "name": "_post_ollama_chat",
+          "signature": "(self, system_prompt, user_prompt)"
+        },
+        {
+          "name": "_post_ollama_generate",
+          "signature": "(self, system_prompt, user_prompt)"
+        },
+        {
+          "name": "chat_json",
+          "signature": "(self, system_prompt, user_prompt)"
+        }
+      ]
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "logging",
+      "requests",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/llm/client.py",
+      "lines": "1-256"
+    }
+  ],
+  "confidence": 0.4
+}

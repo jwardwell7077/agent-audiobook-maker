@@ -1,0 +1,104 @@
+{
+  "path": "abm/abm/sidecar/booknlp_adapter.py",
+  "summary": "TBD",
+  "public_api": [
+    {
+      "name": "BookNLPConfig",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "BookNLPAdapter",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self, cfg)"
+        },
+        {
+          "name": "enabled",
+          "signature": "(self)"
+        },
+        {
+          "name": "annotate_text",
+          "signature": "(self, text, work_id)"
+        },
+        {
+          "name": "_probe_available",
+          "signature": "(self)"
+        },
+        {
+          "name": "_run_python_api",
+          "signature": "(self, in_txt, out_dir, work_id)"
+        },
+        {
+          "name": "_patch_specific_weight",
+          "signature": "(self, path)"
+        },
+        {
+          "name": "_validate_weight",
+          "signature": "(self, path)"
+        },
+        {
+          "name": "_patch_cached_weights",
+          "signature": "(self)"
+        },
+        {
+          "name": "_run_cli",
+          "signature": "(self, in_txt, out_dir, work_id)"
+        },
+        {
+          "name": "_load_quotes",
+          "signature": "(self, out_dir, work_id)"
+        },
+        {
+          "name": "_parse_json_quotes",
+          "signature": "(data)"
+        },
+        {
+          "name": "_parse_tsv_quotes",
+          "signature": "(path)"
+        },
+        {
+          "name": "_parse_quotes_with_tokens",
+          "signature": "(quotes_path, tokens_path)"
+        }
+      ]
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "os",
+      "pathlib",
+      "shutil",
+      "subprocess",
+      "tempfile",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/sidecar/booknlp_adapter.py",
+      "lines": "1-525"
+    }
+  ],
+  "confidence": 0.4
+}

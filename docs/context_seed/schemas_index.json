@@ -1,0 +1,46 @@
+{
+  "schemas": [
+    {
+      "name": "Chapter",
+      "path": "TBD",
+      "inferred": true,
+      "fields": [
+        "id",
+        "title",
+        "spans",
+        "meta"
+      ]
+    },
+    {
+      "name": "Segment",
+      "path": "TBD",
+      "inferred": true,
+      "fields": [
+        "id",
+        "role",
+        "text",
+        "character_id",
+        "span"
+      ]
+    },
+    {
+      "name": "CastingPlan",
+      "path": "TBD",
+      "inferred": true,
+      "fields": [
+        "chapter_id",
+        "segments[] {speaker_id,engine,params}"
+      ]
+    },
+    {
+      "name": "BookConfig",
+      "path": "abm/audio/book_config.py",
+      "inferred": true,
+      "fields": [
+        "sample_rate",
+        "lufs_target",
+        "gap_ms"
+      ]
+    }
+  ]
+}

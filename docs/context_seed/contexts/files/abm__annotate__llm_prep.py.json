@@ -1,0 +1,54 @@
+{
+  "path": "abm/abm/annotate/llm_prep.py",
+  "summary": "Candidate extractor for Stage B LLM refinement.",
+  "public_api": [
+    {
+      "name": "LLMCandidateConfig",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "LLMCandidatePreparer",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self, cfg)"
+        },
+        {
+          "name": "prepare",
+          "signature": "(self, combined_doc)"
+        }
+      ]
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/annotate/llm_prep.py",
+      "lines": "1-77"
+    }
+  ],
+  "confidence": 0.4
+}

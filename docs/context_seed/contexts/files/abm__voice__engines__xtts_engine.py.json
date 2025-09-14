@@ -1,0 +1,49 @@
+{
+  "path": "abm/abm/voice/engines/xtts_engine.py",
+  "summary": "Placeholder adapter for a future XTTS integration.",
+  "public_api": [
+    {
+      "name": "XTTSEngine",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self)"
+        },
+        {
+          "name": "synthesize",
+          "signature": "(self, text, voice_id, style)"
+        }
+      ]
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "numpy",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/voice/engines/xtts_engine.py",
+      "lines": "1-32"
+    }
+  ],
+  "confidence": 0.4
+}

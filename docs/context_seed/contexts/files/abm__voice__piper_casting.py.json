@@ -1,0 +1,70 @@
+{
+  "path": "abm/abm/voice/piper_casting.py",
+  "summary": "Propose Piper voice casting for book characters.",
+  "public_api": [
+    {
+      "name": "AuditionLine",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "_collect_characters",
+      "kind": "function",
+      "signature": "(annotations, max_chars)"
+    },
+    {
+      "name": "_pick_audition_lines",
+      "kind": "function",
+      "signature": "(annotations, speakers, max_chars)"
+    },
+    {
+      "name": "_render_review_md",
+      "kind": "function",
+      "signature": "(out_dir, lines, voices, engine)"
+    },
+    {
+      "name": "propose_casting",
+      "kind": "function",
+      "signature": "(profiles_path, annotations_path, out_dir)"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "(argv)"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.profiles",
+      "abm.voice.piper_catalog"
+    ],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/voice/piper_casting.py",
+      "lines": "1-183"
+    }
+  ],
+  "confidence": 0.4
+}

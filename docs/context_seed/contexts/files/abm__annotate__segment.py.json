@@ -1,0 +1,99 @@
+{
+  "path": "abm/abm/annotate/segment.py",
+  "summary": "TBD",
+  "public_api": [
+    {
+      "name": "SpanType",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "Span",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "SegmenterConfig",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "Segmenter",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self, config)"
+        },
+        {
+          "name": "segment",
+          "signature": "(self, chapter)"
+        },
+        {
+          "name": "_segment_paragraph",
+          "signature": "(self, para_index, ptext, abs_start, paragraph_inline_tags)"
+        },
+        {
+          "name": "_iter_quote_spans",
+          "signature": "(self, ptext, abs_start, para_index)"
+        },
+        {
+          "name": "_is_apostrophe",
+          "signature": "(s, i)"
+        },
+        {
+          "name": "_scan_until",
+          "signature": "(s, start, closers)"
+        },
+        {
+          "name": "_compute_paragraph_starts",
+          "signature": "(paragraphs, join_with)"
+        },
+        {
+          "name": "_overlay_cut",
+          "signature": "(bases, overlay)"
+        },
+        {
+          "name": "_merge_adjacent",
+          "signature": "(self, spans)"
+        }
+      ]
+    },
+    {
+      "name": "segment_spans",
+      "kind": "function",
+      "signature": "(chapter, config)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "collections.abc",
+      "dataclasses",
+      "enum",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/annotate/segment.py",
+      "lines": "1-263"
+    }
+  ],
+  "confidence": 0.4
+}

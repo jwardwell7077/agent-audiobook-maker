@@ -1,0 +1,80 @@
+{
+  "path": "abm/abm/profiles/alias_cli.py",
+  "summary": "CLI entry points for the alias resolver.",
+  "public_api": [
+    {
+      "name": "_load_json",
+      "kind": "function",
+      "signature": "(path)"
+    },
+    {
+      "name": "_load_profiles",
+      "kind": "function",
+      "signature": "(path)"
+    },
+    {
+      "name": "_save_profiles",
+      "kind": "function",
+      "signature": "(db, path)"
+    },
+    {
+      "name": "_proposals_from_file",
+      "kind": "function",
+      "signature": "(path)"
+    },
+    {
+      "name": "_cmd_discover",
+      "kind": "function",
+      "signature": "(args)"
+    },
+    {
+      "name": "_cmd_apply",
+      "kind": "function",
+      "signature": "(args)"
+    },
+    {
+      "name": "_cmd_run",
+      "kind": "function",
+      "signature": "(args)"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "(argv)"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.profiles.character_profiles"
+    ],
+    "external": [
+      "__future__",
+      "alias_resolver",
+      "argparse",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/profiles/alias_cli.py",
+      "lines": "1-142"
+    }
+  ],
+  "confidence": 0.4
+}

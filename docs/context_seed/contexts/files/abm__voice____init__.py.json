@@ -1,0 +1,35 @@
+{
+  "path": "abm/abm/voice/__init__.py",
+  "summary": "TBD",
+  "public_api": [],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.voice.tts_casting",
+      "abm.voice.voicecasting"
+    ],
+    "external": [
+      "__future__"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/voice/__init__.py",
+      "lines": "1-22"
+    }
+  ],
+  "confidence": 0.4
+}

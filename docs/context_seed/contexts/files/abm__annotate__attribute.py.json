@@ -1,0 +1,109 @@
+{
+  "path": "abm/abm/annotate/attribute.py",
+  "summary": "TBD",
+  "public_api": [
+    {
+      "name": "AttributeConfig",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "AttributeEngine",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self, mode, llm_tag, config, verbose, force_spacy_model, use_coref)"
+        },
+        {
+          "name": "_init_dep_patterns",
+          "signature": "(self)"
+        },
+        {
+          "name": "attribute_span",
+          "signature": "(self, text, span_chars, span_type, roster, neighbors, doc)"
+        },
+        {
+          "name": "_clip_forward",
+          "signature": "(self, s)"
+        },
+        {
+          "name": "_clip_backward",
+          "signature": "(self, s)"
+        },
+        {
+          "name": "_dep_in_window",
+          "signature": "(self, text, a, b, quote_end, roster)"
+        },
+        {
+          "name": "_bounded_windows",
+          "signature": "(self, text, s, e, prev_lite, next_lite)"
+        },
+        {
+          "name": "_try_thought_cue",
+          "signature": "(self, text, span_chars, span_type, roster)"
+        },
+        {
+          "name": "_try_descriptor",
+          "signature": "(self, text, span_chars)"
+        },
+        {
+          "name": "_try_dep_subject",
+          "signature": "(self, text, span_chars, roster)"
+        },
+        {
+          "name": "_try_phrasal_dep",
+          "signature": "(self, doc, rel_end_tok, roster, base_offset)"
+        },
+        {
+          "name": "_resolve_pronoun_coref",
+          "signature": "(self, context_text, pron_rel_span)"
+        },
+        {
+          "name": "_canonical_from_roster",
+          "signature": "(name, roster)"
+        },
+        {
+          "name": "_safe_load_spacy",
+          "signature": "(model)"
+        },
+        {
+          "name": "_ask_llm",
+          "signature": "(self, text, span_chars, roster)"
+        }
+      ]
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "os",
+      "re",
+      "typing",
+      "warnings"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/annotate/attribute.py",
+      "lines": "1-639"
+    }
+  ],
+  "confidence": 0.4
+}

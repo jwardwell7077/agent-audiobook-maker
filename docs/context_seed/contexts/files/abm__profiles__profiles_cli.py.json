@@ -1,0 +1,62 @@
+{
+  "path": "abm/abm/profiles/profiles_cli.py",
+  "summary": "Command line utilities for profile files.",
+  "public_api": [
+    {
+      "name": "_cmd_audit",
+      "kind": "function",
+      "signature": "(ns)"
+    },
+    {
+      "name": "_scan_voices",
+      "kind": "function",
+      "signature": "(voices_dir)"
+    },
+    {
+      "name": "_cmd_generate",
+      "kind": "function",
+      "signature": "(ns)"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "(argv)"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.profiles",
+      "abm.voice"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "collections",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "sys"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/profiles/profiles_cli.py",
+      "lines": "1-188"
+    }
+  ],
+  "confidence": 0.4
+}

@@ -1,0 +1,89 @@
+{
+  "path": "abm/abm/annotate/metrics.py",
+  "summary": "TBD",
+  "public_api": [
+    {
+      "name": "ChapterMetrics",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "to_dict",
+          "signature": "(self)"
+        }
+      ]
+    },
+    {
+      "name": "Timer",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self)"
+        },
+        {
+          "name": "__enter__",
+          "signature": "(self)"
+        },
+        {
+          "name": "__exit__",
+          "signature": "(self)"
+        }
+      ]
+    },
+    {
+      "name": "MetricsCollector",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self, jsonl_path)"
+        },
+        {
+          "name": "close",
+          "signature": "(self)"
+        },
+        {
+          "name": "write",
+          "signature": "(self, cm)"
+        },
+        {
+          "name": "sample_resources",
+          "signature": "()"
+        }
+      ]
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "os",
+      "pathlib",
+      "time",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/annotate/metrics.py",
+      "lines": "1-127"
+    }
+  ],
+  "confidence": 0.4
+}

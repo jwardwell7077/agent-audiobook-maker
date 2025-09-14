@@ -1,0 +1,77 @@
+{
+  "path": "abm/abm/classifier/section_classifier.py",
+  "summary": "TBD",
+  "public_api": [
+    {
+      "name": "canon_title",
+      "kind": "function",
+      "signature": "(s)"
+    },
+    {
+      "name": "_load_jsonl_blocks",
+      "kind": "function",
+      "signature": "(path)"
+    },
+    {
+      "name": "_find_toc_heading",
+      "kind": "function",
+      "signature": "(blocks)"
+    },
+    {
+      "name": "_parse_toc_items",
+      "kind": "function",
+      "signature": "(blocks, start_idx, end_idx)"
+    },
+    {
+      "name": "_is_body_heading_block",
+      "kind": "function",
+      "signature": "(block)"
+    },
+    {
+      "name": "_looks_like_toc_item_line",
+      "kind": "function",
+      "signature": "(text)"
+    },
+    {
+      "name": "_match_chapters",
+      "kind": "function",
+      "signature": "(blocks, toc_entries, start_search)"
+    },
+    {
+      "name": "classify_blocks",
+      "kind": "function",
+      "signature": "(jsonl_path)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "json",
+      "re",
+      "typing",
+      "unicodedata"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/classifier/section_classifier.py",
+      "lines": "1-360"
+    }
+  ],
+  "confidence": 0.4
+}

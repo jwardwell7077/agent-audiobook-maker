@@ -1,0 +1,68 @@
+{
+  "path": "abm/abm/voice/engines/piper_engine.py",
+  "summary": "Lightweight Piper engine wrapper used by the voice renderer.",
+  "public_api": [
+    {
+      "name": "PiperEngine",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self, voices_dir, sample_rate)"
+        },
+        {
+          "name": "_candidate_dirs",
+          "signature": "(self)"
+        },
+        {
+          "name": "_resolve_model_paths",
+          "signature": "(self, voice_id)"
+        },
+        {
+          "name": "synthesize",
+          "signature": "(self, text, voice_id, style)"
+        }
+      ]
+    },
+    {
+      "name": "_resample_audio",
+      "kind": "function",
+      "signature": "(y, sr_in, sr_out)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "numpy",
+      "os",
+      "pathlib",
+      "shutil",
+      "soundfile",
+      "subprocess",
+      "tempfile",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/voice/engines/piper_engine.py",
+      "lines": "1-162"
+    }
+  ],
+  "confidence": 0.4
+}

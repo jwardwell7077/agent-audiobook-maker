@@ -1,0 +1,32 @@
+{
+  "path": "abm/abm/audit/__main__.py",
+  "summary": "TBD",
+  "public_api": [],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "cli"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audit/__main__.py",
+      "lines": "1-4"
+    }
+  ],
+  "confidence": 0.4
+}

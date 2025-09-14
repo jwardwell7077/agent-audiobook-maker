@@ -1,0 +1,68 @@
+{
+  "repo": "agent-audiobook-maker",
+  "version": "auto",
+  "packages": [
+    {
+      "path": "abm/annotate",
+      "purpose": "LLM-assisted annotation & refinement"
+    },
+    {
+      "path": "abm/audio",
+      "purpose": "audio synthesis, mastering, packaging"
+    },
+    {
+      "path": "abm/audit",
+      "purpose": "QA metrics, reports, plots"
+    },
+    {
+      "path": "abm/classifier",
+      "purpose": "text/segment classification"
+    },
+    {
+      "path": "abm/ingestion",
+      "purpose": "PDF\u2192raw\u2192welldone\u2192chapters JSON"
+    },
+    {
+      "path": "abm/llm",
+      "purpose": "LLM client/manager"
+    },
+    {
+      "path": "abm/parse",
+      "purpose": "caching/parsing helpers"
+    },
+    {
+      "path": "abm/profiles",
+      "purpose": "character/voice profiles & CLI"
+    },
+    {
+      "path": "abm/sidecar",
+      "purpose": "BookNLP adapter"
+    },
+    {
+      "path": "abm/voice",
+      "purpose": "TTS casting & engines"
+    }
+  ],
+  "entrypoints": [
+    "abm/profiles/alias_cli.py",
+    "abm/profiles/profiles_cli.py",
+    "abm/voice/piper_catalog.py",
+    "abm/voice/piper_casting.py",
+    "abm/voice/voicecasting_cli.py",
+    "abm/audio/render_book.py",
+    "abm/audio/render_chapter.py",
+    "abm/audio/synthesis_export.py",
+    "abm/annotate/bnlp_refine.py",
+    "abm/annotate/annotate_cli.py",
+    "abm/annotate/llm_refine.py",
+    "abm/annotate/llm_prep_cli.py",
+    "abm/audit/__main__.py",
+    "abm/audit/cli.py",
+    "abm/classifier/classifier_cli.py",
+    "abm/ingestion/pdf_to_raw_text.py",
+    "abm/ingestion/welldone_to_json.py",
+    "abm/ingestion/ingest_pdf.py"
+  ],
+  "tests": [],
+  "evidence": []
+}

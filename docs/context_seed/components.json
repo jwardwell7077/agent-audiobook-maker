@@ -1,0 +1,277 @@
+{
+  "components": [
+    {
+      "name": "PDFIngest",
+      "files": [
+        "abm/ingestion/pdf_to_raw_text.py",
+        "abm/ingestion/raw_to_welldone.py",
+        "abm/ingestion/welldone_to_json.py",
+        "abm/ingestion/ingest_pdf.py"
+      ],
+      "purpose": "Extract PDF text, normalize, structure chapters JSON.",
+      "inputs": [
+        "*.pdf"
+      ],
+      "outputs": [
+        "raw.txt",
+        "welldone.txt",
+        "chapters.json"
+      ],
+      "contracts": {
+        "pre": [
+          "input file exists",
+          "UTF-8 convertible"
+        ],
+        "post": [
+          "ordered chapter spans",
+          "no header/footer duplicates"
+        ]
+      },
+      "failure_modes": [
+        "encrypted/OCR PDFs",
+        "bad page breaks/TOC"
+      ],
+      "evidence": [
+        {
+          "file": "abm/ingestion/ingest_pdf.py",
+          "lines": "1-200"
+        }
+      ],
+      "confidence": 0.8
+    },
+    {
+      "name": "SectionClassifier",
+      "files": [
+        "abm/classifier/section_classifier.py",
+        "abm/classifier/classifier_cli.py"
+      ],
+      "purpose": "Label segments as narration/dialogue/system with spans.",
+      "inputs": [
+        "chapters.json"
+      ],
+      "outputs": [
+        "segments.json"
+      ],
+      "contracts": {
+        "pre": [
+          "valid chapter schema"
+        ],
+        "post": [
+          "non-overlapping spans"
+        ]
+      },
+      "failure_modes": [
+        "quote/regex heuristics drift"
+      ],
+      "evidence": [
+        {
+          "file": "abm/classifier/section_classifier.py",
+          "lines": "1-200"
+        }
+      ],
+      "confidence": 0.7
+    },
+    {
+      "name": "VoiceCasting",
+      "files": [
+        "abm/voice/voicecasting.py",
+        "abm/voice/voicecasting_cli.py",
+        "abm/voice/piper_casting.py",
+        "abm/voice/piper_catalog.py",
+        "abm/voice/plan_from_annotations.py",
+        "abm/voice/engines/piper_engine.py",
+        "abm/voice/engines/xtts_engine.py"
+      ],
+      "purpose": "Map characters/segments to speakers & engine params.",
+      "inputs": [
+        "segments.json",
+        "profiles/*"
+      ],
+      "outputs": [
+        "casting_plan.json"
+      ],
+      "contracts": {
+        "pre": [
+          "speaker ids resolvable"
+        ],
+        "post": [
+          "plan covers 100% segments or marks TBD"
+        ]
+      },
+      "failure_modes": [
+        "unresolved aliases",
+        "unsupported voice traits"
+      ],
+      "evidence": [
+        {
+          "file": "abm/voice/voicecasting.py",
+          "lines": "1-200"
+        }
+      ],
+      "confidence": 0.7
+    },
+    {
+      "name": "AudioSynthesis",
+      "files": [
+        "abm/audio/tts_manager.py",
+        "abm/audio/engine_registry.py",
+        "abm/audio/tts_base.py",
+        "abm/audio/piper_adapter.py",
+        "abm/audio/xtts_adapter.py",
+        "abm/audio/render_chapter.py",
+        "abm/audio/render_book.py",
+        "abm/audio/text_normalizer.py",
+        "abm/audio/synthesis_export.py"
+      ],
+      "purpose": "Render chapter WAVs via engines; export artifacts.",
+      "inputs": [
+        "casting_plan.json",
+        "segments.json"
+      ],
+      "outputs": [
+        "audio/ch*_*.wav",
+        "metadata.json"
+      ],
+      "contracts": {
+        "pre": [
+          "consistent SR/bit depth"
+        ],
+        "post": [
+          "deterministic naming",
+          "seedable synthesis if available"
+        ]
+      },
+      "failure_modes": [
+        "engine mismatch",
+        "OOM on long chapters"
+      ],
+      "evidence": [
+        {
+          "file": "abm/audio/tts_manager.py",
+          "lines": "1-200"
+        }
+      ],
+      "confidence": 0.7
+    },
+    {
+      "name": "MasteringPackaging",
+      "files": [
+        "abm/audio/mastering.py",
+        "abm/audio/album_norm.py",
+        "abm/audio/concat.py",
+        "abm/audio/package_book.py",
+        "abm/audio/packaging.py",
+        "abm/audio/qc.py",
+        "abm/audio/qc_report.py",
+        "abm/audio/book_config.py"
+      ],
+      "purpose": "Loudness, QC, concat, and final book packaging.",
+      "inputs": [
+        "audio/*.wav",
+        "book_config.*"
+      ],
+      "outputs": [
+        "dist/chapters",
+        "dist/book/*"
+      ],
+      "contracts": {
+        "pre": [
+          "all chapters present"
+        ],
+        "post": [
+          "LUFS target met",
+          "gaps/crossfades within spec"
+        ]
+      },
+      "failure_modes": [
+        "clip/limiter issues",
+        "filename mismatch"
+      ],
+      "evidence": [
+        {
+          "file": "abm/audio/package_book.py",
+          "lines": "1-200"
+        }
+      ],
+      "confidence": 0.7
+    },
+    {
+      "name": "AuditReporting",
+      "files": [
+        "abm/audit/speaker_confusion.py",
+        "abm/audit/plots.py",
+        "abm/audit/report_html.py",
+        "abm/audit/cli.py",
+        "abm/audit/metrics_eval.py",
+        "abm/audit/schemas.py",
+        "abm/audit/report_md.py",
+        "abm/audit/__main__.py",
+        "abm/audit/vote_metrics.py"
+      ],
+      "purpose": "Metrics, confusion, votes, plots, and reports (MD/HTML).",
+      "inputs": [
+        "casting logs",
+        "qc metrics",
+        "alignment data"
+      ],
+      "outputs": [
+        "reports/*.md",
+        "reports/*.html",
+        "plots/*"
+      ],
+      "contracts": {
+        "pre": [
+          "metrics schema"
+        ],
+        "post": [
+          "reproducible charts"
+        ]
+      },
+      "failure_modes": [],
+      "evidence": [
+        {
+          "file": "abm/audit/cli.py",
+          "lines": "1-200"
+        }
+      ],
+      "confidence": 0.6
+    },
+    {
+      "name": "ProfilesLLM",
+      "files": [
+        "abm/profiles/alias_resolver.py",
+        "abm/profiles/character_profiles.py",
+        "abm/profiles/alias_cli.py",
+        "abm/profiles/profiles_cli.py",
+        "abm/llm/manager.py",
+        "abm/llm/client.py",
+        "abm/annotate/*.py"
+      ],
+      "purpose": "Profile management, LLM client/manager, annotation/refinement.",
+      "inputs": [
+        "character_profiles.*",
+        "annotations/*"
+      ],
+      "outputs": [
+        "profile_map.json",
+        "annotation_deltas.json"
+      ],
+      "contracts": {
+        "pre": [
+          "profile ids unique"
+        ],
+        "post": [
+          "idempotent updates"
+        ]
+      },
+      "failure_modes": [],
+      "evidence": [
+        {
+          "file": "abm/profiles/character_profiles.py",
+          "lines": "1-200"
+        }
+      ],
+      "confidence": 0.6
+    }
+  ]
+}

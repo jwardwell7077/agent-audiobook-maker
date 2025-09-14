@@ -1,0 +1,30 @@
+{
+  "path": "abm/abm/__init__.py",
+  "summary": "Audiobook Maker core package.",
+  "public_api": [],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/__init__.py",
+      "lines": "1-11"
+    }
+  ],
+  "confidence": 0.4
+}

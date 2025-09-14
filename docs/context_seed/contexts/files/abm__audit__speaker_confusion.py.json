@@ -1,0 +1,42 @@
+{
+  "path": "abm/abm/audit/speaker_confusion.py",
+  "summary": "Compute speaker confusion between base and refined documents.",
+  "public_api": [
+    {
+      "name": "compute_confusion",
+      "kind": "function",
+      "signature": "(base_doc, refined_doc)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.audit.schemas"
+    ],
+    "external": [
+      "__future__",
+      "collections",
+      "logging"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audit/speaker_confusion.py",
+      "lines": "1-52"
+    }
+  ],
+  "confidence": 0.4
+}

@@ -1,0 +1,33 @@
+{
+  "path": "abm/abm/_warnings.py",
+  "summary": "Centralized suppression for noisy third-party warnings.",
+  "public_api": [],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "warnings"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/_warnings.py",
+      "lines": "1-22"
+    }
+  ],
+  "confidence": 0.4
+}

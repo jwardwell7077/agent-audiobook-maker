@@ -1,0 +1,64 @@
+{
+  "path": "abm/abm/parse/cache.py",
+  "summary": "TBD",
+  "public_api": [
+    {
+      "name": "DocCacheConfig",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "DocCache",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self, cfg)"
+        },
+        {
+          "name": "nlp",
+          "signature": "(self)"
+        },
+        {
+          "name": "_doc_path",
+          "signature": "(self, chapter_index, title, text)"
+        },
+        {
+          "name": "load_or_parse",
+          "signature": "(self, chapters)"
+        }
+      ]
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "hashlib",
+      "pathlib",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/parse/cache.py",
+      "lines": "1-101"
+    }
+  ],
+  "confidence": 0.4
+}

@@ -1,0 +1,81 @@
+{
+  "path": "abm/abm/annotate/llm_refine.py",
+  "summary": "TBD",
+  "public_api": [
+    {
+      "name": "LLMRefineConfig",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "_ctx",
+      "kind": "function",
+      "signature": "(text, start, end, n)"
+    },
+    {
+      "name": "_fuzzy_match",
+      "kind": "function",
+      "signature": "(name, roster)"
+    },
+    {
+      "name": "refine_document",
+      "kind": "function",
+      "signature": "(tagged_path, out_json, out_md, backend, cfg)"
+    },
+    {
+      "name": "_parse_args",
+      "kind": "function",
+      "signature": "()"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "()"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.annotate.llm_cache",
+      "abm.annotate.llm_prep",
+      "abm.annotate.progress",
+      "abm.annotate.prompts",
+      "abm.llm.client",
+      "abm.llm.manager"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "concurrent.futures",
+      "dataclasses",
+      "datetime",
+      "difflib",
+      "json",
+      "logging",
+      "pathlib",
+      "subprocess",
+      "sys",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/annotate/llm_refine.py",
+      "lines": "1-380"
+    }
+  ],
+  "confidence": 0.4
+}

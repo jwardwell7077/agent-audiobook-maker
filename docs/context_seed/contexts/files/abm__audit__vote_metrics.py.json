@@ -1,0 +1,43 @@
+{
+  "path": "abm/abm/audit/vote_metrics.py",
+  "summary": "Parse metrics JSONL produced during refinement voting.",
+  "public_api": [
+    {
+      "name": "parse_metrics_jsonl",
+      "kind": "function",
+      "signature": "(path)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "json",
+      "pathlib",
+      "schemas",
+      "statistics",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audit/vote_metrics.py",
+      "lines": "1-67"
+    }
+  ],
+  "confidence": 0.4
+}

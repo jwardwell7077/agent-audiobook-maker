@@ -1,0 +1,34 @@
+{
+  "path": "abm/abm/profiles/__init__.py",
+  "summary": "Profile configuration and utilities.",
+  "public_api": [],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.profiles.character_profiles"
+    ],
+    "external": [
+      "__future__"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/profiles/__init__.py",
+      "lines": "1-32"
+    }
+  ],
+  "confidence": 0.4
+}

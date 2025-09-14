@@ -1,0 +1,80 @@
+{
+  "path": "abm/abm/audio/piper_adapter.py",
+  "summary": "Piper TTS adapter (CLI-based, CPU-friendly).",
+  "public_api": [
+    {
+      "name": "PiperAdapter",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self, voice)"
+        },
+        {
+          "name": "version",
+          "signature": "(self)"
+        },
+        {
+          "name": "preload",
+          "signature": "(self)"
+        },
+        {
+          "name": "_candidate_dirs",
+          "signature": "(self)"
+        },
+        {
+          "name": "_resolve_model_paths",
+          "signature": "(self, voice_id)"
+        },
+        {
+          "name": "_build_cmd",
+          "signature": "(self, voice_id, text_file, out_file)"
+        },
+        {
+          "name": "synth",
+          "signature": "(self, task)"
+        }
+      ]
+    },
+    {
+      "name": "_write_silence_wav",
+      "kind": "function",
+      "signature": "(path, duration_ms, sr)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.audio.tts_base"
+    ],
+    "external": [
+      "__future__",
+      "os",
+      "pathlib",
+      "shutil",
+      "subprocess",
+      "tempfile",
+      "wave"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audio/piper_adapter.py",
+      "lines": "1-172"
+    }
+  ],
+  "confidence": 0.4
+}

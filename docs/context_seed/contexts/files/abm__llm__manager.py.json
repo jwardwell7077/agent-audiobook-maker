@@ -1,0 +1,80 @@
+{
+  "path": "abm/abm/llm/manager.py",
+  "summary": "Utilities to manage a local or remote LLM service.",
+  "public_api": [
+    {
+      "name": "LLMBackend",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "headers",
+          "signature": "(self)"
+        }
+      ]
+    },
+    {
+      "name": "LLMService",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self, backend)"
+        },
+        {
+          "name": "is_alive",
+          "signature": "(self)"
+        },
+        {
+          "name": "ensure_up",
+          "signature": "(self, timeout_s)"
+        },
+        {
+          "name": "_wait_ready",
+          "signature": "(self, timeout_s)"
+        },
+        {
+          "name": "stop",
+          "signature": "(self, timeout_s)"
+        },
+        {
+          "name": "pull_model",
+          "signature": "(self, model)"
+        }
+      ]
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "logging",
+      "os",
+      "requests",
+      "signal",
+      "subprocess",
+      "time"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/llm/manager.py",
+      "lines": "1-196"
+    }
+  ],
+  "confidence": 0.4
+}

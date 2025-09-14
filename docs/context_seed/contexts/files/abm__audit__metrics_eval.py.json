@@ -1,0 +1,54 @@
+{
+  "path": "abm/abm/audit/metrics_eval.py",
+  "summary": "Basic statistics for annotation refinement results.",
+  "public_api": [
+    {
+      "name": "load_doc",
+      "kind": "function",
+      "signature": "(path)"
+    },
+    {
+      "name": "_iter_spans",
+      "kind": "function",
+      "signature": "(doc)"
+    },
+    {
+      "name": "compute_basic_metrics",
+      "kind": "function",
+      "signature": "(refined, base, worst_n)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "collections",
+      "datetime",
+      "json",
+      "pathlib",
+      "schemas",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audit/metrics_eval.py",
+      "lines": "1-88"
+    }
+  ],
+  "confidence": 0.4
+}

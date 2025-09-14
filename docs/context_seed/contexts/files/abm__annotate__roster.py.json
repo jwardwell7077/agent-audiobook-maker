@@ -1,0 +1,96 @@
+{
+  "path": "abm/abm/annotate/roster.py",
+  "summary": "Build and merge speaker rosters for chapters.",
+  "public_api": [
+    {
+      "name": "RosterConfig",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "RosterBuilder",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self, config, nlp)"
+        },
+        {
+          "name": "build_chapter_roster",
+          "signature": "(self, text)"
+        },
+        {
+          "name": "merge_book_roster",
+          "signature": "(self, book_roster, chapter_roster)"
+        },
+        {
+          "name": "_canonicalize_group",
+          "signature": "(self, aliases)"
+        },
+        {
+          "name": "_expand_aliases",
+          "signature": "(self, canonical, aliases)"
+        },
+        {
+          "name": "_fuzzy_merge",
+          "signature": "(self, roster, threshold)"
+        },
+        {
+          "name": "_strip_title",
+          "signature": "(self, name)"
+        },
+        {
+          "name": "_clean_alias",
+          "signature": "(name)"
+        },
+        {
+          "name": "_get_nlp",
+          "signature": "(self)"
+        }
+      ]
+    },
+    {
+      "name": "build_chapter_roster",
+      "kind": "function",
+      "signature": "(text, nlp)"
+    },
+    {
+      "name": "merge_book_roster",
+      "kind": "function",
+      "signature": "(book, chap)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "collections",
+      "collections.abc",
+      "dataclasses",
+      "importlib",
+      "re",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/annotate/roster.py",
+      "lines": "1-314"
+    }
+  ],
+  "confidence": 0.4
+}

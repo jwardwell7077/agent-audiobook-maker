@@ -1,0 +1,62 @@
+{
+  "path": "abm/abm/ingestion/raw_to_welldone.py",
+  "summary": "Text post-processor: Raw \u2192 Well-done (reflow, cleanup).",
+  "public_api": [
+    {
+      "name": "WellDoneOptions",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "RawToWellDone",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "process_text",
+          "signature": "(self, text, opts)"
+        },
+        {
+          "name": "_apply_split_headings",
+          "signature": "(self, paragraphs, opts)"
+        },
+        {
+          "name": "_split_paragraphs",
+          "signature": "(self, text)"
+        },
+        {
+          "name": "_process_paragraph",
+          "signature": "(self, para, opts)"
+        }
+      ]
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "re"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/ingestion/raw_to_welldone.py",
+      "lines": "1-130"
+    }
+  ],
+  "confidence": 0.4
+}

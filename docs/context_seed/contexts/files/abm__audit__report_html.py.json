@@ -1,0 +1,39 @@
+{
+  "path": "abm/abm/audit/report_html.py",
+  "summary": "TBD",
+  "public_api": [
+    {
+      "name": "md_to_html",
+      "kind": "function",
+      "signature": "(md_path, html_path)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "pathlib"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audit/report_html.py",
+      "lines": "1-11"
+    }
+  ],
+  "confidence": 0.4
+}

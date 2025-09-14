@@ -1,0 +1,58 @@
+{
+  "path": "abm/abm/audio/render_chapter.py",
+  "summary": "Render an audiobook chapter from a synthesis script.",
+  "public_api": [
+    {
+      "name": "_load_script",
+      "kind": "function",
+      "signature": "(path)"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "(argv)"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.audio",
+      "abm.audio.assembly",
+      "abm.audio.engine_registry",
+      "abm.audio.mastering",
+      "abm.audio.qc_report",
+      "abm.audio.tts_base",
+      "abm.audio.tts_manager"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "json",
+      "logging",
+      "pathlib",
+      "soundfile",
+      "tempfile",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audio/render_chapter.py",
+      "lines": "1-199"
+    }
+  ],
+  "confidence": 0.4
+}

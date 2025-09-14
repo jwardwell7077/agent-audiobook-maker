@@ -1,0 +1,73 @@
+{
+  "path": "abm/abm/ingestion/welldone_to_json.py",
+  "summary": "Well-done text \u2192 JSONL converter.",
+  "public_api": [
+    {
+      "name": "WDToJSONOptions",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "WellDoneToJSONL",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "convert_text",
+          "signature": "(self, text, base_name, out_dir, ingest_meta_path)"
+        },
+        {
+          "name": "convert",
+          "signature": "(self, well_done_path, out_dir, opts)"
+        }
+      ]
+    },
+    {
+      "name": "_split_paragraphs_with_lines",
+      "kind": "function",
+      "signature": "(text)"
+    },
+    {
+      "name": "_word_count",
+      "kind": "function",
+      "signature": "(s)"
+    },
+    {
+      "name": "_build_meta_for_wd",
+      "kind": "function",
+      "signature": "(wd_p, blocks, ingest_meta_path)"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "datetime",
+      "json",
+      "pathlib",
+      "re",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/ingestion/welldone_to_json.py",
+      "lines": "1-208"
+    }
+  ],
+  "confidence": 0.4
+}

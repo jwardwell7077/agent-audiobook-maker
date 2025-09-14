@@ -1,0 +1,54 @@
+{
+  "path": "abm/abm/audit/cli.py",
+  "summary": "Command line interface for :mod:`abm.audit`.",
+  "public_api": [
+    {
+      "name": "_first_glob",
+      "kind": "function",
+      "signature": "(pattern)"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "(argv)"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "",
+      "__future__",
+      "argparse",
+      "collections",
+      "datetime",
+      "json",
+      "metrics_eval",
+      "pathlib",
+      "report_html",
+      "report_md",
+      "speaker_confusion",
+      "vote_metrics"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audit/cli.py",
+      "lines": "1-89"
+    }
+  ],
+  "confidence": 0.4
+}

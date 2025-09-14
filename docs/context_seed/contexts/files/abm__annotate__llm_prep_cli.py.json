@@ -1,0 +1,47 @@
+{
+  "path": "abm/abm/annotate/llm_prep_cli.py",
+  "summary": "TBD",
+  "public_api": [
+    {
+      "name": "_parse_args",
+      "kind": "function",
+      "signature": "()"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "()"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.annotate.llm_prep"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "pathlib"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/annotate/llm_prep_cli.py",
+      "lines": "1-32"
+    }
+  ],
+  "confidence": 0.4
+}

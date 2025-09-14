@@ -1,0 +1,87 @@
+{
+  "path": "abm/abm/ingestion/ingest_pdf.py",
+  "summary": "High-level orchestrator: PDF \u2192 raw text and well-done text.",
+  "public_api": [
+    {
+      "name": "PipelineOptions",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "PdfIngestPipeline",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "run",
+          "signature": "(self, pdf_path, out_dir, opts)"
+        }
+      ]
+    },
+    {
+      "name": "_build_meta",
+      "kind": "function",
+      "signature": "(pdf_p, out_d, raw_path, wd_path, opts)"
+    },
+    {
+      "name": "_sha256_file",
+      "kind": "function",
+      "signature": "(p)"
+    },
+    {
+      "name": "_json_dumps",
+      "kind": "function",
+      "signature": "(obj)"
+    },
+    {
+      "name": "_default_out_dir",
+      "kind": "function",
+      "signature": "(p)"
+    },
+    {
+      "name": "_build_meta_ephemeral",
+      "kind": "function",
+      "signature": "(pdf_p, out_d, opts)"
+    },
+    {
+      "name": "_stub_db_insert",
+      "kind": "function",
+      "signature": "()"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.ingestion.pdf_to_raw_text",
+      "abm.ingestion.raw_to_welldone",
+      "abm.ingestion.welldone_to_json"
+    ],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "datetime",
+      "hashlib",
+      "pathlib",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/ingestion/ingest_pdf.py",
+      "lines": "1-256"
+    }
+  ],
+  "confidence": 0.4
+}

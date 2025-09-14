@@ -1,0 +1,66 @@
+{
+  "path": "abm/abm/annotate/llm_cache.py",
+  "summary": "SQLite-based cache for LLM decisions.",
+  "public_api": [
+    {
+      "name": "LLMCache",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__post_init__",
+          "signature": "(self)"
+        },
+        {
+          "name": "_key",
+          "signature": "(self)"
+        },
+        {
+          "name": "get",
+          "signature": "(self)"
+        },
+        {
+          "name": "set",
+          "signature": "(self, value)"
+        },
+        {
+          "name": "close",
+          "signature": "(self)"
+        }
+      ]
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "hashlib",
+      "json",
+      "pathlib",
+      "sqlite3",
+      "threading",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/annotate/llm_cache.py",
+      "lines": "1-136"
+    }
+  ],
+  "confidence": 0.4
+}

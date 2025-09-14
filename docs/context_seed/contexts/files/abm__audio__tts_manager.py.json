@@ -1,0 +1,67 @@
+{
+  "path": "abm/abm/audio/tts_manager.py",
+  "summary": "Concurrency-aware TTS rendering with caching and progress bars.",
+  "public_api": [
+    {
+      "name": "TTSManager",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self, adapter, max_workers, cache_dir, show_progress)"
+        },
+        {
+          "name": "_cache_path",
+          "signature": "(self, task)"
+        },
+        {
+          "name": "_link_or_copy",
+          "signature": "(self, src, dst)"
+        },
+        {
+          "name": "render_one",
+          "signature": "(self, task)"
+        },
+        {
+          "name": "render_batch",
+          "signature": "(self, tasks)"
+        }
+      ]
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.audio.text_normalizer",
+      "abm.audio.tts_base"
+    ],
+    "external": [
+      "__future__",
+      "concurrent.futures",
+      "hashlib",
+      "os",
+      "pathlib",
+      "shutil"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audio/tts_manager.py",
+      "lines": "1-181"
+    }
+  ],
+  "confidence": 0.4
+}

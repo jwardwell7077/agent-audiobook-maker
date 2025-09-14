@@ -1,0 +1,47 @@
+{
+  "path": "abm/abm/voice/cache.py",
+  "summary": "Cache utilities for synthesized segments.",
+  "public_api": [
+    {
+      "name": "make_cache_key",
+      "kind": "function",
+      "signature": "(payload)"
+    },
+    {
+      "name": "cache_path",
+      "kind": "function",
+      "signature": "(root, engine, voice, key)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "hashlib",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/voice/cache.py",
+      "lines": "1-43"
+    }
+  ],
+  "confidence": 0.4
+}

@@ -1,0 +1,144 @@
+{
+  "path": "abm/abm/profiles/character_profiles.py",
+  "summary": "Character profile loading and resolution utilities.",
+  "public_api": [
+    {
+      "name": "Style",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "SpeakerProfile",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "ProfileConfig",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "Profile",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "CharacterProfilesDB",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self)"
+        },
+        {
+          "name": "load",
+          "signature": "(path)"
+        },
+        {
+          "name": "save",
+          "signature": "(self, path)"
+        },
+        {
+          "name": "by_speaker",
+          "signature": "(self, name)"
+        },
+        {
+          "name": "fallback",
+          "signature": "(self, engine)"
+        },
+        {
+          "name": "_resolve_profile_ref",
+          "signature": "(self, ref)"
+        },
+        {
+          "name": "_to_json_dict",
+          "signature": "(self)"
+        },
+        {
+          "name": "_from_json_dict",
+          "signature": "(data)"
+        },
+        {
+          "name": "_from_yaml_dict",
+          "signature": "(data)"
+        }
+      ]
+    },
+    {
+      "name": "normalize_speaker_name",
+      "kind": "function",
+      "signature": "(name)"
+    },
+    {
+      "name": "_style_from_dict",
+      "kind": "function",
+      "signature": "(base, data)"
+    },
+    {
+      "name": "load_profiles",
+      "kind": "function",
+      "signature": "(path)"
+    },
+    {
+      "name": "available_voices",
+      "kind": "function",
+      "signature": "(cfg, engine)"
+    },
+    {
+      "name": "_resolve_with_reason",
+      "kind": "function",
+      "signature": "(cfg, speaker)"
+    },
+    {
+      "name": "resolve_speaker_ex",
+      "kind": "function",
+      "signature": "(cfg, speaker)"
+    },
+    {
+      "name": "resolve_with_reason",
+      "kind": "function",
+      "signature": "(cfg, speaker)"
+    },
+    {
+      "name": "resolve_speaker",
+      "kind": "function",
+      "signature": "(cfg, speaker)"
+    },
+    {
+      "name": "validate_profiles",
+      "kind": "function",
+      "signature": "(cfg)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/profiles/character_profiles.py",
+      "lines": "1-570"
+    }
+  ],
+  "confidence": 0.4
+}

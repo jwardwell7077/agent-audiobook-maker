@@ -1,0 +1,59 @@
+{
+  "path": "abm/abm/audio/engine_registry.py",
+  "summary": "Simple registry/factory for TTS engine adapters.",
+  "public_api": [
+    {
+      "name": "EngineRegistry",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "register",
+          "signature": "(cls, name, factory)"
+        },
+        {
+          "name": "unregister",
+          "signature": "(cls, name)"
+        },
+        {
+          "name": "create",
+          "signature": "(cls, name)"
+        },
+        {
+          "name": "list_engines",
+          "signature": "(cls)"
+        }
+      ]
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.audio.tts_base"
+    ],
+    "external": [
+      "__future__",
+      "collections.abc",
+      "threading"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audio/engine_registry.py",
+      "lines": "1-72"
+    }
+  ],
+  "confidence": 0.4
+}

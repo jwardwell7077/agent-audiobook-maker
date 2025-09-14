@@ -1,0 +1,77 @@
+{
+  "path": "abm/abm/voice/plan_from_annotations.py",
+  "summary": "Convert refined annotations into per-chapter render plans.",
+  "public_api": [
+    {
+      "name": "_Options",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "_split_text",
+      "kind": "function",
+      "signature": "(text, kind, max_chars)"
+    },
+    {
+      "name": "_pause",
+      "kind": "function",
+      "signature": "(kind, text, defaults)"
+    },
+    {
+      "name": "_style_for",
+      "kind": "function",
+      "signature": "(kind, base)"
+    },
+    {
+      "name": "_process_chapter",
+      "kind": "function",
+      "signature": "(ch, cfg, opt)"
+    },
+    {
+      "name": "build_plans",
+      "kind": "function",
+      "signature": "(combined_json, cast_profiles, out_dir)"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "(argv)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.profiles",
+      "abm.voice"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "re",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/voice/plan_from_annotations.py",
+      "lines": "1-177"
+    }
+  ],
+  "confidence": 0.4
+}

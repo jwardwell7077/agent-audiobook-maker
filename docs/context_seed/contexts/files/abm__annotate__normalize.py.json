@@ -1,0 +1,102 @@
+{
+  "path": "abm/abm/annotate/normalize.py",
+  "summary": "TBD",
+  "public_api": [
+    {
+      "name": "LineTag",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "InlineTag",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "NormalizerConfig",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "NormalizeReport",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "to_dict",
+          "signature": "(self)"
+        }
+      ]
+    },
+    {
+      "name": "ChapterNormalizer",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "(self, config)"
+        },
+        {
+          "name": "normalize",
+          "signature": "(self, chapter)"
+        },
+        {
+          "name": "_classify_line",
+          "signature": "(self, line)"
+        },
+        {
+          "name": "_normalize_system_angle_line",
+          "signature": "(self, line)"
+        },
+        {
+          "name": "_find_inline_system_tokens",
+          "signature": "(self, line)"
+        },
+        {
+          "name": "_strip_control_chars",
+          "signature": "(self, s)"
+        },
+        {
+          "name": "_display_title",
+          "signature": "(title)"
+        }
+      ]
+    },
+    {
+      "name": "normalize_chapter_text",
+      "kind": "function",
+      "signature": "(chapter, config)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "enum",
+      "re",
+      "typing",
+      "unicodedata"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/annotate/normalize.py",
+      "lines": "1-314"
+    }
+  ],
+  "confidence": 0.4
+}

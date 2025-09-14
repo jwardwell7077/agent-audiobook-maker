@@ -1,0 +1,69 @@
+{
+  "path": "abm/abm/audit/schemas.py",
+  "summary": "Typed structures for the :mod:`abm.audit` package.",
+  "public_api": [
+    {
+      "name": "Span",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "Chapter",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "ChapterStat",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "EvalSummary",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "VoteStats",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "ConfusionPair",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "ConfusionSummary",
+      "kind": "class",
+      "methods": []
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audit/schemas.py",
+      "lines": "1-58"
+    }
+  ],
+  "confidence": 0.4
+}

@@ -1,0 +1,100 @@
+{
+  "path": "abm/abm/profiles/alias_resolver.py",
+  "summary": "Utilities for resolving speaker aliases.",
+  "public_api": [
+    {
+      "name": "ResolverConfig",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "Proposal",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "normalize_name",
+      "kind": "function",
+      "signature": "(name)"
+    },
+    {
+      "name": "_edit_distance",
+      "kind": "function",
+      "signature": "(a, b)"
+    },
+    {
+      "name": "_chargram_vector",
+      "kind": "function",
+      "signature": "(text, dim)"
+    },
+    {
+      "name": "_cosine",
+      "kind": "function",
+      "signature": "(a, b)"
+    },
+    {
+      "name": "harvest_mentions",
+      "kind": "function",
+      "signature": "(refined_json)"
+    },
+    {
+      "name": "build_clusters",
+      "kind": "function",
+      "signature": "(names, cfg)"
+    },
+    {
+      "name": "score_candidate",
+      "kind": "function",
+      "signature": "(norm, canonical_list, aliases_map, cfg)"
+    },
+    {
+      "name": "propose_aliases",
+      "kind": "function",
+      "signature": "(refined_json, profiles_db, cfg)"
+    },
+    {
+      "name": "apply_proposals",
+      "kind": "function",
+      "signature": "(proposals, profiles_db)"
+    },
+    {
+      "name": "save_artifacts",
+      "kind": "function",
+      "signature": "(proposals, out_dir)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "logging",
+      "math",
+      "pathlib",
+      "re",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/profiles/alias_resolver.py",
+      "lines": "1-341"
+    }
+  ],
+  "confidence": 0.4
+}

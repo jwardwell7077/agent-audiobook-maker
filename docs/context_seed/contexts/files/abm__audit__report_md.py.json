@@ -1,0 +1,42 @@
+{
+  "path": "abm/abm/audit/report_md.py",
+  "summary": "Render Markdown audit reports.",
+  "public_api": [
+    {
+      "name": "render_markdown",
+      "kind": "function",
+      "signature": "(summary, vote, conf, out_md, assets_prefix_dir, title)"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "metrics_eval",
+      "pathlib",
+      "speaker_confusion",
+      "vote_metrics"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audit/report_md.py",
+      "lines": "1-90"
+    }
+  ],
+  "confidence": 0.4
+}

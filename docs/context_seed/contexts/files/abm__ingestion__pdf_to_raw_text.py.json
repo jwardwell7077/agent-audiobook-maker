@@ -1,0 +1,74 @@
+{
+  "path": "abm/abm/ingestion/pdf_to_raw_text.py",
+  "summary": "Raw PDF \u2192 Text extractor preserving line/blank-line fidelity (PyMuPDF).",
+  "public_api": [
+    {
+      "name": "RawExtractOptions",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "RawPdfTextExtractor",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "extract",
+          "signature": "(self, pdf_path, out_path, options)"
+        },
+        {
+          "name": "extract_pages",
+          "signature": "(self, pdf_path)"
+        },
+        {
+          "name": "_extract_page_text_blocks",
+          "signature": "(self, page)"
+        },
+        {
+          "name": "assemble_output",
+          "signature": "(self, pages, opts)"
+        },
+        {
+          "name": "_write",
+          "signature": "(self, out_path, text)"
+        }
+      ]
+    },
+    {
+      "name": "_default_output_for_input",
+      "kind": "function",
+      "signature": "(p)"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "fitz",
+      "pathlib",
+      "re",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/ingestion/pdf_to_raw_text.py",
+      "lines": "1-167"
+    }
+  ],
+  "confidence": 0.4
+}

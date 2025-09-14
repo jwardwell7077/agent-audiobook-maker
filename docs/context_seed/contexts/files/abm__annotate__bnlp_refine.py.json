@@ -1,0 +1,70 @@
+{
+  "path": "abm/abm/annotate/bnlp_refine.py",
+  "summary": "TBD",
+  "public_api": [
+    {
+      "name": "BNLPRefinePolicy",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "_overlap",
+      "kind": "function",
+      "signature": "(a, b)"
+    },
+    {
+      "name": "_match_quotes",
+      "kind": "function",
+      "signature": "(spans, bnlp, max_char_gap)"
+    },
+    {
+      "name": "refine_with_bnlp",
+      "kind": "function",
+      "signature": "(tagged_path, out_path)"
+    },
+    {
+      "name": "_parse_args",
+      "kind": "function",
+      "signature": "()"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "()"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.sidecar.booknlp_adapter"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/annotate/bnlp_refine.py",
+      "lines": "1-351"
+    }
+  ],
+  "confidence": 0.4
+}

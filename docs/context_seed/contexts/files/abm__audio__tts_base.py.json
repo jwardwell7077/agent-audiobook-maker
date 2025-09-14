@@ -1,0 +1,59 @@
+{
+  "path": "abm/abm/audio/tts_base.py",
+  "summary": "Base interfaces and dataclasses for TTS adapters.",
+  "public_api": [
+    {
+      "name": "SynthesisError",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "TTSTask",
+      "kind": "class",
+      "methods": []
+    },
+    {
+      "name": "TTSAdapter",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "preload",
+          "signature": "(self)"
+        },
+        {
+          "name": "synth",
+          "signature": "(self, task)"
+        }
+      ]
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "pathlib"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audio/tts_base.py",
+      "lines": "1-72"
+    }
+  ],
+  "confidence": 0.4
+}

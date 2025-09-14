@@ -1,0 +1,55 @@
+{
+  "path": "abm/abm/audio/synthesis_export.py",
+  "summary": "Export per-chapter synthesis scripts from annotated chapters.",
+  "public_api": [
+    {
+      "name": "_parse_only",
+      "kind": "function",
+      "signature": "(spec)"
+    },
+    {
+      "name": "_write_summary",
+      "kind": "function",
+      "signature": "(out_path, tasks)"
+    },
+    {
+      "name": "main",
+      "kind": "function",
+      "signature": "(argv)"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [
+      "abm.audio.tts_casting",
+      "abm.profiles.character_profiles"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "collections",
+      "json",
+      "pathlib"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audio/synthesis_export.py",
+      "lines": "1-101"
+    }
+  ],
+  "confidence": 0.4
+}

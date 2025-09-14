@@ -1,0 +1,66 @@
+{
+  "path": "abm/abm/audio/text_normalizer.py",
+  "summary": "Text normalization and safe chunking for TTS.",
+  "public_api": [
+    {
+      "name": "TextNormalizer",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "normalize",
+          "signature": "(text)"
+        },
+        {
+          "name": "version",
+          "signature": "()"
+        },
+        {
+          "name": "_num_to_words",
+          "signature": "(n)"
+        }
+      ]
+    },
+    {
+      "name": "Chunker",
+      "kind": "class",
+      "methods": [
+        {
+          "name": "split",
+          "signature": "(text)"
+        },
+        {
+          "name": "_hard_wrap",
+          "signature": "(s, cap)"
+        }
+      ]
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io": {
+    "inputs": [],
+    "outputs": [],
+    "temp_files": [],
+    "config_keys": []
+  },
+  "errors": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "re"
+    ],
+    "resources": []
+  },
+  "notes": [],
+  "evidence": [
+    {
+      "file": "abm/abm/audio/text_normalizer.py",
+      "lines": "1-196"
+    }
+  ],
+  "confidence": 0.4
+}
