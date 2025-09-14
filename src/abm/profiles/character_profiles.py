@@ -71,6 +71,9 @@ __all__ = [
     "resolve_speaker_ex",
     "resolve_speaker",
     "available_voices",
+    # Lightweight DB types used by alias resolver and casting
+    "Profile",
+    "CharacterProfilesDB",
 ]
 
 
@@ -238,6 +241,241 @@ def available_voices(cfg: ProfileConfig, engine: str) -> list[str]:
 
 
 # ---------------------------------------------------------------------------
+# Lightweight DB for aliasing and casting (JSON/YAML interchangeable)
+
+
+@dataclass(slots=True)
+class Profile:
+    """Minimal voice profile used by casting and alias resolver.
+
+    Attributes:
+        id: Stable identifier for the profile.
+        label: Human-readable label (often the speaker name).
+        engine: Preferred TTS engine.
+        voice: Voice identifier for the engine.
+        refs: Optional reference file paths or notes.
+        style: Free-form style tag or preset name.
+        tags: Additional tags used for fuzzy casting (e.g. ["narrator"]).
+    """
+
+    id: str
+    label: str
+    engine: str
+    voice: str
+    refs: list[str]
+    style: str
+    tags: list[str] | None = None
+
+
+class CharacterProfilesDB:
+    """Unified view over profiles with helpers for casting/aliasing.
+
+    The database can be loaded from two on-disk schemas:
+    - JSON (tests and tools):
+        {
+          "profiles": [{...}],
+          "map": {"Speaker": "profile_id"},
+          "fallbacks": {"engine": "profile_id"}
+        }
+    - YAML (human-edited casting file):
+        version: 1
+        defaults: { engine: ..., narrator_voice: ... }
+        voices: { engine: [voices...] }
+        speakers: { Name: { engine: ..., voice: ..., aliases: [...] } }
+
+    In-memory representation keeps:
+        profiles: dict[id -> Profile]
+        speaker_map: dict[speaker_name -> Profile]
+        fallbacks: dict[engine -> Profile]
+    """
+
+    def __init__(
+        self,
+        *,
+        profiles: dict[str, Profile] | None = None,
+        speaker_map: dict[str, str | Profile] | None = None,
+        fallbacks: dict[str, str | Profile] | None = None,
+    ) -> None:
+        self.profiles: dict[str, Profile] = profiles or {}
+        # Internally store speaker_map/fallbacks as Profile objects
+        self.speaker_map: dict[str, Profile] = {}
+        if speaker_map:
+            for name, ref in speaker_map.items():
+                prof = self._resolve_profile_ref(ref)
+                if prof:
+                    self.speaker_map[name] = prof
+        self.fallbacks: dict[str, Profile] = {}
+        if fallbacks:
+            for eng, ref in fallbacks.items():
+                prof = self._resolve_profile_ref(ref)
+                if prof:
+                    self.fallbacks[str(eng)] = prof
+
+    # ------------------------------- I/O ----------------------------------
+
+    @staticmethod
+    def load(path: str | Path) -> CharacterProfilesDB:
+        p = Path(path)
+        text = p.read_text(encoding="utf-8")
+        # Prefer JSON if it looks like JSON, otherwise try YAML
+        data: Any
+        try:
+            data = json.loads(text)
+            return CharacterProfilesDB._from_json_dict(data)
+        except Exception:
+            if not HAVE_YAML:
+                raise
+            assert yaml is not None
+            data = yaml.safe_load(text)
+            return CharacterProfilesDB._from_yaml_dict(data)
+
+    def save(self, path: str | Path) -> None:
+        """Persist as JSON for tool friendliness.
+
+        Note: We intentionally write JSON regardless of input format to keep
+        the operation deterministic and side-effect free (YAML is typically a
+        hand-edited source of truth). Tools can always re-export to YAML later.
+        """
+
+        out = self._to_json_dict()
+        Path(path).write_text(json.dumps(out, indent=2, sort_keys=True), encoding="utf-8")
+
+    # ------------------------------- Queries ------------------------------
+
+    def by_speaker(self, name: str) -> Profile | None:
+        # exact
+        if name in self.speaker_map:
+            return self.speaker_map[name]
+        # case-insensitive / normalised
+        key = normalize_speaker_name(name)
+        for k, v in self.speaker_map.items():
+            if normalize_speaker_name(k) == key:
+                return v
+        return None
+
+    def fallback(self, engine: str) -> Profile:
+        if engine in self.fallbacks:
+            return self.fallbacks[engine]
+        # Any narrator-like profile
+        for prof in self.profiles.values():
+            tags = prof.tags or []
+            if any(t.lower() == "narrator" for t in tags) or prof.label.lower() == "narrator":
+                return prof
+        # else first available
+        return next(iter(self.profiles.values()))
+
+    # ------------------------------- Helpers ------------------------------
+
+    def _resolve_profile_ref(self, ref: str | Profile | None) -> Profile | None:
+        if ref is None:
+            return None
+        if isinstance(ref, Profile):
+            return ref
+        # by id
+        prof = self.profiles.get(ref)
+        if prof:
+            return prof
+        # by label (common in YAML speaker maps)
+        for p in self.profiles.values():
+            if p.label == ref:
+                return p
+        return None
+
+    def _to_json_dict(self) -> dict[str, Any]:
+        return {
+            "profiles": [
+                {
+                    "id": p.id,
+                    "label": p.label,
+                    "engine": p.engine,
+                    "voice": p.voice,
+                    "refs": p.refs,
+                    "style": p.style,
+                    **({"tags": p.tags} if p.tags is not None else {}),
+                }
+                for p in self.profiles.values()
+            ],
+            "map": {name: prof.id for name, prof in self.speaker_map.items()},
+            "fallbacks": {eng: prof.id for eng, prof in self.fallbacks.items()},
+        }
+
+    @staticmethod
+    def _from_json_dict(data: Any) -> CharacterProfilesDB:
+        if not isinstance(data, dict):
+            raise ValueError("profiles DB must be a mapping")
+        profs: dict[str, Profile] = {}
+        for item in data.get("profiles", []) or []:
+            prof = Profile(
+                id=str(item["id"]),
+                label=str(item.get("label", str(item["id"]))),
+                engine=str(item.get("engine", "")),
+                voice=str(item.get("voice", "")),
+                refs=list(item.get("refs", []) or []),
+                style=str(item.get("style", "")),
+                tags=list(item.get("tags", []) or []),
+            )
+            profs[prof.id] = prof
+        speaker_map: dict[str, str] = {str(k): str(v) for k, v in (data.get("map", {}) or {}).items()}
+        fallbacks: dict[str, str] = {str(k): str(v) for k, v in (data.get("fallbacks", {}) or {}).items()}
+        return CharacterProfilesDB(profiles=profs, speaker_map=speaker_map, fallbacks=fallbacks)
+
+    @staticmethod
+    def _from_yaml_dict(data: Any) -> CharacterProfilesDB:
+        if not isinstance(data, dict):
+            raise ValueError("YAML profiles must be a mapping")
+        defaults = data.get("defaults", {}) or {}
+        default_engine = str(defaults.get("engine", "piper"))
+        speakers_cfg = data.get("speakers", {}) or {}
+
+        # build profiles
+        profs: dict[str, Profile] = {}
+        name_to_prof: dict[str, Profile] = {}
+
+        def _mk_id(label: str) -> str:
+            return normalize_speaker_name(label).replace(" ", "-") or "profile"
+
+        narrator_prof: Profile | None = None
+        for label, info in speakers_cfg.items():
+            engine = str((info or {}).get("engine", default_engine))
+            voice = str((info or {}).get("voice", ""))
+            pid = _mk_id(str(label))
+            prof = Profile(
+                id=pid,
+                label=str(label),
+                engine=engine,
+                voice=voice,
+                refs=[],
+                style=str(((info or {}).get("style") or {}).get("emotion", "")),
+                tags=["narrator"] if normalize_speaker_name(str(label)) == normalize_speaker_name("Narrator") else [],
+            )
+            profs[pid] = prof
+            name_to_prof[str(label)] = prof
+            if prof.tags and "narrator" in prof.tags:
+                narrator_prof = prof
+
+        # speaker map with aliases
+        speaker_map: dict[str, Profile] = {}
+        for label, info in speakers_cfg.items():
+            prof = name_to_prof[str(label)]
+            speaker_map[str(label)] = prof
+            for alias in (info or {}).get("aliases", []) or []:
+                speaker_map[str(alias)] = prof
+
+        # fallbacks: per engine to narrator if present
+        fallbacks: dict[str, Profile] = {}
+        if narrator_prof is not None:
+            fallbacks[default_engine] = narrator_prof
+        else:
+            # any first profile
+            if profs:
+                fallbacks[default_engine] = next(iter(profs.values()))
+
+        db = CharacterProfilesDB(profiles=profs)
+        db.speaker_map = speaker_map
+        db.fallbacks = fallbacks
+        return db
+
+
 # resolution & validation
 
 
