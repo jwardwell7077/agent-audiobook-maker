@@ -1,0 +1,131 @@
+{
+  "file": "src/abm/audio/packaging.py",
+  "module": "abm.audio.packaging",
+  "summary": "Helpers for packaging rendered audio into common formats.",
+  "public_api": [
+    {
+      "name": "_require_pydub",
+      "signature": "()",
+      "kind": "function"
+    },
+    {
+      "name": "_have_ffmpeg",
+      "signature": "()",
+      "kind": "function"
+    },
+    {
+      "name": "_write_ffmetadata_chapters",
+      "signature": "(chapters, out_path)",
+      "kind": "function"
+    },
+    {
+      "name": "_mux_m4b_with_chapters",
+      "signature": "(input_m4a, ffmeta, out_m4b)",
+      "kind": "function"
+    },
+    {
+      "name": "format_ts",
+      "signature": "(seconds)",
+      "kind": "function"
+    },
+    {
+      "name": "export_mp3",
+      "signature": "(in_wav, out_mp3, title, artist, album, track)",
+      "kind": "function"
+    },
+    {
+      "name": "export_opus",
+      "signature": "(in_wav, out_opus, title, artist, album, track)",
+      "kind": "function"
+    },
+    {
+      "name": "make_chaptered_m4b",
+      "signature": "(chapter_wavs, out_m4b, chapter_titles, album, artist, cover_jpeg)",
+      "kind": "function"
+    },
+    {
+      "name": "write_chapter_cue",
+      "signature": "(chapter_wavs, out_cue, titles)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "FileNotFoundError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    }
+  ],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "importlib",
+      "logging",
+      "mutagen",
+      "pathlib",
+      "pydub",
+      "shutil",
+      "soundfile",
+      "subprocess",
+      "tempfile",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/audio/packaging.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

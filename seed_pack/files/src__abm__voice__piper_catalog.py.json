@@ -1,0 +1,91 @@
+{
+  "file": "src/abm/voice/piper_catalog.py",
+  "module": "abm.voice.piper_catalog",
+  "summary": "Catalog installed Piper voices.",
+  "public_api": [
+    {
+      "name": "PiperVoice",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "_candidate_dirs",
+      "signature": "(override)",
+      "kind": "function"
+    },
+    {
+      "name": "_iter_voice_models",
+      "signature": "(dirs)",
+      "kind": "function"
+    },
+    {
+      "name": "_load_config",
+      "signature": "(meta_path)",
+      "kind": "function"
+    },
+    {
+      "name": "discover_piper_voices",
+      "signature": "(voices_dir)",
+      "kind": "function"
+    },
+    {
+      "name": "main",
+      "signature": "(argv)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [
+      {
+        "name": "--voices-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--json",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--voices-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--json",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.voice.piper_catalog"
+    ]
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "argparse",
+      "collections",
+      "dataclasses",
+      "json",
+      "os",
+      "pathlib",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/voice/piper_catalog.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

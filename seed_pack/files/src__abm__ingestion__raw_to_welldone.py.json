@@ -1,0 +1,43 @@
+{
+  "file": "src/abm/ingestion/raw_to_welldone.py",
+  "module": "abm.ingestion.raw_to_welldone",
+  "summary": "Text post-processor: Raw → Well-done (reflow, cleanup).",
+  "public_api": [
+    {
+      "name": "WellDoneOptions",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "RawToWellDone",
+      "signature": "",
+      "kind": "class"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "re"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/ingestion/raw_to_welldone.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

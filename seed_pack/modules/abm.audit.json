@@ -1,0 +1,263 @@
+{
+  "id": "abm.audit",
+  "path_globs": [
+    "src/abm/audit/**/*.py"
+  ],
+  "purpose": "Auto-generated module summary.",
+  "key_components": [
+    {
+      "name": "Span",
+      "kind": "class",
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
+    },
+    {
+      "name": "Chapter",
+      "kind": "class",
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
+    },
+    {
+      "name": "ChapterStat",
+      "kind": "class",
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
+    },
+    {
+      "name": "EvalSummary",
+      "kind": "class",
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
+    },
+    {
+      "name": "VoteStats",
+      "kind": "class",
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
+    },
+    {
+      "name": "ConfusionPair",
+      "kind": "class",
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
+    },
+    {
+      "name": "ConfusionSummary",
+      "kind": "class",
+      "file": "src/abm/audit/schemas.py",
+      "summary": ""
+    }
+  ],
+  "public_surfaces": [
+    {
+      "symbol": "main",
+      "signature": "(argv)",
+      "summary": ""
+    },
+    {
+      "symbol": "load_doc",
+      "signature": "(path)",
+      "summary": ""
+    },
+    {
+      "symbol": "compute_basic_metrics",
+      "signature": "(refined, base, worst_n)",
+      "summary": ""
+    },
+    {
+      "symbol": "plot_top_speakers",
+      "signature": "(counter, out_png)",
+      "summary": ""
+    },
+    {
+      "symbol": "plot_unknown_by_chapter",
+      "signature": "(rows, out_png)",
+      "summary": ""
+    },
+    {
+      "symbol": "plot_vote_margin_hist",
+      "signature": "(margins, out_png)",
+      "summary": ""
+    },
+    {
+      "symbol": "md_to_html",
+      "signature": "(md_path, html_path)",
+      "summary": ""
+    },
+    {
+      "symbol": "render_markdown",
+      "signature": "(summary, vote, conf, out_md, assets_prefix_dir, title)",
+      "summary": ""
+    },
+    {
+      "symbol": "compute_confusion",
+      "signature": "(base_doc, refined_doc)",
+      "summary": ""
+    },
+    {
+      "symbol": "parse_metrics_jsonl",
+      "signature": "(path)",
+      "summary": ""
+    }
+  ],
+  "data_flow": "Unknown",
+  "dependencies": {
+    "imports_internal": [
+      "abm.audit.schemas"
+    ],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "cli",
+      "collections",
+      "datetime",
+      "json",
+      "logging",
+      "markdown2",
+      "matplotlib",
+      "metrics_eval",
+      "pathlib",
+      "report_html",
+      "report_md",
+      "schemas",
+      "speaker_confusion",
+      "statistics",
+      "typing",
+      "vote_metrics"
+    ]
+  },
+  "configs_env": {
+    "env_vars": [],
+    "config_files": []
+  },
+  "cli_entrypoints": [
+    {
+      "file": "src/abm/audit/__main__.py",
+      "module": "abm.audit.__main__",
+      "command": "python -m abm.audit.__main__",
+      "flags": [],
+      "examples": [
+        "python -m abm.audit.__main__"
+      ]
+    },
+    {
+      "file": "src/abm/audit/cli.py",
+      "module": "abm.audit.cli",
+      "command": "python -m abm.audit.cli",
+      "flags": [
+        {
+          "name": "--refined",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--base",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--metrics-jsonl",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--chapters",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--plots",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--html",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--prefix",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--title",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--stdout-summary",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--refined",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--base",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--metrics-jsonl",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--chapters",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--plots",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--html",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--prefix",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--title",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--stdout-summary",
+          "type": "unknown",
+          "default": null
+        }
+      ],
+      "examples": [
+        "python -m abm.audit.cli"
+      ]
+    }
+  ],
+  "invariants": [],
+  "edge_cases": [],
+  "known_gotchas": [],
+  "related_tests": [],
+  "status": {
+    "maturity": "alpha",
+    "owners": [],
+    "last_touched_file_mtime": "2025-09-14T20:35:57.976444+00:00"
+  }
+}

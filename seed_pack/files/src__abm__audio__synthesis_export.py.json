@@ -1,0 +1,116 @@
+{
+  "file": "src/abm/audio/synthesis_export.py",
+  "module": "abm.audio.synthesis_export",
+  "summary": "Export per-chapter synthesis scripts from annotated chapters.",
+  "public_api": [
+    {
+      "name": "_parse_only",
+      "signature": "(spec)",
+      "kind": "function"
+    },
+    {
+      "name": "_write_summary",
+      "signature": "(out_path, tasks)",
+      "kind": "function"
+    },
+    {
+      "name": "main",
+      "signature": "(argv)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [
+      {
+        "name": "--tagged",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--only",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--default-engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--default-pause",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tagged",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--only",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--default-engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--default-pause",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.audio.synthesis_export"
+    ]
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.audio.tts_casting",
+      "abm.profiles.character_profiles"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "collections",
+      "json",
+      "pathlib"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/audio/synthesis_export.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}
