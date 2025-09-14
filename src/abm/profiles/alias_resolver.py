@@ -21,7 +21,7 @@ from typing import Dict, Iterable, List, Tuple, Literal, Any
 
 try:  # optional dependency used for phonetic matching
     from metaphone import doublemetaphone  # type: ignore
-except Exception:  # pragma: no cover - dependency is optional
+except ImportError:  # pragma: no cover - dependency is optional
     doublemetaphone = None  # type: ignore
 
 
