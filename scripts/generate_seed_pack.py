@@ -601,7 +601,7 @@ def main() -> None:
         "project": ROOT.name,
         "generated_at": dt.datetime.fromtimestamp(max_mtime, dt.timezone.utc).isoformat(),
         "code_root": "src",
-        "modules": MODULES,
+        "modules": sorted(packages),
         "files_indexed": len(file_records),
         "graphs": {
             "import_graph": "graphs/import_graph.json",
