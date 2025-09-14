@@ -109,6 +109,32 @@ make test_coverage
 make quality_gate
 ```
 
+### Installing Piper voices (for TTS)
+
+Piper models are not bundled; you need to download voice files locally. We provide a small helper script that installs a few English voices for auditioning.
+
+- Default location: `~/.local/share/piper/voices`
+- Alternative: set `ABM_PIPER_VOICES_DIR=/path/to/voices`
+
+Steps:
+
+1. Install a few voices locally (downloads ~100–200MB total):
+  - Run: `scripts/install_piper_voices.sh` (destination optional)
+2. Verify discovery:
+  - Run: `python -m abm.voice.piper_catalog --json`
+  - You should see entries like `en_US-ryan-high`, `en_US-amy-medium`, etc.
+3. Propose a casting scaffold and audition lines:
+  - Run: `python -m abm.voice.piper_casting --profiles data/voices/mvs_cast.yaml --annotations data/ann/mvs/combined_refined.json --out reports/piper_cast`
+  - Check `reports/piper_cast/REVIEW.md` for quick audition commands.
+
+Notes:
+- Voices are separate assets from the Piper binary; see the upstream VOICES list for more options.
+- The `reports/` and `data/` folders are gitignored to avoid committing media or private artifacts.
+- To install many voices, use the bulk script (large download; use filters):
+  - List only: `scripts/install_piper_voices_all.sh --lang en --list-only`
+  - Install English voices: `scripts/install_piper_voices_all.sh --lang en --yes`
+  - Install high/medium US English: `scripts/install_piper_voices_all.sh --lang en_US --quality "high|medium" --yes`
+
 ## Project Structure
 
 ```text

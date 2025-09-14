@@ -11,6 +11,7 @@ from typing import Any
 
 import soundfile as sf
 
+from abm.audio import register_builtins
 from abm.audio.assembly import assemble
 from abm.audio.engine_registry import EngineRegistry
 from abm.audio.mastering import master
@@ -21,7 +22,7 @@ from abm.audio.tts_manager import TTSManager
 try:  # pragma: no cover - optional dependency
     from pydub.exceptions import CouldntDecodeError
 except Exception:  # pragma: no cover
-    CouldntDecodeError = None  # type: ignore
+    CouldntDecodeError = None
 
 __all__ = ["main"]
 
@@ -65,6 +66,9 @@ def main(argv: list[str] | None = None) -> int:
         "--save-mp3", action=argparse.BooleanOptionalAction, default=False
     )
     args = parser.parse_args(argv)
+
+    # Ensure built-in engines (e.g., Piper, XTTS) are registered
+    register_builtins()
 
     out_dir: Path = args.out_dir
     tmp_dir: Path = args.tmp_dir
@@ -150,6 +154,7 @@ def main(argv: list[str] | None = None) -> int:
     write_qc_json(report, qc_path)
 
     manifest_path = out_dir / "manifests" / "book_manifest.json"
+    manifest: dict[str, Any]
     if manifest_path.exists():
         with manifest_path.open("r", encoding="utf-8") as f:
             manifest = json.load(f)

@@ -19,11 +19,11 @@ from abm.voice.engines import PiperEngine, XTTSEngine
 __all__ = ["render_chapter", "main"]
 
 
-def _load_engine(name: str) -> Any:
+def _load_engine(name: str, *, sample_rate: int | None = None) -> Any:
     if name == "piper":
-        return PiperEngine()
+        return PiperEngine(sample_rate=sample_rate, use_subprocess=True)
     if name == "xtts":
-        return XTTSEngine(allow_stub=True)
+        return XTTSEngine(allow_stub=True, sample_rate=sample_rate or 48000)
     raise KeyError(f"unknown engine {name}")
 
 
@@ -42,7 +42,7 @@ def _synth_segment(
     if cache_fp.exists():
         y, _ = sf.read(cache_fp, dtype="float32")
         return y
-    engine = _load_engine(seg["engine"])
+    engine = _load_engine(seg["engine"], sample_rate=sr)
     y = engine.synthesize(seg["text"], seg["voice"], seg.get("style", {}))
     tmp_fp = tmp_dir / f"{seg['id']}.wav"
     tmp_fp.parent.mkdir(parents=True, exist_ok=True)
