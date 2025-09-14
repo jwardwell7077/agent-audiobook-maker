@@ -48,12 +48,13 @@ class PiperAdapter(TTSAdapter):
     """
 
     def __init__(
-        self, voice: str, *, binary: str | None = None, quiet: bool = True
+        self, voice: str | None = None, *, binary: str | None = None, quiet: bool = True
     ) -> None:
         """Initialize the Piper adapter.
 
         Args:
-            voice: Piper voice identifier.
+            voice: Optional default Piper voice identifier. If omitted, each
+                TTSTask must provide ``task.voice``.
             binary: Binary name or absolute path to the Piper executable.
             quiet: Suppress CLI output where supported.
         """
@@ -63,27 +64,55 @@ class PiperAdapter(TTSAdapter):
         self._dryrun = os.environ.get("ABM_PIPER_DRYRUN", "") == "1"
         self._available: bool | None = None
 
+    # Adapter version string used by TTSManager cache keys. Bump this when
+    # changing CLI invocation, normalization, or output-affecting behavior
+    # to avoid reusing stale cache entries.
+    def version(self) -> str:  # pragma: no cover - simple constant
+        return "piper-adapter-2"
+
     def preload(self) -> None:
         """Check the Piper binary availability (unless in dry-run)."""
         if self._dryrun:
             self._available = False
             return
-        self._available = shutil.which(self.binary) is not None
+        bin_path = shutil.which(self.binary or "piper")
+        self._available = bin_path is not None
 
-    def _build_cmd(self, text_file: Path, out_file: Path) -> list[str]:
-        """Build the Piper CLI command line."""
-        # Piper commonly supports: --voice, --text_file, --output_file (or --outfile)
-        cmd = [
-            self.binary,
-            "--voice",
-            self.voice,
-            "--text_file",
-            str(text_file),
-            "--output_file",
-            str(out_file),
+    def _candidate_dirs(self) -> list[Path]:
+        env = os.environ.get("ABM_PIPER_VOICES_DIR")
+        if env:
+            return [Path(env)]
+        return [
+            Path.home() / ".local/share/piper/voices",
+            Path("/usr/share/piper/voices"),
+            Path("/usr/local/share/piper/voices"),
         ]
-        if self.quiet:
-            cmd.insert(1, "--quiet")
+
+    def _resolve_model_paths(self, voice_id: str) -> tuple[Path | None, Path | None]:
+        """Resolve a Piper voice id to (model_path, config_path)."""
+        if voice_id.endswith(".onnx"):
+            model = Path(voice_id)
+            cfg = model.with_suffix(".onnx.json")
+            if not cfg.exists():
+                cfg = model.with_suffix(".json")
+            return (model, cfg if cfg.exists() else None)
+        for root in self._candidate_dirs():
+            model = root / voice_id / f"{voice_id}.onnx"
+            if model.exists():
+                cfg = model.with_suffix(".onnx.json")
+                if not cfg.exists():
+                    cfg = model.with_suffix(".json")
+                return (model, cfg if cfg.exists() else None)
+        return (None, None)
+
+    def _build_cmd(self, voice_id: str, text_file: Path, out_file: Path) -> list[str]:
+        """Build the Piper CLI command line."""
+        model, cfg = self._resolve_model_paths(voice_id)
+        model_arg = str(model) if model is not None else str(voice_id)
+        bin_exe = self.binary or "piper"
+        cmd: list[str] = [bin_exe, "-m", model_arg, "-i", str(text_file), "-f", str(out_file)]
+        if cfg is not None:
+            cmd.extend(["-c", str(cfg)])
         return cmd
 
     def synth(self, task: TTSTask) -> Path:
@@ -110,12 +139,20 @@ class PiperAdapter(TTSAdapter):
             )
 
         task.out_path.parent.mkdir(parents=True, exist_ok=True)
+
+        # Determine voice to use for this task
+        voice_id = (task.voice or self.voice or "").strip()
+        if not voice_id:
+            raise SynthesisError(
+                "Piper voice not specified. Provide TTSTask.voice or set a default when creating the adapter."
+            )
         with tempfile.NamedTemporaryFile("w", delete=False, encoding="utf-8") as tf:
             tf.write(task.text)
+            tf.flush()
             text_file = Path(tf.name)
 
         try:
-            cmd = self._build_cmd(text_file, task.out_path)
+            cmd = self._build_cmd(voice_id, text_file, task.out_path)
             try:
                 proc = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
             except subprocess.TimeoutExpired as exc:
