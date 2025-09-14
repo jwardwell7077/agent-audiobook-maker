@@ -328,11 +328,12 @@ def make_chaptered_m4b(
 
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp_m4a = Path(tmpdir) / "temp.m4a"
+        # Note: pydub does not support embedding cover images when exporting MP4/M4A.
+        # We'll add cover art afterwards using mutagen if available.
         joined.export(
             tmp_m4a,
             format="mp4",
             tags=tags,
-            cover=str(cover_jpeg) if cover_jpeg else None,
         )
 
         if cover_jpeg:
