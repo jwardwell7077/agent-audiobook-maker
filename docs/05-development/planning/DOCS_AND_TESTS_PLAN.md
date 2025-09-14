@@ -69,7 +69,7 @@ TOC parsing constrained to a fixed lookahead (up to 5 blocks).
 
 Recognizes Prologue/Epilogue; enforces monotonic chapter order; one heading per block.
 
-Verified on MVS JSONL; do not process Lord of the Flies.
+Verified on a local private JSONL; do not process copyrighted works.
 
 ### Deprecated/legacy
 
@@ -108,7 +108,7 @@ Stubs and TODOs:
 
 Test data
 
-- Use MVS JSONL (data/clean/mvs/MyVampireSystem_CH0001_0700_well_done.jsonl) as primary fixtures (do not use LotF).
+- Use a local private JSONL (e.g., data/clean/private_book/*_well_done.jsonl) as primary fixtures.
 - If needed, create tiny synthetic fixtures under tests/data/ with minimal blocks for unit tests.
 
 Ingestion tests
@@ -174,7 +174,7 @@ CI:
 
 ## Notes
 
-- Only process MVS for fixtures; skip LotF.
+- Only process private/local fixtures; skip copyrighted works.
 - Keep database interactions stubbed; no real DB calls.
 - Avoid feature changes in this branch; if gaps are found, capture as TODOs and file separate issues.
 - Use this as the branch PR description or an issue body to coordinate the docs-and-tests effort end-to-end.

@@ -18,7 +18,7 @@ Deliver the P0 items this week with clear sequencing, concrete tasks, acceptance
 - Day 1 AM: Legacy CLI tests triage and fixes; set Prologue/Epilogue policy (skip or adapt).
 - Day 1 PM: Provisional confidence fields + artifact meta bump; update tests.
 - Day 2 AM: Deterministic confidence v1 implementation with unit tests.
-- Day 2 PM: LangFlow confidence preview + threshold wiring; quick smoke on MVS ch01.
+- Day 2 PM: LangFlow confidence preview + threshold wiring; quick smoke on a local private sample.
 
 ______________________________________________________________________
 
@@ -107,7 +107,7 @@ Acceptance criteria
 
 - Unit tests cover happy path + ties; deterministic results across runs.
 - Confidence emitted for all spans with `method="deterministic_v1"`.
-- Quick smoke on MVS ch01 shows reasonable distribution (not all at extremes).
+- Quick smoke on a local private sample shows reasonable distribution (not all at extremes).
 
 Risks & mitigations
 

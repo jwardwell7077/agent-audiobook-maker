@@ -3,7 +3,7 @@
 Spot chapters that need attention based on Unknown speaker ratio over Dialogue/Thought spans.
 
 Example:
-  python scripts/spot_chapters_attention.py --in data/annotations/mvs/full_gpu_book/combined.json --top 10
+    python scripts/spot_chapters_attention.py --in data/annotations/private_book/full_gpu_book/combined.json --top 10
 """
 
 import argparse
