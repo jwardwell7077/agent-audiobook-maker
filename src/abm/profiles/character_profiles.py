@@ -225,10 +225,7 @@ def load_profiles(path: str | Path) -> ProfileConfig:
         defaults_engine=str(defaults.get("engine", "")),
         defaults_narrator_voice=str(defaults.get("narrator_voice", "")),
         defaults_style=defaults_style,
-        voices={
-            str(k): [str(v) for v in vs]
-            for k, vs in (data.get("voices", {}) or {}).items()
-        },
+        voices={str(k): [str(v) for v in vs] for k, vs in (data.get("voices", {}) or {}).items()},
         speakers=speakers,
     )
     return cfg
@@ -244,9 +241,7 @@ def available_voices(cfg: ProfileConfig, engine: str) -> list[str]:
 # resolution & validation
 
 
-def _resolve_with_reason(
-    cfg: ProfileConfig, speaker: str
-) -> tuple[SpeakerProfile | None, str]:
+def _resolve_with_reason(cfg: ProfileConfig, speaker: str) -> tuple[SpeakerProfile | None, str]:
     """Internal helper returning a profile and match reason."""
 
     normalized = normalize_speaker_name(speaker)
@@ -261,9 +256,7 @@ def _resolve_with_reason(
     return None, "unknown"
 
 
-def resolve_speaker_ex(
-    cfg: ProfileConfig, speaker: str
-) -> tuple[SpeakerProfile | None, str]:
+def resolve_speaker_ex(cfg: ProfileConfig, speaker: str) -> tuple[SpeakerProfile | None, str]:
     """Return the resolved profile and reason for ``speaker``.
 
     Args:
@@ -279,9 +272,7 @@ def resolve_speaker_ex(
     return _resolve_with_reason(cfg, speaker)
 
 
-def resolve_with_reason(
-    cfg: ProfileConfig, speaker: str
-) -> tuple[SpeakerProfile | None, str]:
+def resolve_with_reason(cfg: ProfileConfig, speaker: str) -> tuple[SpeakerProfile | None, str]:
     """Backward compatible wrapper around :func:`resolve_speaker_ex`."""
 
     return resolve_speaker_ex(cfg, speaker)
@@ -323,27 +314,19 @@ def validate_profiles(cfg: ProfileConfig) -> list[str]:
         if not sp.voice:
             issues.append(f"speaker '{sp.name}' missing voice")
         if sp.engine not in cfg.voices:
-            issues.append(
-                f"speaker '{sp.name}' references unknown engine '{sp.engine}'"
-            )
+            issues.append(f"speaker '{sp.name}' references unknown engine '{sp.engine}'")
         elif sp.voice not in cfg.voices.get(sp.engine, []):
-            issues.append(
-                f"speaker '{sp.name}' references unknown voice '{sp.voice}' for engine '{sp.engine}'"
-            )
+            issues.append(f"speaker '{sp.name}' references unknown voice '{sp.voice}' for engine '{sp.engine}'")
         for alias in sp.aliases:
             norm = normalize_speaker_name(alias)
             if norm in canonical:
                 issues.append(f"alias '{alias}' conflicts with existing speaker")
             if norm in alias_map:
-                issues.append(
-                    f"alias '{alias}' claimed by '{alias_map[norm]}' and '{sp.name}'"
-                )
+                issues.append(f"alias '{alias}' claimed by '{alias_map[norm]}' and '{sp.name}'")
             alias_map[norm] = sp.name
         for eng, voice in sp.fallback.items():
             if eng not in cfg.voices:
                 issues.append(f"speaker '{sp.name}' fallback engine '{eng}' unknown")
             elif voice not in cfg.voices[eng]:
-                issues.append(
-                    f"speaker '{sp.name}' fallback voice '{voice}' unknown for engine '{eng}'"
-                )
+                issues.append(f"speaker '{sp.name}' fallback voice '{voice}' unknown for engine '{eng}'")
     return issues

@@ -5,12 +5,12 @@ from __future__ import annotations
 import argparse
 import json
 import re
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-from abm.profiles.character_profiles import CharacterProfilesDB
-from abm.voice.tts_casting import cast_speaker
+from abm.profiles import ProfileConfig, load_profiles
+from abm.voice import pick_voice
 
 __all__ = ["build_plans", "main"]
 
@@ -69,9 +69,7 @@ def _pause(kind: str, text: str, defaults: dict[str, int]) -> int:
 def _style_for(kind: str, base: Any) -> dict[str, float]:
     style: dict[str, float] = {"pace": 1.0, "energy": 1.0}
     if isinstance(base, dict):
-        style.update(
-            {k: float(v) for k, v in base.items() if isinstance(v, (int | float))}
-        )
+        style.update({k: float(v) for k, v in base.items() if isinstance(v, (int | float))})
     if kind == "Narration":
         style["pace"] = style.get("pace", 1.0) * 0.98
     if kind == "Thought":
@@ -79,9 +77,7 @@ def _style_for(kind: str, base: Any) -> dict[str, float]:
     return style
 
 
-def _process_chapter(
-    ch: dict[str, Any], db: CharacterProfilesDB, opt: _Options
-) -> dict[str, Any]:
+def _process_chapter(ch: dict[str, Any], cfg: ProfileConfig, opt: _Options) -> dict[str, Any]:
     segments: list[dict[str, Any]] = []
     seg_counter = 0
     for span in ch.get("spans", []):
@@ -90,10 +86,9 @@ def _process_chapter(
         if not text.strip():
             continue
         pieces = _split_text(text, kind, opt.max_chars)
-        info = cast_speaker(
-            span.get("speaker", ""), db, preferred_engine=opt.prefer_engine
-        )
-        style = _style_for(kind, info.get("style"))
+        decision = pick_voice(cfg, span.get("speaker", ""), preferred_engine=opt.prefer_engine)
+        base_style = asdict(decision.style)
+        style = _style_for(kind, base_style)
         for piece in pieces:
             seg_counter += 1
             segments.append(
@@ -103,11 +98,11 @@ def _process_chapter(
                     "kind": kind,
                     "text": piece,
                     "pause_ms": _pause(kind, piece, opt.pause_defaults),
-                    "engine": info["engine"],
-                    "voice": info["voice"],
+                    "engine": decision.engine,
+                    "voice": decision.voice,
                     "style": style,
-                    "refs": info.get("refs", []),
-                    "reason": info.get("reason", "exact"),
+                    "refs": [],
+                    "reason": decision.reason or "exact",
                 }
             )
     return {
@@ -133,7 +128,7 @@ def build_plans(
     prefer_engine: str,
 ) -> list[Path]:
     data = json.loads(combined_json.read_text(encoding="utf-8"))
-    db = CharacterProfilesDB.load(cast_profiles)
+    cfg = load_profiles(cast_profiles)
     opt = _Options(
         sample_rate=sample_rate,
         crossfade_ms=crossfade_ms,
@@ -148,11 +143,9 @@ def build_plans(
     out_dir.mkdir(parents=True, exist_ok=True)
     paths: list[Path] = []
     for ch in data.get("chapters", []):
-        plan = _process_chapter(ch, db, opt)
+        plan = _process_chapter(ch, cfg, opt)
         path = out_dir / f"ch_{int(ch.get('chapter_index')):04d}.json"
-        path.write_text(
-            json.dumps(plan, ensure_ascii=False, indent=2), encoding="utf-8"
-        )
+        path.write_text(json.dumps(plan, ensure_ascii=False, indent=2), encoding="utf-8")
         paths.append(path)
     return paths
 
