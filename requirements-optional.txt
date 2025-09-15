@@ -30,3 +30,9 @@ booknlp>=1.0 ; python_version >= '3.10'
 # --- TTS (optional) ---
 # XTTS / Coqui; heavy ML dependency, not needed for core pipeline.
 TTS>=0.22.0
+
+# --- TTS (Parler, optional) ---
+# Install torch/torchaudio first using one of the platform overlays below.
+# Parler upstream is git-only; pin a commit for reproducibility.
+transformers>=4.40,<5
+parler-tts @ git+https://github.com/huggingface/parler-tts.git@<COMMIT_SHA>
