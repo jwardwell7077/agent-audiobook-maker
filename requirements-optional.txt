@@ -3,7 +3,7 @@
 
 # --- Stage-A Coref (optional) ---
 # Enables fast coreference with --coref; guarded import.
-fastcoref>=2.1.7
+fastcoref>=2.1.6
 
 # --- spaCy transformers pipeline (optional) ---
 # Needed when using --spacy-model en_core_web_trf. Install the model wheel separately.
@@ -15,7 +15,6 @@ rich>=13.7
 tqdm>=4.66
 
 # --- GPU metrics (optional) ---
-# Used only if present; we suppress deprecation warnings from pynvml.
 psutil>=5.9
 pynvml>=11.5
 
@@ -35,4 +34,5 @@ TTS>=0.22.0
 # Install torch/torchaudio first using one of the platform overlays below.
 # Parler upstream is git-only; pin a commit for reproducibility.
 transformers>=4.40,<5
-parler-tts @ git+https://github.com/huggingface/parler-tts.git@<COMMIT_SHA>
+# TODO: Pin to a tested commit SHA for reproducibility.
+parler-tts @ git+https://github.com/huggingface/parler-tts.git@main
