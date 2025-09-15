@@ -113,6 +113,8 @@ class SpeakerProfile:
     style: Style
     aliases: list[str]
     fallback: dict[str, str]
+    description: str | None = None
+    seed: int | None = None
 
 
 @dataclass(slots=True)
@@ -214,6 +216,9 @@ def load_profiles(path: str | Path) -> ProfileConfig:
         style = _style_from_dict(defaults_style, info.get("style"))
         aliases = [" ".join(str(a).strip().split()) for a in info.get("aliases", [])]
         fallback = {str(k): str(v) for k, v in (info.get("fallback") or {}).items()}
+        description = info.get("description")
+        seed_val = info.get("seed")
+        seed = int(seed_val) if isinstance(seed_val, (int, str)) and str(seed_val).isdigit() else None
         speakers[key] = SpeakerProfile(
             name=display,
             engine=engine,
@@ -221,6 +226,8 @@ def load_profiles(path: str | Path) -> ProfileConfig:
             style=style,
             aliases=aliases,
             fallback=fallback,
+            description=description,
+            seed=seed,
         )
 
     cfg = ProfileConfig(

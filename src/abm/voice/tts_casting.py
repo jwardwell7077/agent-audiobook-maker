@@ -30,6 +30,8 @@ class CastDecision:
     style: Style
     method: str
     reason: str
+    description: str | None = None
+    seed: int | None = None
 
 
 def merge_style(base: Style, override: Style | dict[str, Any] | None) -> Style:
@@ -82,6 +84,8 @@ def pick_voice(
         engine = preferred_engine or profile.engine
         voice = profile.voice
         style = merge_style(cfg.defaults_style, profile.style)
+        description = profile.description
+        seed = profile.seed
         if reason == "exact":
             method = "profile"
         elif reason == "alias":
@@ -98,10 +102,14 @@ def pick_voice(
                 voice = cfg.defaults_narrator_voice
                 style = cfg.defaults_style
                 method = "default"
+                description = None
+                seed = None
     else:
         engine = cfg.defaults_engine
         voice = cfg.defaults_narrator_voice
         style = cfg.defaults_style
+        description = None
+        seed = None
         method = "narrator-fallback" if reason == "narrator-fallback" else "default"
         if method == "default":
             reason = "unknown"
@@ -113,4 +121,6 @@ def pick_voice(
         style=style,
         method=method,
         reason=reason,
+        description=description,
+        seed=seed,
     )
