@@ -1,10 +1,13 @@
 from __future__ import annotations
-import numpy as np, torch
+
+from dataclasses import dataclass
+
+import numpy as np
+import torch
 import torchaudio
 import soundfile as sf  # noqa: F401 - parity with other engines
-from dataclasses import dataclass
-from transformers import AutoTokenizer
 from parler_tts import ParlerTTSForConditionalGeneration
+from transformers import AutoTokenizer
 
 
 @dataclass
@@ -27,16 +30,23 @@ class ParlerEngine:
         try:
             self.model = ParlerTTSForConditionalGeneration.from_pretrained(
                 self.cfg.model_name
-            ).to(self.device)
+            )
+            if self.cfg.dtype in ("float16", "bfloat16") and self.device.type == "cuda":
+                dtype = (
+                    torch.float16
+                    if self.cfg.dtype == "float16"
+                    else torch.bfloat16
+                )
+                self.model = self.model.to(device=self.device, dtype=dtype)
+            else:
+                self.model = self.model.to(self.device)
+            self.model.eval()
             self.tok = AutoTokenizer.from_pretrained(self.cfg.model_name)
         except Exception as exc:  # pragma: no cover - initialization
             raise RuntimeError(
                 f"failed to load Parler-TTS model {self.cfg.model_name}"
             ) from exc
         self.native_sr = int(getattr(self.model.config, "sampling_rate", 24000))
-        if self.cfg.dtype in ("float16", "bfloat16") and self.device.type == "cuda":
-            dtype = torch.float16 if self.cfg.dtype == "float16" else torch.bfloat16
-            self.model = self.model.to(dtype=dtype)
         self.target_sr = 48000
 
     def synthesize(
@@ -48,21 +58,43 @@ class ParlerEngine:
         description: str | None = None,
         seed: int | None = None,
     ) -> np.ndarray:
-        """Synthesize ``text`` with ``voice_id`` and optional ``description``."""
+        """Compatibility wrapper for existing callers."""
+
+        return self.synthesize_to_array(
+            text=text,
+            voice_id=voice_id,
+            description=description,
+            seed=seed,
+        )
+
+    def synthesize_to_array(
+        self,
+        text: str,
+        voice_id: str,
+        *,
+        description: str | None = None,
+        seed: int | None = None,
+    ) -> np.ndarray:
+        """Synthesize ``text`` with ``voice_id`` into a mono float32 waveform."""
 
         if seed is not None:
             torch.manual_seed(int(seed))
-        desc = f"{voice_id}'s voice {description or 'is neutral and very clear.'}"
+        desc = (
+            f"{voice_id}'s voice "
+            f"{description or 'is neutral, close-mic, and very clear audio.'}"
+        )
         try:
             input_ids = self.tok(desc, return_tensors="pt").input_ids.to(self.device)
-            prompt_ids = self.tok(text, return_tensors="pt").input_ids.to(self.device)
+            prompt_ids = self.tok(text, return_tensors="pt").input_ids.to(
+                self.device
+            )
             with torch.inference_mode():
                 audio = self.model.generate(
                     input_ids=input_ids, prompt_input_ids=prompt_ids
                 )
         except Exception as exc:  # pragma: no cover - generation errors
-            raise RuntimeError("parler synthesis failed") from exc
-        wav = audio.squeeze().detach().cpu().float()
+            raise RuntimeError("parler synthesis failed during generation") from exc
+        wav = audio.squeeze().detach().to(torch.float32).cpu().view(-1)
         if self.native_sr != self.target_sr:
             wav = torchaudio.functional.resample(wav, self.native_sr, self.target_sr)
-        return wav.numpy().astype(np.float32)
+        return wav.numpy().astype(np.float32, copy=False)

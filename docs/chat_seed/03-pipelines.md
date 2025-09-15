@@ -17,6 +17,10 @@ from abm.voice.engines import ParlerEngine
 cat = yaml.safe_load(Path("data/voices/parler_catalog.yaml").read_text())
 engine = ParlerEngine()
 for name, meta in cat["voices"].items():
-    y = engine.synthesize("The quick brown fox...", name, description=meta["description"])
+    y = engine.synthesize_to_array(
+        "The quick brown fox...",
+        name,
+        description=meta["description"],
+    )
     sf.write(Path("tmp/voiceboard")/f"{name}.wav", y, 48000)
 ```
