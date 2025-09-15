@@ -100,6 +100,8 @@ def _process_chapter(ch: dict[str, Any], cfg: ProfileConfig, opt: _Options) -> d
                     "pause_ms": _pause(kind, piece, opt.pause_defaults),
                     "engine": decision.engine,
                     "voice": decision.voice,
+                    "description": decision.description,
+                    "seed": decision.seed,
                     "style": style,
                     "refs": [],
                     "reason": decision.reason or "exact",

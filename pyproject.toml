@@ -35,7 +35,14 @@ booknlp = [
 	"booknlp>=1.0; python_version >= '3.10'",
 ]
 tts = [
-	"TTS>=0.22.0",
+        "TTS>=0.22.0",
+]
+'tts-parler' = [
+        "parler-tts @ git+https://github.com/huggingface/parler-tts.git",
+        "transformers>=4.40",
+        "torchaudio>=2.2",
+        "soundfile",
+        "torch",
 ]
 # Convenience meta-extras
 all-optional = [

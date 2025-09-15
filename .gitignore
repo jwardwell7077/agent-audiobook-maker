@@ -214,6 +214,8 @@ data/**
 !data/annotations/
 !data/renders/
 !data/stems/
+!data/voices/
+!data/voices/**
 
 # Keep prototype / legacy private book directories ignored explicitly (redundant due to data/**, but self-documenting)
 data/books/LEGACY_PRIVATE_*/**
