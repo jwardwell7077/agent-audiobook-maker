@@ -1,61 +1,30 @@
-# Chat Seed
+# Chat SME Seed (MIN)
 
 ## Primer
-This project seed pack provides context for a GPT-5 subject-matter expert.
+Agent-Audiobook-Maker turns PDFs into chapterized JSON and multi-voice audio locally (Piper/XTTS). Staged pipeline ensures debuggable artifacts and reproducibility.
 
-## Pipeline
-```mermaid
-graph LR
-abm_annotate-->abm_annotate_annotate_cli
-abm_annotate-->abm_annotate_attribute
-abm_annotate-->abm_annotate_llm_prep
-abm_annotate-->abm_annotate_llm_refine
-abm_annotate_annotate_cli-->abm_annotate_attribute
-abm_annotate_annotate_cli-->abm_annotate_metrics
-abm_annotate_llm_prep_cli-->abm_annotate_llm_prep
-abm_annotate_llm_refine-->abm_annotate_llm_cache
-abm_annotate_llm_refine-->abm_annotate_llm_prep
-```
+## Pipeline (Mermaid)
+flowchart TD
+  A[PDF]-->B[pdf_to_raw_text]; B-->C[raw_to_welldone]; C-->D[welldone_to_json]; D-->E[classifier_cli]; E-->F[voicecasting]; F-->G[render_chapter]; G-->H[album_norm]; H-->I[package_book]
 
-## Top Modules
-- **abm.annotate**: Auto-generated module summary.
-- **abm.audio**: Auto-generated module summary.
-- **abm.audit**: Auto-generated module summary.
-- **abm.classifier**: Auto-generated module summary.
-- **abm.ingestion**: Auto-generated module summary.
-- **abm.llm**: Auto-generated module summary.
-- **abm.parse**: Auto-generated module summary.
-- **abm.profiles**: Auto-generated module summary.
-- **abm.sidecar**: Auto-generated module summary.
-- **abm.voice**: Auto-generated module summary.
+## Modules (top 10)
+- **abm.annotate** — see seed_pack/modules/abm.annotate.json
+- **abm.audio** — see seed_pack/modules/abm.audio.json
+- **abm.audit** — see seed_pack/modules/abm.audit.json
+- **abm.classifier** — see seed_pack/modules/abm.classifier.json
+- **abm.ingestion** — see seed_pack/modules/abm.ingestion.json
+- **abm.llm** — see seed_pack/modules/abm.llm.json
+- **abm.parse** — see seed_pack/modules/abm.parse.json
+- **abm.profiles** — see seed_pack/modules/abm.profiles.json
+- **abm.sidecar** — see seed_pack/modules/abm.sidecar.json
+- **abm.voice** — see seed_pack/modules/abm.voice.json
 
-## CLI Tools
-- `python -m abm.annotate.annotate_cli` --in --out-json --out-md
-- `python -m abm.annotate.bnlp_refine` --tagged --out --verbose
-- `python -m abm.annotate.llm_prep_cli` --in --out --conf-threshold
-- `python -m abm.annotate.llm_refine` --tagged --out-json --out-md
-- `python -m abm.audio.render_book` --scripts-dir --out-dir --engine-workers
-- `python -m abm.audio.render_chapter` --script --profiles --out-dir
-- `python -m abm.audio.synthesis_export` --tagged --profiles --out-dir
-- `python -m abm.audit.__main__` 
-
-## Schemas
-- chapter: seed_pack/schemas/chapter.schema.json
-- segment: seed_pack/schemas/segment.schema.json
-- casting_plan: seed_pack/schemas/casting_plan.schema.json
-- book_config: seed_pack/schemas/book_config.schema.json
-
-## Decisions
-- TBD
-- TBD
-- TBD
-- TBD
-- TBD
-- TBD
-
-## Open Issues
-- TBD
-- TBD
-- TBD
-- TBD
-- TBD
+## CLIs (sample)
+- `python -m abm.annotate.annotate_cli`
+- `python -m abm.annotate.bnlp_refine`
+- `python -m abm.annotate.llm_prep_cli`
+- `python -m abm.annotate.llm_refine`
+- `python -m abm.audio.render_book`
+- `python -m abm.audio.render_chapter`
+- `python -m abm.audio.synthesis_export`
+- `python -m abm.audit.__main__`

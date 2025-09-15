@@ -1,7 +1,7 @@
 {
   "file": "src/abm/ingestion/welldone_to_json.py",
   "module": "abm.ingestion.welldone_to_json",
-  "summary": "Well-done text → JSONL converter.",
+  "summary": "Well-done text \u2192 JSONL converter.",
   "public_api": [
     {
       "name": "WDToJSONOptions",
