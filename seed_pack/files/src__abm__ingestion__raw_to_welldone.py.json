@@ -1,7 +1,7 @@
 {
   "file": "src/abm/ingestion/raw_to_welldone.py",
   "module": "abm.ingestion.raw_to_welldone",
-  "summary": "Text post-processor: Raw → Well-done (reflow, cleanup).",
+  "summary": "Text post-processor: Raw \u2192 Well-done (reflow, cleanup).",
   "public_api": [
     {
       "name": "WellDoneOptions",
