@@ -28,7 +28,6 @@ booknlp>=1.0 ; python_version >= '3.10'
 
 # --- TTS (optional) ---
 # XTTS / Coqui; heavy ML dependency, not needed for core pipeline.
-TTS>=0.22.0
 
 # --- TTS (Parler, optional) ---
 # Install torch/torchaudio first via an overlay (CPU or CUDA),
