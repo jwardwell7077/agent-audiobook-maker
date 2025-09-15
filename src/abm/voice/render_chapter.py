@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import hashlib
 from pathlib import Path
@@ -21,6 +22,7 @@ __all__ = ["render_chapter", "main"]
 
 
 _ENGINE_CACHE: dict[tuple[Any, ...], Any] = {}
+_ENGINE_CACHE_PID = os.getpid()
 
 
 def _load_engine(
@@ -30,6 +32,11 @@ def _load_engine(
     parler_model: str | None = None,
     parler_dtype: str = "auto",
 ) -> Any:
+    global _ENGINE_CACHE_PID
+    pid = os.getpid()
+    if pid != _ENGINE_CACHE_PID:
+        _ENGINE_CACHE.clear()
+        _ENGINE_CACHE_PID = pid
     key = (name, sample_rate, parler_model, parler_dtype)
     if key in _ENGINE_CACHE:
         return _ENGINE_CACHE[key]
@@ -38,7 +45,11 @@ def _load_engine(
     elif name == "xtts":
         eng = XTTSEngine(allow_stub=True, sample_rate=sample_rate or 48000)
     elif name == "parler":
-        cfg = ParlerConfig(model_name=parler_model or ParlerConfig.model_name, dtype=parler_dtype)
+        default_cfg = ParlerConfig()
+        cfg = ParlerConfig(
+            model_name=parler_model or default_cfg.model_name,
+            dtype=parler_dtype,
+        )
         eng = ParlerEngine(cfg=cfg)
     else:
         raise KeyError(f"unknown engine {name}")
@@ -66,12 +77,14 @@ def _synth_segment(
     }
     desc = seg.get("description") or ""
     seed = seg.get("seed", parler_seed)
+    desc_hash: str | None = None
     if engine_name == "parler":
+        desc_hash = hashlib.sha256(desc.encode("utf-8")).hexdigest()
         payload.update(
             {
-                "model": parler_model,
+                "model_name": parler_model,
                 "seed": seed,
-                "desc": hashlib.sha256(desc.encode("utf-8")).hexdigest(),
+                "description_sha": desc_hash,
             }
         )
     key = make_cache_key(payload)
@@ -142,6 +155,7 @@ def render_chapter(
         audio.append(y)
         if engine_name == "parler":
             desc = seg.get("description") or ""
+            desc_hash = hashlib.sha256(desc.encode("utf-8")).hexdigest()
             utterances.append(
                 {
                     "id": seg.get("id"),
@@ -149,7 +163,7 @@ def render_chapter(
                     "model": parler_model,
                     "voice": seg["voice"],
                     "seed": seg.get("seed", parler_seed),
-                    "description_sha": hashlib.sha256(desc.encode("utf-8")).hexdigest(),
+                    "description_sha": desc_hash,
                     "text": seg["text"],
                 }
             )
