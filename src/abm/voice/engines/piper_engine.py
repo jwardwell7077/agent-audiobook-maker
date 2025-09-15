@@ -42,9 +42,7 @@ class PiperEngine:
         self.sample_rate = sample_rate
         self.last_sample_rate: int | None = None
         self._piper_bin = shutil.which("piper")
-        self.use_subprocess = (
-            use_subprocess if use_subprocess is not None else (self._piper_bin is not None)
-        )
+        self.use_subprocess = use_subprocess if use_subprocess is not None else (self._piper_bin is not None)
 
     def _candidate_dirs(self) -> list[Path]:
         if self.voices_dir:
@@ -85,9 +83,7 @@ class PiperEngine:
                 return (model, cfg if cfg.exists() else None)
         return (None, None)
 
-    def synthesize(
-        self, text: str, voice_id: str, style: dict[str, Any] | None = None
-    ) -> np.ndarray:
+    def synthesize(self, text: str, voice_id: str, style: dict[str, Any] | None = None) -> np.ndarray:
         """Synthesize ``text`` with ``voice_id``.
 
         Args:
@@ -108,9 +104,10 @@ class PiperEngine:
             # This keeps unit tests simple and still works when callers provide
             # an explicit .onnx path.
             selected_model = str(model_path) if model_path is not None else str(voice_id)
-            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp_wav, tempfile.NamedTemporaryFile(
-                suffix=".txt", delete=False, mode="w", encoding="utf-8"
-            ) as tmp_txt:
+            with (
+                tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp_wav,
+                tempfile.NamedTemporaryFile(suffix=".txt", delete=False, mode="w", encoding="utf-8") as tmp_txt,
+            ):
                 tmp_txt.write(text)
                 tmp_txt.flush()
                 cmd = [self._piper_bin, "-m", str(selected_model), "-f", tmp_wav.name, "-i", tmp_txt.name]
@@ -150,6 +147,7 @@ def _resample_audio(y: np.ndarray, sr_in: int, sr_out: int) -> np.ndarray:
         return y.astype(np.float32)
     try:  # pragma: no cover - optional dependency
         from scipy import signal  # type: ignore
+
         y2 = signal.resample_poly(y, sr_out, sr_in).astype(np.float32)
         return cast(np.ndarray, y2)
     except Exception:
