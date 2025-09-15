@@ -246,3 +246,7 @@ reports/
 **/run_logs/
 run_logs/
 stage*/run_logs/
+
+# Weaver artifacts (local inputs/outputs) — do not commit
+weaver_in/
+weaver_out/
