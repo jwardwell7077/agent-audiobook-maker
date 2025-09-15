@@ -31,8 +31,7 @@ booknlp>=1.0 ; python_version >= '3.10'
 TTS>=0.22.0
 
 # --- TTS (Parler, optional) ---
-# Install torch/torchaudio first using one of the platform overlays below.
-# Parler upstream is git-only; pin a commit for reproducibility.
+# Install torch/torchaudio first via an overlay (CPU or CUDA),
+# then install these.
 transformers>=4.40,<5
-# TODO: Pin to a tested commit SHA for reproducibility.
-parler-tts @ git+https://github.com/huggingface/parler-tts.git@main
+parler-tts @ git+https://github.com/huggingface/parler-tts.git@d108732cd57788ec86bc857d99a6cabd66663d68
