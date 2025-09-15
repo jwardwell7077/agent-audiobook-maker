@@ -1,7 +1,7 @@
 {
   "file": "src/abm/ingestion/db_insert.py",
   "module": "abm.ingestion.db_insert",
-  "summary": "Postgres inserter for Well‑Done JSONL outputs.",
+  "summary": "Postgres inserter for Well\u2011Done JSONL outputs.",
   "public_api": [
     {
       "name": "InsertResult",
