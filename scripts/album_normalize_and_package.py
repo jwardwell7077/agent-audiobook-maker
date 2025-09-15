@@ -151,9 +151,7 @@ def main(argv: list[str] | None = None) -> int:
         except RuntimeError as exc:
             logger.warning("M4B packaging skipped: %s", exc)
 
-    logger.info(
-        "Normalization and packaging complete: %d chapters processed", len(normalized_wavs)
-    )
+    logger.info("Normalization and packaging complete: %d chapters processed", len(normalized_wavs))
     return 0
 
 

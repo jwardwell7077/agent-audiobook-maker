@@ -34,10 +34,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument(
         "--out-path",
         type=Path,
-        help=(
-            "Optional path to write qc_summary.json; defaults to "
-            "<renders-dir>/manifests/qc_summary.json"
-        ),
+        help=("Optional path to write qc_summary.json; defaults to <renders-dir>/manifests/qc_summary.json"),
     )
     args = ap.parse_args(argv)
 
@@ -82,7 +79,7 @@ def main(argv: list[str] | None = None) -> int:
         "total_chapters": len(results),
         "failed_chapters": len(failures),
         "lufs_min": min(lufs_values) if lufs_values else None,
-        "lufs_median": sorted(lufs_values)[len(lufs_values)//2] if lufs_values else None,
+        "lufs_median": sorted(lufs_values)[len(lufs_values) // 2] if lufs_values else None,
         "lufs_max": max(lufs_values) if lufs_values else None,
         "peak_max_dbfs": max(peak_values) if peak_values else None,
         "chapters": results,
@@ -98,8 +95,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"QC FAIL: {len(failures)}/{len(results)} chapters failed ACX checks. See {out_path}.")
         for f in failures[:10]:
             print(
-                f" - ch_{int(f['index']):03d}: lufs_ok={f['lufs_ok']} "
-                f"peak_ok={f['peak_ok']} noise_ok={f['noise_ok']}"
+                f" - ch_{int(f['index']):03d}: lufs_ok={f['lufs_ok']} peak_ok={f['peak_ok']} noise_ok={f['noise_ok']}"
             )
         return 1
     else:

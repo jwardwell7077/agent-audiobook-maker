@@ -12,6 +12,7 @@ Usage:
 The output schema matches abm.audio.render_chapter --script expectations
 using an "items" array with engine/voice fields.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -37,15 +38,17 @@ def main(argv: list[str] | None = None) -> int:
         t = (p or "").strip()
         if not t:
             continue
-        items.append({
-            "text": t,
-            "speaker": "narrator",
-            "engine": args.engine,
-            "voice": args.voice,
-            "refs": [],
-            "pause_ms": args.pause_ms,
-            "style": "neutral"
-        })
+        items.append(
+            {
+                "text": t,
+                "speaker": "narrator",
+                "engine": args.engine,
+                "voice": args.voice,
+                "refs": [],
+                "pause_ms": args.pause_ms,
+                "style": "neutral",
+            }
+        )
 
     script = {
         "index": int(data.get("chapter_index") or 0),

@@ -21,6 +21,7 @@ Usage:
 Note: This uses simple narration for all paragraphs. You can extend to per-speaker
 styling later.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -38,15 +39,17 @@ def build_script(chapter_json: Path, out_script: Path, engine: str, voice: str, 
         t = (p or "").strip()
         if not t:
             continue
-        items.append({
-            "text": t,
-            "speaker": "narrator",
-            "engine": engine,
-            "voice": voice,
-            "refs": [],
-            "pause_ms": pause_ms,
-            "style": "neutral"
-        })
+        items.append(
+            {
+                "text": t,
+                "speaker": "narrator",
+                "engine": engine,
+                "voice": voice,
+                "refs": [],
+                "pause_ms": pause_ms,
+                "style": "neutral",
+            }
+        )
     script = {
         "index": int(data.get("chapter_index") or 0),
         "title": data.get("title") or data.get("display_title") or "Chapter",
@@ -58,6 +61,7 @@ def build_script(chapter_json: Path, out_script: Path, engine: str, voice: str, 
 
 
 essential = ["--engine-workers", "--workers", "--crossfade-ms", "--lufs"]
+
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
@@ -104,15 +108,25 @@ def main(argv: list[str] | None = None) -> int:
             continue
 
         cmd = [
-            "python", "-m", "abm.audio.render_chapter",
-            "--script", str(out_script),
-            "--out-dir", str(args.out_dir),
-            "--tmp-dir", str(args.tmp_dir),
-            "--engine-workers", args.engine_workers,
-            "--workers", args.workers,
-            "--crossfade-ms", str(args.crossfade_ms),
-            "--lufs", str(args.lufs),
-            "--peak", str(args.peak),
+            "python",
+            "-m",
+            "abm.audio.render_chapter",
+            "--script",
+            str(out_script),
+            "--out-dir",
+            str(args.out_dir),
+            "--tmp-dir",
+            str(args.tmp_dir),
+            "--engine-workers",
+            args.engine_workers,
+            "--workers",
+            args.workers,
+            "--crossfade-ms",
+            str(args.crossfade_ms),
+            "--lufs",
+            str(args.lufs),
+            "--peak",
+            str(args.peak),
             "--no-save-mp3",
             "--show-progress",
         ]

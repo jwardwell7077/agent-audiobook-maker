@@ -56,15 +56,9 @@ def main(argv: list[str] | None = None) -> int:
         default=[],
         help="Override workers per engine (engine=N). Can be repeated.",
     )
-    parser.add_argument(
-        "--show-progress", action=argparse.BooleanOptionalAction, default=True
-    )
-    parser.add_argument(
-        "--save-master-wav", action=argparse.BooleanOptionalAction, default=True
-    )
-    parser.add_argument(
-        "--save-mp3", action=argparse.BooleanOptionalAction, default=False
-    )
+    parser.add_argument("--show-progress", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--save-master-wav", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--save-mp3", action=argparse.BooleanOptionalAction, default=False)
     args = parser.parse_args(argv)
 
     # Ensure built-in engines (e.g., Piper, XTTS) are registered
@@ -178,9 +172,7 @@ def main(argv: list[str] | None = None) -> int:
     }
     if mp3_path:
         entry["mp3_path"] = str(mp3_path.relative_to(out_dir))
-    chapters = [
-        c for c in manifest.get("chapters", []) if c.get("index") != chapter_index
-    ]
+    chapters = [c for c in manifest.get("chapters", []) if c.get("index") != chapter_index]
     chapters.append(entry)
     chapters.sort(key=lambda c: c["index"])
     manifest["chapters"] = chapters

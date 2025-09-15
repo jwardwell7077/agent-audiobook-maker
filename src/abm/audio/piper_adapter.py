@@ -47,9 +47,7 @@ class PiperAdapter(TTSAdapter):
         _available: Cached boolean indicating if the Piper binary is found.
     """
 
-    def __init__(
-        self, voice: str | None = None, *, binary: str | None = None, quiet: bool = True
-    ) -> None:
+    def __init__(self, voice: str | None = None, *, binary: str | None = None, quiet: bool = True) -> None:
         """Initialize the Piper adapter.
 
         Args:
@@ -134,9 +132,7 @@ class PiperAdapter(TTSAdapter):
 
         # Real run → require binary
         if not self._available:
-            raise SynthesisError(
-                "Piper binary not found. Install Piper or set ABM_PIPER_DRYRUN=1 for tests."
-            )
+            raise SynthesisError("Piper binary not found. Install Piper or set ABM_PIPER_DRYRUN=1 for tests.")
 
         task.out_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -157,11 +153,7 @@ class PiperAdapter(TTSAdapter):
                 proc = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
             except subprocess.TimeoutExpired as exc:
                 raise SynthesisError(f"Piper timed out after {exc.timeout}s") from exc
-            if (
-                proc.returncode != 0
-                or not task.out_path.exists()
-                or task.out_path.stat().st_size < 64
-            ):
+            if proc.returncode != 0 or not task.out_path.exists() or task.out_path.stat().st_size < 64:
                 err = (proc.stderr or proc.stdout or "").strip() or "unknown error"
                 raise SynthesisError(f"Piper failed (rc={proc.returncode}): {err}")
             return task.out_path

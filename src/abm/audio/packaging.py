@@ -42,9 +42,7 @@ def _have_ffmpeg() -> bool:
     return shutil.which("ffmpeg") is not None
 
 
-def _write_ffmetadata_chapters(
-    chapters: list[tuple[float, float, str]], out_path: Path
-) -> None:
+def _write_ffmetadata_chapters(chapters: list[tuple[float, float, str]], out_path: Path) -> None:
     """Write an ``FFMETADATA1`` file with chapter entries.
 
     Args:
@@ -165,9 +163,7 @@ def export_mp3(
             segment.export(out_mp3, format="mp3", tags=tags)
             return
         except Exception as exc:  # pragma: no cover - ffmpeg error
-            raise RuntimeError(
-                f"ffmpeg failed to export {in_wav} -> {out_mp3} (codec mp3)"
-            ) from exc
+            raise RuntimeError(f"ffmpeg failed to export {in_wav} -> {out_mp3} (codec mp3)") from exc
 
     if ffmpeg:
         cmd = [
@@ -245,9 +241,7 @@ def export_opus(
             segment.export(out_opus, format="opus", tags=tags)
             return
         except Exception as exc:  # pragma: no cover
-            raise RuntimeError(
-                f"ffmpeg failed to export {in_wav} -> {out_opus} (codec opus)"
-            ) from exc
+            raise RuntimeError(f"ffmpeg failed to export {in_wav} -> {out_opus} (codec opus)") from exc
 
     if ffmpeg:
         cmd = [
@@ -274,9 +268,7 @@ def export_opus(
         proc = subprocess.run(cmd, capture_output=True, text=True)
         if proc.returncode != 0:
             tail = "\n".join(proc.stderr.splitlines()[-10:])
-            raise RuntimeError(
-                f"ffmpeg failed to export {in_wav} -> {out_opus}: {tail}"
-            )
+            raise RuntimeError(f"ffmpeg failed to export {in_wav} -> {out_opus}: {tail}")
         return
 
     raise RuntimeError("pydub/ffmpeg required for packaging")
@@ -341,9 +333,7 @@ def make_chaptered_m4b(
                 from mutagen.mp4 import MP4, MP4Cover
 
                 audio = MP4(str(tmp_m4a))
-                audio["covr"] = [
-                    MP4Cover(cover_jpeg.read_bytes(), imageformat=MP4Cover.FORMAT_JPEG)
-                ]
+                audio["covr"] = [MP4Cover(cover_jpeg.read_bytes(), imageformat=MP4Cover.FORMAT_JPEG)]
                 audio.save()
             except Exception:  # pragma: no cover - mutagen missing
                 logger.warning("mutagen not available; cover art not embedded")
@@ -363,14 +353,10 @@ def make_chaptered_m4b(
         else:  # pragma: no cover - depends on environment
             logger.warning("ffmpeg not found; writing sidecar chapters")
             shutil.move(tmp_m4a, out_m4b)
-            write_chapter_cue(
-                chapter_wavs, out_m4b.with_suffix(".chapters.txt"), chapter_titles
-            )
+            write_chapter_cue(chapter_wavs, out_m4b.with_suffix(".chapters.txt"), chapter_titles)
 
 
-def write_chapter_cue(
-    chapter_wavs: list[Path], out_cue: Path, titles: list[str]
-) -> None:
+def write_chapter_cue(chapter_wavs: list[Path], out_cue: Path, titles: list[str]) -> None:
     """Write a cue sheet with basic chapter information.
 
     Args:

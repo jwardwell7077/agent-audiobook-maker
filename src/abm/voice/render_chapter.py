@@ -27,9 +27,7 @@ def _load_engine(name: str, *, sample_rate: int | None = None) -> Any:
     raise KeyError(f"unknown engine {name}")
 
 
-def _synth_segment(
-    seg: dict[str, Any], sr: int, cache_dir: Path, tmp_dir: Path
-) -> np.ndarray:
+def _synth_segment(seg: dict[str, Any], sr: int, cache_dir: Path, tmp_dir: Path) -> np.ndarray:
     payload = {
         "engine": seg["engine"],
         "voice": seg["voice"],
@@ -97,6 +95,4 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--out-wav", type=Path, required=True)
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args(argv)
-    render_chapter(
-        args.chapter_plan, args.out_wav, args.cache_dir, args.tmp_dir, force=args.force
-    )
+    render_chapter(args.chapter_plan, args.out_wav, args.cache_dir, args.tmp_dir, force=args.force)
