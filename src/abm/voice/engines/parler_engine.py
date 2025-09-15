@@ -3,7 +3,8 @@ import numpy as np, torch
 import torchaudio
 import soundfile as sf  # noqa: F401 - parity with other engines
 from dataclasses import dataclass
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer
+from parler_tts import ParlerTTSForConditionalGeneration
 
 
 @dataclass
@@ -24,8 +25,8 @@ class ParlerEngine:
         )
         self.device = torch.device(device)
         try:
-            self.model = AutoModelForCausalLM.from_pretrained(
-                self.cfg.model_name, trust_remote_code=True
+            self.model = ParlerTTSForConditionalGeneration.from_pretrained(
+                self.cfg.model_name
             ).to(self.device)
             self.tok = AutoTokenizer.from_pretrained(self.cfg.model_name)
         except Exception as exc:  # pragma: no cover - initialization

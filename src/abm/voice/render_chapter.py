@@ -142,12 +142,18 @@ def render_chapter(
     out_wav.parent.mkdir(parents=True, exist_ok=True)
     sf.write(out_wav, mix, sr)
     qc_path = out_wav.with_suffix(".qc.json")
+    engines_used = sorted({seg["engine"] for seg in segments})
+    voices_used = sorted({seg["voice"] for seg in segments})
+    model_used = parler_model if "parler" in engines_used else None
     write_qc_json(
         qc_path,
         lufs=measure_lufs(mix, sr),
         peak_dbfs=peak_dbfs(mix),
         duration_s=duration_s(mix, sr),
         segments=len(audio),
+        engines=engines_used,
+        voices=voices_used,
+        model=model_used,
     )
     return out_wav
 
@@ -159,9 +165,13 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--tmp-dir", type=Path, required=True)
     parser.add_argument("--out-wav", type=Path, required=True)
     parser.add_argument("--force", action="store_true")
-    parser.add_argument("--parler-model", type=str, default="parler-tts/parler-tts-mini-v1")
+    parser.add_argument(
+        "--parler-model", type=str, default="parler-tts/parler-tts-mini-v1"
+    )
     parser.add_argument("--parler-dtype", type=str, default="auto")
-    parser.add_argument("--parler-seed", type=int, default=None)
+    parser.add_argument(
+        "--parler-seed", type=int, default=None, help="Default seed for Parler (deterministic)"
+    )
     args = parser.parse_args(argv)
     render_chapter(
         args.chapter_plan,

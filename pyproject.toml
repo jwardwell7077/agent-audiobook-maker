@@ -38,7 +38,7 @@ tts = [
         "TTS>=0.22.0",
 ]
 'tts-parler' = [
-        "parler-tts @ git+https://github.com/huggingface/parler-tts.git",
+        "parler-tts @ git+https://github.com/huggingface/parler-tts.git@d108732cd57788ec86bc857d99a6cabd66663d68",
         "transformers>=4.40",
         "torchaudio>=2.2",
         "soundfile",

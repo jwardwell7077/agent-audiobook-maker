@@ -1,29 +1,34 @@
 import numpy as np
+import numpy as np
 import pytest
 
-from abm.voice.engines.parler_engine import ParlerEngine
+from abm.voice.engines import ParlerEngine
 
 
 @pytest.mark.slow
-def test_parler_engine_smoke():
-    engine = ParlerEngine()
-    y = engine.synthesize(
+def test_parler_audio_invariants():
+    eng = ParlerEngine()
+    y = eng.synthesize(
         "Hello there.",
         "Rebecca",
         description="Rebecca's voice is neutral, warm and steady, unhurried pacing, close-mic studio, very clear audio.",
         seed=1,
     )
-    assert engine.target_sr == 48000
+    assert eng.target_sr == 48000
     assert y.dtype == np.float32
-    assert y.ndim == 1 and y.shape[0] > 0
+    assert y.ndim == 1 and y.size > 0
     assert not np.isnan(y).any()
 
-    z = engine.synthesize(
-        "Testing again.",
-        "Will",
+
+@pytest.mark.slow
+def test_parler_determinism_with_seed():
+    eng = ParlerEngine()
+    params = dict(
+        text="Testing determinism.",
+        voice_id="Will",
         description="Will's voice is youthful baritone with a calm, earnest tone, medium pace, very clear audio.",
-        seed=2,
+        seed=123,
     )
-    assert z.dtype == np.float32
-    assert z.ndim == 1 and z.shape[0] > 0
-    assert not np.isnan(z).any()
+    a = eng.synthesize(**params)
+    b = eng.synthesize(**params)
+    assert np.array_equal(a, b)

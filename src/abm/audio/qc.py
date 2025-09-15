@@ -49,9 +49,19 @@ def duration_s(y: np.ndarray, sr: int) -> float:
 
 
 def write_qc_json(
-    path: Path, *, lufs: float, peak_dbfs: float, duration_s: float, segments: int
+    path: Path,
+    *,
+    lufs: float,
+    peak_dbfs: float,
+    duration_s: float,
+    segments: int,
+    **extra: Any,
 ) -> None:
-    """Write a JSON file with QC metrics."""
+    """Write a JSON file with QC metrics.
+
+    ``extra`` fields are merged into the JSON object, enabling callers to
+    record additional metadata such as engine or voice identifiers.
+    """
 
     data: dict[str, Any] = {
         "lufs": lufs,
@@ -59,4 +69,6 @@ def write_qc_json(
         "duration_s": duration_s,
         "segments": segments,
     }
+    if extra:
+        data.update(extra)
     path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
