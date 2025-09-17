@@ -7,7 +7,7 @@ import shutil
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict
 
 try:
     import yaml  # optional; only used if --profiles/--catalog provided
@@ -46,21 +46,21 @@ def emit_repo_meta_json(out_dir: Path) -> str:
 
 
 def emit_voices_json(catalog_path: str | None, profiles_path: str | None, out_dir: Path) -> str | None:
-    """Merge Parler catalog + casting profiles into a chat-friendly voices.json."""
-    voices: dict[str, Any] = {"catalog_model": "parler-tts/parler-tts-mini-v1"}
-    if yaml is not None:
-        if catalog_path and Path(catalog_path).exists():
-            with open(catalog_path, encoding="utf-8") as fh:
-                cat = yaml.safe_load(fh)
-            if isinstance(cat, dict):
-                voices["catalog"] = cat.get("voices", cat)
-        if profiles_path and Path(profiles_path).exists():
-            with open(profiles_path, encoding="utf-8") as fh:
-                prof = yaml.safe_load(fh)
-            if isinstance(prof, dict):
-                voices["mapping"] = prof.get("speakers", prof)
-    (out_dir / "voices.json").write_text(json.dumps(voices, indent=2), encoding="utf-8")
-    return "voices.json"
+    """Write voices.json if catalog/profiles are available; otherwise return None."""
+    if not (catalog_path or profiles_path) or yaml is None:
+        return None
+    voices: Dict[str, Any] = {"catalog_model": "parler-tts/parler-tts-mini-v1"}
+    if catalog_path and Path(catalog_path).exists():
+        cat = yaml.safe_load(open(catalog_path, "r", encoding="utf-8"))
+        voices["catalog"] = cat.get("voices", cat) if isinstance(cat, dict) else cat
+    if profiles_path and Path(profiles_path).exists():
+        prof = yaml.safe_load(open(profiles_path, "r", encoding="utf-8"))
+        voices["mapping"] = prof.get("speakers", prof) if isinstance(prof, dict) else prof
+    # Only write if at least one source contributed content:
+    if "catalog" in voices or "mapping" in voices:
+        (out_dir / "voices.json").write_text(json.dumps(voices, indent=2), encoding="utf-8")
+        return "voices.json"
+    return None
 
 
 def emit_pipelines_json(book_slug: str, out_dir: Path) -> str:

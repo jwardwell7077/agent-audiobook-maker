@@ -1,12 +1,12 @@
 # Chat Seeding — Quick Start
 
-## Stable Manifest (always latest on master)
-- Manifest:  
-  `https://raw.githubusercontent.com/<YOUR_GH_USER>/agent-audiobook-maker/master/seed_pack/latest/index.json`
+## Stable Manifest (always latest on main)
+- Manifest:
+  `https://raw.githubusercontent.com/<YOUR_GH_USER>/agent-audiobook-maker/main/seed_pack/latest/index.json`
 
-- Zips (generated on every master commit):  
-  **MIN**: `https://raw.githubusercontent.com/<YOUR_GH_USER>/agent-audiobook-maker/master/seed_pack/chat_min.zip`  
-  **FULL**: `https://raw.githubusercontent.com/<YOUR_GH_USER>/agent-audiobook-maker/master/seed_pack/latest.zip`
+- Zips (generated on every main commit):
+  **MIN**: `https://raw.githubusercontent.com/<YOUR_GH_USER>/agent-audiobook-maker/main/seed_pack/chat_min.zip`
+  **FULL**: `https://raw.githubusercontent.com/<YOUR_GH_USER>/agent-audiobook-maker/main/seed_pack/latest.zip`
 
 > Replace `<YOUR_GH_USER>` with the correct user/org.
 
@@ -19,7 +19,7 @@
 
 
 https://raw.githubusercontent.com/
-<YOUR_GH_USER>/agent-audiobook-maker/master/seed_pack/latest/index.json
+<YOUR_GH_USER>/agent-audiobook-maker/main/seed_pack/latest/index.json
 
 2) Use:
 - `pipelines.json` for ready-to-run commands (plan/render ch_0001 with Parler)
@@ -35,7 +35,7 @@ https://raw.githubusercontent.com/
 
 
 https://raw.githubusercontent.com/
-<YOUR_GH_USER>/agent-audiobook-maker/master/seed_pack/latest.zip
+<YOUR_GH_USER>/agent-audiobook-maker/main/seed_pack/latest.zip
 
 2) Start with `index.json` then follow:
 - `modules/*.json` for package summaries
