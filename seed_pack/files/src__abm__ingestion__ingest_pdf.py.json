@@ -1,7 +1,7 @@
 {
   "file": "src/abm/ingestion/ingest_pdf.py",
   "module": "abm.ingestion.ingest_pdf",
-  "summary": "High-level orchestrator: PDF \u2192 raw text and well-done text.",
+  "summary": "High-level orchestrator: PDF → raw text and well-done text.",
   "public_api": [
     {
       "name": "PipelineOptions",

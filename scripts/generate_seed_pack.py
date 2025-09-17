@@ -4,9 +4,15 @@ import json
 import os
 import re
 import shutil
+import sys
+import argparse
 from collections import defaultdict
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
+try:
+    import yaml  # optional; only used if --profiles/--catalog provided
+except Exception:
+    yaml = None
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
@@ -20,6 +26,64 @@ def relpath(p: Path) -> str:
 
 def sanitize_filename(p: Path) -> str:
     return relpath(p).replace("/", "__")
+
+
+def emit_repo_meta_json(out_dir: Path) -> str:
+    """Write a small runtime meta describing Python and detected engines."""
+    engines_dir = SRC / "abm" / "voice" / "engines"
+    engines: list[str] = []
+    if engines_dir.exists():
+        for f in engines_dir.glob("*_engine.py"):
+            name = f.stem.replace("_engine", "")
+            engines.append(name)
+    meta = {
+        "python": f"{sys.version_info.major}.{sys.version_info.minor}",
+        "engines": sorted(engines),  # e.g., ["parler","piper","xtts"]
+        "parler_model_default": "parler-tts/parler-tts-mini-v1",
+    }
+    (out_dir / "repo_meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
+    return "repo_meta.json"
+
+
+def emit_voices_json(catalog_path: str | None, profiles_path: str | None, out_dir: Path) -> str | None:
+    """Merge Parler catalog + casting profiles into a chat-friendly voices.json."""
+    if not (catalog_path or profiles_path):
+        return None
+    if yaml is None:
+        return None
+    voices: Dict[str, Any] = {"catalog_model": "parler-tts/parler-tts-mini-v1"}
+    if catalog_path and Path(catalog_path).exists():
+        with open(catalog_path, "r", encoding="utf-8") as fh:
+            cat = yaml.safe_load(fh)
+        # accept either {"voices": {...}} or a flat dict
+        if isinstance(cat, dict):
+            voices["catalog"] = cat.get("voices", cat)
+    if profiles_path and Path(profiles_path).exists():
+        with open(profiles_path, "r", encoding="utf-8") as fh:
+            prof = yaml.safe_load(fh)
+        if isinstance(prof, dict):
+            voices["mapping"] = prof.get("speakers", prof)
+    (out_dir / "voices.json").write_text(json.dumps(voices, indent=2), encoding="utf-8")
+    return "voices.json"
+
+
+def emit_pipelines_json(book_slug: str, out_dir: Path) -> str:
+    """Emit copy-pasteable CLI playbooks; tuned for Parler ch_0001."""
+    pipelines = {
+        "plan_ch1": (
+            f"python -m abm.voice.plan_from_annotations --in data/ann/{book_slug}/combined_refined.json "
+            f"--cast data/voices/{book_slug}_parler_profiles.yaml --out-dir data/ann/{book_slug}/plans "
+            f"--only 1 --sr 48000 --crossfade-ms 40 "
+            f"--pause-narr 300 --pause-dialog 180 --pause-thought 240 --verbose"
+        ),
+        "render_ch1": (
+            f"python -m abm.voice.render_chapter --chapter-plan data/ann/{book_slug}/plans/ch_0001.json "
+            f"--cache-dir data/ann/{book_slug}/tts_cache --tmp-dir data/tmp --out-wav data/renders/{book_slug}/ch_0001.wav "
+            f"--prefer-engine parler --parler-model parler-tts/parler-tts-mini-v1 --parler-seed 31337 --force"
+        ),
+    }
+    (out_dir / "pipelines.json").write_text(json.dumps(pipelines, indent=2), encoding="utf-8")
+    return "pipelines.json"
 
 
 def discover_modules() -> List[str]:
@@ -276,7 +340,39 @@ def write_json(path: Path, data: Any, shards: List[str]) -> None:
             path.write_text(text, encoding="utf-8")
 
 
+def chat_budget_manifest(out_dir: Path) -> List[str]:
+    """
+    Pick the smallest, highest-impact files for quickly seeding a new chat.
+    Include repo_meta, voices, pipelines, schemas index, and the two most
+    relevant module summaries if present (annotate & voice).
+    """
+    picks: list[str] = []
+    for name in ("repo_meta.json", "voices.json", "pipelines.json", "schemas_index.json"):
+        if (out_dir / name).exists():
+            picks.append(name)
+    # prefer these module records if available
+    mod_dir = out_dir / "modules"
+    for mod in ("abm.annotate", "abm.voice"):
+        p = mod_dir / f"{mod}.json"
+        if p.exists():
+            picks.append(str(Path("modules") / p.name))
+    return picks
+
+
 def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--book", default="mvs", help="Book slug used in pipelines.json (default: mvs)")
+    ap.add_argument(
+        "--profiles",
+        default=None,
+        help="Path to casting profiles YAML (e.g., data/voices/mvs_parler_profiles.yaml)",
+    )
+    ap.add_argument(
+        "--catalog",
+        default=None,
+        help="Path to Parler catalog YAML (e.g., data/voices/parler_catalog.yaml)",
+    )
+    args = ap.parse_args()
     if SEED_DIR.exists():
         shutil.rmtree(SEED_DIR)
     (SEED_DIR / "files").mkdir(parents=True, exist_ok=True)
@@ -596,6 +692,11 @@ def main() -> None:
         encoding="utf-8",
     )
 
+    # repo meta, voices + pipelines (new)
+    repo_meta_path = emit_repo_meta_json(SEED_DIR)
+    voices_path = emit_voices_json(args.catalog, args.profiles, SEED_DIR)
+    pipelines_path = emit_pipelines_json(args.book, SEED_DIR)
+
     max_mtime = max((ROOT / r["file"]).stat().st_mtime for r in file_records)
     index = {
         "project": ROOT.name,
@@ -619,6 +720,10 @@ def main() -> None:
         "schemas_index": "schemas_index.json",
         "schema_version": "1.0.0",
         "shards": sorted(shards),
+        "repo_meta": repo_meta_path,
+        "voices": voices_path or "",
+        "pipelines": pipelines_path,
+        "chat_min": chat_budget_manifest(SEED_DIR),
     }
     write_json(SEED_DIR / "index.json", index, shards)
 

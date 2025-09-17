@@ -204,7 +204,7 @@
     },
     {
       "symbol": "write_qc_json",
-      "signature": "(path, lufs, peak_dbfs, duration_s, segments)",
+      "signature": "(path, lufs, peak_dbfs, duration_s, segments, **extra)",
       "summary": ""
     },
     {
@@ -595,6 +595,6 @@
   "status": {
     "maturity": "alpha",
     "owners": [],
-    "last_touched_file_mtime": "2025-09-14T22:58:07.872852+00:00"
+    "last_touched_file_mtime": "2025-09-15T19:06:34.247072+00:00"
   }
 }

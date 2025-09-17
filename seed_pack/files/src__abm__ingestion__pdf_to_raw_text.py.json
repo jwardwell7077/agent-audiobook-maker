@@ -1,7 +1,7 @@
 {
   "file": "src/abm/ingestion/pdf_to_raw_text.py",
   "module": "abm.ingestion.pdf_to_raw_text",
-  "summary": "Raw PDF \u2192 Text extractor preserving line/blank-line fidelity (PyMuPDF).",
+  "summary": "Raw PDF → Text extractor preserving line/blank-line fidelity (PyMuPDF).",
   "public_api": [
     {
       "name": "RawExtractOptions",

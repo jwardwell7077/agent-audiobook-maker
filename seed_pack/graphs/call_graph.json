@@ -166,6 +166,14 @@
     },
     {
       "from": "abm.voice.render_chapter._load_engine",
+      "to": "abm.voice.engines.ParlerConfig"
+    },
+    {
+      "from": "abm.voice.render_chapter._load_engine",
+      "to": "abm.voice.engines.ParlerEngine"
+    },
+    {
+      "from": "abm.voice.render_chapter._load_engine",
       "to": "abm.voice.engines.PiperEngine"
     },
     {

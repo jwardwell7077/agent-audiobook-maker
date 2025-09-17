@@ -1,0 +1,4 @@
+{
+  "plan_ch1": "python -m abm.voice.plan_from_annotations --in data/ann/mvs/combined_refined.json --cast data/voices/mvs_parler_profiles.yaml --out-dir data/ann/mvs/plans --only 1 --sr 48000 --crossfade-ms 40 --pause-narr 300 --pause-dialog 180 --pause-thought 240 --verbose",
+  "render_ch1": "python -m abm.voice.render_chapter --chapter-plan data/ann/mvs/plans/ch_0001.json --cache-dir data/ann/mvs/tts_cache --tmp-dir data/tmp --out-wav data/renders/mvs/ch_0001.wav --prefer-engine parler --parler-model parler-tts/parler-tts-mini-v1 --parler-seed 31337 --force"
+}

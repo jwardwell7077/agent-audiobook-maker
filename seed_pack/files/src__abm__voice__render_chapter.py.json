@@ -5,17 +5,17 @@
   "public_api": [
     {
       "name": "_load_engine",
-      "signature": "(name, sample_rate)",
+      "signature": "(name, sample_rate, parler_model, parler_dtype)",
       "kind": "function"
     },
     {
       "name": "_synth_segment",
-      "signature": "(seg, sr, cache_dir, tmp_dir)",
+      "signature": "(seg, sr, cache_dir, tmp_dir, engine_name, parler_model, parler_dtype, parler_seed)",
       "kind": "function"
     },
     {
       "name": "render_chapter",
-      "signature": "(plan_path, out_wav, cache_dir, tmp_dir, force)",
+      "signature": "(plan_path, out_wav, cache_dir, tmp_dir, force, parler_model, parler_dtype, parler_seed, prefer_engine, add_pause_ms)",
       "kind": "function"
     },
     {
@@ -53,6 +53,31 @@
         "default": null
       },
       {
+        "name": "--prefer-engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--parler-model",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--parler-dtype",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--parler-seed",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--add-pause-ms",
+        "type": "unknown",
+        "default": null
+      },
+      {
         "name": "--chapter-plan",
         "type": "unknown",
         "default": null
@@ -76,6 +101,31 @@
         "name": "--force",
         "type": "unknown",
         "default": null
+      },
+      {
+        "name": "--prefer-engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--parler-model",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--parler-dtype",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--parler-seed",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--add-pause-ms",
+        "type": "unknown",
+        "default": null
       }
     ],
     "examples": []
@@ -89,6 +139,10 @@
     {
       "type": "KeyError",
       "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
     }
   ],
   "dependencies": {
@@ -101,8 +155,10 @@
     "external": [
       "__future__",
       "argparse",
+      "hashlib",
       "json",
       "numpy",
+      "os",
       "pathlib",
       "shutil",
       "soundfile",

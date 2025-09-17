@@ -67,6 +67,7 @@
     "abm.voice",
     "abm.voice.cache",
     "abm.voice.engines",
+    "abm.voice.engines.parler_engine",
     "abm.voice.engines.piper_engine",
     "abm.voice.engines.xtts_engine",
     "abm.voice.piper_casting",
@@ -321,6 +322,10 @@
     {
       "from": "abm.voice",
       "to": "abm.voice.voicecasting"
+    },
+    {
+      "from": "abm.voice.engines",
+      "to": "abm.voice.engines.parler_engine"
     },
     {
       "from": "abm.voice.engines",

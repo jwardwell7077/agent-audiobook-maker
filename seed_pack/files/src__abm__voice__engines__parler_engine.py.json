@@ -1,15 +1,15 @@
 {
-  "file": "src/abm/ingestion/db_insert.py",
-  "module": "abm.ingestion.db_insert",
-  "summary": "Postgres inserter for Well‑Done JSONL outputs.",
+  "file": "src/abm/voice/engines/parler_engine.py",
+  "module": "abm.voice.engines.parler_engine",
+  "summary": "Auto-generated summary.",
   "public_api": [
     {
-      "name": "InsertResult",
+      "name": "ParlerConfig",
       "signature": "",
       "kind": "class"
     },
     {
-      "name": "PgInserter",
+      "name": "ParlerEngine",
       "signature": "",
       "kind": "class"
     }
@@ -29,18 +29,18 @@
     "internal": [],
     "external": [
       "__future__",
-      "collections",
       "dataclasses",
-      "json",
-      "os",
-      "pathlib",
-      "psycopg",
-      "typing"
+      "numpy",
+      "parler_tts",
+      "soundfile",
+      "torch",
+      "torchaudio",
+      "transformers"
     ]
   },
   "evidence": [
     {
-      "file": "src/abm/ingestion/db_insert.py",
+      "file": "src/abm/voice/engines/parler_engine.py",
       "lines": "1-1"
     }
   ],

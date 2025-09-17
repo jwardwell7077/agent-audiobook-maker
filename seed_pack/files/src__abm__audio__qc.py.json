@@ -20,7 +20,7 @@
     },
     {
       "name": "write_qc_json",
-      "signature": "(path, lufs, peak_dbfs, duration_s, segments)",
+      "signature": "(path, lufs, peak_dbfs, duration_s, segments, **extra)",
       "kind": "function"
     }
   ],

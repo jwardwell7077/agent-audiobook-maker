@@ -93,6 +93,16 @@
         "default": null
       },
       {
+        "name": "--only",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
+        "type": "unknown",
+        "default": null
+      },
+      {
         "name": "--in",
         "type": "unknown",
         "default": null
@@ -139,6 +149,16 @@
       },
       {
         "name": "--prefer-engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--only",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
         "type": "unknown",
         "default": null
       }

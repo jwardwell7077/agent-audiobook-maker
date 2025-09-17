@@ -1,5 +1,9 @@
 [
   {
+    "env_var": "ABM_DEBUG_PAUSES",
+    "file": "src/abm/voice/render_chapter.py"
+  },
+  {
     "env_var": "ABM_PIPER_BIN",
     "file": "src/abm/audio/piper_adapter.py"
   },

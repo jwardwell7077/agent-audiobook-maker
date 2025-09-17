@@ -52,6 +52,10 @@
     "config": ".synth.json"
   },
   {
+    "file": "src/abm/voice/plan_from_annotations.py",
+    "config": ".tmp_only.json"
+  },
+  {
     "file": "src/abm/annotate/llm_refine.py",
     "config": "Path to Stage A combined.json"
   },

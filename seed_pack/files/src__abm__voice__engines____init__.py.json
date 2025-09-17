@@ -16,6 +16,7 @@
   "errors_raised": [],
   "dependencies": {
     "internal": [
+      "abm.voice.engines.parler_engine",
       "abm.voice.engines.piper_engine",
       "abm.voice.engines.xtts_engine"
     ],
