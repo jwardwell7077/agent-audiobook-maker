@@ -1,14 +1,14 @@
+import argparse
 import ast
 import datetime as dt
 import json
-import os
 import re
 import shutil
 import sys
-import argparse
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
+
 try:
     import yaml  # optional; only used if --profiles/--catalog provided
 except Exception:
@@ -51,15 +51,15 @@ def emit_voices_json(catalog_path: str | None, profiles_path: str | None, out_di
         return None
     if yaml is None:
         return None
-    voices: Dict[str, Any] = {"catalog_model": "parler-tts/parler-tts-mini-v1"}
+    voices: dict[str, Any] = {"catalog_model": "parler-tts/parler-tts-mini-v1"}
     if catalog_path and Path(catalog_path).exists():
-        with open(catalog_path, "r", encoding="utf-8") as fh:
+        with open(catalog_path, encoding="utf-8") as fh:
             cat = yaml.safe_load(fh)
         # accept either {"voices": {...}} or a flat dict
         if isinstance(cat, dict):
             voices["catalog"] = cat.get("voices", cat)
     if profiles_path and Path(profiles_path).exists():
-        with open(profiles_path, "r", encoding="utf-8") as fh:
+        with open(profiles_path, encoding="utf-8") as fh:
             prof = yaml.safe_load(fh)
         if isinstance(prof, dict):
             voices["mapping"] = prof.get("speakers", prof)
@@ -86,7 +86,7 @@ def emit_pipelines_json(book_slug: str, out_dir: Path) -> str:
     return "pipelines.json"
 
 
-def discover_modules() -> List[str]:
+def discover_modules() -> list[str]:
     mods: set[str] = set()
     for py in SRC.rglob("*.py"):
         if (
@@ -110,8 +110,8 @@ def discover_modules() -> List[str]:
 MODULES = discover_modules()
 
 
-def discover_py_files() -> List[Path]:
-    files: List[Path] = []
+def discover_py_files() -> list[Path]:
+    files: list[Path] = []
     for path in sorted(SRC.rglob("*.py")):
         if any(part.startswith(".") for part in path.parts):
             continue
@@ -155,22 +155,22 @@ def function_signature(node: ast.FunctionDef) -> str:
     return f"({', '.join(params)})"
 
 
-def parse_file(path: Path) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+def parse_file(path: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     text = path.read_text(encoding="utf-8")
     tree = ast.parse(text)
     module_name = module_name_from_path(path)
     summary = get_docstring_summary(tree)
 
-    public_api: List[Dict[str, str]] = []
-    errors: List[Dict[str, str]] = []
+    public_api: list[dict[str, str]] = []
+    errors: list[dict[str, str]] = []
     deps_internal: set[str] = set()
     deps_external: set[str] = set()
     env_vars: set[str] = set()
     config_files: set[str] = set()
-    cli_flags: List[Dict[str, Any]] = []
+    cli_flags: list[dict[str, Any]] = []
     is_cli = False
-    import_aliases: Dict[str, str] = {}
-    call_edges: List[Tuple[str, str]] = []
+    import_aliases: dict[str, str] = {}
+    call_edges: list[tuple[str, str]] = []
 
     # map imports
     for node in ast.walk(tree):
@@ -313,14 +313,14 @@ def parse_file(path: Path) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     return file_record, extras
 
 
-def write_json(path: Path, data: Any, shards: List[str]) -> None:
+def write_json(path: Path, data: Any, shards: list[str]) -> None:
     text = json.dumps(data, indent=2, ensure_ascii=False)
     size = len(text.encode("utf-8"))
     if size <= SIZE_LIMIT:
         path.write_text(text, encoding="utf-8")
     else:
         if isinstance(data, list):
-            chunk: List[Any] = []
+            chunk: list[Any] = []
             part = 1
             for item in data:
                 chunk.append(item)
@@ -340,7 +340,7 @@ def write_json(path: Path, data: Any, shards: List[str]) -> None:
             path.write_text(text, encoding="utf-8")
 
 
-def chat_budget_manifest(out_dir: Path) -> List[str]:
+def chat_budget_manifest(out_dir: Path) -> list[str]:
     """
     Pick the smallest, highest-impact files for quickly seeding a new chat.
     Include repo_meta, voices, pipelines, schemas index, and the two most
@@ -382,18 +382,18 @@ def main() -> None:
     (SEED_DIR / "decisions").mkdir(parents=True, exist_ok=True)
     (SEED_DIR / "schemas").mkdir(parents=True, exist_ok=True)
 
-    file_records: List[Dict[str, Any]] = []
+    file_records: list[dict[str, Any]] = []
     packages: set[str] = set()
-    cli_inventory: List[Dict[str, Any]] = []
-    env_inventory: List[Dict[str, Any]] = []
-    config_inventory: List[Dict[str, Any]] = []
-    import_edges: set[Tuple[str, str]] = set()
-    call_edges: set[Tuple[str, str]] = set()
-    module_deps_internal: Dict[str, set[str]] = defaultdict(set)
-    module_deps_external: Dict[str, set[str]] = defaultdict(set)
-    module_env: Dict[str, set[str]] = defaultdict(set)
-    module_configs: Dict[str, set[str]] = defaultdict(set)
-    module_cli: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+    cli_inventory: list[dict[str, Any]] = []
+    env_inventory: list[dict[str, Any]] = []
+    config_inventory: list[dict[str, Any]] = []
+    import_edges: set[tuple[str, str]] = set()
+    call_edges: set[tuple[str, str]] = set()
+    module_deps_internal: dict[str, set[str]] = defaultdict(set)
+    module_deps_external: dict[str, set[str]] = defaultdict(set)
+    module_env: dict[str, set[str]] = defaultdict(set)
+    module_configs: dict[str, set[str]] = defaultdict(set)
+    module_cli: dict[str, list[dict[str, Any]]] = defaultdict(list)
     file_paths = discover_py_files()
 
     for path in file_paths:
@@ -412,7 +412,7 @@ def main() -> None:
                 "module": record["module"],
                 "command": f"python -m {record['module']}",
                 "flags": extra["cli_flags"],
-                "examples": [f"python -m {record['module']}"]
+                "examples": [f"python -m {record['module']}"],
             }
             cli_inventory.append(cli_entry)
             module_cli[top_pkg].append(cli_entry)
@@ -431,7 +431,7 @@ def main() -> None:
         for frm, to in extra["call_edges"]:
             call_edges.add((frm, to))
 
-    shards: List[str] = []
+    shards: list[str] = []
     files_dir = SEED_DIR / "files"
     for rec in file_records:
         out_path = files_dir / f"{sanitize_filename(Path(rec['file']))}.json"
@@ -461,8 +461,8 @@ def main() -> None:
                 "imports_external": sorted(module_deps_external.get(pkg, set())),
             },
             "configs_env": {
-                "env_vars": sorted(module_env.get(pkg.split('.')[0] if '.' in pkg else pkg, set())),
-                "config_files": sorted(module_configs.get(pkg.split('.')[0] if '.' in pkg else pkg, set())),
+                "env_vars": sorted(module_env.get(pkg.split(".")[0] if "." in pkg else pkg, set())),
+                "config_files": sorted(module_configs.get(pkg.split(".")[0] if "." in pkg else pkg, set())),
             },
             "cli_entrypoints": module_cli.get(pkg, []),
             "invariants": [],
@@ -472,7 +472,7 @@ def main() -> None:
             "status": {
                 "maturity": "alpha",
                 "owners": [],
-                "last_touched_file_mtime": dt.datetime.fromtimestamp(last_mtime, dt.timezone.utc).isoformat(),
+                "last_touched_file_mtime": dt.datetime.fromtimestamp(last_mtime, dt.UTC).isoformat(),
             },
         }
         write_json(modules_dir / f"{pkg}.json", mod_record, shards)
@@ -491,20 +491,11 @@ def main() -> None:
 
     import_graph = {
         "nodes": MODULES,
-        "edges": [
-            {"from": src, "to": dst}
-            for src, dst in sorted(import_edges)
-            if src in MODULES and dst in MODULES
-        ],
+        "edges": [{"from": src, "to": dst} for src, dst in sorted(import_edges) if src in MODULES and dst in MODULES],
     }
     write_json(SEED_DIR / "graphs" / "import_graph.json", import_graph, shards)
 
-    call_graph = {
-        "edges": [
-            {"from": frm, "to": to}
-            for frm, to in sorted(call_edges)
-        ]
-    }
+    call_graph = {"edges": [{"from": frm, "to": to} for frm, to in sorted(call_edges)]}
     write_json(SEED_DIR / "graphs" / "call_graph.json", call_graph, shards)
 
     # decisions
@@ -516,7 +507,7 @@ def main() -> None:
     write_json(SEED_DIR / "decisions" / "decisions.json", [], shards)
 
     # schemas index and placeholders
-    schemas_entries: List[Dict[str, Any]] = []
+    schemas_entries: list[dict[str, Any]] = []
     schemas_dir = SEED_DIR / "schemas"
     docs_schemas = ROOT / "docs" / "chat_seed" / "04-schemas"
     if docs_schemas.exists():
@@ -528,7 +519,10 @@ def main() -> None:
             fp = schemas_dir / f"{stem}.schema.json"
             if not fp.exists():
                 fp.write_text(
-                    json.dumps({"$schema": "http://json-schema.org/draft-07/schema#", "title": stem, "type": "object"}, indent=2),
+                    json.dumps(
+                        {"$schema": "http://json-schema.org/draft-07/schema#", "title": stem, "type": "object"},
+                        indent=2,
+                    ),
                     encoding="utf-8",
                 )
             schemas_entries.append({"name": stem, "path": relpath(fp), "inferred": True})
@@ -700,7 +694,7 @@ def main() -> None:
     max_mtime = max((ROOT / r["file"]).stat().st_mtime for r in file_records)
     index = {
         "project": ROOT.name,
-        "generated_at": dt.datetime.fromtimestamp(max_mtime, dt.timezone.utc).isoformat(),
+        "generated_at": dt.datetime.fromtimestamp(max_mtime, dt.UTC).isoformat(),
         "code_root": "src",
         "modules": sorted(packages),
         "files_indexed": len(file_records),
