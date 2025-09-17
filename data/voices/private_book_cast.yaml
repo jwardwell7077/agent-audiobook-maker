@@ -1,0 +1,418 @@
+{
+  "fallbacks": {
+    "piper": "narrator"
+  },
+  "map": {
+    "?\"Vorden": "vorden",
+    "Alex": "alex",
+    "Amy Yellop": "amy-yellop",
+    "Arthur": "arthur",
+    "Berg": "berg",
+    "Blip": "blip",
+    "Borden": "borden",
+    "Brad Richardson": "brad-richardson",
+    "Bryce": "bryce-cain",
+    "Bryce Cain": "bryce-cain",
+    "Clark": "clark",
+    "Del": "del",
+    "Del.": "del",
+    "Dennis": "dennis",
+    "Duke": "duke",
+    "Erin Heley": "erin-heley",
+    "Fay": "fay",
+    "Fex": "fex",
+    "I Bryce Cain": "bryce-cain",
+    "Ian": "ian",
+    "Layla": "layla-munrow",
+    "Layla Munrow": "layla-munrow",
+    "Leo": "leo",
+    "Linda": "linda",
+    "Logan Green": "logan-green",
+    "Mantis": "mantis",
+    "Narrator": "narrator",
+    "Nate": "nate",
+    "Nathan": "nathan",
+    "Owen Graylash": "owen-graylash",
+    "Paul": "paul",
+    "Peter Chuck": "peter-chuck",
+    "Quin": "quinn",
+    "Quinn": "quinn",
+    "Quinn Talen": "quinn",
+    "Raten": "raten",
+    "Richard Eno": "richard-eno",
+    "Rokene": "rokene",
+    "Sam": "sam",
+    "Sil": "sil",
+    "Silver": "silver",
+    "Timmy": "timmy",
+    "Truedream": "truedream",
+    "Unknown": "unknown",
+    "Vicky": "vicky",
+    "Vordan": "vorden",
+    "Vorden": "vorden"
+  },
+  "profiles": [
+    {
+      "engine": "piper",
+      "id": "narrator",
+      "label": "Narrator",
+      "refs": [],
+      "style": "",
+      "tags": [
+        "narrator"
+      ],
+      "voice": "en_US-narrator"
+    },
+    {
+      "engine": "piper",
+      "id": "quinn",
+      "label": "Quinn",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": "en_US-quinn"
+    },
+    {
+      "engine": "piper",
+      "id": "vorden",
+      "label": "Vorden",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": "en_US-vorden"
+    },
+    {
+      "engine": "piper",
+      "id": "fex",
+      "label": "Fex",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "brad-richardson",
+      "label": "Brad Richardson",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "layla-munrow",
+      "label": "Layla Munrow",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": "en_US-layla"
+    },
+    {
+      "engine": "piper",
+      "id": "peter-chuck",
+      "label": "Peter Chuck",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "leo",
+      "label": "Leo",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "unknown",
+      "label": "Unknown",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "richard-eno",
+      "label": "Richard Eno",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "erin-heley",
+      "label": "Erin Heley",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "nate",
+      "label": "Nate",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "sam",
+      "label": "Sam",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "raten",
+      "label": "Raten",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "linda",
+      "label": "Linda",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "paul",
+      "label": "Paul",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "bryce",
+      "label": "Bryce",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "arthur",
+      "label": "Arthur",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "logan-green",
+      "label": "Logan Green",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "blip",
+      "label": "Blip",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "del",
+      "label": "Del",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "silver",
+      "label": "Silver",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "sil",
+      "label": "Sil",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "alex",
+      "label": "Alex",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "dennis",
+      "label": "Dennis",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "truedream",
+      "label": "Truedream",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "clark",
+      "label": "Clark",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "nathan",
+      "label": "Nathan",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "borden",
+      "label": "Borden",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "duke",
+      "label": "Duke",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "fay",
+      "label": "Fay",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "vicky",
+      "label": "Vicky",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "owen-graylash",
+      "label": "Owen Graylash",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "rokene",
+      "label": "Rokene",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "amy-yellop",
+      "label": "Amy Yellop",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "mantis",
+      "label": "Mantis",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "timmy",
+      "label": "Timmy",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "ian",
+      "label": "Ian",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "berg",
+      "label": "Berg",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": ""
+    },
+    {
+      "engine": "piper",
+      "id": "bryce-cain",
+      "label": "Bryce Cain",
+      "refs": [],
+      "style": "",
+      "tags": [],
+      "voice": "en_US-bryce"
+    }
+  ]
+}

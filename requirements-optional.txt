@@ -33,4 +33,6 @@ booknlp>=1.0 ; python_version >= '3.10'
 # Install torch/torchaudio first via an overlay (CPU or CUDA),
 # then install these.
 transformers>=4.40,<5
+# Align tokenizers with transformers==4.46.1 (required by parler-tts 0.2.2)
+tokenizers>=0.20,<0.21
 parler-tts @ git+https://github.com/huggingface/parler-tts.git@d108732cd57788ec86bc857d99a6cabd66663d68

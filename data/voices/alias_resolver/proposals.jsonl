@@ -1,0 +1,203 @@
+{"mention": "\"Logan", "normalized": "logan", "cluster_id": "logan", "candidate": "Logan Green", "score": 0.720820393249937, "evidence": {"rules": ["edit=6", "cos=0.67", "bonus=0.05"]}, "decision": "review"}
+{"mention": "*Ding Ding", "normalized": "ding ding", "cluster_id": "ding ding", "candidate": "Bryce Cain", "score": 0.21356054904431232, "evidence": {"rules": ["edit=8", "cos=0.21", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "?\"Vorden", "normalized": "vorden", "cluster_id": "vorden", "candidate": "Vorden", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Vorden", "normalized": "vorden", "cluster_id": "vorden", "candidate": "Vorden", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "A Curious Boy", "normalized": "a curious boy", "cluster_id": "a curious boy", "candidate": "Arthur", "score": 0.2514778453847726, "evidence": {"rules": ["edit=10", "cos=0.25", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "A.I", "normalized": "a i", "cluster_id": "a i", "candidate": "Logan Green", "score": 0.319504825211347, "evidence": {"rules": ["edit=9", "cos=0.32", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Admin", "normalized": "admin", "cluster_id": "admin", "candidate": "Arthur", "score": 0.19658927487319622, "evidence": {"rules": ["edit=5", "cos=0.20", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Agan", "normalized": "agan", "cluster_id": "agan", "candidate": "Ian", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.21", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Agent", "normalized": "agent", "cluster_id": "agent", "candidate": "Peter Chuck", "score": 0.24152294576982397, "evidence": {"rules": ["edit=10", "cos=0.24", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Alex", "normalized": "alex", "cluster_id": "alex", "candidate": "Alex", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Alexa", "normalized": "alexa", "cluster_id": "alexa", "candidate": "Alex", "score": 0.8333333333333334, "evidence": {"rules": ["edit=1", "cos=0.55", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Amy Yellop", "normalized": "amy yellop", "cluster_id": "amy yellop", "candidate": "Amy Yellop", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Andre", "normalized": "andre", "cluster_id": "andre", "candidate": "Nate", "score": 0.23094010767585027, "evidence": {"rules": ["edit=3", "cos=0.23", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Andy", "normalized": "andy", "cluster_id": "andy", "candidate": "Clark", "score": 0.24343224778007383, "evidence": {"rules": ["edit=5", "cos=0.24", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Arthur", "normalized": "arthur", "cluster_id": "arthur", "candidate": "Arthur", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Ash", "normalized": "ash", "cluster_id": "ash", "candidate": "Owen Graylash", "score": 0.32583864218368525, "evidence": {"rules": ["edit=10", "cos=0.28", "bonus=0.05"]}, "decision": "reject"}
+{"mention": "Attack", "normalized": "attack", "cluster_id": "attack", "candidate": "Owen Graylash", "score": 0.215206411665471, "evidence": {"rules": ["edit=11", "cos=0.22", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Bart", "normalized": "bart", "cluster_id": "bart", "candidate": "Berg", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.07", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Begger", "normalized": "begger", "cluster_id": "begger", "candidate": "Borden", "score": 0.2730094531159741, "evidence": {"rules": ["edit=4", "cos=0.27", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Berg", "normalized": "berg", "cluster_id": "berg", "candidate": "Berg", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Bia", "normalized": "bia", "cluster_id": "bia", "candidate": "Blip", "score": 0.5, "evidence": {"rules": ["edit=2", "cos=0.07", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Bill", "normalized": "bill", "cluster_id": "bill", "candidate": "Sil", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.07", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Blip", "normalized": "blip", "cluster_id": "blip", "candidate": "Blip", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Bloodsucker", "normalized": "bloodsucker", "cluster_id": "bloodsucker", "candidate": "Silver", "score": 0.2919985580353726, "evidence": {"rules": ["edit=8", "cos=0.29", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Bodern", "normalized": "bodern", "cluster_id": "bodern", "candidate": "Borden", "score": 0.7142857142857143, "evidence": {"rules": ["edit=2", "cos=0.27", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Boneclaw", "normalized": "boneclaw", "cluster_id": "boneclaw", "candidate": "Borden", "score": 0.22470176588194152, "evidence": {"rules": ["edit=6", "cos=0.22", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Bones", "normalized": "bones", "cluster_id": "bones", "candidate": "Borden", "score": 0.19658927487319622, "evidence": {"rules": ["edit=3", "cos=0.20", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Bong", "normalized": "bong", "cluster_id": "bong", "candidate": "Berg", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.19", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Borden", "normalized": "borden", "cluster_id": "borden", "candidate": "Borden", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Brad Richardson", "normalized": "brad richardson", "cluster_id": "brad richardson", "candidate": "Brad Richardson", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Bree", "normalized": "bree", "cluster_id": "bree", "candidate": "Bryce", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.30", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Brock", "normalized": "brock", "cluster_id": "brock", "candidate": "Bryce", "score": 0.6666666666666667, "evidence": {"rules": ["edit=2", "cos=0.22", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Brother", "normalized": "brother", "cluster_id": "brother", "candidate": "Bryce Cain", "score": 0.2684624220856098, "evidence": {"rules": ["edit=8", "cos=0.27", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Bryce", "normalized": "bryce", "cluster_id": "bryce", "candidate": "Bryce", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Bubble", "normalized": "bubble", "cluster_id": "bubble", "candidate": "Rokene", "score": 0.1904761904761905, "evidence": {"rules": ["edit=5", "cos=0.19", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Bugen", "normalized": "bugen", "cluster_id": "bugen", "candidate": "Ian", "score": 0.27216552697590873, "evidence": {"rules": ["edit=4", "cos=0.27", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Carol", "normalized": "carol", "cluster_id": "carol", "candidate": "Owen Graylash", "score": 0.1978141420187361, "evidence": {"rules": ["edit=11", "cos=0.20", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Caser", "normalized": "caser", "cluster_id": "caser", "candidate": "Narrator", "score": 0.306381676672686, "evidence": {"rules": ["edit=6", "cos=0.31", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Cindy", "normalized": "cindy", "cluster_id": "cindy", "candidate": "Linda", "score": 0.6666666666666667, "evidence": {"rules": ["edit=2", "cos=0.11", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Clark", "normalized": "clark", "cluster_id": "clark", "candidate": "Clark", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Dan", "normalized": "dan", "cluster_id": "dan", "candidate": "Ian", "score": 0.75, "evidence": {"rules": ["edit=1", "cos=0.25", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Deal", "normalized": "deal", "cluster_id": "deal", "candidate": "Del", "score": 0.8, "evidence": {"rules": ["edit=1", "cos=0.37", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Del", "normalized": "del", "cluster_id": "del", "candidate": "Del", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Del.", "normalized": "del", "cluster_id": "del", "candidate": "Del", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Dennis", "normalized": "dennis", "cluster_id": "dennis", "candidate": "Dennis", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Dillan Wyte", "normalized": "dillan wyte", "cluster_id": "dillan wyte", "candidate": "Paul", "score": 0.2335496832484569, "evidence": {"rules": ["edit=10", "cos=0.23", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Duke", "normalized": "duke", "cluster_id": "duke", "candidate": "Duke", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Duncan", "normalized": "duncan", "cluster_id": "duncan", "candidate": "Ian", "score": 0.4041451884327381, "evidence": {"rules": ["edit=4", "cos=0.40", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Earl", "normalized": "earl", "cluster_id": "earl", "candidate": "Paul", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.13", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Erin Heley", "normalized": "erin heley", "cluster_id": "erin heley", "candidate": "Erin Heley", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Ermmerm", "normalized": "ermmerm", "cluster_id": "ermmerm", "candidate": "Erin Heley", "score": 0.21602468994692864, "evidence": {"rules": ["edit=7", "cos=0.22", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Fate", "normalized": "fate", "cluster_id": "fate", "candidate": "Nate", "score": 0.8, "evidence": {"rules": ["edit=1", "cos=0.47", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Fay", "normalized": "fay", "cluster_id": "fay", "candidate": "Fay", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Fei", "normalized": "fei", "cluster_id": "fei", "candidate": "Fex", "score": 0.75, "evidence": {"rules": ["edit=1", "cos=0.33", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Fex", "normalized": "fex", "cluster_id": "fex", "candidate": "Fex", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Fix", "normalized": "fix", "cluster_id": "fix", "candidate": "Fex", "score": 0.75, "evidence": {"rules": ["edit=1", "cos=0.33", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Forger", "normalized": "forger", "cluster_id": "forger", "candidate": "Narrator", "score": 0.3241763593892431, "evidence": {"rules": ["edit=6", "cos=0.32", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Fortuna", "normalized": "fortuna", "cluster_id": "fortuna", "candidate": "Narrator", "score": 0.17546560158589908, "evidence": {"rules": ["edit=7", "cos=0.18", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Frank", "normalized": "frank", "cluster_id": "frank", "candidate": "Erin Heley", "score": 0.23904572186687872, "evidence": {"rules": ["edit=8", "cos=0.24", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Fred", "normalized": "fred", "cluster_id": "fred", "candidate": "Fex", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.07", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Freddy", "normalized": "freddy", "cluster_id": "freddy", "candidate": "Peter Chuck", "score": 0.2020305089104422, "evidence": {"rules": ["edit=10", "cos=0.20", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Gavin", "normalized": "gavin", "cluster_id": "gavin", "candidate": "Bryce Cain", "score": 0.28039985489311264, "evidence": {"rules": ["edit=8", "cos=0.28", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Gox", "normalized": "gox", "cluster_id": "gox", "candidate": "Fex", "score": 0.5, "evidence": {"rules": ["edit=2", "cos=0.08", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Grandpa", "normalized": "grandpa", "cluster_id": "grandpa", "candidate": "Linda", "score": 0.25354627641855493, "evidence": {"rules": ["edit=4", "cos=0.25", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Graylashes", "normalized": "graylashes", "cluster_id": "graylashes", "candidate": "Owen Graylash", "score": 0.5482892649071494, "evidence": {"rules": ["edit=7", "cos=0.55", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Greylash", "normalized": "greylash", "cluster_id": "greylash", "candidate": "Owen Graylash", "score": 0.4540034830713325, "evidence": {"rules": ["edit=6", "cos=0.45", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Ham", "normalized": "ham", "cluster_id": "ham", "candidate": "Sam", "score": 0.75, "evidence": {"rules": ["edit=1", "cos=0.25", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Hammer", "normalized": "hammer", "cluster_id": "hammer", "candidate": "Nate", "score": 0.26919095102908275, "evidence": {"rules": ["edit=4", "cos=0.27", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Hana", "normalized": "hana", "cluster_id": "hana", "candidate": "Ian", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.07", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Hanna", "normalized": "hanna", "cluster_id": "hanna", "candidate": "Brad Richardson", "score": 0.25558282541117916, "evidence": {"rules": ["edit=13", "cos=0.26", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Harold", "normalized": "harold", "cluster_id": "harold", "candidate": "Richard Eno", "score": 0.16666666666666669, "evidence": {"rules": ["edit=8", "cos=0.17", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "He", "normalized": "he", "cluster_id": "he", "candidate": "Fex", "score": 0.33333333333333337, "evidence": {"rules": ["edit=2", "cos=0.10", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Head", "normalized": "head", "cluster_id": "head", "candidate": "Nate", "score": 0.19999999999999996, "evidence": {"rules": ["edit=4", "cos=0.20", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Hector", "normalized": "hector", "cluster_id": "hector", "candidate": "Narrator", "score": 0.34848139169806486, "evidence": {"rules": ["edit=5", "cos=0.35", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Helen", "normalized": "helen", "cluster_id": "helen", "candidate": "Nathan", "score": 0.27975144247209416, "evidence": {"rules": ["edit=5", "cos=0.28", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Howard Hubby", "normalized": "howard hubby", "cluster_id": "howard hubby", "candidate": "Layla Munrow", "score": 0.2500645911391736, "evidence": {"rules": ["edit=11", "cos=0.25", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "I Bryce Cain", "normalized": "bryce cain", "cluster_id": "bryce cain", "candidate": "Bryce Cain", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Ian", "normalized": "ian", "cluster_id": "ian", "candidate": "Ian", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "In the trees", "normalized": "in the trees", "cluster_id": "in the trees", "candidate": "Silver", "score": 0.2683281572999748, "evidence": {"rules": ["edit=10", "cos=0.27", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "James", "normalized": "james", "cluster_id": "james", "candidate": "Peter Chuck", "score": 0.18184824186332701, "evidence": {"rules": ["edit=10", "cos=0.18", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Jane", "normalized": "jane", "cluster_id": "jane", "candidate": "Nate", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.20", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Jazz", "normalized": "jazz", "cluster_id": "jazz", "candidate": "Arthur", "score": 0.21535276082326618, "evidence": {"rules": ["edit=6", "cos=0.22", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Jeremy", "normalized": "jeremy", "cluster_id": "jeremy", "candidate": "Raten", "score": 0.2057377999494559, "evidence": {"rules": ["edit=5", "cos=0.21", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Jill Snacker", "normalized": "jill snacker", "cluster_id": "jill snacker", "candidate": "Quinn Talen", "score": 0.24758202513348904, "evidence": {"rules": ["edit=9", "cos=0.25", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "John", "normalized": "john", "cluster_id": "john", "candidate": "Blip", "score": 0.19999999999999996, "evidence": {"rules": ["edit=4", "cos=0.20", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Josh", "normalized": "josh", "cluster_id": "josh", "candidate": "Owen Graylash", "score": 0.22841609628806428, "evidence": {"rules": ["edit=11", "cos=0.23", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Justin", "normalized": "justin", "cluster_id": "justin", "candidate": "Logan Green", "score": 0.2760262237369417, "evidence": {"rules": ["edit=10", "cos=0.28", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Katie", "normalized": "katie", "cluster_id": "katie", "candidate": "Nate", "score": 0.6666666666666667, "evidence": {"rules": ["edit=2", "cos=0.23", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Kaz", "normalized": "kaz", "cluster_id": "kaz", "candidate": "Sam", "score": 0.5, "evidence": {"rules": ["edit=2", "cos=0.00", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Keenan", "normalized": "keenan", "cluster_id": "keenan", "candidate": "Quinn Talen", "score": 0.26937401188058957, "evidence": {"rules": ["edit=8", "cos=0.27", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Kenny", "normalized": "kenny", "cluster_id": "kenny", "candidate": "Unknown", "score": 0.31950482521134693, "evidence": {"rules": ["edit=6", "cos=0.32", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Keven", "normalized": "keven", "cluster_id": "keven", "candidate": "Quinn Talen", "score": 0.21821789023599242, "evidence": {"rules": ["edit=9", "cos=0.22", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Kid", "normalized": "kid", "cluster_id": "kid", "candidate": "Sil", "score": 0.5, "evidence": {"rules": ["edit=2", "cos=0.00", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Kiln", "normalized": "kiln", "cluster_id": "kiln", "candidate": "Sil", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.00", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Kong", "normalized": "kong", "cluster_id": "kong", "candidate": "Arthur", "score": 0.16151457061744964, "evidence": {"rules": ["edit=6", "cos=0.16", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Kyle", "normalized": "kyle", "cluster_id": "kyle", "candidate": "Alex", "score": 0.2666666666666666, "evidence": {"rules": ["edit=3", "cos=0.27", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Larry Star", "normalized": "larry star", "cluster_id": "larry star", "candidate": "Logan Green", "score": 0.22019275302527214, "evidence": {"rules": ["edit=9", "cos=0.22", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Laya", "normalized": "laya", "cluster_id": "laya", "candidate": "Layla", "score": 0.8, "evidence": {"rules": ["edit=1", "cos=0.55", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Layal", "normalized": "layal", "cluster_id": "layal", "candidate": "Layla", "score": 0.6666666666666667, "evidence": {"rules": ["edit=2", "cos=0.39", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Layla Munrow", "normalized": "layla munrow", "cluster_id": "layla munrow", "candidate": "Layla Munrow", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Lee Sanguinis", "normalized": "lee sanguinis", "cluster_id": "lee sanguinis", "candidate": "Dennis", "score": 0.3217447260438934, "evidence": {"rules": ["edit=8", "cos=0.32", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Lemon", "normalized": "lemon", "cluster_id": "lemon", "candidate": "Leo", "score": 0.6666666666666667, "evidence": {"rules": ["edit=2", "cos=0.19", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Leo", "normalized": "leo", "cluster_id": "leo", "candidate": "Leo", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Lilly", "normalized": "lilly", "cluster_id": "lilly", "candidate": "Unknown", "score": 0.24056261216234412, "evidence": {"rules": ["edit=7", "cos=0.24", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Lily", "normalized": "lily", "cluster_id": "lily", "candidate": "Sil", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.07", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Linda", "normalized": "linda", "cluster_id": "linda", "candidate": "Linda", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Lippy", "normalized": "lippy", "cluster_id": "lippy", "candidate": "Linda", "score": 0.25, "evidence": {"rules": ["edit=3", "cos=0.25", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Logan Green", "normalized": "logan green", "cluster_id": "logan green", "candidate": "Logan Green", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Loop", "normalized": "loop", "cluster_id": "loop", "candidate": "Leo", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.14", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Lyala", "normalized": "lyala", "cluster_id": "lyala", "candidate": "Layla", "score": 0.6666666666666667, "evidence": {"rules": ["edit=2", "cos=0.22", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Mantis", "normalized": "mantis", "cluster_id": "mantis", "candidate": "Mantis", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Master", "normalized": "master", "cluster_id": "master", "candidate": "Silver", "score": 0.21821789023599242, "evidence": {"rules": ["edit=4", "cos=0.22", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Megan", "normalized": "megan", "cluster_id": "megan", "candidate": "Nathan", "score": 0.27975144247209416, "evidence": {"rules": ["edit=4", "cos=0.28", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Mike", "normalized": "mike", "cluster_id": "mike", "candidate": "Duke", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.24", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Minny", "normalized": "minny", "cluster_id": "minny", "candidate": "Mantis", "score": 0.24573659359149527, "evidence": {"rules": ["edit=4", "cos=0.25", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Mitchell", "normalized": "mitchell", "cluster_id": "mitchell", "candidate": "Truedream", "score": 0.22452510468485448, "evidence": {"rules": ["edit=8", "cos=0.22", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Mohawk", "normalized": "mohawk", "cluster_id": "mohawk", "candidate": "Rokene", "score": 0.1904761904761905, "evidence": {"rules": ["edit=5", "cos=0.19", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Momo", "normalized": "momo", "cluster_id": "momo", "candidate": "Unknown", "score": 0.2475368857441686, "evidence": {"rules": ["edit=6", "cos=0.25", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Mono", "normalized": "mono", "cluster_id": "mono", "candidate": "Richard Eno", "score": 0.2581988897471611, "evidence": {"rules": ["edit=9", "cos=0.26", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Muka", "normalized": "muka", "cluster_id": "muka", "candidate": "Duke", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.00", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Multiplier", "normalized": "multiplier", "cluster_id": "multiplier", "candidate": "Silver", "score": 0.2562050460881395, "evidence": {"rules": ["edit=6", "cos=0.26", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "My Puppet", "normalized": "my puppet", "cluster_id": "my puppet", "candidate": "Peter Chuck", "score": 0.21821789023599236, "evidence": {"rules": ["edit=11", "cos=0.22", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Narrator", "normalized": "narrator", "cluster_id": "narrator", "candidate": "Narrator", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Nate", "normalized": "nate", "cluster_id": "nate", "candidate": "Nate", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Nathan", "normalized": "nathan", "cluster_id": "nathan", "candidate": "Nathan", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Oscar", "normalized": "oscar", "cluster_id": "oscar", "candidate": "Owen Graylash", "score": 0.17376201171422898, "evidence": {"rules": ["edit=11", "cos=0.17", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Owen Graylash", "normalized": "owen graylash", "cluster_id": "owen graylash", "candidate": "Owen Graylash", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Pai", "normalized": "pai", "cluster_id": "pai", "candidate": "Sam", "score": 0.5, "evidence": {"rules": ["edit=2", "cos=0.00", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Paul", "normalized": "paul", "cluster_id": "paul", "candidate": "Paul", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Peter Chuck", "normalized": "peter chuck", "cluster_id": "peter chuck", "candidate": "Peter Chuck", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Phil", "normalized": "phil", "cluster_id": "phil", "candidate": "Paul", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.13", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Pio Blank", "normalized": "pio blank", "cluster_id": "pio blank", "candidate": "Raten", "score": 0.19641855032959654, "evidence": {"rules": ["edit=8", "cos=0.20", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Prima Killton", "normalized": "prima killton", "cluster_id": "prima killton", "candidate": "Quinn Talen", "score": 0.25025866535630953, "evidence": {"rules": ["edit=9", "cos=0.25", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Pure", "normalized": "pure", "cluster_id": "pure", "candidate": "Duke", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.06", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Quin", "normalized": "quin", "cluster_id": "quin", "candidate": "Quinn", "score": 0.8500000000000001, "evidence": {"rules": ["edit=1", "cos=0.64", "bonus=0.05"]}, "decision": "auto"}
+{"mention": "Quinn", "normalized": "quinn", "cluster_id": "quinn", "candidate": "Quinn", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Raten", "normalized": "raten", "cluster_id": "raten", "candidate": "Raten", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Rattaclaw", "normalized": "rattaclaw", "cluster_id": "rattaclaw", "candidate": "Raten", "score": 0.242535625036333, "evidence": {"rules": ["edit=6", "cos=0.24", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Raven", "normalized": "raven", "cluster_id": "raven", "candidate": "Raten", "score": 0.8333333333333334, "evidence": {"rules": ["edit=1", "cos=0.37", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Reli", "normalized": "reli", "cluster_id": "reli", "candidate": "Del", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.15", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Richard Eno", "normalized": "richard eno", "cluster_id": "richard eno", "candidate": "Richard Eno", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Rick", "normalized": "rick", "cluster_id": "rick", "candidate": "Vicky", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.17", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Right", "normalized": "right", "cluster_id": "right", "candidate": "Unknown", "score": 0.25000000000000006, "evidence": {"rules": ["edit=7", "cos=0.25", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Rokene", "normalized": "rokene", "cluster_id": "rokene", "candidate": "Rokene", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Roman", "normalized": "roman", "cluster_id": "roman", "candidate": "Raten", "score": 0.22222222222222227, "evidence": {"rules": ["edit=3", "cos=0.22", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Ruby", "normalized": "ruby", "cluster_id": "ruby", "candidate": "Quinn", "score": 0.34641016151377546, "evidence": {"rules": ["edit=4", "cos=0.35", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Rylee", "normalized": "rylee", "cluster_id": "rylee", "candidate": "Richard Eno", "score": 0.27498597046143514, "evidence": {"rules": ["edit=9", "cos=0.27", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Sam", "normalized": "sam", "cluster_id": "sam", "candidate": "Sam", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Seargent Griff", "normalized": "seargent griff", "cluster_id": "seargent griff", "candidate": "Vorden", "score": 0.21290467263536572, "evidence": {"rules": ["edit=11", "cos=0.21", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Sergeant", "normalized": "sergeant", "cluster_id": "sergeant", "candidate": "Berg", "score": 0.23973165074269204, "evidence": {"rules": ["edit=5", "cos=0.24", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "She", "normalized": "she", "cluster_id": "she", "candidate": "Sam", "score": 0.5, "evidence": {"rules": ["edit=2", "cos=0.15", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Sil", "normalized": "sil", "cluster_id": "sil", "candidate": "Sil", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Sill", "normalized": "sill", "cluster_id": "sill", "candidate": "Sil", "score": 0.8, "evidence": {"rules": ["edit=1", "cos=0.62", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Silver", "normalized": "silver", "cluster_id": "silver", "candidate": "Silver", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Sis", "normalized": "sis", "cluster_id": "sis", "candidate": "Sil", "score": 0.75, "evidence": {"rules": ["edit=1", "cos=0.36", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Siyrus", "normalized": "siyrus", "cluster_id": "siyrus", "candidate": "Sil", "score": 0.27863910628767646, "evidence": {"rules": ["edit=4", "cos=0.28", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Sliver", "normalized": "sliver", "cluster_id": "sliver", "candidate": "Silver", "score": 0.7142857142857143, "evidence": {"rules": ["edit=2", "cos=0.38", "bonus=0.00"]}, "decision": "review"}
+{"mention": "Snow", "normalized": "snow", "cluster_id": "snow", "candidate": "Layla Munrow", "score": 0.2362497692874473, "evidence": {"rules": ["edit=9", "cos=0.24", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Spaceship", "normalized": "spaceship", "cluster_id": "spaceship", "candidate": "Amy Yellop", "score": 0.1973593560521103, "evidence": {"rules": ["edit=8", "cos=0.20", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Splinter", "normalized": "splinter", "cluster_id": "splinter", "candidate": "Silver", "score": 0.29711254108328294, "evidence": {"rules": ["edit=4", "cos=0.30", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Steven", "normalized": "steven", "cluster_id": "steven", "candidate": "Logan Green", "score": 0.24152294576982397, "evidence": {"rules": ["edit=9", "cos=0.24", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Sunny", "normalized": "sunny", "cluster_id": "sunny", "candidate": "Peter Chuck", "score": 0.18184824186332701, "evidence": {"rules": ["edit=11", "cos=0.18", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Suzan Toppy", "normalized": "suzan toppy", "cluster_id": "suzan toppy", "candidate": "Silver", "score": 0.22710998958306755, "evidence": {"rules": ["edit=10", "cos=0.23", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Suze", "normalized": "suze", "cluster_id": "suze", "candidate": "Duke", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.06", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Suzy", "normalized": "suzy", "cluster_id": "suzy", "candidate": "Peter Chuck", "score": 0.23904572186687872, "evidence": {"rules": ["edit=10", "cos=0.24", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "System", "normalized": "system", "cluster_id": "system", "candidate": "Nate", "score": 0.1690308509457033, "evidence": {"rules": ["edit=4", "cos=0.17", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Taz", "normalized": "taz", "cluster_id": "taz", "candidate": "Sam", "score": 0.5, "evidence": {"rules": ["edit=2", "cos=0.00", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "The Chair", "normalized": "the chair", "cluster_id": "the chair", "candidate": "Rokene", "score": 0.24779731389167606, "evidence": {"rules": ["edit=9", "cos=0.25", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "The power of support", "normalized": "the power of support", "cluster_id": "the power of support", "candidate": "Quinn Talen", "score": 0.261697958140315, "evidence": {"rules": ["edit=19", "cos=0.26", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "They", "normalized": "they", "cluster_id": "they", "candidate": "Erin Heley", "score": 0.27144835701531844, "evidence": {"rules": ["edit=7", "cos=0.27", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "This", "normalized": "this", "cluster_id": "this", "candidate": "Mantis", "score": 0.26919095102908275, "evidence": {"rules": ["edit=4", "cos=0.27", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Timmy", "normalized": "timmy", "cluster_id": "timmy", "candidate": "Timmy", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Tink", "normalized": "tink", "cluster_id": "tink", "candidate": "Timmy", "score": 0.28867513459481287, "evidence": {"rules": ["edit=3", "cos=0.29", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Tony", "normalized": "tony", "cluster_id": "tony", "candidate": "Dennis", "score": 0.2253744679276044, "evidence": {"rules": ["edit=5", "cos=0.23", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Travler", "normalized": "travler", "cluster_id": "travler", "candidate": "Alex", "score": 0.2531848417709166, "evidence": {"rules": ["edit=4", "cos=0.25", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Truedream", "normalized": "truedream", "cluster_id": "truedream", "candidate": "Truedream", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Tullen Difonde", "normalized": "tullen difonde", "cluster_id": "tullen difonde", "candidate": "Amy Yellop", "score": 0.24384310418681, "evidence": {"rules": ["edit=13", "cos=0.24", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Tupple", "normalized": "tupple", "cluster_id": "tupple", "candidate": "Peter Chuck", "score": 0.2573957808351148, "evidence": {"rules": ["edit=10", "cos=0.26", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Unknown", "normalized": "unknown", "cluster_id": "unknown", "candidate": "Unknown", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Vadeen Muscat", "normalized": "vadeen muscat", "cluster_id": "vadeen muscat", "candidate": "Owen Graylash", "score": 0.29192017967990463, "evidence": {"rules": ["edit=11", "cos=0.29", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Vampire", "normalized": "vampire", "cluster_id": "vampire", "candidate": "Truedream", "score": 0.34646743359179155, "evidence": {"rules": ["edit=7", "cos=0.35", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Vicky", "normalized": "vicky", "cluster_id": "vicky", "candidate": "Vicky", "score": 1.0, "evidence": {"rules": ["exact"]}, "decision": "auto"}
+{"mention": "Villager", "normalized": "villager", "cluster_id": "villager", "candidate": "Quinn", "score": 0.2076136996343499, "evidence": {"rules": ["edit=8", "cos=0.21", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Vordan", "normalized": "vordan", "cluster_id": "vordan", "candidate": "Vorden", "score": 0.8571428571428572, "evidence": {"rules": ["edit=1", "cos=0.50", "bonus=0.00"]}, "decision": "auto"}
+{"mention": "Wait", "normalized": "wait", "cluster_id": "wait", "candidate": "Peter Chuck", "score": 0.2788866755113585, "evidence": {"rules": ["edit=11", "cos=0.28", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Wevil", "normalized": "wevil", "cluster_id": "wevil", "candidate": "Sil", "score": 0.25197631533948484, "evidence": {"rules": ["edit=3", "cos=0.25", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Wight", "normalized": "wight", "cluster_id": "wight", "candidate": "Mantis", "score": 0.23312620206007845, "evidence": {"rules": ["edit=6", "cos=0.23", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "Xander", "normalized": "xander", "cluster_id": "xander", "candidate": "Silver", "score": 0.20000000000000004, "evidence": {"rules": ["edit=4", "cos=0.20", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "about,\"Vorden", "normalized": "about vorden", "cluster_id": "about vorden", "candidate": "Vorden", "score": 0.6838540894771278, "evidence": {"rules": ["edit=6", "cos=0.68", "bonus=0.00"]}, "decision": "review"}
+{"mention": "ader", "normalized": "ader", "cluster_id": "ader", "candidate": "Del", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.07", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "base", "normalized": "base", "cluster_id": "base", "candidate": "Nate", "score": 0.6, "evidence": {"rules": ["edit=2", "cos=0.13", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "den", "normalized": "den", "cluster_id": "den", "candidate": "Del", "score": 0.75, "evidence": {"rules": ["edit=1", "cos=0.25", "bonus=0.00"]}, "decision": "review"}
+{"mention": "er", "normalized": "er", "cluster_id": "er", "candidate": "Fex", "score": 0.33333333333333337, "evidence": {"rules": ["edit=2", "cos=0.00", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "father", "normalized": "father", "cluster_id": "father", "candidate": "Nathan", "score": 0.22750787759664506, "evidence": {"rules": ["edit=3", "cos=0.23", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "hur", "normalized": "hur", "cluster_id": "hur", "candidate": "Arthur", "score": 0.440094748802747, "evidence": {"rules": ["edit=3", "cos=0.39", "bonus=0.05"]}, "decision": "reject"}
+{"mention": "inn", "normalized": "inn", "cluster_id": "inn", "candidate": "Ian", "score": 0.75, "evidence": {"rules": ["edit=1", "cos=0.23", "bonus=0.00"]}, "decision": "review"}
+{"mention": "jksmanga", "normalized": "jksmanga", "cluster_id": "jksmanga", "candidate": "Mantis", "score": 0.27104108243182823, "evidence": {"rules": ["edit=6", "cos=0.27", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "l", "normalized": "l", "cluster_id": "l", "candidate": "Layla", "score": 0.3386751345948129, "evidence": {"rules": ["edit=4", "cos=0.29", "bonus=0.05"]}, "decision": "reject"}
+{"mention": "ory", "normalized": "ory", "cluster_id": "ory", "candidate": "Fay", "score": 0.5, "evidence": {"rules": ["edit=2", "cos=0.21", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "r", "normalized": "r", "cluster_id": "r", "candidate": "Rokene", "score": 0.2281741612749496, "evidence": {"rules": ["edit=5", "cos=0.18", "bonus=0.05"]}, "decision": "reject"}
+{"mention": "rden", "normalized": "rden", "cluster_id": "rden", "candidate": "Vorden", "score": 0.6960582824697987, "evidence": {"rules": ["edit=2", "cos=0.65", "bonus=0.05"]}, "decision": "review"}
+{"mention": "ster", "normalized": "ster", "cluster_id": "ster", "candidate": "Silver", "score": 0.3098386676965933, "evidence": {"rules": ["edit=3", "cos=0.31", "bonus=0.00"]}, "decision": "reject"}
+{"mention": "t", "normalized": "t", "cluster_id": "t", "candidate": "Alex", "score": 0.21081851067789195, "evidence": {"rules": ["edit=4", "cos=0.21", "bonus=0.00"]}, "decision": "reject"}

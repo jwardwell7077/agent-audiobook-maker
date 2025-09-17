@@ -164,9 +164,31 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--pause-dialog", type=int, default=80)
     parser.add_argument("--pause-thought", type=int, default=140)
     parser.add_argument("--prefer-engine", type=str, default="piper")
+    parser.add_argument("--only", type=int, default=None, help="Only emit plan for this chapter index")
+    parser.add_argument("--verbose", action="store_true", help="Print a brief summary after writing plans")
     args = parser.parse_args(argv)
-    build_plans(
-        args.input,
+    # If --only is provided, load JSON, keep a single chapter, and write through
+    if args.only is not None:
+        data = json.loads(args.input.read_text(encoding="utf-8"))
+        keep = []
+        for ch in data.get("chapters", []):
+            try:
+                idx = int(ch.get("chapter_index") or ch.get("index") or 0)
+            except Exception:
+                idx = 0
+            if idx == int(args.only):
+                keep = [ch]
+                break
+        data["chapters"] = keep
+        tmp = args.out_dir / ".tmp_only.json"
+        tmp.parent.mkdir(parents=True, exist_ok=True)
+        tmp.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        input_path = tmp
+    else:
+        input_path = args.input
+
+    paths = build_plans(
+        input_path,
         args.cast,
         args.out_dir,
         sample_rate=args.sr,
@@ -177,3 +199,14 @@ def main(argv: list[str] | None = None) -> None:
         pause_thought=args.pause_thought,
         prefer_engine=args.prefer_engine,
     )
+    if args.verbose:
+        # Print a tiny summary for convenience
+        print(f"Wrote {len(paths)} plan(s) to {args.out_dir}")
+        try:
+            sample = paths[0]
+            segs = json.loads(sample.read_text(encoding="utf-8")).get("segments", [])
+            engines = sorted({s.get("engine") for s in segs if s.get("engine")})
+            voices = sorted({s.get("voice") for s in segs if s.get("voice")})
+            print(f"Sample {sample.name}: {len(segs)} segments; engines={engines[:5]}; voices≈{len(voices)}")
+        except Exception:
+            pass

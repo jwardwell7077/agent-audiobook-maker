@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import shutil
-import hashlib
 from pathlib import Path
 from typing import Any
 
@@ -16,7 +16,7 @@ import soundfile as sf
 from abm.audio.concat import equal_power_crossfade, micro_fade
 from abm.audio.qc import duration_s, measure_lufs, peak_dbfs, write_qc_json
 from abm.voice.cache import cache_path, make_cache_key
-from abm.voice.engines import PiperEngine, XTTSEngine, ParlerEngine, ParlerConfig
+from abm.voice.engines import ParlerConfig, ParlerEngine, PiperEngine, XTTSEngine
 
 __all__ = ["render_chapter", "main"]
 
@@ -129,6 +129,7 @@ def render_chapter(
     parler_dtype: str = "auto",
     parler_seed: int | None = None,
     prefer_engine: str | None = None,
+    add_pause_ms: int = 0,
 ) -> Path:
     plan = json.loads(plan_path.read_text(encoding="utf-8"))
     sr = int(plan.get("sample_rate", 48000))
@@ -137,6 +138,7 @@ def render_chapter(
         return out_wav
     segments = plan.get("segments", [])
     audio: list[np.ndarray] = []
+    pauses: list[int] = []  # pause after each segment (ms); length == len(audio)
     utterances: list[dict[str, Any]] = []
     for seg in segments:
         engine_name = seg.get("engine") or prefer_engine or "piper"
@@ -153,6 +155,10 @@ def render_chapter(
         )
         y = micro_fade(y, sr)
         audio.append(y)
+        # record the requested pause after this spoken segment
+        pause_ms = int(seg.get("pause_ms", 0) or 0) + int(add_pause_ms or 0)
+        pauses.append(max(0, pause_ms))
+        # track utterance metadata for QC
         if engine_name == "parler":
             desc = seg.get("description") or ""
             desc_hash = hashlib.sha256(desc.encode("utf-8")).hexdigest()
@@ -179,8 +185,21 @@ def render_chapter(
     if not audio:
         return out_wav
     mix = audio[0]
-    for y in audio[1:]:
-        mix = equal_power_crossfade(mix, y, sr, crossfade_ms)
+    for idx, y in enumerate(audio[1:], start=1):
+        # If a pause follows the previous segment, insert it and disable crossfade for this join
+        p_ms = int(pauses[idx - 1] if idx - 1 < len(pauses) else 0)
+        if p_ms > 0:
+            n_sil = int(sr * (p_ms / 1000.0))
+            if n_sil > 0:
+                mix = np.concatenate([mix, np.zeros(n_sil, dtype=np.float32)]).astype(np.float32)
+            cf_ms = 0
+        else:
+            cf_ms = crossfade_ms
+        mix = equal_power_crossfade(mix, y, sr, cf_ms)
+    # Optional debug: print total planned pauses and segments if requested
+    if os.getenv("ABM_DEBUG_PAUSES"):
+        total_pause_ms = int(sum(pauses[:-1]) if pauses else 0)
+        print(f"[render_chapter] segments={len(audio)} total_pause_ms={total_pause_ms}")
     out_wav.parent.mkdir(parents=True, exist_ok=True)
     sf.write(out_wav, mix, sr)
     qc_path = out_wav.with_suffix(".qc.json")
@@ -214,15 +233,19 @@ def main(argv: list[str] | None = None) -> None:
         default=None,
         help="Prefer this engine when segments omit an engine (default: plan value)",
     )
-    parser.add_argument(
-        "--parler-model", type=str, default="parler-tts/parler-tts-mini-v1"
-    )
+    parser.add_argument("--parler-model", type=str, default="parler-tts/parler-tts-mini-v1")
     parser.add_argument("--parler-dtype", type=str, default="auto")
     parser.add_argument(
         "--parler-seed",
         type=int,
         default=None,
         help="Default seed for Parler (renders are deterministic when a seed is set)",
+    )
+    parser.add_argument(
+        "--add-pause-ms",
+        type=int,
+        default=0,
+        help="Add this many milliseconds of extra silence after every segment",
     )
     args = parser.parse_args(argv)
     render_chapter(
@@ -235,4 +258,5 @@ def main(argv: list[str] | None = None) -> None:
         parler_dtype=args.parler_dtype,
         parler_seed=args.parler_seed,
         prefer_engine=args.prefer_engine,
+        add_pause_ms=args.add_pause_ms,
     )
