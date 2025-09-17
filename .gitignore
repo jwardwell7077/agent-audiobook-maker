@@ -198,6 +198,9 @@ data/**
 
 # Re-include necessary parent directories for SAMPLE_BOOK so Git can track its contents.
 !data/
+
+# Seed pack outputs that may contain sensitive mapping details
+seed_pack/voices.json
 !data/README.TODO.md
 !data/books/
 !data/books/SAMPLE_BOOK/

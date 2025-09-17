@@ -32,12 +32,11 @@
   "schema_version": "1.0.0",
   "shards": [],
   "repo_meta": "repo_meta.json",
-  "voices": "voices.json",
+  "voices": "",
   "pipelines": "pipelines.json",
   "chat_min": [
-    "repo_meta.json",
-    "voices.json",
-    "pipelines.json",
+  "repo_meta.json",
+  "pipelines.json",
     "schemas_index.json",
     "modules/abm.annotate.json",
     "modules/abm.voice.json"
