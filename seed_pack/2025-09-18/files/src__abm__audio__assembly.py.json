@@ -1,0 +1,72 @@
+{
+  "file": "src/abm/audio/assembly.py",
+  "module": "abm.audio.assembly",
+  "summary": "Utilities for stitching synthesized audio segments.",
+  "public_api": [
+    {
+      "name": "load_wav",
+      "signature": "(path)",
+      "kind": "function"
+    },
+    {
+      "name": "ensure_mono",
+      "signature": "(y)",
+      "kind": "function"
+    },
+    {
+      "name": "silence",
+      "signature": "(duration_ms, sr)",
+      "kind": "function"
+    },
+    {
+      "name": "assemble",
+      "signature": "(span_paths, pauses_ms, crossfade_ms, sr_hint, allow_resample)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    }
+  ],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "numpy",
+      "pathlib",
+      "scipy",
+      "soundfile"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/audio/assembly.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

@@ -1,0 +1,152 @@
+{
+  "file": "src/abm/audio/render_book.py",
+  "module": "abm.audio.render_book",
+  "summary": "Orchestrate rendering of an entire audiobook.",
+  "public_api": [
+    {
+      "name": "_discover_scripts",
+      "signature": "(scripts_dir, start, end)",
+      "kind": "function"
+    },
+    {
+      "name": "_load_qc",
+      "signature": "(qc_path)",
+      "kind": "function"
+    },
+    {
+      "name": "_build_entry",
+      "signature": "(idx, title, qc, wav_rel, qc_rel)",
+      "kind": "function"
+    },
+    {
+      "name": "_write_manifest",
+      "signature": "(manifest_path, base_dir, entries)",
+      "kind": "function"
+    },
+    {
+      "name": "main",
+      "signature": "(argv)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [
+      {
+        "name": "--scripts-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--engine-workers",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--start",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--end",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--resume",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--show-progress",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--log-level",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--scripts-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--engine-workers",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--start",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--end",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--resume",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--show-progress",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--log-level",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.audio.render_book"
+    ]
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    }
+  ],
+  "dependencies": {
+    "internal": [
+      "abm.audio.render_chapter"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "collections",
+      "json",
+      "logging",
+      "pathlib",
+      "re"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/audio/render_book.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

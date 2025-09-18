@@ -1,0 +1,50 @@
+{
+  "file": "src/abm/annotate/review.py",
+  "module": "abm.annotate.review",
+  "summary": "Generate Markdown review reports for annotated chapters.",
+  "public_api": [
+    {
+      "name": "ReviewConfig",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "Reviewer",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "make_review_markdown",
+      "signature": "(chapters)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "collections",
+      "dataclasses",
+      "statistics",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/annotate/review.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

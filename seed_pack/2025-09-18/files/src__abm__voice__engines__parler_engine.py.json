@@ -1,0 +1,48 @@
+{
+  "file": "src/abm/voice/engines/parler_engine.py",
+  "module": "abm.voice.engines.parler_engine",
+  "summary": "Auto-generated summary.",
+  "public_api": [
+    {
+      "name": "ParlerConfig",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "ParlerEngine",
+      "signature": "",
+      "kind": "class"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "numpy",
+      "parler_tts",
+      "soundfile",
+      "torch",
+      "torchaudio",
+      "transformers"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/voice/engines/parler_engine.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

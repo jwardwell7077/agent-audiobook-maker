@@ -1,0 +1,159 @@
+{
+  "file": "src/abm/audit/cli.py",
+  "module": "abm.audit.cli",
+  "summary": "Command line interface for :mod:`abm.audit`.",
+  "public_api": [
+    {
+      "name": "_first_glob",
+      "signature": "(pattern)",
+      "kind": "function"
+    },
+    {
+      "name": "main",
+      "signature": "(argv)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [
+      {
+        "name": "--refined",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--base",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--metrics-jsonl",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--chapters",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--plots",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--html",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--prefix",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--title",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--stdout-summary",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--refined",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--base",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--metrics-jsonl",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--chapters",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--plots",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--html",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--prefix",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--title",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--stdout-summary",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.audit.cli"
+    ]
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [
+    {
+      "type": "SystemExit",
+      "when": "Unknown"
+    }
+  ],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "argparse",
+      "collections",
+      "datetime",
+      "json",
+      "metrics_eval",
+      "pathlib",
+      "report_html",
+      "report_md",
+      "speaker_confusion",
+      "vote_metrics"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/audit/cli.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

@@ -1,0 +1,32 @@
+{
+  "file": "src/abm/audit/__main__.py",
+  "module": "abm.audit.__main__",
+  "summary": "Auto-generated summary.",
+  "public_api": [],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": [
+      "python -m abm.audit.__main__"
+    ]
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "cli"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/audit/__main__.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}
