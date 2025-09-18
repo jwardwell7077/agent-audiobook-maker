@@ -7,6 +7,12 @@
 > KISS branch scope
 > This branch is documentation‑first. Keep it simple: only set up a local Python `.venv` and minimal dev tools. Sections below that mention Docker, Postgres, LangGraph runtime, or API endpoints are roadmap/design notes, not required to get started on this branch. See `docs/KISS.md`.
 
+## 🔎 SME Seed (Stable Links)
+- Manifest (latest): `seed_pack/latest/index.json` (raw: `https://raw.githubusercontent.com/<YOUR_GH_USER>/agent-audiobook-maker/main/seed_pack/latest/index.json`)
+- MIN zip: `seed_pack/chat_min.zip` (raw: `https://raw.githubusercontent.com/<YOUR_GH_USER>/agent-audiobook-maker/main/seed_pack/chat_min.zip`)
+- FULL zip: `seed_pack/latest.zip` (raw: `https://raw.githubusercontent.com/<YOUR_GH_USER>/agent-audiobook-maker/main/seed_pack/latest.zip`)
+See: `docs/chat_seed/BOOTSTRAP.md` for copy–paste instructions.
+
 ## KISS Quickstart (this branch)
 
 This branch is documentation-first. Keep it simple:
