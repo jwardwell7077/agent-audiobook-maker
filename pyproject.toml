@@ -11,6 +11,14 @@ readme = "README.md"
 authors = [{ name = "jon" }]
 license = { file = "LICENSE" }
 keywords = ["audiobook", "pdf", "tts", "langgraph", "crewai"]
+dependencies = [
+    "click>=8.1",
+    "pydantic>=2",
+    "orjson>=3.9",
+    "regex>=2023.0",
+    "tqdm>=4.66",
+    "httpx>=0.25",
+]
 
 # Feature-scoped optional dependencies (install with: pip install .[group])
 [project.optional-dependencies]
@@ -57,7 +65,7 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["abm*"]
+include = ["abm*", "character_bible*"]
 
 [tool.ruff]
 line-length = 120

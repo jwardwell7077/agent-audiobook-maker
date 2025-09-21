@@ -87,6 +87,63 @@ See more in [docs/01-project-overview/ARCHITECTURE.md](docs/01-project-overview/
 
 Structured JSON schema: [docs/02-specifications/data-schemas/STRUCTURED_JSON_SCHEMA.md](docs/02-specifications/data-schemas/STRUCTURED_JSON_SCHEMA.md).
 
+## Character Bible Builder
+
+This repo now ships a lightweight character bible generator that scans chapter JSON, extracts canonical evidence, and prompts an LLM to draft production-ready voice briefs. The tool lives under the `character_bible` package and exposes a CLI with three entry points: `scan`, `draft`, and `all`.
+
+### Quickstart
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -e .
+# Scan counts
+python -m character_bible.cli scan --chapters data/chapters_pt1.json --chapters data/chapters_pt2.json --names data/top_names.txt --out scan_counts.json
+# Build character bible (LLM)
+export LLM_API_KEY=... ; export LLM_BASE_URL=... ; export LLM_MODEL=gpt-4o-mini
+python -m character_bible.cli all --chapters data/chapters_pt1.json --chapters data/chapters_pt2.json --names data/top_names.txt --out character_bible.json
+```
+
+You can also use the convenience `Makefile` in `character_bible/` (`make -f character_bible/Makefile scan` and `make -f character_bible/Makefile draft`).
+
+### CLI overview
+
+| Command | Purpose | Key flags |
+| --- | --- | --- |
+| `scan` | Count mentions for a candidate list and preview first-evidence snippets. | `--chapters`, `--names` / repeated `--name`, `--out`, `--max-hits`, `--window` |
+| `draft` | Generate bible entries for an explicit set of characters using the configured LLM. | All `scan` flags plus `--llm-base-url`, `--llm-model`, `--temperature`, `--seed`, `--api-key-env` |
+| `all` | End-to-end run using a names file, optional mention threshold filter, and LLM drafting. | Same as `draft` plus `--threshold` |
+
+Chapter inputs can be either `[ {"title": ..., "text": ...}, ... ]` or `{ "chapters": [ ... ] }`. Name lists accept inline aliases separated by `|` (e.g., `Elizabeth Bennet|Lizzy`).
+
+### Character profile schema
+
+Each generated entry conforms to the `CharacterProfile` model and is written to `character_bible.json` as a list of JSON objects:
+
+```json
+{
+  "name": "...",
+  "gender": "unknown | evidence-backed string",
+  "approx_age": "unknown | evidence-backed string",
+  "nationality_or_accent_hint": "unknown | evidence-backed string",
+  "role_in_story": "unknown | evidence-backed string",
+  "traits_dialogue": ["neutral, evidence-only bullet strings"],
+  "pacing": "unknown | evidence-backed string",
+  "energy": "unknown | evidence-backed string",
+  "voice_register": "unknown | evidence-backed string",
+  "consistency_notes": "Keep timbre consistent across segments",
+  "first_mentions_evidence": [
+    {
+      "chapter": "Chapter title",
+      "location": "ch_0001: sentence 3",
+      "text": "Sentence window with canonical evidence"
+    }
+  ],
+  "notes": {}
+}
+```
+
+The LLM output is always grounded in the collected snippets; fields without strong support are set to the literal string `"unknown"`.
+
 ## Status Snapshot (2025-08-14)
 
 | Layer                           | State                       | Notes                                                                           |
