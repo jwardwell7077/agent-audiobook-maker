@@ -7,7 +7,7 @@ import shutil
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 try:
     import yaml  # optional; only used if --profiles/--catalog provided
@@ -49,12 +49,12 @@ def emit_voices_json(catalog_path: str | None, profiles_path: str | None, out_di
     """Write voices.json if catalog/profiles are available; otherwise return None."""
     if not (catalog_path or profiles_path) or yaml is None:
         return None
-    voices: Dict[str, Any] = {"catalog_model": "parler-tts/parler-tts-mini-v1"}
+    voices: dict[str, Any] = {"catalog_model": "parler-tts/parler-tts-mini-v1"}
     if catalog_path and Path(catalog_path).exists():
-        cat = yaml.safe_load(open(catalog_path, "r", encoding="utf-8"))
+        cat = yaml.safe_load(open(catalog_path, encoding="utf-8"))
         voices["catalog"] = cat.get("voices", cat) if isinstance(cat, dict) else cat
     if profiles_path and Path(profiles_path).exists():
-        prof = yaml.safe_load(open(profiles_path, "r", encoding="utf-8"))
+        prof = yaml.safe_load(open(profiles_path, encoding="utf-8"))
         voices["mapping"] = prof.get("speakers", prof) if isinstance(prof, dict) else prof
     # Only write if at least one source contributed content:
     if "catalog" in voices or "mapping" in voices:
@@ -737,6 +737,40 @@ def main() -> None:
     if latest_dir.exists():
         shutil.rmtree(latest_dir)
     shutil.copytree(dated_dir, latest_dir)
+
+    # Create zip archives to support "Method B: Upload zip"
+    # 1) Full archive of latest
+    full_zip = SEED_DIR / "latest.zip"
+    if full_zip.exists():
+        full_zip.unlink()
+    shutil.make_archive(str(full_zip.with_suffix("")), "zip", root_dir=SEED_DIR, base_dir="latest")
+
+    # 2) Minimal chat seed (chat_min.zip) if chat_min entries exist
+    chat_min_zip = SEED_DIR / "chat_min.zip"
+    if chat_min_zip.exists():
+        chat_min_zip.unlink()
+    try:
+        # Build a temporary folder with only the minimal set
+        tmp_min = SEED_DIR / ".tmp_chat_min"
+        if tmp_min.exists():
+            shutil.rmtree(tmp_min)
+        tmp_min.mkdir(parents=True)
+        # Always include index.json
+        shutil.copy2(SEED_DIR / "index.json", tmp_min / "index.json")
+        # Copy the minimal referenced files if present
+        for rel in index.get("chat_min", []):
+            src = SEED_DIR / rel
+            dest = tmp_min / rel
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            if src.exists():
+                if src.is_dir():
+                    shutil.copytree(src, dest, dirs_exist_ok=True)
+                else:
+                    shutil.copy2(src, dest)
+        shutil.make_archive(str(chat_min_zip.with_suffix("")), "zip", root_dir=SEED_DIR, base_dir=tmp_min.name)
+    finally:
+        if (SEED_DIR / ".tmp_chat_min").exists():
+            shutil.rmtree(SEED_DIR / ".tmp_chat_min")
 
 
 if __name__ == "__main__":

@@ -42,3 +42,18 @@ https://raw.githubusercontent.com/
 - `files/*.json` for per-file API surfaces
 - `graphs/*` for imports/calls
 - `voices.json`, `pipelines.json` for Parler presets
+
+---
+
+## Load into multiple ChatGPT windows
+
+Method A: Link-based bootstrap (NOT READY)
+
+- Status: Not fully supported yet. Some assistants don’t follow multi-file JSON indices reliably.
+- TODO: sanatize and implimented automated CIs
+
+Method B: Upload zip (Preferred)
+
+1) Generate the seed pack locally (script: scripts/generate_seed_pack.py).
+2) Upload seed_pack/latest.zip (or seed_pack/chat_min.zip) into each ChatGPT window.
+3) Prompt: “Extract the archive, open index.json, and load referenced modules/files. Use this seed to answer project questions with citations.”
