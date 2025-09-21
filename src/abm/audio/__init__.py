@@ -12,12 +12,14 @@ def register_builtins() -> None:
     function multiple times is safe.
     """
     from abm.audio.engine_registry import EngineRegistry
+    from abm.audio.kokoro_adapter import KokoroAdapter
     from abm.audio.piper_adapter import PiperAdapter
     from abm.audio.xtts_adapter import XTTSAdapter
 
     for name, adapter in {
         "piper": PiperAdapter,
         "xtts": XTTSAdapter,
+        "kokoro": KokoroAdapter,
     }.items():
         try:
             EngineRegistry.register(name, lambda _adapter=adapter, **kw: _adapter(**kw))
@@ -25,4 +27,4 @@ def register_builtins() -> None:
             pass
 
 
-__all__ = ["tts_base", "engine_registry", "register_builtins"]
+__all__ = ["register_builtins"]
