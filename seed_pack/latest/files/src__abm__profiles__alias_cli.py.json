@@ -1,0 +1,241 @@
+{
+  "file": "src/abm/profiles/alias_cli.py",
+  "module": "abm.profiles.alias_cli",
+  "summary": "CLI entry points for the alias resolver.",
+  "public_api": [
+    {
+      "name": "_load_json",
+      "signature": "(path)",
+      "kind": "function"
+    },
+    {
+      "name": "_load_profiles",
+      "signature": "(path)",
+      "kind": "function"
+    },
+    {
+      "name": "_save_profiles",
+      "signature": "(db, path)",
+      "kind": "function"
+    },
+    {
+      "name": "_proposals_from_file",
+      "signature": "(path)",
+      "kind": "function"
+    },
+    {
+      "name": "_cmd_discover",
+      "signature": "(args)",
+      "kind": "function"
+    },
+    {
+      "name": "_cmd_apply",
+      "signature": "(args)",
+      "kind": "function"
+    },
+    {
+      "name": "_cmd_run",
+      "signature": "(args)",
+      "kind": "function"
+    },
+    {
+      "name": "main",
+      "signature": "(argv)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tau-auto",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tau-review",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--use-llm",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--model",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--proposals",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tau-auto",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tau-review",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--use-llm",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--model",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tau-auto",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tau-review",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--use-llm",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--model",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--proposals",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tau-auto",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tau-review",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--use-llm",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--model",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.profiles.alias_cli"
+    ]
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.profiles.character_profiles"
+    ],
+    "external": [
+      "__future__",
+      "alias_resolver",
+      "argparse",
+      "json",
+      "pathlib",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/profiles/alias_cli.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

@@ -1,0 +1,33 @@
+{
+  "file": "src/abm/voice/__init__.py",
+  "module": "abm.voice",
+  "summary": "Auto-generated summary.",
+  "public_api": [],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.voice.tts_casting",
+      "abm.voice.voicecasting"
+    ],
+    "external": [
+      "__future__"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/voice/__init__.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

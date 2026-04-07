@@ -1,0 +1,176 @@
+{
+  "file": "src/abm/annotate/bnlp_refine.py",
+  "module": "abm.annotate.bnlp_refine",
+  "summary": "Auto-generated summary.",
+  "public_api": [
+    {
+      "name": "BNLPRefinePolicy",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "_overlap",
+      "signature": "(a, b)",
+      "kind": "function"
+    },
+    {
+      "name": "_match_quotes",
+      "signature": "(spans, bnlp, max_char_gap)",
+      "kind": "function"
+    },
+    {
+      "name": "refine_with_bnlp",
+      "signature": "(tagged_path, out_path, policy, verbose, max_chapters, bnlp_pipeline, bnlp_size, bnlp_gate_threshold, bnlp_top_n, bnlp_try_big, bnlp_tmp_dir)",
+      "kind": "function"
+    },
+    {
+      "name": "_parse_args",
+      "signature": "()",
+      "kind": "function"
+    },
+    {
+      "name": "main",
+      "signature": "()",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [
+      {
+        "name": "--tagged",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--max-chapters",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-pipeline",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-size",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-gate-threshold",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-top-n",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-try-big",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-tmp-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tagged",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--max-chapters",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-pipeline",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-size",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-gate-threshold",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-top-n",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-try-big",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--bnlp-tmp-dir",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.annotate.bnlp_refine"
+    ]
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.sidecar.booknlp_adapter"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "importlib",
+      "json",
+      "pathlib",
+      "shutil",
+      "tempfile",
+      "time",
+      "typing",
+      "uuid"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/annotate/bnlp_refine.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

@@ -1,0 +1,86 @@
+{
+  "file": "src/abm/ingestion/pdf_to_raw_text.py",
+  "module": "abm.ingestion.pdf_to_raw_text",
+  "summary": "Raw PDF → Text extractor preserving line/blank-line fidelity (PyMuPDF).",
+  "public_api": [
+    {
+      "name": "RawExtractOptions",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "RawPdfTextExtractor",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "_default_output_for_input",
+      "signature": "(p)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [
+      {
+        "name": "--newline",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--preserve-form-feeds",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-strip-trailing-spaces",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--dedupe-inline-spaces",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--fix-short-wraps",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--artifact-compat",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.ingestion.pdf_to_raw_text"
+    ]
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "fitz",
+      "pathlib",
+      "re",
+      "sys",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/ingestion/pdf_to_raw_text.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

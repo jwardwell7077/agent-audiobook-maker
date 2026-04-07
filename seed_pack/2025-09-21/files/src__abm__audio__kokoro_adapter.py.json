@@ -1,0 +1,70 @@
+{
+  "file": "src/abm/audio/kokoro_adapter.py",
+  "module": "abm.audio.kokoro_adapter",
+  "summary": "Kokoro TTS adapter (HTTP, OpenAI-compatible endpoint).",
+  "public_api": [
+    {
+      "name": "_parse_speed",
+      "signature": "(style)",
+      "kind": "function"
+    },
+    {
+      "name": "_parse_seed",
+      "signature": "(style)",
+      "kind": "function"
+    },
+    {
+      "name": "KokoroSynthesisError",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "_AdapterConfig",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "KokoroAdapter",
+      "signature": "",
+      "kind": "class"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.audio.tts_base"
+    ],
+    "external": [
+      "__future__",
+      "base64",
+      "dataclasses",
+      "io",
+      "json",
+      "numpy",
+      "os",
+      "pathlib",
+      "re",
+      "requests",
+      "soundfile",
+      "time",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/audio/kokoro_adapter.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

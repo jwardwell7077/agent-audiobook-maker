@@ -1,0 +1,49 @@
+{
+  "file": "src/abm/audio/piper_adapter.py",
+  "module": "abm.audio.piper_adapter",
+  "summary": "Piper TTS adapter (CLI-based, CPU-friendly).",
+  "public_api": [
+    {
+      "name": "_write_silence_wav",
+      "signature": "(path, duration_ms, sr)",
+      "kind": "function"
+    },
+    {
+      "name": "PiperAdapter",
+      "signature": "",
+      "kind": "class"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.audio.tts_base"
+    ],
+    "external": [
+      "__future__",
+      "os",
+      "pathlib",
+      "shutil",
+      "subprocess",
+      "tempfile",
+      "wave"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/audio/piper_adapter.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

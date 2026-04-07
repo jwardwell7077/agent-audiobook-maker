@@ -1,0 +1,54 @@
+{
+  "file": "src/abm/annotate/metrics.py",
+  "module": "abm.annotate.metrics",
+  "summary": "Auto-generated summary.",
+  "public_api": [
+    {
+      "name": "ChapterMetrics",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "Timer",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "MetricsCollector",
+      "signature": "",
+      "kind": "class"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "os",
+      "pathlib",
+      "psutil",
+      "pynvml",
+      "time",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/annotate/metrics.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

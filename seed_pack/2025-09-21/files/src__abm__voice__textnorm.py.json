@@ -1,0 +1,42 @@
+{
+  "file": "src/abm/voice/textnorm.py",
+  "module": "abm.voice.textnorm",
+  "summary": "Text normalization utilities for voice engines.",
+  "public_api": [
+    {
+      "name": "normalize_quotes_and_dashes",
+      "signature": "(s)",
+      "kind": "function"
+    },
+    {
+      "name": "sanitize_angle_brackets",
+      "signature": "(text, role)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "re"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/voice/textnorm.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

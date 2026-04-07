@@ -1,0 +1,38 @@
+{
+  "file": "src/abm/audit/report_html.py",
+  "module": "abm.audit.report_html",
+  "summary": "Auto-generated summary.",
+  "public_api": [
+    {
+      "name": "md_to_html",
+      "signature": "(md_path, html_path)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "markdown2",
+      "pathlib"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/audit/report_html.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

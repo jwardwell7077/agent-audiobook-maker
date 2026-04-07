@@ -1,0 +1,154 @@
+{
+  "file": "src/abm/profiles/profiles_cli.py",
+  "module": "abm.profiles.profiles_cli",
+  "summary": "Command line utilities for profile files.",
+  "public_api": [
+    {
+      "name": "_cmd_audit",
+      "signature": "(ns)",
+      "kind": "function"
+    },
+    {
+      "name": "_scan_voices",
+      "signature": "(voices_dir)",
+      "kind": "function"
+    },
+    {
+      "name": "_cmd_generate",
+      "signature": "(ns)",
+      "kind": "function"
+    },
+    {
+      "name": "main",
+      "signature": "(argv)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--prefer-engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--voices-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--n-top",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--prefer-engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--voices-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--n-top",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.profiles.profiles_cli"
+    ]
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.profiles",
+      "abm.voice"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "collections",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "sys",
+      "yaml"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/profiles/profiles_cli.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

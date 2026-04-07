@@ -1,0 +1,62 @@
+{
+  "file": "src/abm/audio/mastering.py",
+  "module": "abm.audio.mastering",
+  "summary": "Simple mastering utilities for audiobook audio.",
+  "public_api": [
+    {
+      "name": "measure_loudness",
+      "signature": "(y, sr)",
+      "kind": "function"
+    },
+    {
+      "name": "measure_true_peak",
+      "signature": "(y, sr, oversample)",
+      "kind": "function"
+    },
+    {
+      "name": "limit_peaks",
+      "signature": "(y, peak_dbfs)",
+      "kind": "function"
+    },
+    {
+      "name": "add_head_tail_silence",
+      "signature": "(y, sr, head_ms, tail_ms)",
+      "kind": "function"
+    },
+    {
+      "name": "master",
+      "signature": "(y, sr, target_lufs, peak_dbfs, head_ms, tail_ms, enable_true_peak, true_peak_ceiling_dbfs, true_peak_oversample)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.audio.assembly"
+    ],
+    "external": [
+      "__future__",
+      "logging",
+      "numpy",
+      "pyloudnorm",
+      "scipy"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/audio/mastering.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

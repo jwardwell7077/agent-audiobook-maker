@@ -1,9 +1,0 @@
-{
-  "python": "3.11",
-  "engines": [
-    "parler",
-    "piper",
-    "xtts"
-  ],
-  "parler_model_default": "parler-tts/parler-tts-mini-v1"
-}

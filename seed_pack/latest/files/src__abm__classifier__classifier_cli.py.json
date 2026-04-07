@@ -1,0 +1,55 @@
+{
+  "file": "src/abm/classifier/classifier_cli.py",
+  "module": "abm.classifier.classifier_cli",
+  "summary": "Auto-generated summary.",
+  "public_api": [
+    {
+      "name": "_iter_blocks_from_text",
+      "signature": "(text)",
+      "kind": "function"
+    },
+    {
+      "name": "_write_json",
+      "signature": "(path, data)",
+      "kind": "function"
+    },
+    {
+      "name": "main",
+      "signature": "(argv)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [],
+    "examples": [
+      "python -m abm.classifier.classifier_cli"
+    ]
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.classifier.section_classifier"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "json",
+      "os",
+      "pathlib",
+      "tempfile"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/classifier/classifier_cli.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

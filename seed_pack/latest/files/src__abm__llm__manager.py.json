@@ -1,0 +1,48 @@
+{
+  "file": "src/abm/llm/manager.py",
+  "module": "abm.llm.manager",
+  "summary": "Utilities to manage a local or remote LLM service.",
+  "public_api": [
+    {
+      "name": "LLMBackend",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "LLMService",
+      "signature": "",
+      "kind": "class"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "logging",
+      "os",
+      "requests",
+      "signal",
+      "subprocess",
+      "time"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/llm/manager.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

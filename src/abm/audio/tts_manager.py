@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 import shutil
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -61,13 +62,16 @@ class TTSManager:
         adapter_ver = getattr(self.adapter, "version", lambda: "0")()
         seed = getattr(task, "seed", "")
         params = getattr(task, "engine_params", None) or getattr(task, "params", None)
+        style = task.style
+        if isinstance(style, (dict, list)):
+            style = json.dumps(style, sort_keys=True, separators=(",", ":"))
         parts: list[str] = [
             task.engine or "",
             adapter_ver,
             tn_ver,
             norm_text,
             task.voice or "",
-            task.style or "",
+            str(style) if style is not None else "",
             task.profile_id or "",
             seed or "",
         ]
@@ -164,11 +168,7 @@ class TTSManager:
         results: list[Path] = [Path()] * len(tasks)
         with ThreadPoolExecutor(max_workers=self.max_workers) as ex:
             future_map = {ex.submit(self.render_one, t): i for i, t in enumerate(tasks)}
-            pbar = (
-                self._tqdm(total=len(tasks))
-                if self._tqdm and self.show_progress
-                else None
-            )
+            pbar = self._tqdm(total=len(tasks)) if self._tqdm and self.show_progress else None
             try:
                 for fut in as_completed(future_map):
                     idx = future_map[fut]

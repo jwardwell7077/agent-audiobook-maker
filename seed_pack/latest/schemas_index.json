@@ -1,0 +1,24 @@
+{
+  "schemas": [
+    {
+      "name": "chapter",
+      "path": "seed_pack/schemas/chapter.schema.json",
+      "inferred": true
+    },
+    {
+      "name": "segment",
+      "path": "seed_pack/schemas/segment.schema.json",
+      "inferred": true
+    },
+    {
+      "name": "casting_plan",
+      "path": "seed_pack/schemas/casting_plan.schema.json",
+      "inferred": true
+    },
+    {
+      "name": "book_config",
+      "path": "seed_pack/schemas/book_config.schema.json",
+      "inferred": true
+    }
+  ]
+}

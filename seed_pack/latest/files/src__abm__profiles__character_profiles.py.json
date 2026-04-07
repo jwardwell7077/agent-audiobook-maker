@@ -1,0 +1,115 @@
+{
+  "file": "src/abm/profiles/character_profiles.py",
+  "module": "abm.profiles.character_profiles",
+  "summary": "Character profile loading and resolution utilities.",
+  "public_api": [
+    {
+      "name": "Style",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "SpeakerProfile",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "ProfileConfig",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "normalize_speaker_name",
+      "signature": "(name)",
+      "kind": "function"
+    },
+    {
+      "name": "_style_from_dict",
+      "signature": "(base, data)",
+      "kind": "function"
+    },
+    {
+      "name": "load_profiles",
+      "signature": "(path)",
+      "kind": "function"
+    },
+    {
+      "name": "available_voices",
+      "signature": "(cfg, engine)",
+      "kind": "function"
+    },
+    {
+      "name": "Profile",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "CharacterProfilesDB",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "_resolve_with_reason",
+      "signature": "(cfg, speaker)",
+      "kind": "function"
+    },
+    {
+      "name": "resolve_speaker_ex",
+      "signature": "(cfg, speaker)",
+      "kind": "function"
+    },
+    {
+      "name": "resolve_with_reason",
+      "signature": "(cfg, speaker)",
+      "kind": "function"
+    },
+    {
+      "name": "resolve_speaker",
+      "signature": "(cfg, speaker)",
+      "kind": "function"
+    },
+    {
+      "name": "validate_profiles",
+      "signature": "(cfg)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "RuntimeError",
+      "when": "Unknown"
+    }
+  ],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "typing",
+      "yaml"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/profiles/character_profiles.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

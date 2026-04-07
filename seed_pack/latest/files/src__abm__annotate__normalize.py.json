@@ -1,0 +1,66 @@
+{
+  "file": "src/abm/annotate/normalize.py",
+  "module": "abm.annotate.normalize",
+  "summary": "Auto-generated summary.",
+  "public_api": [
+    {
+      "name": "LineTag",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "InlineTag",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "NormalizerConfig",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "NormalizeReport",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "ChapterNormalizer",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "normalize_chapter_text",
+      "signature": "(chapter, config)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "enum",
+      "re",
+      "typing",
+      "unicodedata"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/annotate/normalize.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

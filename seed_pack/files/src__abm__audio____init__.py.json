@@ -23,6 +23,7 @@
   "dependencies": {
     "internal": [
       "abm.audio.engine_registry",
+      "abm.audio.kokoro_adapter",
       "abm.audio.piper_adapter",
       "abm.audio.xtts_adapter"
     ],

@@ -1,0 +1,53 @@
+{
+  "file": "src/abm/audio/book_config.py",
+  "module": "abm.audio.book_config",
+  "summary": "Book metadata schema and loader.",
+  "public_api": [
+    {
+      "name": "BookMeta",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "load_book_meta",
+      "signature": "(path)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "FileNotFoundError",
+      "when": "Unknown"
+    }
+  ],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "pathlib",
+      "yaml"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/audio/book_config.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

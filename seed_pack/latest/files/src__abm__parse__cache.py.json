@@ -1,0 +1,46 @@
+{
+  "file": "src/abm/parse/cache.py",
+  "module": "abm.parse.cache",
+  "summary": "Auto-generated summary.",
+  "public_api": [
+    {
+      "name": "DocCacheConfig",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "DocCache",
+      "signature": "",
+      "kind": "class"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "hashlib",
+      "pathlib",
+      "spacy",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/parse/cache.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

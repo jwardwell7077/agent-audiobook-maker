@@ -18,6 +18,24 @@
       "summary": ""
     },
     {
+      "name": "KokoroSynthesisError",
+      "kind": "class",
+      "file": "src/abm/audio/kokoro_adapter.py",
+      "summary": ""
+    },
+    {
+      "name": "_AdapterConfig",
+      "kind": "class",
+      "file": "src/abm/audio/kokoro_adapter.py",
+      "summary": ""
+    },
+    {
+      "name": "KokoroAdapter",
+      "kind": "class",
+      "file": "src/abm/audio/kokoro_adapter.py",
+      "summary": ""
+    },
+    {
       "name": "PiperAdapter",
       "kind": "class",
       "file": "src/abm/audio/piper_adapter.py",
@@ -264,11 +282,13 @@
       "TTS",
       "__future__",
       "argparse",
+      "base64",
       "collections",
       "concurrent",
       "dataclasses",
       "hashlib",
       "importlib",
+      "io",
       "json",
       "logging",
       "math",
@@ -279,6 +299,7 @@
       "pydub",
       "pyloudnorm",
       "re",
+      "requests",
       "scipy",
       "shutil",
       "soundfile",
@@ -286,6 +307,7 @@
       "subprocess",
       "tempfile",
       "threading",
+      "time",
       "tqdm",
       "typing",
       "wave",
@@ -595,6 +617,6 @@
   "status": {
     "maturity": "alpha",
     "owners": [],
-    "last_touched_file_mtime": "2025-09-17T03:46:56.977652+00:00"
+    "last_touched_file_mtime": "2025-09-21T23:08:27.071115+00:00"
   }
 }

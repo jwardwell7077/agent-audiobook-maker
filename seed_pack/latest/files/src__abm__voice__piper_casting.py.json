@@ -1,0 +1,123 @@
+{
+  "file": "src/abm/voice/piper_casting.py",
+  "module": "abm.voice.piper_casting",
+  "summary": "Propose Piper voice casting for book characters.",
+  "public_api": [
+    {
+      "name": "AuditionLine",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "_collect_characters",
+      "signature": "(annotations, max_chars)",
+      "kind": "function"
+    },
+    {
+      "name": "_pick_audition_lines",
+      "signature": "(annotations, speakers, max_chars)",
+      "kind": "function"
+    },
+    {
+      "name": "_render_review_md",
+      "signature": "(out_dir, lines, voices, engine)",
+      "kind": "function"
+    },
+    {
+      "name": "propose_casting",
+      "signature": "(profiles_path, annotations_path, out_dir, engine, max_chars)",
+      "kind": "function"
+    },
+    {
+      "name": "main",
+      "signature": "(argv)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--max-chars",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--annotations",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--max-chars",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.voice.piper_casting"
+    ]
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.profiles",
+      "abm.voice.piper_catalog"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "typing",
+      "yaml"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/voice/piper_casting.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

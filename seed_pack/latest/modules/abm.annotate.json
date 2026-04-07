@@ -1,0 +1,847 @@
+{
+  "id": "abm.annotate",
+  "path_globs": [
+    "src/abm/annotate/**/*.py"
+  ],
+  "purpose": "Auto-generated module summary.",
+  "key_components": [
+    {
+      "name": "SpanOut",
+      "kind": "class",
+      "file": "src/abm/annotate/annotate_cli.py",
+      "summary": ""
+    },
+    {
+      "name": "AnnotateRunner",
+      "kind": "class",
+      "file": "src/abm/annotate/annotate_cli.py",
+      "summary": ""
+    },
+    {
+      "name": "AttributeConfig",
+      "kind": "class",
+      "file": "src/abm/annotate/attribute.py",
+      "summary": ""
+    },
+    {
+      "name": "AttributeEngine",
+      "kind": "class",
+      "file": "src/abm/annotate/attribute.py",
+      "summary": ""
+    },
+    {
+      "name": "BNLPRefinePolicy",
+      "kind": "class",
+      "file": "src/abm/annotate/bnlp_refine.py",
+      "summary": ""
+    },
+    {
+      "name": "LLMCache",
+      "kind": "class",
+      "file": "src/abm/annotate/llm_cache.py",
+      "summary": ""
+    },
+    {
+      "name": "LLMCandidateConfig",
+      "kind": "class",
+      "file": "src/abm/annotate/llm_prep.py",
+      "summary": ""
+    },
+    {
+      "name": "LLMCandidatePreparer",
+      "kind": "class",
+      "file": "src/abm/annotate/llm_prep.py",
+      "summary": ""
+    },
+    {
+      "name": "LLMRefineConfig",
+      "kind": "class",
+      "file": "src/abm/annotate/llm_refine.py",
+      "summary": ""
+    },
+    {
+      "name": "ChapterMetrics",
+      "kind": "class",
+      "file": "src/abm/annotate/metrics.py",
+      "summary": ""
+    },
+    {
+      "name": "Timer",
+      "kind": "class",
+      "file": "src/abm/annotate/metrics.py",
+      "summary": ""
+    },
+    {
+      "name": "MetricsCollector",
+      "kind": "class",
+      "file": "src/abm/annotate/metrics.py",
+      "summary": ""
+    },
+    {
+      "name": "LineTag",
+      "kind": "class",
+      "file": "src/abm/annotate/normalize.py",
+      "summary": ""
+    },
+    {
+      "name": "InlineTag",
+      "kind": "class",
+      "file": "src/abm/annotate/normalize.py",
+      "summary": ""
+    },
+    {
+      "name": "NormalizerConfig",
+      "kind": "class",
+      "file": "src/abm/annotate/normalize.py",
+      "summary": ""
+    },
+    {
+      "name": "NormalizeReport",
+      "kind": "class",
+      "file": "src/abm/annotate/normalize.py",
+      "summary": ""
+    },
+    {
+      "name": "ChapterNormalizer",
+      "kind": "class",
+      "file": "src/abm/annotate/normalize.py",
+      "summary": ""
+    },
+    {
+      "name": "ProgressReporter",
+      "kind": "class",
+      "file": "src/abm/annotate/progress.py",
+      "summary": ""
+    },
+    {
+      "name": "ReviewConfig",
+      "kind": "class",
+      "file": "src/abm/annotate/review.py",
+      "summary": ""
+    },
+    {
+      "name": "Reviewer",
+      "kind": "class",
+      "file": "src/abm/annotate/review.py",
+      "summary": ""
+    },
+    {
+      "name": "RosterConfig",
+      "kind": "class",
+      "file": "src/abm/annotate/roster.py",
+      "summary": ""
+    },
+    {
+      "name": "RosterBuilder",
+      "kind": "class",
+      "file": "src/abm/annotate/roster.py",
+      "summary": ""
+    },
+    {
+      "name": "SpanType",
+      "kind": "class",
+      "file": "src/abm/annotate/segment.py",
+      "summary": ""
+    },
+    {
+      "name": "Span",
+      "kind": "class",
+      "file": "src/abm/annotate/segment.py",
+      "summary": ""
+    },
+    {
+      "name": "SegmenterConfig",
+      "kind": "class",
+      "file": "src/abm/annotate/segment.py",
+      "summary": ""
+    },
+    {
+      "name": "Segmenter",
+      "kind": "class",
+      "file": "src/abm/annotate/segment.py",
+      "summary": ""
+    }
+  ],
+  "public_surfaces": [
+    {
+      "symbol": "main",
+      "signature": "()",
+      "summary": ""
+    },
+    {
+      "symbol": "refine_with_bnlp",
+      "signature": "(tagged_path, out_path, policy, verbose, max_chapters, bnlp_pipeline, bnlp_size, bnlp_gate_threshold, bnlp_top_n, bnlp_try_big, bnlp_tmp_dir)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "()",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "()",
+      "summary": ""
+    },
+    {
+      "symbol": "refine_document",
+      "signature": "(tagged_path, out_json, out_md, backend, cfg, manage_service, cache_path)",
+      "summary": ""
+    },
+    {
+      "symbol": "main",
+      "signature": "()",
+      "summary": ""
+    },
+    {
+      "symbol": "normalize_chapter_text",
+      "signature": "(chapter, config)",
+      "summary": ""
+    },
+    {
+      "symbol": "speaker_user_prompt",
+      "signature": "(roster, left, mid, right, span_type)",
+      "summary": ""
+    },
+    {
+      "symbol": "make_review_markdown",
+      "signature": "(chapters)",
+      "summary": ""
+    },
+    {
+      "symbol": "build_chapter_roster",
+      "signature": "(text, nlp)",
+      "summary": ""
+    },
+    {
+      "symbol": "merge_book_roster",
+      "signature": "(book, chap)",
+      "summary": ""
+    },
+    {
+      "symbol": "segment_spans",
+      "signature": "(chapter, config)",
+      "summary": ""
+    }
+  ],
+  "data_flow": "Unknown",
+  "dependencies": {
+    "imports_internal": [
+      "abm.annotate.attribute",
+      "abm.annotate.llm_cache",
+      "abm.annotate.llm_prep",
+      "abm.annotate.metrics",
+      "abm.annotate.normalize",
+      "abm.annotate.progress",
+      "abm.annotate.prompts",
+      "abm.annotate.review",
+      "abm.annotate.roster",
+      "abm.annotate.segment",
+      "abm.llm.client",
+      "abm.llm.manager",
+      "abm.parse.cache",
+      "abm.sidecar.booknlp_adapter"
+    ],
+    "imports_external": [
+      "__future__",
+      "argparse",
+      "collections",
+      "concurrent",
+      "dataclasses",
+      "datetime",
+      "difflib",
+      "enum",
+      "fastcoref",
+      "hashlib",
+      "importlib",
+      "json",
+      "logging",
+      "os",
+      "pathlib",
+      "psutil",
+      "pynvml",
+      "re",
+      "rich",
+      "shutil",
+      "spacy",
+      "sqlite3",
+      "statistics",
+      "subprocess",
+      "sys",
+      "tempfile",
+      "threading",
+      "time",
+      "torch",
+      "tqdm",
+      "typing",
+      "unicodedata",
+      "uuid",
+      "warnings"
+    ]
+  },
+  "configs_env": {
+    "env_vars": [],
+    "config_files": []
+  },
+  "cli_entrypoints": [
+    {
+      "file": "src/abm/annotate/annotate_cli.py",
+      "module": "abm.annotate.annotate_cli",
+      "command": "python -m abm.annotate.annotate_cli",
+      "flags": [
+        {
+          "name": "--in",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-json",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-md",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--metrics-jsonl",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-roster",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--stages",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--spacy-model",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--no-coref",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--coref",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--status",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--mode",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--llm",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--remove-heading",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--treat-single-as-thought",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--only",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--roster-scope",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--no-roster-ner",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--parse-mode",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--doc-cache",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--pipe-batch-size",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--in",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-json",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-md",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--metrics-jsonl",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-roster",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--stages",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--spacy-model",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--no-coref",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--coref",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--status",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--mode",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--llm",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--remove-heading",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--treat-single-as-thought",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--only",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--roster-scope",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--no-roster-ner",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--parse-mode",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--doc-cache",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--pipe-batch-size",
+          "type": "unknown",
+          "default": null
+        }
+      ],
+      "examples": [
+        "python -m abm.annotate.annotate_cli"
+      ]
+    },
+    {
+      "file": "src/abm/annotate/bnlp_refine.py",
+      "module": "abm.annotate.bnlp_refine",
+      "command": "python -m abm.annotate.bnlp_refine",
+      "flags": [
+        {
+          "name": "--tagged",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--max-chapters",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-pipeline",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-size",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-gate-threshold",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-top-n",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-try-big",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-tmp-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tagged",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--max-chapters",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-pipeline",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-size",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-gate-threshold",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-top-n",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-try-big",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--bnlp-tmp-dir",
+          "type": "unknown",
+          "default": null
+        }
+      ],
+      "examples": [
+        "python -m abm.annotate.bnlp_refine"
+      ]
+    },
+    {
+      "file": "src/abm/annotate/llm_prep_cli.py",
+      "module": "abm.annotate.llm_prep_cli",
+      "command": "python -m abm.annotate.llm_prep_cli",
+      "flags": [
+        {
+          "name": "--in",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--conf-threshold",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--in",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--conf-threshold",
+          "type": "unknown",
+          "default": null
+        }
+      ],
+      "examples": [
+        "python -m abm.annotate.llm_prep_cli"
+      ]
+    },
+    {
+      "file": "src/abm/annotate/llm_refine.py",
+      "module": "abm.annotate.llm_refine",
+      "command": "python -m abm.annotate.llm_refine",
+      "flags": [
+        {
+          "name": "--tagged",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-json",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-md",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--endpoint",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--model",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--manage-llm",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--skip-threshold",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--votes",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--cache",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--metrics-jsonl",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--max-concurrency",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--cache-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--eval-after",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--eval-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--status",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--tagged",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-json",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--out-md",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--endpoint",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--model",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--manage-llm",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--skip-threshold",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--votes",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--cache",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--metrics-jsonl",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--max-concurrency",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--cache-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--eval-after",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--eval-dir",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--verbose",
+          "type": "unknown",
+          "default": null
+        },
+        {
+          "name": "--status",
+          "type": "unknown",
+          "default": null
+        }
+      ],
+      "examples": [
+        "python -m abm.annotate.llm_refine"
+      ]
+    }
+  ],
+  "invariants": [],
+  "edge_cases": [],
+  "known_gotchas": [],
+  "related_tests": [],
+  "status": {
+    "maturity": "alpha",
+    "owners": [],
+    "last_touched_file_mtime": "2025-09-14T06:09:22.584082+00:00"
+  }
+}

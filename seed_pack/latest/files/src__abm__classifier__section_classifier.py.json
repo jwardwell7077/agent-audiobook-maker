@@ -1,0 +1,112 @@
+{
+  "file": "src/abm/classifier/section_classifier.py",
+  "module": "abm.classifier.section_classifier",
+  "summary": "Auto-generated summary.",
+  "public_api": [
+    {
+      "name": "canon_title",
+      "signature": "(s)",
+      "kind": "function"
+    },
+    {
+      "name": "_load_jsonl_blocks",
+      "signature": "(path)",
+      "kind": "function"
+    },
+    {
+      "name": "_find_toc_heading",
+      "signature": "(blocks)",
+      "kind": "function"
+    },
+    {
+      "name": "_parse_toc_items",
+      "signature": "(blocks, start_idx, end_idx)",
+      "kind": "function"
+    },
+    {
+      "name": "_is_body_heading_block",
+      "signature": "(block)",
+      "kind": "function"
+    },
+    {
+      "name": "_looks_like_toc_item_line",
+      "signature": "(text)",
+      "kind": "function"
+    },
+    {
+      "name": "_match_chapters",
+      "signature": "(blocks, toc_entries, start_search)",
+      "kind": "function"
+    },
+    {
+      "name": "classify_blocks",
+      "signature": "(jsonl_path)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    },
+    {
+      "type": "ValueError",
+      "when": "Unknown"
+    }
+  ],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "json",
+      "re",
+      "typing",
+      "unicodedata"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/classifier/section_classifier.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

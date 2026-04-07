@@ -1,0 +1,67 @@
+{
+  "file": "src/abm/audit/schemas.py",
+  "module": "abm.audit.schemas",
+  "summary": "Typed structures for the :mod:`abm.audit` package.",
+  "public_api": [
+    {
+      "name": "Span",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "Chapter",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "ChapterStat",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "EvalSummary",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "VoteStats",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "ConfusionPair",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "ConfusionSummary",
+      "signature": "",
+      "kind": "class"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/audit/schemas.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

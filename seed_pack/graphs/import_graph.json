@@ -22,6 +22,7 @@
     "abm.audio.book_config",
     "abm.audio.concat",
     "abm.audio.engine_registry",
+    "abm.audio.kokoro_adapter",
     "abm.audio.mastering",
     "abm.audio.package_book",
     "abm.audio.packaging",
@@ -67,6 +68,7 @@
     "abm.voice",
     "abm.voice.cache",
     "abm.voice.engines",
+    "abm.voice.engines.kokoro_engine",
     "abm.voice.engines.parler_engine",
     "abm.voice.engines.piper_engine",
     "abm.voice.engines.xtts_engine",
@@ -74,6 +76,7 @@
     "abm.voice.piper_catalog",
     "abm.voice.plan_from_annotations",
     "abm.voice.render_chapter",
+    "abm.voice.textnorm",
     "abm.voice.tts_casting",
     "abm.voice.voicecasting",
     "abm.voice.voicecasting_cli"
@@ -181,6 +184,10 @@
     },
     {
       "from": "abm.audio",
+      "to": "abm.audio.kokoro_adapter"
+    },
+    {
+      "from": "abm.audio",
       "to": "abm.audio.piper_adapter"
     },
     {
@@ -189,6 +196,10 @@
     },
     {
       "from": "abm.audio.engine_registry",
+      "to": "abm.audio.tts_base"
+    },
+    {
+      "from": "abm.audio.kokoro_adapter",
       "to": "abm.audio.tts_base"
     },
     {
@@ -322,6 +333,10 @@
     {
       "from": "abm.voice",
       "to": "abm.voice.voicecasting"
+    },
+    {
+      "from": "abm.voice.engines",
+      "to": "abm.voice.engines.kokoro_engine"
     },
     {
       "from": "abm.voice.engines",

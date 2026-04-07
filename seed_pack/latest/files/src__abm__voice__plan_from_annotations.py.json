@@ -1,0 +1,196 @@
+{
+  "file": "src/abm/voice/plan_from_annotations.py",
+  "module": "abm.voice.plan_from_annotations",
+  "summary": "Convert refined annotations into per-chapter render plans.",
+  "public_api": [
+    {
+      "name": "_Options",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "_split_text",
+      "signature": "(text, kind, max_chars)",
+      "kind": "function"
+    },
+    {
+      "name": "_pause",
+      "signature": "(kind, text, defaults)",
+      "kind": "function"
+    },
+    {
+      "name": "_style_for",
+      "signature": "(kind, base)",
+      "kind": "function"
+    },
+    {
+      "name": "_process_chapter",
+      "signature": "(ch, cfg, opt)",
+      "kind": "function"
+    },
+    {
+      "name": "build_plans",
+      "signature": "(combined_json, cast_profiles, out_dir, sample_rate, crossfade_ms, max_chars, pause_narr, pause_dialog, pause_thought, prefer_engine)",
+      "kind": "function"
+    },
+    {
+      "name": "main",
+      "signature": "(argv)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [
+      {
+        "name": "--in",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--cast",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--sr",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--crossfade-ms",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--max-chars",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--pause-narr",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--pause-dialog",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--pause-thought",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--prefer-engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--only",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--in",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--cast",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--sr",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--crossfade-ms",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--max-chars",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--pause-narr",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--pause-dialog",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--pause-thought",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--prefer-engine",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--only",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.profiles",
+      "abm.voice"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "re",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/voice/plan_from_annotations.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

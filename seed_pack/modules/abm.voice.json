@@ -6,6 +6,24 @@
   "purpose": "Auto-generated module summary.",
   "key_components": [
     {
+      "name": "KokoroSynthesisError",
+      "kind": "class",
+      "file": "src/abm/voice/engines/kokoro_engine.py",
+      "summary": ""
+    },
+    {
+      "name": "_Cfg",
+      "kind": "class",
+      "file": "src/abm/voice/engines/kokoro_engine.py",
+      "summary": ""
+    },
+    {
+      "name": "KokoroEngine",
+      "kind": "class",
+      "file": "src/abm/voice/engines/kokoro_engine.py",
+      "summary": ""
+    },
+    {
       "name": "ParlerConfig",
       "kind": "class",
       "file": "src/abm/voice/engines/parler_engine.py",
@@ -130,6 +148,16 @@
       "summary": ""
     },
     {
+      "symbol": "normalize_quotes_and_dashes",
+      "signature": "(s)",
+      "summary": ""
+    },
+    {
+      "symbol": "sanitize_angle_brackets",
+      "signature": "(text, role)",
+      "summary": ""
+    },
+    {
       "symbol": "merge_style",
       "signature": "(base, override)",
       "summary": ""
@@ -154,6 +182,7 @@
       "abm.voice",
       "abm.voice.cache",
       "abm.voice.engines",
+      "abm.voice.engines.kokoro_engine",
       "abm.voice.engines.parler_engine",
       "abm.voice.engines.piper_engine",
       "abm.voice.engines.xtts_engine",
@@ -163,20 +192,24 @@
     "imports_external": [
       "__future__",
       "argparse",
+      "base64",
       "collections",
       "dataclasses",
       "hashlib",
+      "io",
       "json",
       "numpy",
       "os",
       "parler_tts",
       "pathlib",
       "re",
+      "requests",
       "scipy",
       "shutil",
       "soundfile",
       "subprocess",
       "tempfile",
+      "time",
       "torch",
       "torchaudio",
       "transformers",
@@ -357,6 +390,6 @@
   "status": {
     "maturity": "alpha",
     "owners": [],
-    "last_touched_file_mtime": "2025-09-17T03:46:56.977652+00:00"
+    "last_touched_file_mtime": "2025-09-21T23:08:27.071115+00:00"
   }
 }

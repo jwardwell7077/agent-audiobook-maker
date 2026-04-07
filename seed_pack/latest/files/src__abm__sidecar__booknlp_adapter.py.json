@@ -1,0 +1,51 @@
+{
+  "file": "src/abm/sidecar/booknlp_adapter.py",
+  "module": "abm.sidecar.booknlp_adapter",
+  "summary": "Auto-generated summary.",
+  "public_api": [
+    {
+      "name": "BookNLPConfig",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "BookNLPAdapter",
+      "signature": "",
+      "kind": "class"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "dataclasses",
+      "importlib",
+      "json",
+      "os",
+      "pathlib",
+      "shutil",
+      "subprocess",
+      "tempfile",
+      "torch",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/sidecar/booknlp_adapter.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

@@ -40,6 +40,22 @@
     "file": "src/abm/ingestion/db_insert.py"
   },
   {
+    "env_var": "KOKORO_HTTP_POOL",
+    "file": "src/abm/voice/engines/kokoro_engine.py"
+  },
+  {
+    "env_var": "KOKORO_TIMEOUT",
+    "file": "src/abm/audio/kokoro_adapter.py"
+  },
+  {
+    "env_var": "KOKORO_URL",
+    "file": "src/abm/audio/kokoro_adapter.py"
+  },
+  {
+    "env_var": "KOKORO_URL",
+    "file": "src/abm/voice/engines/kokoro_engine.py"
+  },
+  {
     "env_var": "OPENAI_API_KEY",
     "file": "src/abm/llm/manager.py"
   }

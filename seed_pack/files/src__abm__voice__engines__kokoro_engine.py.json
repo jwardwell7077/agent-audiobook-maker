@@ -1,0 +1,55 @@
+{
+  "file": "src/abm/voice/engines/kokoro_engine.py",
+  "module": "abm.voice.engines.kokoro_engine",
+  "summary": "Auto-generated summary.",
+  "public_api": [
+    {
+      "name": "KokoroSynthesisError",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "_Cfg",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "KokoroEngine",
+      "signature": "",
+      "kind": "class"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [],
+    "external": [
+      "__future__",
+      "base64",
+      "dataclasses",
+      "io",
+      "numpy",
+      "os",
+      "requests",
+      "soundfile",
+      "time",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/voice/engines/kokoro_engine.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

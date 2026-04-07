@@ -1,6 +1,7 @@
 {
   "python": "3.11",
   "engines": [
+    "kokoro",
     "parler",
     "piper",
     "xtts"

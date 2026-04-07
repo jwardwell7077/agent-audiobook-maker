@@ -1,0 +1,46 @@
+{
+  "file": "src/abm/audio/qc_report.py",
+  "module": "abm.audio.qc_report",
+  "summary": "Quality-control utilities for rendered audio.",
+  "public_api": [
+    {
+      "name": "qc_report",
+      "signature": "(y, sr)",
+      "kind": "function"
+    },
+    {
+      "name": "write_qc_json",
+      "signature": "(report, out_path)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": false,
+    "flags": [],
+    "examples": []
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.audio.mastering"
+    ],
+    "external": [
+      "__future__",
+      "json",
+      "numpy",
+      "pathlib"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/audio/qc_report.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

@@ -1,0 +1,126 @@
+{
+  "file": "src/abm/ingestion/ingest_pdf.py",
+  "module": "abm.ingestion.ingest_pdf",
+  "summary": "High-level orchestrator: PDF → raw text and well-done text.",
+  "public_api": [
+    {
+      "name": "PipelineOptions",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "PdfIngestPipeline",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "_build_meta",
+      "signature": "(pdf_p, out_d, raw_path, wd_path, opts)",
+      "kind": "function"
+    },
+    {
+      "name": "_sha256_file",
+      "signature": "(p)",
+      "kind": "function"
+    },
+    {
+      "name": "_json_dumps",
+      "signature": "(obj)",
+      "kind": "function"
+    },
+    {
+      "name": "_default_out_dir",
+      "signature": "(p)",
+      "kind": "function"
+    },
+    {
+      "name": "_build_meta_ephemeral",
+      "signature": "(pdf_p, out_d, opts)",
+      "kind": "function"
+    },
+    {
+      "name": "_stub_db_insert",
+      "signature": "(mode, base_name, jsonl_path, meta_path, well_text, meta)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--mode",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--preserve-form-feeds",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-reflow",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-dehyphenate",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-dedupe-spaces",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--no-strip-trailing",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--insert-pg",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.ingestion.ingest_pdf"
+    ]
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.ingestion.pdf_to_raw_text",
+      "abm.ingestion.raw_to_welldone",
+      "abm.ingestion.welldone_to_json"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "datetime",
+      "hashlib",
+      "json",
+      "pathlib",
+      "sys",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/ingestion/ingest_pdf.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

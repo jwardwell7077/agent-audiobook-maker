@@ -1,0 +1,53 @@
+{
+  "id": "abm.sidecar",
+  "path_globs": [
+    "src/abm/sidecar/**/*.py"
+  ],
+  "purpose": "Auto-generated module summary.",
+  "key_components": [
+    {
+      "name": "BookNLPConfig",
+      "kind": "class",
+      "file": "src/abm/sidecar/booknlp_adapter.py",
+      "summary": ""
+    },
+    {
+      "name": "BookNLPAdapter",
+      "kind": "class",
+      "file": "src/abm/sidecar/booknlp_adapter.py",
+      "summary": ""
+    }
+  ],
+  "public_surfaces": [],
+  "data_flow": "Unknown",
+  "dependencies": {
+    "imports_internal": [],
+    "imports_external": [
+      "__future__",
+      "dataclasses",
+      "importlib",
+      "json",
+      "os",
+      "pathlib",
+      "shutil",
+      "subprocess",
+      "tempfile",
+      "torch",
+      "typing"
+    ]
+  },
+  "configs_env": {
+    "env_vars": [],
+    "config_files": []
+  },
+  "cli_entrypoints": [],
+  "invariants": [],
+  "edge_cases": [],
+  "known_gotchas": [],
+  "related_tests": [],
+  "status": {
+    "maturity": "alpha",
+    "owners": [],
+    "last_touched_file_mtime": "2025-09-13T02:11:35.832024+00:00"
+  }
+}

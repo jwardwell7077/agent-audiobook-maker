@@ -1,0 +1,242 @@
+{
+  "file": "src/abm/annotate/llm_refine.py",
+  "module": "abm.annotate.llm_refine",
+  "summary": "Auto-generated summary.",
+  "public_api": [
+    {
+      "name": "LLMRefineConfig",
+      "signature": "",
+      "kind": "class"
+    },
+    {
+      "name": "_ctx",
+      "signature": "(text, start, end, n)",
+      "kind": "function"
+    },
+    {
+      "name": "_fuzzy_match",
+      "signature": "(name, roster)",
+      "kind": "function"
+    },
+    {
+      "name": "refine_document",
+      "signature": "(tagged_path, out_json, out_md, backend, cfg, manage_service, cache_path)",
+      "kind": "function"
+    },
+    {
+      "name": "_parse_args",
+      "signature": "()",
+      "kind": "function"
+    },
+    {
+      "name": "main",
+      "signature": "()",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [
+      {
+        "name": "--tagged",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-json",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-md",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--endpoint",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--model",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--manage-llm",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--skip-threshold",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--votes",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--cache",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--metrics-jsonl",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--max-concurrency",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--cache-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--eval-after",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--eval-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--status",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tagged",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-json",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-md",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--endpoint",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--model",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--manage-llm",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--skip-threshold",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--votes",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--cache",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--metrics-jsonl",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--max-concurrency",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--cache-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--eval-after",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--eval-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--verbose",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--status",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.annotate.llm_refine"
+    ]
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.annotate.llm_cache",
+      "abm.annotate.llm_prep",
+      "abm.annotate.progress",
+      "abm.annotate.prompts",
+      "abm.llm.client",
+      "abm.llm.manager"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "concurrent",
+      "dataclasses",
+      "datetime",
+      "difflib",
+      "json",
+      "logging",
+      "pathlib",
+      "subprocess",
+      "sys",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/annotate/llm_refine.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}

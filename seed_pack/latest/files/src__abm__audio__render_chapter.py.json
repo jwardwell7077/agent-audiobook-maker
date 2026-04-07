@@ -1,0 +1,180 @@
+{
+  "file": "src/abm/audio/render_chapter.py",
+  "module": "abm.audio.render_chapter",
+  "summary": "Render an audiobook chapter from a synthesis script.",
+  "public_api": [
+    {
+      "name": "_load_script",
+      "signature": "(path)",
+      "kind": "function"
+    },
+    {
+      "name": "main",
+      "signature": "(argv)",
+      "kind": "function"
+    }
+  ],
+  "cli": {
+    "is_cli": true,
+    "flags": [
+      {
+        "name": "--script",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tmp-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--lufs",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--peak",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--crossfade-ms",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--engine-workers",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--workers",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--show-progress",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--save-master-wav",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--save-mp3",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--script",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--profiles",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--out-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--tmp-dir",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--lufs",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--peak",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--crossfade-ms",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--engine-workers",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--workers",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--show-progress",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--save-master-wav",
+        "type": "unknown",
+        "default": null
+      },
+      {
+        "name": "--save-mp3",
+        "type": "unknown",
+        "default": null
+      }
+    ],
+    "examples": [
+      "python -m abm.audio.render_chapter"
+    ]
+  },
+  "io_contracts": {
+    "inputs": [],
+    "outputs": [],
+    "patterns": []
+  },
+  "errors_raised": [],
+  "dependencies": {
+    "internal": [
+      "abm.audio",
+      "abm.audio.assembly",
+      "abm.audio.engine_registry",
+      "abm.audio.mastering",
+      "abm.audio.qc_report",
+      "abm.audio.tts_base",
+      "abm.audio.tts_manager"
+    ],
+    "external": [
+      "__future__",
+      "argparse",
+      "json",
+      "logging",
+      "pathlib",
+      "pydub",
+      "soundfile",
+      "tempfile",
+      "typing"
+    ]
+  },
+  "evidence": [
+    {
+      "file": "src/abm/audio/render_chapter.py",
+      "lines": "1-1"
+    }
+  ],
+  "confidence": 0.7
+}
